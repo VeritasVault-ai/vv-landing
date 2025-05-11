@@ -1,0 +1,54 @@
+/* ========== EXPERIENCE STYLES ========== */
+
+/* Standard Experience */
+.experience-standard {
+  /* Standard experience has default component styling */
+}
+
+/* Corporate Experience */
+.experience-corporate .card {
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-opacity: 0.8;
+}
+
+.experience-corporate .btn {
+  border-radius: 0.125rem;
+  font-weight: 500;
+}
+
+.experience-corporate .input {
+  border-radius: 0.125rem;
+}
+
+.experience-corporate .heading {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.experience-corporate .subheading {
+  font-weight: 400;
+  letter-spacing: 0.025em;
+}
+
+/* Cosmic Experience - For the version selection page */
+.experience-cosmic .card {
+  backdrop-filter: blur(12px);
+  border-radius: 0.75rem;
+  border-width: 1px;
+  transition: all 0.3s ease;
+}
+
+.experience-cosmic .btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.experience-cosmic .heading {
+  background: linear-gradient(to right, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}

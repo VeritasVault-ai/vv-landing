@@ -1,0 +1,10 @@
+/* Base theme variables */
+:root {
+  /* Base theme variables will be injected here by the theme system */
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* Dark theme variables will be injected here by the theme system */
+  --radius: 0.5rem;
+}

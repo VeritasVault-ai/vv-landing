@@ -20,7 +20,7 @@ module.exports = {
         input: "var(--input)",
         ring: "var(--ring)",
         background: "var(--background)",
-        foreground: "var(--background-foreground)",
+        foreground: "var(--foreground)", // Fixed this line
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",

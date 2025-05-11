@@ -1,0 +1,30 @@
+/* Corporate Experience - Corporate Theme */
+/* Professional, enterprise-focused design */
+.experience-corporate .card {
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-opacity: 0.8;
+}
+
+.experience-corporate .btn {
+  border-radius: 0.125rem;
+  font-weight: 500;
+}
+
+.experience-corporate .input {
+  border-radius: 0.125rem;
+}
+
+/* Corporate-specific elements */
+.experience-corporate .enterprise-card {
+  border-left-width: 4px;
+  border-left-color: var(--primary);
+}
+
+.experience-corporate .stat-card {
+  background-color: var(--card);
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border-top-width: 4px;
+  border-top-color: var(--primary);
+}
