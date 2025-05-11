@@ -1,40 +1,41 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, Suspense } from "react"
 import Script from "next/script"
 import { usePathname, useSearchParams } from "next/navigation"
 
-export default function GoogleAnalytics() {
+// Inner component that uses searchParams
+function GoogleAnalyticsInner() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   // Get the Google Analytics ID from environment variables
-  const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ""
 
   useEffect(() => {
-    if (!GA_MEASUREMENT_ID || !window.gtag) return
+    if (gaId && window.gtag) {
+      // When the route changes, update GA
+      window.gtag("config", gaId, {
+        page_path: pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : ""),
+      })
+    }
+  }, [pathname, searchParams, gaId])
 
-    const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : "")
-
-    // Track page view
-    window.gtag("config", GA_MEASUREMENT_ID, {
-      page_path: url,
-      send_page_view: true,
-      user_properties: {
-        app_version: "1.0.0",
-        platform: "web",
-        theme: document.documentElement.classList.contains("dark") ? "dark" : "light",
-      },
-    })
-  }, [pathname, searchParams, GA_MEASUREMENT_ID])
-
-  if (!GA_MEASUREMENT_ID) {
     return null
   }
 
+export default function GoogleAnalytics() {
+  // Get the Google Analytics ID from environment variables
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ""
+  
+  if (!gaId) return null
+  
   return (
     <>
-      <Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
+      <Script
+        strategy="afterInteractive"
+        src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+      />
       <Script
         id="google-analytics"
         strategy="afterInteractive"
@@ -43,14 +44,15 @@ export default function GoogleAnalytics() {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}', {
+            gtag('config', '${gaId}', {
               page_path: window.location.pathname,
-              cookie_flags: 'SameSite=None;Secure',
-              cookie_domain: window.location.hostname
             });
           `,
         }}
       />
+      <Suspense fallback={null}>
+        <GoogleAnalyticsInner />
+      </Suspense>
     </>
   )
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { VersionAwareLoginForm } from "@/components/auth/version-aware-login-form"
 
 export const metadata: Metadata = {
@@ -16,7 +17,9 @@ export default function StandardLoginPage() {
           </h1>
           <p className="text-sm text-muted-foreground">Optimize your liquidity strategy</p>
         </div>
-        <VersionAwareLoginForm version="standard" redirectTo="/standard/dashboard" />
+        <Suspense fallback={<div className="p-4 text-center">Loading login form...</div>}>
+          <VersionAwareLoginForm version="standard" redirectTo="/standard/dashboard" />
+        </Suspense>
       </div>
     </div>
   )

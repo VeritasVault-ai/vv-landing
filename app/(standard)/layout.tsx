@@ -9,8 +9,6 @@ import { useSearchParams } from "next/navigation"
 import { getCookie, setCookie } from "@/lib/cookies"
 import { ThemeScript } from "@/components/theme-script"
 
-// Metadata is now exported from metadata.tsx
-
 interface StandardLayoutProps {
   children: ReactNode
 }
@@ -44,13 +42,15 @@ function ThemeHandler() {
 export default function StandardLayout({ children }: StandardLayoutProps) {
   return (
     <ThemeProvider version="standard">
-      <ThemeScript />
+      <Suspense fallback={null}>
+        <ThemeScript />
+      </Suspense>
       {/* Wrap the component using searchParams in Suspense */}
       <Suspense fallback={null}>
         <ThemeHandler />
       </Suspense>
       <div className="min-h-screen flex flex-col">
-        <SimpleHeader version="standard" />
+        <SimpleHeader />
         <main className="flex-grow">{children}</main>
         <SimpleFooter version="standard" />
       </div>

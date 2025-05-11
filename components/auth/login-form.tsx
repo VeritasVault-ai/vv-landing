@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { createBrowserClient } from "@/lib/supabase"
@@ -22,12 +22,13 @@ const formSchema = z.object({
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
 })
 
-export function LoginForm() {
-  const [error, setError] = useState<string | null>(null)
+// Inner component that uses searchParams
+function LoginFormInner({ callbackUrl, error: initialError }: { callbackUrl?: string, error?: string | null }) {
+  const [error, setError] = useState<string | null>(initialError || null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectedFrom = searchParams?.get("redirectedFrom") || "/dashboard"
+  const redirectedFrom = callbackUrl || searchParams?.get("redirectedFrom") || "/dashboard"
   const { trackEvent } = useAnalytics()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,6 +40,7 @@ export function LoginForm() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    // Login form submission logic (unchanged)
     setIsLoading(true)
     setError(null)
 
@@ -260,5 +262,13 @@ export function LoginForm() {
         </p>
       </CardFooter>
     </Card>
+  )
+}
+
+export function LoginForm({ callbackUrl, error }: { callbackUrl?: string, error?: string | null }) {
+  return (
+    <Suspense fallback={<div className="p-4 text-center">Loading login form...</div>}>
+      <LoginFormInner callbackUrl={callbackUrl} error={error} />
+    </Suspense>
   )
 }
