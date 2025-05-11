@@ -3,7 +3,10 @@
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { ThemeVariant, VersionType } from "../../EnhancedVersionSelectionPage"
+import { VersionType } from "../../EnhancedVersionSelectionPage"
+
+// All available themes
+export type ThemeVariant = "light" | "dark" | "neuralliquid" | "corporate" | "veritasvault" | "cosmic"
 
 interface ThemeSelectionModalProps {
   isOpen: boolean
@@ -15,15 +18,15 @@ interface ThemeSelectionModalProps {
 export function ThemeSelectionModal({ isOpen, onClose, selectedVersion, onThemeSelect }: ThemeSelectionModalProps) {
   const [selectedTheme, setSelectedTheme] = useState<ThemeVariant | null>(null)
   
-  // Define available themes based on selected version
-  const availableThemes = selectedVersion === "standard" 
-    ? [
+  // Define all available themes
+  const availableThemes = [
+    { id: "light", name: "Light", description: "Clean, bright interface for daytime use" },
+    { id: "dark", name: "Dark", description: "Reduced eye strain for nighttime viewing" },
         { id: "standard", name: "Standard", description: "Clean, modern interface with a focus on usability" },
-        { id: "neuralliquid", name: "NeuralLiquid", description: "Futuristic design with AI-inspired visuals" }
-      ]
-    : [
+    { id: "neuralliquid", name: "NeuralLiquid", description: "Futuristic design with AI-inspired visuals" },
         { id: "corporate", name: "Corporate", description: "Professional interface designed for institutional use" },
-        { id: "veritasvault", name: "VeritasVault", description: "Security-focused theme with enterprise aesthetics" }
+    { id: "veritasvault", name: "VeritasVault", description: "Security-focused theme with enterprise aesthetics" },
+    { id: "cosmic", name: "Cosmic", description: "Space-inspired theme with stellar visuals" }
       ]
 
   return (
@@ -36,7 +39,7 @@ export function ThemeSelectionModal({ isOpen, onClose, selectedVersion, onThemeS
           </DialogDescription>
         </DialogHeader>
         
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto">
           {availableThemes.map((theme) => (
             <div 
               key={theme.id} 

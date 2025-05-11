@@ -24,13 +24,13 @@ export function EnhancedVersionSelectionPage() {
   }
 
   // Navigate to selected version with default theme
-  const navigateToVersion = (version: VersionType) => {
-    // Save user preference
-    setCookie("preferred-version", version, 30)
-    
-    // Navigate to the selected version
-    router.push(`/${version}`)
-  }
+const navigateToVersion = (version: VersionType) => {
+  // Save user preference
+  setCookie("preferred-version", version, 30)
+  
+  // Navigate to the selected version's main page
+  router.push(`/${version}`)
+}
   
   // Open theme selection modal
   const openThemeModal = () => {
@@ -49,8 +49,7 @@ export function EnhancedVersionSelectionPage() {
     // Navigate to the selected version with theme parameter
     router.push(`/${version}?theme=${theme}`)
   }
-
-  return (
+    return (
     <div className="relative min-h-screen flex flex-col bg-[#0a1025] text-white">
       {/* Background */}
       <VersionBackground />

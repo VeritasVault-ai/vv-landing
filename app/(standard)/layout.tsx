@@ -1,21 +1,54 @@
-import type { ReactNode } from "react"
+"use client"
+
+import { ReactNode, useEffect, Suspense } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
 import { SimpleHeader } from "@/components/ui/simple-header"
 import { SimpleFooter } from "@/components/ui/simple-footer"
-import { standardMetadata } from "@/lib/metadata-utils"
-import type { Metadata } from "next"
+import { useTheme } from "next-themes"
+import { useSearchParams } from "next/navigation"
+import { getCookie, setCookie } from "@/lib/cookies"
 import { ThemeScript } from "@/components/theme-script"
 
-export const metadata: Metadata = standardMetadata
+// Metadata is now exported from metadata.tsx
 
 interface StandardLayoutProps {
   children: ReactNode
+}
+
+// Create a client component that uses the searchParams hook
+function ThemeHandler() {
+  const { setTheme } = useTheme()
+  const searchParams = useSearchParams()
+  
+  useEffect(() => {
+    // Check for theme in URL parameters
+    const themeParam = searchParams?.get("theme")
+    const preferredTheme = getCookie("preferred-theme")
+    
+    if (themeParam) {
+      // If theme is in URL, use it and save to cookie
+      setTheme(themeParam)
+      setCookie("preferred-theme", themeParam, 30)
+    } else if (preferredTheme) {
+      // Otherwise use the preferred theme from cookie
+      setTheme(preferredTheme)
+    }
+    
+    // Save experience preference
+    setCookie("preferred-experience", "standard", 30)
+  }, [searchParams, setTheme])
+  
+  return null
 }
 
 export default function StandardLayout({ children }: StandardLayoutProps) {
   return (
     <ThemeProvider version="standard">
       <ThemeScript />
+      {/* Wrap the component using searchParams in Suspense */}
+      <Suspense fallback={null}>
+        <ThemeHandler />
+      </Suspense>
       <div className="min-h-screen flex flex-col">
         <SimpleHeader version="standard" />
         <main className="flex-grow">{children}</main>

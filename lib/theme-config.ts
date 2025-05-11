@@ -90,3 +90,24 @@ export const getThemeVariablesStyle = (theme: string | undefined): string => {
     .map(([key, value]) => `--${key}: ${value};`)
     .join(" ")
 }
+
+export const getThemeAwareImagePath = (basePath: string | undefined, theme: string | undefined): string => {
+  // Handle undefined basePath
+  if (!basePath) {
+    return "";
+  }
+  
+  const suffix = getThemeImageSuffix(theme)
+
+  // Handle file extension
+  const lastDotIndex = basePath.lastIndexOf(".")
+  if (lastDotIndex === -1) {
+    // No file extension
+    return `${basePath}${suffix}`
+  }
+
+  const pathWithoutExtension = basePath.substring(0, lastDotIndex)
+  const extension = basePath.substring(lastDotIndex)
+
+  return `${pathWithoutExtension}${suffix}${extension}`
+}

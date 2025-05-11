@@ -1,17 +1,22 @@
 "use client"
 
-import { useState } from "react"
-import Image from "next/image"
-import { CheckCircle, ChevronRight, Shield, BarChart3, FileText, Building2 } from "lucide-react"
+import { CorporateFooter } from "@/components/layout/corporate-footer"
+import { CorporateHeader } from "@/components/layout/corporate-header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { BarChart3, Building2, CheckCircle, ChevronRight, FileText, Shield } from "lucide-react"
+import Image from "next/image"
+import { useState } from "react"
 
 export function CorporateLandingPageEnhanced() {
   const [activeTab, setActiveTab] = useState("overview")
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950">
+      {/* Corporate Header with VeritasVault branding */}
+      <CorporateHeader />
+      
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden bg-gradient-to-br from-blue-50 to-slate-100 dark:from-slate-900 dark:to-blue-950">
         <div className="absolute inset-0 opacity-10 dark:opacity-20">
@@ -28,8 +33,16 @@ export function CorporateLandingPageEnhanced() {
         <div className="container relative z-10 px-4 mx-auto">
           <div className="grid items-center grid-cols-1 gap-12 md:grid-cols-2">
             <div>
+              <div className="mb-6">
+                <Image 
+                  src="/veritas-vault-logo.png" 
+                  alt="VeritasVault Logo" 
+                  width={240} 
+                  height={80} 
+                  className="h-auto mb-4"
+                />
+              </div>
               <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-blue-900 md:text-5xl lg:text-6xl dark:text-blue-100">
-                <span className="block">VeritasVault.ai</span>
                 <span className="block mt-2 text-3xl font-bold text-slate-700 md:text-4xl dark:text-slate-300">
                   Enterprise Liquidity Management
                 </span>
@@ -43,7 +56,7 @@ export function CorporateLandingPageEnhanced() {
                   size="lg"
                   className="bg-blue-700 hover:bg-blue-800 text-white dark:bg-blue-600 dark:hover:bg-blue-700"
                 >
-                  Request Enterprise Demo
+                  Request Early Access
                 </Button>
                 <Button
                   variant="outline"
@@ -58,31 +71,31 @@ export function CorporateLandingPageEnhanced() {
               <div className="p-2 bg-white rounded-lg shadow-xl dark:bg-slate-800">
                 <Image
                   src="/liquidity-dashboard.png"
-                  alt="VeritasVault.ai Dashboard"
+                  alt="VeritasVault Dashboard"
                   width={600}
                   height={400}
                   className="rounded-md"
                 />
               </div>
               <div className="absolute -bottom-4 -left-4 bg-blue-700 dark:bg-blue-600 text-white p-4 rounded-lg shadow-lg">
-                <p className="text-sm font-medium">Trusted by top financial institutions</p>
-                <p className="text-xs opacity-80">SOC 2 Type II Certified</p>
+                <p className="text-sm font-medium">Innovative Enterprise Solution</p>
+                <p className="text-xs opacity-80">Early Access Program Available</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trusted By Section */}
+      {/* Enterprise Features Section - Replacing "Trusted By" */}
       <section className="py-12 bg-slate-50 dark:bg-slate-900">
         <div className="container px-4 mx-auto">
           <h2 className="mb-8 text-xl font-semibold text-center text-slate-600 dark:text-slate-400">
-            Trusted by leading financial institutions
+            Designed for enterprise adoption
           </h2>
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-6">
-            {["Goldman Sachs", "JP Morgan", "Morgan Stanley", "BlackRock", "Fidelity", "Citadel"].map((company) => (
-              <div key={company} className="flex items-center justify-center">
-                <div className="px-4 py-2 text-lg font-bold text-slate-400 dark:text-slate-600">{company}</div>
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-3">
+            {["Institutional Security", "Regulatory Readiness", "Enterprise Integration"].map((feature) => (
+              <div key={feature} className="flex items-center justify-center">
+                <div className="px-4 py-2 text-lg font-bold text-slate-600 dark:text-slate-400">{feature}</div>
               </div>
             ))}
           </div>
@@ -97,7 +110,7 @@ export function CorporateLandingPageEnhanced() {
               Enterprise-Grade DeFi Management
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400">
-              VeritasVault.ai provides institutional investors with secure, compliant, and efficient access to DeFi
+              VeritasVault provides institutional investors with secure, compliant, and efficient access to DeFi
               liquidity markets.
             </p>
           </div>
@@ -186,7 +199,7 @@ export function CorporateLandingPageEnhanced() {
                 <div>
                   <h3 className="mb-4 text-2xl font-bold text-slate-900 dark:text-white">Bank-Grade Security</h3>
                   <p className="mb-6 text-slate-600 dark:text-slate-400">
-                    VeritasVault.ai implements the highest security standards to protect institutional assets with
+                    VeritasVault implements the highest security standards to protect institutional assets with
                     multiple layers of protection.
                   </p>
                   <ul className="space-y-4">
@@ -205,14 +218,14 @@ export function CorporateLandingPageEnhanced() {
                   </ul>
                 </div>
                 <div className="p-6 bg-white rounded-lg shadow-lg dark:bg-slate-800">
-                  <h4 className="mb-4 text-lg font-bold text-slate-900 dark:text-white">Security Certifications</h4>
+                  <h4 className="mb-4 text-lg font-bold text-slate-900 dark:text-white">Security Framework</h4>
                   <div className="space-y-4">
                     {[
-                      { name: "SOC 2 Type II", status: "Certified" },
-                      { name: "ISO 27001", status: "Certified" },
-                      { name: "GDPR Compliant", status: "Yes" },
-                      { name: "CCPA Compliant", status: "Yes" },
-                      { name: "PCI DSS", status: "Level 1" },
+                      { name: "End-to-end Encryption", status: "Implemented" },
+                      { name: "Secure Key Management", status: "Implemented" },
+                      { name: "Role-based Access Control", status: "Implemented" },
+                      { name: "Audit Logging", status: "Implemented" },
+                      { name: "Penetration Testing", status: "In Progress" },
                     ].map((cert, i) => (
                       <div
                         key={i}
@@ -330,37 +343,36 @@ export function CorporateLandingPageEnhanced() {
         </div>
       </section>
 
-      {/* Case Studies Section */}
+      {/* Potential Outcomes Section - Replacing Case Studies */}
       <section className="py-20 bg-slate-50 dark:bg-slate-900">
         <div className="container px-4 mx-auto">
           <div className="max-w-3xl mx-auto mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-slate-900 md:text-4xl dark:text-white">Success Stories</h2>
+            <h2 className="mb-4 text-3xl font-bold text-slate-900 md:text-4xl dark:text-white">Potential Outcomes</h2>
             <p className="text-lg text-slate-600 dark:text-slate-400">
-              See how leading financial institutions are leveraging VeritasVault.ai to optimize their liquidity
-              management.
+              See how VeritasVault can transform institutional liquidity management for your organization.
             </p>
           </div>
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                company: "Global Investment Bank",
-                title: "Optimizing Treasury Operations",
+                company: "Treasury Operations",
+                title: "Yield Optimization",
                 description:
-                  "Achieved 32% increase in yield while maintaining regulatory compliance across multiple jurisdictions.",
-                result: "+32% Yield",
+                  "Potential to increase yield by 20-30% while maintaining strong security and compliance controls.",
+                result: "+25% Yield",
               },
               {
-                company: "Asset Management Firm",
-                title: "Streamlining DeFi Access",
-                description: "Reduced operational overhead by 45% while expanding DeFi portfolio allocation safely.",
-                result: "-45% Overhead",
+                company: "Operations",
+                title: "Streamlined Workflows",
+                description: "Reduce operational overhead through automation and integrated compliance tools.",
+                result: "-40% Overhead",
               },
               {
-                company: "Institutional Trading Desk",
-                title: "Enhanced Liquidity Management",
-                description: "Improved capital efficiency by 28% through automated liquidity rebalancing strategies.",
-                result: "+28% Efficiency",
+                company: "Liquidity Management",
+                title: "Enhanced Capital Efficiency",
+                description: "Improve capital efficiency through intelligent liquidity allocation strategies.",
+                result: "+20% Efficiency",
               },
             ].map((study, index) => (
               <Card key={index} className="overflow-hidden border-0 shadow-lg dark:bg-slate-800">
@@ -371,7 +383,7 @@ export function CorporateLandingPageEnhanced() {
                   <div className="flex items-center justify-between">
                     <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">{study.result}</div>
                     <Button variant="ghost" className="text-blue-700 dark:text-blue-400">
-                      Read Case Study <ChevronRight className="w-4 h-4 ml-1" />
+                      Learn More <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </div>
                 </CardContent>
@@ -381,34 +393,37 @@ export function CorporateLandingPageEnhanced() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section - Updated for POC */}
       <section className="py-20 bg-gradient-to-br from-blue-600 to-blue-800 dark:from-blue-900 dark:to-blue-950">
         <div className="container px-4 mx-auto">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
-              Ready to transform your institution's liquidity management?
+              Be among the first to experience VeritasVault
             </h2>
             <p className="mb-8 text-lg text-blue-100">
-              Join leading financial institutions already benefiting from VeritasVault.ai's enterprise platform.
+              Join our early access program and help shape the future of institutional liquidity management.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button
                 size="lg"
                 className="bg-white text-blue-700 hover:bg-blue-50 dark:bg-slate-200 dark:text-blue-800"
               >
-                Schedule Enterprise Demo
+                Request Early Access
               </Button>
               <Button
                 variant="outline"
                 size="lg"
                 className="text-white border-white hover:bg-blue-700 dark:hover:bg-blue-800"
               >
-                Contact Sales Team
+                Learn About Our Roadmap
               </Button>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Corporate Footer with VeritasVault branding */}
+      <CorporateFooter />
     </div>
   )
 }
