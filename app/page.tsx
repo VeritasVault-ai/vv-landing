@@ -1,5 +1,5 @@
-import { VersionSelectionPage } from "./VersionSelectionPage"
+import { EnhancedVersionSelectionPage } from "./EnhancedVersionSelectionPage"
 
 export default function Home() {
-  return <VersionSelectionPage />
+  return <EnhancedVersionSelectionPage />
 }
