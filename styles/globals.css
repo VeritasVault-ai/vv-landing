@@ -2,93 +2,218 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    /* Base theme variables will be injected here by the theme system */
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
 
-@layer base {
+  .dark {
+    /* Dark theme variables will be injected here by the theme system */
+    --radius: 0.5rem;
+  }
+
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Component-specific styles */
+@layer components {
+  /* Button styles */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+
+  .btn-accent {
+    @apply bg-accent text-accent-foreground hover:bg-accent/90;
+  }
+
+  .btn-destructive {
+    @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
+  }
+
+  .btn-outline {
+    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .btn-link {
+    @apply text-primary underline-offset-4 hover:underline;
+  }
+
+  /* Card styles */
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  .card-header {
+    @apply flex flex-col space-y-1.5 p-6;
+  }
+
+  .card-title {
+    @apply text-2xl font-semibold leading-none tracking-tight;
+  }
+
+  .card-description {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .card-content {
+    @apply p-6 pt-0;
+  }
+
+  .card-footer {
+    @apply flex items-center p-6 pt-0;
+  }
+
+  /* Input styles */
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Standard Experience - Standard Theme (Default) */
+  /* Simple, clean design for non-technical users */
+  .theme-standard {
+    /* Slightly larger text and buttons for better readability */
+    .card-title {
+      @apply text-2xl;
+    }
+    
+    .btn {
+      @apply rounded-md py-2 px-4;
+    }
+    
+    /* Simplified shadows */
+    .card {
+      @apply shadow-sm;
+    }
+    
+    /* Slightly larger inputs */
+    .input {
+      @apply h-11;
+    }
+  }
+
+  /* Standard Experience - NeuralLiquid Theme */
+  /* Modern, tech-focused styling for crypto-savvy users */
+  .theme-neuralliquid {
+    /* NeuralLiquid theme has modern, tech-focused styling */
+    .card {
+      @apply rounded-xl shadow-lg border-opacity-40 backdrop-blur-sm;
+    }
+
+    .btn {
+      @apply rounded-lg font-medium transition-all duration-300 ease-in-out;
+    }
+
+    .btn-primary {
+      @apply bg-gradient-to-r from-primary to-accent hover:shadow-md hover:translate-y-[-1px];
+    }
+
+    .btn-secondary {
+      @apply bg-secondary/80 backdrop-blur-sm hover:bg-secondary;
+    }
+
+    .input {
+      @apply rounded-lg border-opacity-50 focus:border-primary/50 transition-all duration-300;
+    }
+
+    /* Special glass-morphism effect for neuralliquid cards */
+    .glass-card {
+      @apply bg-background/70 backdrop-blur-md border border-white/20 shadow-xl;
+    }
+
+    /* Special gradient text for neuralliquid */
+    .gradient-text {
+      @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary-400;
+    }
+    
+    /* Tech-focused data visualization elements */
+    .data-viz {
+      @apply border-l-2 border-accent pl-4;
+    }
+  }
+
+  /* Corporate Experience - Corporate Theme */
+  /* Professional, enterprise-focused design */
+  .experience-corporate {
+    /* More conservative, professional styling */
+    .card {
+      @apply rounded-md shadow-md border-opacity-80;
+    }
+
+    .btn {
+      @apply rounded-sm font-medium;
+    }
+
+    .input {
+      @apply rounded-sm;
+    }
+    
+    /* Corporate-specific elements */
+    .enterprise-card {
+      @apply border-l-4 border-primary;
+    }
+    
+    .stat-card {
+      @apply bg-card p-4 rounded-md border-t-4 border-primary;
+    }
+  }
+
+  /* Corporate Experience - VeritasVault Theme */
+  /* Secure, trustworthy design with premium feel */
+  .experience-corporate.theme-veritasvault {
+    /* Premium, secure styling */
+    .card {
+      @apply rounded-md shadow-md border-opacity-90 bg-gradient-to-b from-card to-card/95;
+    }
+
+    .btn {
+      @apply rounded-sm font-semibold border-b-2 border-accent/70;
+    }
+    
+    .btn-primary {
+      @apply bg-primary text-primary-foreground hover:bg-primary/90 border-b-2 border-accent;
+    }
+
+    .input {
+      @apply rounded-sm border-2;
+    }
+    
+    /* VeritasVault-specific elements */
+    .secure-card {
+      @apply border-2 border-accent/20 bg-card shadow-lg;
+    }
+    
+    /* Gold accent elements */
+    .premium-text {
+      @apply text-accent font-semibold;
+    }
+    
+    .vault-icon {
+      @apply text-accent;
+    }
+    
+    /* Security badge */
+    .security-badge {
+      @apply inline-flex items-center px-2 py-1 rounded bg-primary/10 text-xs font-medium text-primary border border-primary/20;
+    }
   }
 }
