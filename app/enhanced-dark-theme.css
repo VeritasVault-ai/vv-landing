@@ -1,0 +1,147 @@
+/* Enhanced Dark Theme Variables */
+:root {
+  --enhanced-dark-bg-primary: #121212;
+  --enhanced-dark-bg-secondary: #1e1e1e;
+  --enhanced-dark-bg-tertiary: #252525;
+  --enhanced-dark-text-primary: #ffffff;
+  --enhanced-dark-text-secondary: rgba(255, 255, 255, 0.7);
+  --enhanced-dark-text-tertiary: rgba(255, 255, 255, 0.5);
+  --enhanced-dark-accent-primary: #6d28d9;
+  --enhanced-dark-accent-secondary: #7c3aed;
+  --enhanced-dark-border: rgba(255, 255, 255, 0.1);
+  --enhanced-dark-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --enhanced-dark-card-bg: #1a1a1a;
+  --enhanced-dark-card-border: #333333;
+  --enhanced-dark-button-bg: #2d2d2d;
+  --enhanced-dark-button-hover: #3d3d3d;
+  --enhanced-dark-gradient-start: #4a148c;
+  --enhanced-dark-gradient-end: #311b92;
+}
+
+.dark .enhanced-dark-theme {
+  --background: var(--enhanced-dark-bg-primary);
+  --foreground: var(--enhanced-dark-text-primary);
+  --card-background: var(--enhanced-dark-card-bg);
+  --card-foreground: var(--enhanced-dark-text-primary);
+  --popover-background: var(--enhanced-dark-bg-secondary);
+  --popover-foreground: var(--enhanced-dark-text-primary);
+  --primary-background: var(--enhanced-dark-accent-primary);
+  --primary-foreground: var(--enhanced-dark-text-primary);
+  --secondary-background: var(--enhanced-dark-bg-secondary);
+  --secondary-foreground: var(--enhanced-dark-text-secondary);
+  --muted-background: var(--enhanced-dark-bg-tertiary);
+  --muted-foreground: var(--enhanced-dark-text-tertiary);
+  --accent-background: var(--enhanced-dark-accent-secondary);
+  --accent-foreground: var(--enhanced-dark-text-primary);
+  --destructive-background: #7f1d1d;
+  --destructive-foreground: var(--enhanced-dark-text-primary);
+  --border: var(--enhanced-dark-border);
+  --input-background: var(--enhanced-dark-bg-tertiary);
+  --input-foreground: var(--enhanced-dark-text-primary);
+  --ring: var(--enhanced-dark-accent-primary);
+}
+
+/* Enhanced Dark Theme Typography */
+.dark .enhanced-dark-theme h1,
+.dark .enhanced-dark-theme h2,
+.dark .enhanced-dark-theme h3,
+.dark .enhanced-dark-theme h4,
+.dark .enhanced-dark-theme h5,
+.dark .enhanced-dark-theme h6 {
+  color: var(--enhanced-dark-text-primary);
+  letter-spacing: -0.025em;
+}
+
+.dark .enhanced-dark-theme p {
+  color: var(--enhanced-dark-text-secondary);
+  line-height: 1.7;
+}
+
+/* Enhanced Dark Theme UI Elements */
+.dark .enhanced-dark-theme .card {
+  background-color: var(--enhanced-dark-card-bg);
+  border: 1px solid var(--enhanced-dark-card-border);
+  box-shadow: var(--enhanced-dark-shadow);
+}
+
+.dark .enhanced-dark-theme .button {
+  background-color: var(--enhanced-dark-button-bg);
+  color: var(--enhanced-dark-text-primary);
+  transition: all 0.2s ease;
+}
+
+.dark .enhanced-dark-theme .button:hover {
+  background-color: var(--enhanced-dark-button-hover);
+}
+
+/* Enhanced Dark Theme Gradients */
+.dark .enhanced-dark-theme .gradient-bg {
+  background: linear-gradient(135deg, var(--enhanced-dark-gradient-start), var(--enhanced-dark-gradient-end));
+}
+
+.dark .enhanced-dark-theme .gradient-text {
+  background: linear-gradient(135deg, var(--enhanced-dark-text-primary), var(--enhanced-dark-accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Enhanced Dark Theme Specific Elements */
+.dark .brand-heading {
+  color: #3b82f6; /* Using a direct color value instead of text-brand-blue */
+}
+
+.dark .brand-subheading {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Enhanced Dark Theme Depth Effects */
+.dark .enhanced-dark-theme .depth-1 {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.dark .enhanced-dark-theme .depth-2 {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+.dark .enhanced-dark-theme .depth-3 {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.6);
+}
+
+/* Enhanced Dark Theme Animations */
+.dark .enhanced-dark-theme .hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .enhanced-dark-theme .hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Enhanced Dark Theme Navigation */
+.dark .enhanced-dark-theme .nav-link {
+  color: var(--enhanced-dark-text-secondary);
+  transition: color 0.2s ease;
+}
+
+.dark .enhanced-dark-theme .nav-link:hover,
+.dark .enhanced-dark-theme .nav-link.active {
+  color: var(--enhanced-dark-text-primary);
+}
+
+/* Enhanced Dark Theme Form Elements */
+.dark .enhanced-dark-theme input,
+.dark .enhanced-dark-theme textarea,
+.dark .enhanced-dark-theme select {
+  background-color: var(--enhanced-dark-bg-tertiary);
+  border: 1px solid var(--enhanced-dark-border);
+  color: var(--enhanced-dark-text-primary);
+}
+
+.dark .enhanced-dark-theme input:focus,
+.dark .enhanced-dark-theme textarea:focus,
+.dark .enhanced-dark-theme select:focus {
+  border-color: var(--enhanced-dark-accent-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.3);
+}

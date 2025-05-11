@@ -1,0 +1,127 @@
+:root {
+  /* Standard Version - Light Mode */
+  --standard-primary: 78 144 255; /* #4E90FF - bright, trust-blue */
+  --standard-secondary: 0 209 178; /* #00D1B2 - neon teal accent */
+  --standard-accent: 247 147 26; /* #F7931A - Bitcoin-orange pop */
+  --standard-background: 245 247 250; /* #F5F7FA - light background for light mode */
+  --standard-surface: 255 255 255; /* #FFFFFF - card/container for light mode */
+  --standard-text: 27 32 43; /* #1B202B - dark text for light mode */
+  --standard-muted: 107 114 128; /* #6B7280 - secondary text for light mode */
+  --standard-success: 50 215 75; /* #32D74B - green for wins */
+  --standard-warning: 255 214 10; /* #FFD60A - yellow alerts */
+  --standard-error: 255 69 58; /* #FF453A - red for blow-ups */
+
+  /* Shadows for light mode */
+  --standard-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --standard-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --standard-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.08);
+
+  /* Border colors for light mode */
+  --standard-border: 229 231 235; /* #E5E7EB */
+}
+
+.dark {
+  /* Standard Version - Dark Mode */
+  --standard-primary: 78 144 255; /* #4E90FF - bright, trust-blue */
+  --standard-secondary: 0 209 178; /* #00D1B2 - neon teal accent */
+  --standard-accent: 247 147 26; /* #F7931A - Bitcoin-orange pop */
+  --standard-background: 11 15 26; /* #0B0F1A - deep navy */
+  --standard-surface: 27 31 42; /* #1B1F2A - card/container */
+  --standard-text: 224 230 237; /* #E0E6ED - off-white */
+  --standard-muted: 160 168 184; /* #A0A8B8 - secondary text */
+  --standard-success: 50 215 75; /* #32D74B - green for wins */
+  --standard-warning: 255 214 10; /* #FFD60A - yellow alerts */
+  --standard-error: 255 69 58; /* #FF453A - red for blow-ups */
+
+  /* Shadows for dark mode */
+  --standard-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --standard-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+  --standard-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
+
+  /* Border colors for dark mode */
+  --standard-border: 55 65 81; /* #374151 */
+}
+
+/* Typography */
+.standard-typography {
+  font-family: "Poppins", sans-serif;
+}
+
+.standard-text-xs {
+  font-size: 12px;
+}
+
+.standard-text-sm {
+  font-size: 14px;
+}
+
+.standard-text-md {
+  font-size: 16px;
+}
+
+.standard-text-lg {
+  font-size: 18px;
+}
+
+.standard-text-xl {
+  font-size: 24px;
+}
+
+.standard-text-2xl {
+  font-size: 32px;
+}
+
+.standard-font-regular {
+  font-weight: 400;
+}
+
+.standard-font-medium {
+  font-weight: 500;
+}
+
+.standard-font-bold {
+  font-weight: 600;
+}
+
+/* Spacing */
+.standard-space-xs {
+  margin: 4px;
+  padding: 4px;
+}
+
+.standard-space-sm {
+  margin: 8px;
+  padding: 8px;
+}
+
+.standard-space-md {
+  margin: 16px;
+  padding: 16px;
+}
+
+.standard-space-lg {
+  margin: 24px;
+  padding: 24px;
+}
+
+.standard-space-xl {
+  margin: 32px;
+  padding: 32px;
+}
+
+/* Border Radius */
+.standard-radius-sm {
+  border-radius: 4px;
+}
+
+.standard-radius-md {
+  border-radius: 8px;
+}
+
+.standard-radius-lg {
+  border-radius: 16px;
+}
+
+.standard-radius-round {
+  border-radius: 9999px;
+}
