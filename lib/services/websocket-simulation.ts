@@ -54,8 +54,12 @@ export function useVotingWebSocketSimulation() {
       try {
         votingPower = await votingService.getVotingOverview()
         activeProposals = await votingService.getActiveProposals()
+        // Signal successful initialization
+        console.log('Voting simulation initialized with data')
       } catch (err) {
         console.error('Failed to fetch initial data:', err)
+        // Set isActive to false to prevent intervals from running with no data
+        isActive = false
       }
     }
     fetchInitialData()
