@@ -13,8 +13,8 @@ export interface BaseNavigationItem {
   featured?: boolean
   badge?: string
   description?: string
-  iconPosition?: IconSize
-  iconSize?: IconPosition
+  iconPosition?: IconPosition
+  iconSize?: IconSize
 }
 
 export interface NavigationSubItem {
