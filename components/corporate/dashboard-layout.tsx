@@ -1,55 +1,48 @@
 "use client"
 
-import React, { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
-import { Download, RefreshCw } from "lucide-react"
-import { DashboardSettings } from "./dashboard-settings"
 import { useDashboard } from "@/contexts/dashboard-context-improved"
-import { useTheme } from "@/lib/context/ThemeProvider"
+import { useTheme } from "@/src/lib/context/ThemeProvider"
+import { Download, RefreshCw } from "lucide-react"
+import { ReactNode, useState } from "react"
+import { DashboardSettings } from "./dashboard-settings"
 
 interface DashboardLayoutProps {
   children: ReactNode
   title: string
   description?: string
   onRefresh?: () => Promise<void>
+  userInitials?: string
 }
+
+// Move the year calculation outside the component
+const currentYear = new Date().getFullYear()
 
 export function DashboardLayout({ 
   children, 
   title, 
   description = "Portfolio overview and performance metrics",
-  onRefresh 
+  onRefresh,
+  userInitials = "IT" // Default value if not provided
 }: DashboardLayoutProps) {
   const { settings, refreshData } = useDashboard()
   const { themeVariant } = useTheme()
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
-// at the top of your component (make sure `useState` is imported)
-const [isRefreshing, setIsRefreshing] = useState(false)
-
-const handleRefresh = async () => {
-  if (isRefreshing) return
-  try {
-    setIsRefreshing(true)
-    if (onRefresh) {
-      await onRefresh()
-    } else {
-      await refreshData()
+  const handleRefresh = async () => {
+    if (isRefreshing) return
+    try {
+      setIsRefreshing(true)
+      if (onRefresh) {
+        await onRefresh()
+      } else {
+        await refreshData()
+      }
+    } finally {
+      setIsRefreshing(false)
     }
-  } finally {
-    setIsRefreshing(false)
   }
-}
 
-// …later in your JSX…
-<Button
-  variant="outline"
-  size="sm"
-  className="flex items-center gap-2"
-  onClick={handleRefresh}
-  disabled={isRefreshing}
->
-  Refresh
-</Button>
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
@@ -99,7 +92,7 @@ const handleRefresh = async () => {
 
           <div className="hidden md:flex items-center gap-4">
             <div className="relative h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-              <span className="text-blue-700 dark:text-blue-300 font-medium">IT</span>
+              <span className="text-blue-700 dark:text-blue-300 font-medium">{userInitials}</span>
             </div>
           </div>
         </div>
@@ -117,8 +110,9 @@ const handleRefresh = async () => {
               size="sm" 
               className="flex items-center gap-2"
               onClick={handleRefresh}
+              disabled={isRefreshing}
             >
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
               <span>Refresh</span>
             </Button>
             <Button variant="outline" size="sm" className="flex items-center gap-2">
@@ -135,7 +129,7 @@ const handleRefresh = async () => {
       <footer className="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-6">
         <div className="container mx-auto px-4">
           <p className="text-center text-slate-600 dark:text-slate-400">
-            &copy; {new Date().getFullYear()} {themeVariant === 'veritasvault' ? 'VeritasVault.ai' : 'Corporate Dashboard'}. All rights reserved.
+            &copy; {currentYear} {themeVariant === 'veritasvault' ? 'VeritasVault.ai' : 'Corporate Dashboard'}. All rights reserved.
           </p>
         </div>
       </footer>

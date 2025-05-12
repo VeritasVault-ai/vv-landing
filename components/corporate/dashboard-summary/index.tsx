@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertTriangle, ArrowUpRight } from "lucide-react"
 import { useDashboard } from "@/contexts/dashboard-context"
+import { AlertTriangle, ArrowDownRight, ArrowUpRight } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export function DashboardSummary() {
   const { overviewData, isLoading, errors, settings } = useDashboard()
@@ -68,7 +68,8 @@ export function DashboardSummary() {
   const { portfolioValue, activeStrategies, riskScore } = overviewData
   
   // Format portfolio value for display
-  const formattedValue = (portfolioValue.current / 1000000).toFixed(1)
+  const MILLION = 1_000_000;
+  const formattedValue = (portfolioValue.current / MILLION).toFixed(1)
   const isPositiveChange = portfolioValue.percentageChange >= 0
 
   // Calculate how many cards to display based on settings
@@ -90,7 +91,11 @@ export function DashboardSummary() {
             <CardTitle className="text-3xl font-bold flex items-center">
               ${formattedValue}M
               <span className={`${isPositiveChange ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'} text-sm font-normal ml-2 flex items-center`}>
-                <ArrowUpRight className="h-4 w-4 mr-1" />
+                {isPositiveChange ? (
+                  <ArrowUpRight className="h-4 w-4 mr-1" />
+                ) : (
+                  <ArrowDownRight className="h-4 w-4 mr-1" />
+                )}
                 {portfolioValue.percentageChange}%
               </span>
             </CardTitle>

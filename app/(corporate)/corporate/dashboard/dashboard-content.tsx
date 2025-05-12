@@ -12,6 +12,14 @@ import { useDashboardRealtime } from "@/lib/services/dashboard-realtime-manager"
 import { BarChart3, Calculator, TrendingUp, Vote } from "lucide-react"
 import { useEffect } from "react"
 
+// Define valid tabs as a constant to ensure consistency
+const VALID_TABS = ['overview', 'performance', 'models', 'voting'] as const
+type DashboardTab = typeof VALID_TABS[number]
+
+// Utility function to validate tab values
+const isValidTab = (tab: string): tab is DashboardTab => 
+  VALID_TABS.includes(tab as DashboardTab)
+
 function DashboardContentInner() {
   // Get dashboard state from context
   const { 
@@ -33,14 +41,14 @@ function DashboardContentInner() {
   useEffect(() => {
     // Check if there's a hash in the URL that corresponds to a tab
     const hash = window.location.hash.replace('#', '')
-    if (hash && ['overview', 'performance', 'models', 'voting'].includes(hash)) {
+    if (hash && isValidTab(hash)) {
       setActiveTab(hash)
     }
     
     // Update hash when tab changes
     const handleHashChange = () => {
       const newHash = window.location.hash.replace('#', '')
-      if (newHash && ['overview', 'performance', 'models', 'voting'].includes(newHash)) {
+      if (newHash && isValidTab(newHash)) {
         setActiveTab(newHash)
       }
     }
