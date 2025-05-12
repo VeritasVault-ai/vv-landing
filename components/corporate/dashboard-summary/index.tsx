@@ -16,14 +16,16 @@ export function DashboardSummary() {
   useEffect(() => {
     if (overviewData) {
       setIsPortfolioUpdating(true)
-      setTimeout(() => setIsPortfolioUpdating(false), 1500)
+      const t = setTimeout(() => setIsPortfolioUpdating(false), 1500)
+      return () => clearTimeout(t)
     }
   }, [overviewData?.portfolioValue.current])
 
   useEffect(() => {
     if (overviewData) {
       setIsRiskUpdating(true)
-      setTimeout(() => setIsRiskUpdating(false), 1500)
+      const t = setTimeout(() => setIsRiskUpdating(false), 1500)
+      return () => clearTimeout(t)
     }
   }, [overviewData?.riskScore.level])
 
