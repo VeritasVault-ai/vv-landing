@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useTheme } from '@/components/ThemeProvider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Briefcase, Brain, Shield, ArrowRight } from 'lucide-react';
+import { useTheme } from '@/src/lib/context/ThemeProvider';
+import { ArrowRight, Brain, Briefcase, Shield, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export function ExperienceSelector() {
   const router = useRouter();

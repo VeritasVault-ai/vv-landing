@@ -1,13 +1,13 @@
 "use client"
 
-import { ReactNode, useEffect, Suspense } from "react"
+import { CorporateFooter } from "@/components/layout/corporate-footer"
+import { CorporateHeader } from "@/components/layout/corporate-header"
 import { SimpleFooter } from "@/components/ui/simple-footer"
+import { ThemeProvider } from "@/lib/context/theme-context"
+import { getCookie, setCookie } from "@/lib/cookies"
 import { useTheme } from "next-themes"
 import { useSearchParams } from "next/navigation"
-import { getCookie, setCookie } from "@/lib/cookies"
-import { VersionAwareHeader } from "@/src/components/layout/VersionAwareHeader"
-import { ThemeProvider } from "@/src/lib/hooks/context/ThemeProvider"
-import { VersionAwareFooter } from "@/src/components/layout/VersionAwareFooter"
+import { ReactNode, Suspense, useEffect } from "react"
 
 /**
  * Provides the corporate-themed layout for pages, wrapping content with a theme provider and version-aware headers.
