@@ -89,32 +89,17 @@ class VotingRepository {
   }
 
   async getAllProposals(): Promise<ProposalsData> {
+    if (this.isCacheValid('proposals')) {
+      return this.cache.proposals!.data;
+    }
     try {
       const data = await fs.readFile(path.join(this.basePath, 'proposals.json'), 'utf8');
-      return JSON.parse(data) as ProposalsData;
+      const parsed = JSON.parse(data) as ProposalsData;
+      this.cache.proposals = { data: parsed, timestamp: Date.now() };
+      return parsed;
     } catch (error) {
       console.error('Error reading proposals data:', error);
       throw new Error('Failed to fetch proposals data');
-    }
-  }
-
-  async getActiveProposals(): Promise<ActiveProposal[]> {
-    try {
-      const { activeProposals } = await this.getAllProposals();
-      return activeProposals;
-    } catch (error) {
-      console.error('Error reading active proposals data:', error);
-      throw new Error('Failed to fetch active proposals data');
-    }
-  }
-
-  async getPastProposals(): Promise<PastProposal[]> {
-    try {
-      const { pastProposals } = await this.getAllProposals();
-      return pastProposals;
-    } catch (error) {
-      console.error('Error reading past proposals data:', error);
-      throw new Error('Failed to fetch past proposals data');
     }
   }
 
