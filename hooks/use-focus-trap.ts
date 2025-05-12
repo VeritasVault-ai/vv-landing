@@ -1,16 +1,77 @@
 "use client"
 
-import { useRef, useEffect } from "react"
+import { useCallback, useEffect, useRef } from "react"
 
 /**
- * Hook to trap focus within a container (for modals, dialogs, etc.)
+ * Hook to trap focus within a container for accessibility compliance.
+ * 
+ * This hook ensures keyboard navigation remains within a defined boundary (like modals, dialogs,
+ * or dropdown menus), which is essential for:
+ * - Screen reader users who navigate via keyboard
+ * - Keyboard-only users who cannot use a mouse
+ * - Meeting WCAG 2.1 Success Criterion 2.1.2 (No Keyboard Trap)
+ * 
  * @param active Whether the focus trap is active
  * @param initialFocusRef Optional ref to element that should receive initial focus
  * @returns Ref to attach to the container element
+ * 
+ * @example
+ * ```tsx
+ * function Modal({ isOpen, onClose }) {
+ *   const focusTrapRef = useFocusTrap(isOpen);
+ *   
+ *   if (!isOpen) return null;
+ *   
+ *   return (
+ *     <div ref={focusTrapRef} role="dialog" aria-modal="true">
+ *       <h2>Modal Title</h2>
+ *       <button autoFocus>First Button</button>
+ *       <button onClick={onClose}>Close</button>
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function useFocusTrap(active: boolean = true, initialFocusRef?: React.RefObject<HTMLElement>) {
   const containerRef = useRef<HTMLElement>(null)
   
+  // Get all focusable elements within a container
+  const getFocusableElements = useCallback((container: HTMLElement): HTMLElement[] => {
+    const selector = [
+      "a[href]",
+      "button:not([disabled])",
+      "input:not([disabled])",
+      "select:not([disabled])",
+      "textarea:not([disabled])",
+      "[tabindex]:not([tabindex='-1'])",
+      "[contenteditable]"
+    ].join(", ")
+    
+    // Use a more efficient approach to filter hidden elements
+    return Array.from(container.querySelectorAll(selector))
+      .filter(el => {
+        // Only check visibility for elements that are in the DOM
+        if (!el.isConnected) return false
+        
+        // Check if element or any parent is hidden (more efficient than getComputedStyle)
+        let element = el as HTMLElement
+        while (element) {
+          // Check basic visibility properties without forcing reflow
+          const style = element.style
+          if (style.display === "none" || style.visibility === "hidden") return false
+          
+          // Check for zero dimensions (a common way to hide elements)
+          if (element.offsetWidth === 0 && element.offsetHeight === 0) return false
+          
+          // Move up the DOM tree
+          element = element.parentElement as HTMLElement
+          if (!element) break
+        }
+        return true
+      }) as HTMLElement[]
+  }, [])
+  
+  // Focus management effect
   useEffect(() => {
     if (!active) return
     
@@ -18,26 +79,49 @@ export function useFocusTrap(active: boolean = true, initialFocusRef?: React.Ref
     if (!container) return
     
     // Save the element that had focus before trapping
-    const previouslyFocused = document.activeElement as HTMLElement
+    const previouslyFocused = document.activeElement as HTMLElement | null
     
     // Focus the initial element or the first focusable element
     const focusInitialElement = () => {
-      if (initialFocusRef?.current) {
+      // Check if initialFocusRef exists and is valid
+      if (initialFocusRef?.current && initialFocusRef.current.isConnected) {
         initialFocusRef.current.focus()
+        return
+      }
+      
+      // Otherwise focus the first focusable element
+      const focusableElements = getFocusableElements(container)
+      if (focusableElements.length > 0) {
+        focusableElements[0].focus()
       } else {
-        const focusableElements = getFocusableElements(container)
-        if (focusableElements.length > 0) {
-          focusableElements[0].focus()
-        } else {
-          // If no focusable elements, focus the container itself
-          container.setAttribute("tabindex", "-1")
-          container.focus()
-        }
+        // If no focusable elements, focus the container itself
+        container.setAttribute("tabindex", "-1")
+        container.focus()
       }
     }
     
     // Focus the initial element
     focusInitialElement()
+    
+    // Cleanup function for focus management
+    return () => {
+      // Restore focus when trap is deactivated, but only if the element still exists
+      if (previouslyFocused && previouslyFocused.isConnected && "focus" in previouslyFocused) {
+        try {
+          previouslyFocused.focus()
+        } catch (e) {
+          console.warn("Failed to restore focus:", e)
+        }
+      }
+    }
+  }, [active, initialFocusRef, getFocusableElements])
+  
+  // Keyboard navigation effect (separated from focus management)
+  useEffect(() => {
+    if (!active) return
+    
+    const container = containerRef.current
+    if (!container) return
     
     // Handle keyboard navigation
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -61,52 +145,49 @@ export function useFocusTrap(active: boolean = true, initialFocusRef?: React.Ref
       }
     }
     
-    // Prevent focus from leaving the container
-    const handleFocusIn = (event: FocusEvent) => {
-      if (
-        container !== event.target &&
-        !container.contains(event.target as Node)
-      ) {
-        event.preventDefault()
-        focusInitialElement()
-      }
-    }
-    
     document.addEventListener("keydown", handleKeyDown)
-    document.addEventListener("focusin", handleFocusIn)
     
     return () => {
       document.removeEventListener("keydown", handleKeyDown)
-      document.removeEventListener("focusin", handleFocusIn)
+    }
+  }, [active, getFocusableElements])
+  
+  // Focus containment effect (separated from keyboard navigation)
+  useEffect(() => {
+    if (!active) return
+    
+    const container = containerRef.current
+    if (!container) return
+    
+    // Cross-browser approach to contain focus
+    const handleFocusIn = (event: FocusEvent) => {
+      // Runtime type check to ensure event.target is an Element
+      const target = event.target
+      if (!(target instanceof Element)) return
       
-      // Restore focus when trap is deactivated
-      if (previouslyFocused && "focus" in previouslyFocused) {
-        previouslyFocused.focus()
+      // Check if focus is outside the container
+      if (container !== target && !container.contains(target)) {
+        // Instead of preventDefault (which doesn't work consistently),
+        // immediately move focus back to the container
+        const focusableElements = getFocusableElements(container)
+        if (focusableElements.length > 0) {
+          // Focus the first element if moving out forward, or last if moving backward
+          const elementToFocus = event.relatedTarget === container.lastElementChild
+            ? focusableElements[0]
+            : focusableElements[focusableElements.length - 1]
+          elementToFocus.focus()
+        } else {
+          container.focus()
+        }
       }
     }
-  }, [active, initialFocusRef])
+    
+    document.addEventListener("focusin", handleFocusIn)
+    
+    return () => {
+      document.removeEventListener("focusin", handleFocusIn)
+    }
+  }, [active, getFocusableElements])
   
   return containerRef
-}
-
-/**
- * Get all focusable elements within a container
- */
-function getFocusableElements(container: HTMLElement): HTMLElement[] {
-  const selector = [
-    "a[href]",
-    "button:not([disabled])",
-    "input:not([disabled])",
-    "select:not([disabled])",
-    "textarea:not([disabled])",
-    "[tabindex]:not([tabindex='-1'])",
-    "[contenteditable]"
-  ].join(", ")
-  
-  return Array.from(container.querySelectorAll(selector))
-    .filter(el => {
-      // Filter out hidden elements
-      const style = window.getComputedStyle(el)
-      return style.display !== "none" && style.visibility !== "hidden"
-    }) as HTMLElement[]
 }
