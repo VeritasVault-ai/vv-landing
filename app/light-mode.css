@@ -1,0 +1,41 @@
+.light {
+  --standard-background: 255 255 255; /* White background for light mode */
+  --standard-surface: 249 250 251; /* Light gray for cards in light mode */
+  --standard-text: 17 24 39; /* Dark text for light mode */
+  --standard-muted: 107 114 128; /* Gray text for light mode */
+  --standard-border: 229 231 235; /* Light border for light mode */
+
+  /* Keep accent colors the same */
+  --standard-primary: 78 144 255; /* #4E90FF - bright, trust-blue */
+  --standard-secondary: 0 209 178; /* #00D1B2 - neon teal accent */
+  --standard-accent: 247 147 26; /* #F7931A - Bitcoin-orange pop */
+  --standard-success: 50 215 75; /* #32D74B - green for wins */
+  --standard-warning: 255 214 10; /* #FFD60A - yellow alerts */
+  --standard-error: 255 69 58; /* #FF453A - red for blow-ups */
+}
+
+.light body {
+  background-color: rgb(var(--standard-background));
+  color: rgb(var(--standard-text));
+}
+
+/* Light mode specific styles */
+.light .header-bg {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(229, 231, 235, 1);
+}
+
+.light .card-bg {
+  background-color: white;
+  border-color: rgba(229, 231, 235, 1);
+}
+
+.light .section-bg {
+  background-color: rgb(249, 250, 251);
+}
+
+.light .text-gradient {
+  background: linear-gradient(to right, #4e90ff, #00d1b2);
+  -webkit-background-clip: text;
+  color: transparent;
+}

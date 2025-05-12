@@ -1,0 +1,82 @@
+/* Button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition-property: color, background-color, border-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.btn-primary:hover {
+  background-color: color-mix(in srgb, var(--primary) 90%, transparent);
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.btn-secondary:hover {
+  background-color: color-mix(in srgb, var(--secondary) 80%, transparent);
+}
+
+.btn-accent {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.btn-accent:hover {
+  background-color: color-mix(in srgb, var(--accent) 90%, transparent);
+}
+
+.btn-destructive {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.btn-destructive:hover {
+  background-color: color-mix(in srgb, var(--destructive) 90%, transparent);
+}
+
+.btn-outline {
+  border: 1px solid var(--input);
+  background-color: var(--background);
+}
+
+.btn-outline:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.btn-ghost:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.btn-link {
+  color: var(--primary);
+  text-underline-offset: 4px;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,158 @@
+/* Standard Button Module Styles */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-size: 0.875rem;
+  height: 2.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border: 1px solid transparent;
+}
+
+.button:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Button variants */
+.primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.primary:active:not(:disabled) {
+  background-color: var(--color-primary-active);
+}
+
+.secondary {
+  background-color: var(--color-secondary);
+  color: white;
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--color-secondary-hover);
+}
+
+.secondary:active:not(:disabled) {
+  background-color: var(--color-secondary-active);
+}
+
+.outline {
+  background-color: transparent;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.outline:hover:not(:disabled) {
+  background-color: var(--color-primary-light);
+}
+
+.ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--color-primary);
+}
+
+.ghost:hover:not(:disabled) {
+  background-color: var(--color-primary-light);
+}
+
+.success {
+  background-color: var(--color-success);
+  color: white;
+}
+
+.success:hover:not(:disabled) {
+  background-color: var(--color-success-hover);
+}
+
+.warning {
+  background-color: var(--color-warning);
+  color: black;
+}
+
+.warning:hover:not(:disabled) {
+  background-color: var(--color-warning-hover);
+}
+
+.danger {
+  background-color: var(--color-danger);
+  color: white;
+}
+
+.danger:hover:not(:disabled) {
+  background-color: var(--color-danger-hover);
+}
+
+/* Button sizes */
+.sm {
+  height: 2rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.lg {
+  height: 3rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-size: 1rem;
+}
+
+.icon {
+  height: 2.5rem;
+  width: 2.5rem;
+  padding: 0;
+}
+
+/* Button with icon */
+.withIcon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iconLeft {
+  margin-right: 0.5rem;
+}
+
+.iconRight {
+  margin-left: 0.5rem;
+}
+
+/* Loading state */
+.loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

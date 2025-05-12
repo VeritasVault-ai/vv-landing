@@ -1,0 +1,31 @@
+/* Theme transition styles */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Exclude certain elements from transitions */
+.no-theme-transition,
+.no-theme-transition * {
+  transition: none !important;
+}
+
+/* Optimize performance by using hardware acceleration */
+.theme-transition-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Smooth image transitions */
+img.theme-aware-image {
+  transition: opacity 300ms ease-in-out;
+}
+
+img.theme-aware-image.loading {
+  opacity: 0;
+}
+
+img.theme-aware-image.loaded {
+  opacity: 1;
+}

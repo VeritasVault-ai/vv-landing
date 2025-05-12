@@ -1,0 +1,104 @@
+/* Standard Card Module Styles */
+.card {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+}
+
+.cardHoverable {
+  cursor: pointer;
+}
+
+.cardHoverable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.cardHeader {
+  padding: 1.25rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.cardDescription {
+  margin-top: 0.25rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+.cardContent {
+  padding: 1.25rem;
+}
+
+.cardFooter {
+  padding: 1.25rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+/* Theme-specific styles */
+.dark .card {
+  background-color: hsl(var(--card));
+  border-color: hsl(var(--border));
+}
+
+/* Standard theme specific styles */
+.standardCard {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.standardCardAccent {
+  border-left: 4px solid var(--color-primary);
+}
+
+/* Gradient variants */
+.gradientCard {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-secondary-light) 100%);
+  border: none;
+}
+
+.gradientCardDark {
+  background: linear-gradient(135deg, var(--gradient-primary-dark), var(--gradient-secondary-dark));
+  border: none;
+}
+
+/* Status variants */
+.successCard {
+  border-color: var(--color-success);
+}
+
+.warningCard {
+  border-color: var(--color-warning);
+}
+
+.dangerCard {
+  border-color: var(--color-danger);
+}
+
+/* Size variants */
+.sm {
+  max-width: 320px;
+}
+
+.md {
+  max-width: 480px;
+}
+
+.lg {
+  max-width: 640px;
+}
+
+.xl {
+  max-width: 768px;
+}
+
+.full {
+  width: 100%;
+}

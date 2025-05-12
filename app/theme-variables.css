@@ -1,0 +1,114 @@
+/* Base theme variables */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 47.4% 11.2%;
+
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 47.4% 11.2%;
+
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 210 40% 98%;
+
+  --ring: 215 20.2% 65.1%;
+
+  --radius: 0.5rem;
+}
+
+/* Dark mode base variables */
+.dark {
+  --background: 224 71% 4%;
+  --foreground: 213 31% 91%;
+
+  --muted: 223 47% 11%;
+  --muted-foreground: 215.4 16.3% 56.9%;
+
+  --accent: 216 34% 17%;
+  --accent-foreground: 210 40% 98%;
+
+  --popover: 224 71% 4%;
+  --popover-foreground: 215 20.2% 65.1%;
+
+  --border: 216 34% 17%;
+  --input: 216 34% 17%;
+
+  --card: 224 71% 4%;
+  --card-foreground: 213 31% 91%;
+
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 1.2%;
+
+  --secondary: 222.2 47.4% 11.2%;
+  --secondary-foreground: 210 40% 98%;
+
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+
+  --ring: 216 34% 17%;
+
+  --radius: 0.5rem;
+}
+
+/* Standard theme - Light mode */
+.standard-theme {
+  --primary-color: 221.2 83.2% 53.3%;
+  --secondary-color: 210 40% 96.1%;
+  --accent-color: 262 83.3% 57.8%;
+  --header-bg: linear-gradient(to right, rgba(13, 27, 42, 0.95), rgba(26, 26, 46, 0.95));
+  --header-text: 0 0% 100%;
+  --header-border: 240 5.9% 10%;
+}
+
+/* Standard theme - Dark mode */
+.standard-theme.dark {
+  --primary-color: 217.2 91.2% 59.8%;
+  --secondary-color: 250 95% 76%;
+  --accent-color: 280 95% 72.9%;
+  --header-bg: linear-gradient(to right, rgba(10, 14, 26, 0.95), rgba(20, 27, 45, 0.95));
+  --header-text: 0 0% 100%;
+  --header-border: 220 47% 15%;
+}
+
+/* Corporate theme - Light mode */
+.corporate-theme {
+  --primary-color: 215 100% 50%;
+  --secondary-color: 210 15% 90%;
+  --accent-color: 210 100% 40%;
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --header-text: 215 25% 27%;
+  --header-border: 210 14% 89%;
+}
+
+/* Corporate theme - Dark mode */
+.corporate-theme.dark {
+  --primary-color: 215 80% 40%;
+  --secondary-color: 210 15% 20%;
+  --accent-color: 210 80% 30%;
+  --header-bg: rgba(15, 23, 42, 0.95);
+  --header-text: 210 40% 98%;
+  --header-border: 215 25% 27%;
+}
+
+/* Transition for smooth theme switching */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}

@@ -1,0 +1,83 @@
+/* Cosmic Theme - For the version selection page (always dark) */
+.theme-cosmic {
+  /* Base colors */
+  --background: #0a1025;
+  --foreground: #ffffff;
+  
+  /* UI elements */
+  --card: rgba(30, 41, 59, 0.4);
+  --card-foreground: #ffffff;
+  --popover: rgba(30, 41, 59, 0.8);
+  --popover-foreground: #ffffff;
+  
+  /* Primary colors - Blue */
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  
+  /* Secondary colors - Purple */
+  --secondary: #8b5cf6;
+  --secondary-foreground: #ffffff;
+  
+  /* Accent colors */
+  --accent: #60a5fa;
+  --accent-foreground: #ffffff;
+  
+  /* Utility colors */
+  --muted: rgba(255, 255, 255, 0.1);
+  --muted-foreground: rgba(255, 255, 255, 0.7);
+  --destructive: #f43f5e;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #3b82f6;
+  
+  /* Success and warning */
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --info: #60a5fa;
+  --info-foreground: #ffffff;
+}
+
+/* Light version of cosmic theme (rarely used but for completeness) */
+.light.theme-cosmic {
+  /* Base colors */
+  --background: #eef2ff;
+  --foreground: #1e293b;
+  
+  /* UI elements */
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+  --popover: #ffffff;
+  --popover-foreground: #1e293b;
+  
+  /* Primary colors - Blue */
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  
+  /* Secondary colors - Purple */
+  --secondary: #7c3aed;
+  --secondary-foreground: #ffffff;
+  
+  /* Accent colors */
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  
+  /* Utility colors */
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --destructive: #e11d48;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #2563eb;
+  
+  /* Success and warning */
+  --success: #059669;
+  --success-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
+  --info: #2563eb;
+  --info-foreground: #ffffff;
+}

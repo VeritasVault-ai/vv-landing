@@ -1,0 +1,83 @@
+/* Standard Light Theme (Default) */
+:root {
+  /* Base colors */
+  --background: #ffffff;
+  --foreground: #111827;
+  
+  /* UI elements */
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  
+  /* Primary colors */
+  --primary: #0078f5;
+  --primary-foreground: #ffffff;
+  
+  /* Secondary colors */
+  --secondary: #e5e7eb;
+  --secondary-foreground: #111827;
+  
+  /* Accent colors */
+  --accent: #33bfff;
+  --accent-foreground: #ffffff;
+  
+  /* Utility colors */
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --destructive: #f53737;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #0078f5;
+  
+  /* Success and warning */
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+}
+
+/* Standard Dark Theme */
+.dark {
+  /* Base colors */
+  --background: #030712;
+  --foreground: #f9fafb;
+  
+  /* UI elements */
+  --card: #1f2937;
+  --card-foreground: #f9fafb;
+  --popover: #1f2937;
+  --popover-foreground: #f9fafb;
+  
+  /* Primary colors */
+  --primary: #3393f7;
+  --primary-foreground: #111827;
+  
+  /* Secondary colors */
+  --secondary: #4b5563;
+  --secondary-foreground: #f9fafb;
+  
+  /* Accent colors */
+  --accent: #4e90ff;
+  --accent-foreground: #f9fafb;
+  
+  /* Utility colors */
+  --muted: #374151;
+  --muted-foreground: #d1d5db;
+  --destructive: #f75f5f;
+  --destructive-foreground: #f9fafb;
+  --border: #374151;
+  --input: #374151;
+  --ring: #3393f7;
+  
+  /* Success and warning */
+  --success: #34d399;
+  --success-foreground: #111827;
+  --warning: #fbbf24;
+  --warning-foreground: #111827;
+  --info: #60a5fa;
+  --info-foreground: #111827;
+}

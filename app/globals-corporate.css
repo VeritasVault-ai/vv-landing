@@ -1,0 +1,460 @@
+/* Corporate theme specific variables */
+:root {
+  /* Neural network colors */
+  --neural-primary: 238 242 255;
+  --neural-secondary: 224 231 255;
+  --neural-accent: 99 102 241;
+  --neural-highlight: 124 58 237;
+  --neural-node-1: 79 70 229;
+  --neural-node-2: 124 58 237;
+  --neural-node-3: 6 182 212;
+  --neural-node-4: 59 130 246;
+
+  /* Special colors */
+  --special-gold: rgba(255, 215, 0, 0.15);
+  --special-neural: #8a2be2;
+
+  /* Section backgrounds */
+  --bg-analytics: #0a192f;
+  --bg-strategy: #1a1a2e;
+  --bg-docs: #121212;
+
+  /* Brand colors */
+  --brand-teal: 187 92.4% 69%;
+  --brand-purple: 262.1 83.3% 57.8%;
+  --brand-blue: 221.2 83.2% 53.3%;
+
+  /* Background gradients */
+  --gradient-primary: linear-gradient(to bottom right, #0d1b2a, #1a1a2e);
+  --gradient-secondary: linear-gradient(to bottom right, #0f3443, #0d1b2a);
+  --gradient-accent: linear-gradient(to bottom right, #1a1a2e, #0f3443);
+}
+
+.dark {
+  /* Neural network colors for dark mode */
+  --neural-primary: 220 100% 10%;
+  --neural-secondary: 220 100% 15%;
+  --neural-accent: 217 90% 59%;
+  --neural-highlight: 250 95% 76%;
+  --neural-node-1: 217 90% 59%;
+  --neural-node-2: 250 95% 76%;
+  --neural-node-3: 189 94% 43%;
+  --neural-node-4: 280 95% 73%;
+}
+
+/* Corporate theme gradients and colors */
+.text-brand-gradient {
+  background: linear-gradient(to right, #2d7fff, #00c0a3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.border-brand-gradient {
+  border-image: linear-gradient(to right, #2d7fff, #00c0a3) 1;
+}
+
+.underline-brand-gradient {
+  background-image: linear-gradient(to right, #2d7fff, #8066ff, #00c0a3);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+}
+
+.brand-gradient-bg {
+  background-color: hsl(var(--background));
+}
+
+.dark .brand-gradient-bg {
+  background: linear-gradient(to bottom, #0a0f2c, #000000);
+}
+
+.brand-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+}
+
+/* Neural network animation */
+.neural-network {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.neural-node {
+  position: absolute;
+  border-radius: 50%;
+  background-color: currentColor;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.dark .neural-node {
+  background-color: white;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.neural-connection {
+  position: absolute;
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0.2);
+  transform-origin: left center;
+}
+
+.dark .neural-connection {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.neural-pulse {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: currentColor;
+  opacity: 0;
+  animation: pulse 2s infinite;
+}
+
+.dark .neural-pulse {
+  background-color: white;
+}
+
+/* Liquidity Network Visualization */
+.liquidity-network {
+  position: relative;
+  width: 300px;
+  height: 200px;
+}
+
+.node {
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.dark .node {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.central-node {
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #4e90ff;
+  animation: nodePulse 3s infinite;
+  z-index: 10;
+}
+
+.dark .central-node {
+  animation: pulseDark 3s infinite;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.node-1 {
+  width: 12px;
+  height: 12px;
+  top: 30%;
+  left: 20%;
+  background-color: #4ecdc4;
+}
+
+.node-2 {
+  width: 14px;
+  height: 14px;
+  top: 20%;
+  left: 70%;
+  background-color: #8a2be2;
+}
+
+.node-3 {
+  width: 10px;
+  height: 10px;
+  top: 70%;
+  left: 25%;
+  background-color: #4ecdc4;
+}
+
+.node-4 {
+  width: 16px;
+  height: 16px;
+  top: 75%;
+  left: 75%;
+  background-color: #4e90ff;
+}
+
+.node-5 {
+  width: 12px;
+  height: 12px;
+  top: 50%;
+  left: 85%;
+  background-color: #8a2be2;
+}
+
+.connection {
+  position: absolute;
+  height: 2px;
+  background-image: linear-gradient(to right, rgba(78, 144, 255, 0.5), rgba(78, 204, 196, 0.5));
+  transform-origin: left center;
+  z-index: 5;
+}
+
+.connection-1 {
+  width: 100px;
+  top: 35%;
+  left: 25%;
+  transform: rotate(-15deg);
+}
+
+.connection-2 {
+  width: 80px;
+  top: 30%;
+  left: 55%;
+  transform: rotate(20deg);
+}
+
+.connection-3 {
+  width: 90px;
+  top: 60%;
+  left: 30%;
+  transform: rotate(15deg);
+}
+
+.connection-4 {
+  width: 70px;
+  top: 65%;
+  left: 60%;
+  transform: rotate(-20deg);
+}
+
+.connection-5 {
+  width: 60px;
+  top: 50%;
+  left: 60%;
+  transform: rotate(0deg);
+}
+
+.pulse {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: hsl(var(--foreground));
+  border-radius: 50%;
+  z-index: 15;
+}
+
+.dark .pulse {
+  background-color: white;
+}
+
+.pulse-1 {
+  top: 33%;
+  left: 30%;
+  animation: movePulse1 4s infinite;
+}
+
+.pulse-2 {
+  top: 28%;
+  left: 60%;
+  animation: movePulse2 5s infinite;
+}
+
+.pulse-3 {
+  top: 62%;
+  left: 35%;
+  animation: movePulse3 6s infinite;
+}
+
+.pulse-4 {
+  top: 63%;
+  left: 65%;
+  animation: movePulse4 4.5s infinite;
+}
+
+.pulse-5 {
+  top: 50%;
+  left: 65%;
+  animation: movePulse5 3.5s infinite;
+}
+
+/* Corporate theme animations */
+@keyframes nodePulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes pulseDark {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes movePulse1 {
+  0% {
+    transform: translate(0, 0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(20px, 5px) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(70px, 15px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(90px, 20px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes movePulse2 {
+  0% {
+    transform: translate(0, 0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-15px, 10px) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(-50px, 20px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-65px, 25px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes movePulse3 {
+  0% {
+    transform: translate(0, 0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(15px, -5px) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(50px, -15px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(65px, -20px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes movePulse4 {
+  0% {
+    transform: translate(0, 0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-10px, -10px) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(-40px, -20px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50px, -25px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes movePulse5 {
+  0% {
+    transform: translate(0, 0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-15px, 0) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(-45px, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-60px, 0) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* Corporate landing page animations */
+@keyframes pulseSlow {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes statusText {
+  0%,
+  25% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  5%,
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 3s infinite linear;
+}
+
+.animate-status-text span {
+  opacity: 0;
+  animation: statusText 9s infinite;
+}
+
+.animate-status-text span:nth-child(2) {
+  animation-delay: 3s;
+}
+
+.animate-status-text span:nth-child(3) {
+  animation-delay: 6s;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+
+.animation-delay-600 {
+  animation-delay: 0.6s;
+}
+
+.animation-delay-800 {
+  animation-delay: 0.8s;
+}
+
+.animation-delay-1000 {
+  animation-delay: 1s;
+}

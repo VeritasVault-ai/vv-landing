@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+:root {
+  --radius: 0.5rem;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Component styles */
+@layer components {
+  /* Button styles */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors 
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 
+    disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .btn-primary:hover {
+    @apply opacity-90;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground;
+  }
+  
+  .btn-secondary:hover {
+    @apply opacity-80;
+  }
+
+  /* Card styles */
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  .card-header {
+    @apply flex flex-col space-y-1.5 p-6;
+  }
+
+  .card-title {
+    @apply text-2xl font-semibold leading-none tracking-tight;
+  }
+
+  /* Input styles */
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm
+    ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium
+    placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2
+    focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  
+  /* Brand typography classes */
+  .brand-subheading {
+    @apply font-normal opacity-80;
+    color: var(--foreground);
+  }
+
+  .dark .brand-subheading {
+    color: var(--muted-foreground);
+  }
+
+  .brand-heading {
+    @apply font-semibold;
+    color: var(--foreground);
+  }
+
+  .dark .brand-heading {
+    color: var(--primary);
+  }
+
+  .brand-body {
+    @apply font-light opacity-70;
+    color: var(--foreground);
+  }
+
+  .dark .brand-body {
+    color: var(--foreground);
+    opacity: 0.8;
+  }
+}
+
+/* ========== THEME TRANSITIONS ========== */
+:root {
+  --theme-transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+* {
+  transition: var(--theme-transition);
+}
+
+/* Accessibility focus styles */
+.focus-visible:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}

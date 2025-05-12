@@ -1,0 +1,144 @@
+/* Standard Typography Module Styles */
+.heading1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: hsl(var(--foreground));
+}
+
+.heading2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: hsl(var(--foreground));
+}
+
+.heading3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: hsl(var(--foreground));
+}
+
+.heading4 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.paragraph {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: hsl(var(--foreground));
+}
+
+.lead {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  color: hsl(var(--foreground) / 0.9);
+}
+
+.small {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: hsl(var(--foreground) / 0.8);
+}
+
+.muted {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Gradient text */
+.gradientText {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+}
+
+/* Responsive typography */
+@media (min-width: 640px) {
+  .heading1 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+
+  .heading2 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+
+  .heading3 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+}
+
+/* Text alignment */
+.textLeft {
+  text-align: left;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.textRight {
+  text-align: right;
+}
+
+/* Text transforms */
+.uppercase {
+  text-transform: uppercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* Font weights */
+.fontLight {
+  font-weight: 300;
+}
+
+.fontNormal {
+  font-weight: 400;
+}
+
+.fontMedium {
+  font-weight: 500;
+}
+
+.fontSemibold {
+  font-weight: 600;
+}
+
+.fontBold {
+  font-weight: 700;
+}
+
+/* Line clamp */
+.lineClamp1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lineClamp2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lineClamp3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
