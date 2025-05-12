@@ -1,39 +1,18 @@
-import fs from 'fs';
+// src/lib/repositories/voting-repository.ts
 import path from 'path';
-import { promises as fsPromises } from 'fs';
+import { promises as fs } from 'fs';
 
 // Define types for our data
-export interface VotingPower {
-  percentage: number;
-  votes: number;
-  totalVotes: number;
-}
-
-export interface Participation {
-  participated: number;
-  totalProposals: number;
-  rate: number;
-  comparedToAverage: number;
-}
-
-export interface VotingPowerDistribution {
-  name: string;
-  value: number;
-}
-
-export interface Delegation {
-  address: string;
-  timeAgo: string;
-  votes: number;
-}
-
+export interface VotingPower { percentage: number; votes: number; totalVotes: number; }
+export interface Participation { participated: number; totalProposals: number; rate: number; comparedToAverage: number; }
+export interface VotingPowerDistribution { name: string; value: number; }
+export interface Delegation { address: string; timeAgo: string; votes: number; }
 export interface VotingOverview {
   votingPower: VotingPower;
   participation: Participation;
   votingPowerDistribution: VotingPowerDistribution[];
   delegations: Delegation[];
 }
-
 export interface PastProposal {
   id: string;
   title: string;
@@ -44,7 +23,6 @@ export interface PastProposal {
   yourVote: 'for' | 'against' | null;
   category: string;
 }
-
 export interface ActiveProposal {
   id: string;
   title: string;
@@ -57,25 +35,17 @@ export interface ActiveProposal {
   quorum: number;
   yourVote: 'for' | 'against' | null;
 }
-
-export interface ProposalsData {
-  pastProposals: PastProposal[];
-  activeProposals: ActiveProposal[];
-}
+export interface ProposalsData { pastProposals: PastProposal[]; activeProposals: ActiveProposal[]; }
 
 class VotingRepository {
   private basePath: string;
-
   constructor() {
     this.basePath = path.join(process.cwd(), 'data', 'voting');
   }
 
-  /**
-   * Get voting overview data
-   */
   async getVotingOverview(): Promise<VotingOverview> {
     try {
-      const data = await fsPromises.readFile(path.join(this.basePath, 'overview.json'), 'utf8');
+      const data = await fs.readFile(path.join(this.basePath, 'overview.json'), 'utf8');
       return JSON.parse(data) as VotingOverview;
     } catch (error) {
       console.error('Error reading voting overview data:', error);
@@ -83,12 +53,9 @@ class VotingRepository {
     }
   }
 
-  /**
-   * Get all proposals data (both active and past)
-   */
   async getAllProposals(): Promise<ProposalsData> {
     try {
-      const data = await fsPromises.readFile(path.join(this.basePath, 'proposals.json'), 'utf8');
+      const data = await fs.readFile(path.join(this.basePath, 'proposals.json'), 'utf8');
       return JSON.parse(data) as ProposalsData;
     } catch (error) {
       console.error('Error reading proposals data:', error);
@@ -96,26 +63,20 @@ class VotingRepository {
     }
   }
 
-  /**
-   * Get active proposals only
-   */
   async getActiveProposals(): Promise<ActiveProposal[]> {
     try {
-      const allData = await this.getAllProposals();
-      return allData.activeProposals;
+      const { activeProposals } = await this.getAllProposals();
+      return activeProposals;
     } catch (error) {
       console.error('Error reading active proposals data:', error);
       throw new Error('Failed to fetch active proposals data');
     }
   }
 
-  /**
-   * Get past proposals only
-   */
   async getPastProposals(): Promise<PastProposal[]> {
     try {
-      const allData = await this.getAllProposals();
-      return allData.pastProposals;
+      const { pastProposals } = await this.getAllProposals();
+      return pastProposals;
     } catch (error) {
       console.error('Error reading past proposals data:', error);
       throw new Error('Failed to fetch past proposals data');
@@ -123,33 +84,54 @@ class VotingRepository {
   }
 
   /**
-   * Update a vote on an active proposal
+   * Update a vote on an active proposal, adjusting tallies and totalVotes
    */
-  async updateVote(proposalId: string, vote: 'for' | 'against' | null): Promise<ActiveProposal[]> {
+  async updateVote(
+    proposalId: string,
+    newVote: 'for' | 'against' | null
+  ): Promise<ActiveProposal[]> {
     try {
       const allData = await this.getAllProposals();
-      
-      // Find and update the specific proposal
-      const updatedActiveProposals = allData.activeProposals.map(proposal => {
-        if (proposal.id === proposalId) {
-          return { ...proposal, yourVote: vote };
-        }
-        return proposal;
+      const updatedActive = allData.activeProposals.map((proposal) => {
+        if (proposal.id !== proposalId) return proposal;
+
+        // Clone for mutation
+        let votesFor = proposal.votesFor;
+        let votesAgainst = proposal.votesAgainst;
+        const prevVote = proposal.yourVote;
+
+        // Decrement previous vote tally
+        if (prevVote === 'for') votesFor = Math.max(votesFor - 1, 0);
+        if (prevVote === 'against') votesAgainst = Math.max(votesAgainst - 1, 0);
+
+        // Increment new vote tally
+        if (newVote === 'for') votesFor += 1;
+        if (newVote === 'against') votesAgainst += 1;
+
+        // Recalculate totalVotes
+        const totalVotes = votesFor + votesAgainst;
+
+        return {
+          ...proposal,
+          votesFor,
+          votesAgainst,
+          totalVotes,
+          yourVote: newVote,
+        };
       });
-      
-      // Update the file with new data
-      const updatedData = {
+
+      // Persist updated data
+      const updatedData: ProposalsData = {
         ...allData,
-        activeProposals: updatedActiveProposals
+        activeProposals: updatedActive,
       };
-      
-      await fsPromises.writeFile(
+      await fs.writeFile(
         path.join(this.basePath, 'proposals.json'),
         JSON.stringify(updatedData, null, 2),
         'utf8'
       );
-      
-      return updatedActiveProposals;
+
+      return updatedActive;
     } catch (error) {
       console.error('Error updating vote:', error);
       throw new Error('Failed to update vote');
@@ -157,5 +139,4 @@ class VotingRepository {
   }
 }
 
-// Export a singleton instance
 export const votingRepository = new VotingRepository();

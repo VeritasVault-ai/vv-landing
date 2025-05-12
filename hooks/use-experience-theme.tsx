@@ -4,9 +4,7 @@ import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { getCookie, setCookie } from "@/lib/cookies"
 import { useRouter, useSearchParams } from "next/navigation"
-
-export type ExperienceType = "standard" | "corporate"
-export type ThemeVariant = "light" | "dark" | "neuralliquid" | "corporate" | "veritasvault" | "cosmic"
+import { ExperienceType, ThemeVariant } from "@/src/types"
 
 export function useExperienceTheme() {
   const { theme, setTheme } = useTheme()

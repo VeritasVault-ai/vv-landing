@@ -1,4 +1,5 @@
-import { ActiveProposal, PastProposal, VotingOverview } from "@/lib/repositories/voting-repository";
+// src/lib/events/voting-event-emitter.ts
+import { ActiveProposal, PastProposal, VotingOverview } from '@/lib/repositories/voting-repository';
 
 // Define event types
 export type VotingEventType = 
@@ -15,23 +16,17 @@ export type VotingEventPayload = {
     vote: 'for' | 'against' | null;
     updatedProposals: ActiveProposal[];
   };
-  'proposal-updated': {
-    proposal: ActiveProposal;
-  };
-  'new-proposal': {
-    proposal: ActiveProposal;
-  };
+  'proposal-updated': { proposal: ActiveProposal };
+  'new-proposal': { proposal: ActiveProposal };
   'proposal-closed': {
     proposalId: string;
     result: 'passed' | 'failed';
     pastProposal: PastProposal;
   };
-  'voting-power-changed': {
-    overview: VotingOverview;
-  };
+  'voting-power-changed': { overview: VotingOverview };
 };
 
-// Define event listener type
+// Listener signature
 export type VotingEventListener<T extends VotingEventType> = (
   payload: VotingEventPayload[T]
 ) => void;
@@ -39,10 +34,9 @@ export type VotingEventListener<T extends VotingEventType> = (
 /**
  * Voting event emitter for real-time updates across components
  */
-class VotingEventEmitter {
-  private listeners: {
-    [K in VotingEventType]?: VotingEventListener<K>[];
-  } = {};
+export class VotingEventEmitter {
+  // Use a Map to avoid key-indexing issues
+  private listeners = new Map<VotingEventType, VotingEventListener<any>[]>();
 
   /**
    * Subscribe to a voting event
@@ -51,34 +45,32 @@ class VotingEventEmitter {
     eventType: T,
     listener: VotingEventListener<T>
   ): () => void {
-    if (!this.listeners[eventType]) {
-      this.listeners[eventType] = [];
-    }
-    
-    // Add the listener
-    (this.listeners[eventType] as VotingEventListener<T>[]).push(listener);
-    
-    // Return unsubscribe function
+    const existing = this.listeners.get(eventType) ?? [];
+    this.listeners.set(eventType, existing.concat(listener as VotingEventListener<any>));
+
+    // Unsubscribe
     return () => {
-      this.listeners[eventType] = (this.listeners[eventType] as VotingEventListener<T>[])
+      const updated = (this.listeners.get(eventType) ?? [])
         .filter(l => l !== listener);
+      this.listeners.set(eventType, updated);
     };
   }
 
   /**
-   * Emit a voting event to all subscribers
+   * Emit a voting event to all subscribers, isolating failures
    */
   emit<T extends VotingEventType>(
     eventType: T,
     payload: VotingEventPayload[T]
   ): void {
-    if (!this.listeners[eventType]) {
-      return;
+    const listeners = (this.listeners.get(eventType) ?? []) as VotingEventListener<T>[];
+    for (const listener of listeners) {
+      try {
+        listener(payload);
+      } catch (error) {
+        console.error(`Error in listener for event "${eventType}":`, error);
+      }
     }
-    
-    (this.listeners[eventType] as VotingEventListener<T>[]).forEach(listener => {
-      listener(payload);
-    });
   }
 }
 

@@ -1,6 +1,5 @@
-export type NavigationItemType = 'link' | 'dropdown' | 'button' | 'separator'
-export type ExperienceType = 'standard' | 'corporate' | 'both'
-export type PositionType = 'header' | 'footer' | 'both'
+import { ExperienceType, IconPosition, IconSize, NavigationItemType, PositionType } from "@/src/types"
+
 
 // Base navigation item interface
 export interface BaseNavigationItem {
@@ -14,8 +13,8 @@ export interface BaseNavigationItem {
   featured?: boolean
   badge?: string
   description?: string
-  iconPosition?: 'left' | 'right' | 'top' | 'bottom' | 'none' | 'both'
-  iconSize?: 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'xxxlarge' | 'xxxxlarge' | 'xxxxxlarge' | 'xxxxxxlarge' | 'xxxxxxxlarge' | 'xxxxxxxxlarge' | 'xxxxxxxxxlarge' | 'xxxxxxxxxxlarge' | 'xxxxxxxxxxxlarge' | 'xxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxlarge' | 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxlarge'
+  iconPosition?: IconSize
+  iconSize?: IconPosition
 }
 
 export interface NavigationSubItem {

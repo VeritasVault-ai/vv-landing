@@ -1,17 +1,35 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { AlertTriangle, ArrowUpRight, BarChart3, Download, TrendingUp, Calculator, Vote } from "lucide-react"
-import { DashboardOverview } from "@/components/corporate/dashboard-overview"
-import { DashboardPerformance } from "@/components/corporate/dashboard-performance"
-import { ModelResults } from "@/components/corporate/model-results"
-import { DashboardVoting } from "@/components/corporate/voting"
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import {
+  Card, CardContent, CardDescription, CardHeader, CardTitle,
+} from '@/components/ui/card';
+import {
+  Tabs, TabsContent, TabsList, TabsTrigger,
+} from '@/components/ui/tabs';
+import {
+  AlertTriangle,
+  ArrowUpRight,
+  BarChart3,
+  Download,
+  TrendingUp,
+  Calculator,
+  Vote,
+} from 'lucide-react';
+
+import { useDashboardMetrics } from '@src/lib/hooks/useDashboardMetrics';
+import { DashboardOverview } from '@/components/corporate/dashboard-overview';
+import { DashboardPerformance } from '@/components/corporate/dashboard-performance';
+import { ModelResults } from '@/components/corporate/model-results';
+import { DashboardVoting } from '@/components/corporate/voting';
 
 export function DashboardContent() {
+  const { portfolioValue, activeStrategies, riskScore } = useDashboardMetrics();
+
   const handleTabChange = (value: string) => {
-    // You can add analytics tracking here if needed
+    console.log(`Tab changed to: ${value}`)
+    window.location.hash = value
   }
 
   return (
@@ -19,39 +37,34 @@ export function DashboardContent() {
       <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-4">
-            <a href="/" className="flex items-center">
+            <Link href="/" className="flex items-center">
               <span className="text-xl font-bold text-blue-900 dark:text-blue-300">
                 <span>Veritas</span>
                 <span className="text-blue-700 dark:text-blue-400">Vault</span>
                 <span className="text-blue-500">.ai</span>
               </span>
-            </a>
+            </Link>
 
             <div className="hidden md:flex items-center gap-6 ml-6">
-              <a
-                href="/corporate/dashboard"
-                className="text-sm font-medium text-blue-700 dark:text-blue-400 border-b-2 border-blue-700 dark:border-blue-400 pb-1"
-              >
-                Dashboard
-              </a>
-              <a
-                href="/corporate/portfolio"
-                className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors"
-              >
-                Portfolio
-              </a>
-              <a
-                href="/corporate/strategies"
-                className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors"
-              >
-                Strategies
-              </a>
-              <a
-                href="/corporate/analytics"
-                className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors"
-              >
-                Analytics
-              </a>
+              {[
+                { href: '/corporate/dashboard', label: 'Dashboard' },
+                { href: '/corporate/portfolio', label: 'Portfolio' },
+                { href: '/corporate/strategies', label: 'Strategies' },
+                { href: '/corporate/analytics', label: 'Analytics' },
+              ].map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`
+                    text-sm font-medium
+                    ${label === 'Dashboard'
+                      ? 'text-blue-700 dark:text-blue-400 border-b-2 border-blue-700 dark:border-blue-400 pb-1'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors'}
+                  `}
+                >
+                  {label}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -63,34 +76,24 @@ export function DashboardContent() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Corporate Dashboard</h1>
-            <p className="text-slate-600 dark:text-slate-400">Portfolio overview and performance metrics</p>
-          </div>
-          <div className="flex gap-3 mt-4 md:mt-0">
-            <Button variant="outline" size="sm" className="flex items-center gap-2">
-              <Download className="h-4 w-4" />
-              <span>Export Report</span>
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <main className="container mx-auto px-4 py-8 space-y-8">
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardHeader className="pb-2">
               <CardDescription>Portfolio Value</CardDescription>
               <CardTitle className="text-3xl font-bold flex items-center">
-                $12.4M
+                {portfolioValue.value}
                 <span className="text-green-600 dark:text-green-500 text-sm font-normal ml-2 flex items-center">
                   <ArrowUpRight className="h-4 w-4 mr-1" />
-                  2.4%
+                  {portfolioValue.change}
                 </span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Updated 10 minutes ago</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Updated {portfolioValue.updatedAt}
+              </p>
             </CardContent>
           </Card>
 
@@ -98,14 +101,16 @@ export function DashboardContent() {
             <CardHeader className="pb-2">
               <CardDescription>Active Strategies</CardDescription>
               <CardTitle className="text-3xl font-bold flex items-center">
-                7
+                {activeStrategies.value}
                 <span className="text-blue-600 dark:text-blue-500 text-sm font-normal ml-2">
-                  3 optimized
+                  {activeStrategies.optimized} optimized
                 </span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Last updated today</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Last updated {activeStrategies.updatedAt}
+              </p>
             </CardContent>
           </Card>
 
@@ -113,64 +118,64 @@ export function DashboardContent() {
             <CardHeader className="pb-2">
               <CardDescription>Risk Score</CardDescription>
               <CardTitle className="text-3xl font-bold flex items-center">
-                Low
+                {riskScore.value}
                 <span className="text-green-600 dark:text-green-500 text-sm font-normal ml-2 flex items-center">
                   <AlertTriangle className="h-4 w-4 mr-1" />
-                  Optimal
+                  {riskScore.status}
                 </span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Within institutional parameters</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {riskScore.details}
+              </p>
             </CardContent>
           </Card>
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-6" onValueChange={handleTabChange}>
+        {/* Export button */}
+        <div className="flex justify-end">
+          <Button variant="outline" size="sm" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Export Report
+          </Button>
+        </div>
+
+        {/* Tabs */}
+        <Tabs defaultValue="overview" onValueChange={handleTabChange} className="space-y-6">
           <TabsList>
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
-              <span>Overview</span>
+              Overview
             </TabsTrigger>
             <TabsTrigger value="performance" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
-              <span>Performance</span>
+              Performance
             </TabsTrigger>
             <TabsTrigger value="models" className="flex items-center gap-2">
               <Calculator className="h-4 w-4" />
-              <span>Model Results</span>
+              Model Results
             </TabsTrigger>
             <TabsTrigger value="voting" className="flex items-center gap-2">
               <Vote className="h-4 w-4" />
-              <span>Governance</span>
+              Governance
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
             <DashboardOverview />
           </TabsContent>
-
           <TabsContent value="performance">
             <DashboardPerformance />
           </TabsContent>
-
           <TabsContent value="models">
             <ModelResults />
           </TabsContent>
-          
           <TabsContent value="voting">
             <DashboardVoting />
           </TabsContent>
         </Tabs>
       </main>
-
-      <footer className="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-6">
-        <div className="container mx-auto px-4">
-          <p className="text-center text-slate-600 dark:text-slate-400">
-            &copy; 2025 VeritasVault.ai. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </>
   );
 }

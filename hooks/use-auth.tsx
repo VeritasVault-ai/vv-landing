@@ -1,9 +1,24 @@
-"use client"
+// src/hooks/use-auth.ts
+'use client'
 
-import { signInWithEmail, signInWithProvider, signOut, signUpWithEmail } from "@/lib/auth/auth-service"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useAnalytics } from "./use-analytics"
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { signInWithEmail, signInWithProvider, signOut, signUpWithEmail } from '@/lib/auth/auth-service'
+import { useAnalytics } from './use-analytics'
+import { ExperienceType } from '@/src/types'
+
+// Helper to categorize errors more robustly
+function getErrorType(message?: string): string {
+  if (!message) return 'unknown_error'
+  const m = message.toLowerCase()
+  if (m.includes('credentials') || m.includes('password') || m.includes('email')) {
+    return 'invalid_credentials'
+  }
+  if (m.includes('rate') || m.includes('limit')) {
+    return 'rate_limited'
+  }
+  return 'system_error'
+}
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(false)
@@ -11,95 +26,77 @@ export function useAuth() {
   const router = useRouter()
   const { trackEvent } = useAnalytics()
 
-  const login = async (email: string, password: string, options?: { version?: "standard" | "corporate", redirectTo?: string }) => {
+  // Compute a short SHA-256 hash of the email for privacy
+  async function hashEmail(email: string): Promise<string> {
+    if (typeof crypto?.subtle === 'object') {
+      const data = new TextEncoder().encode(email)
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+      const hashArray = Array.from(new Uint8Array(hashBuffer))
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+      return hashHex.slice(-10)
+    }
+    // Fallback
+    return btoa(email).slice(-10)
+  }
+
+  const login = async (
+    email: string,
+    password: string,
+    options?: { version?: ExperienceType; redirectTo?: string }
+  ) => {
     setIsLoading(true)
     setError(null)
+    const version = options?.version ?? 'standard'
+
+    trackEvent({ action: 'login_attempt', category: 'authentication', label: 'login', custom_data: { version } })
 
     try {
-      const version = options?.version || "standard"
-      
-      // Track login attempt
-      trackEvent({
-        action: "login_attempt",
-        category: "authentication",
-        label: "header_login",
-        custom_data: { version },
-      })
+      const { data, error: authErr, redirectTo } = await signInWithEmail(email, password, options)
+      if (authErr) throw authErr
 
-      const { data, error, redirectTo } = await signInWithEmail(email, password, options)
-
-      if (error) throw error
-
-      // Track successful login
-      trackEvent({
-        action: "login_success",
-        category: "authentication",
-        label: "header_login",
-        custom_data: { 
-          version,
-          user_id_hash: btoa(email).slice(-10), 
-        },
-      })
+      const userHash = await hashEmail(email)
+      trackEvent({ action: 'login_success', category: 'authentication', label: 'login', custom_data: { version, user_id_hash: userHash } })
 
       router.push(redirectTo)
       router.refresh()
       return { success: true }
-    } catch (err: any) {
-      setError(err.message || "Failed to sign in")
-      
-      // Track login error
+    } catch (err: unknown) {
+      const msg = (err instanceof Error ? err.message : String(err))
+      setError(msg)
+
+      const errorType = getErrorType(msg)
       trackEvent({
-        action: "login_error",
-        category: "authentication",
-        label: err.message || "unknown_error",
-        custom_data: { 
-          error_type: err.message?.includes("credentials") ? "invalid_credentials" : "system_error",
-          version: options?.version || "standard",
-        },
+        action: 'login_error',
+        category: 'authentication',
+        label: 'login',
+        custom_data: { version, error_type: errorType }
       })
-      
-      return { success: false, error: err.message }
+
+      return { success: false, error: msg }
     } finally {
       setIsLoading(false)
     }
   }
 
-  const register = async (
-    email: string, 
-    password: string, 
-    userData: any, 
-    options?: { version?: "standard" | "corporate", redirectTo?: string }
+  const register = async <T extends Record<string, unknown>>(
+    email: string,
+    password: string,
+    userData: T,
+    options?: { version?: ExperienceType; redirectTo?: string }
   ) => {
     setIsLoading(true)
     setError(null)
+    const version = options?.version ?? 'standard'
+
+    trackEvent({ action: 'registration_attempt', category: 'authentication', label: 'register', custom_data: { version } })
 
     try {
-      const version = options?.version || "standard"
-      
-      // Track registration attempt
-      trackEvent({
-        action: "registration_attempt",
-        category: "authentication",
-        label: "header_register",
-        custom_data: { version },
-      })
+      const { data, error: regErr, redirectTo } = await signUpWithEmail(email, password, userData, options)
+      if (regErr) throw regErr
 
-      const { data, error, redirectTo } = await signUpWithEmail(email, password, userData, options)
+      const userHash = await hashEmail(email)
+      trackEvent({ action: 'registration_success', category: 'authentication', label: 'register', custom_data: { version, user_id_hash: userHash } })
 
-      if (error) throw error
-
-      // Track successful registration
-      trackEvent({
-        action: "registration_success",
-        category: "authentication",
-        label: "header_register",
-        custom_data: { 
-          version,
-          user_id_hash: btoa(email).slice(-10), 
-        },
-      })
-
-      // Auto-login and redirect if email confirmation is not required
       if (!data.session) {
         return { success: true, requiresEmailConfirmation: true }
       }
@@ -107,61 +104,38 @@ export function useAuth() {
       router.push(redirectTo)
       router.refresh()
       return { success: true, requiresEmailConfirmation: false }
-    } catch (err: any) {
-      setError(err.message || "Failed to register")
-      
-      // Track registration error
-      trackEvent({
-        action: "registration_error",
-        category: "authentication",
-        label: err.message || "unknown_error",
-        custom_data: { 
-          error_type: err.message?.includes("email") ? "email_in_use" : "system_error",
-          version: options?.version || "standard",
-        },
-      })
-      
-      return { success: false, error: err.message }
+    } catch (err: unknown) {
+      const msg = (err instanceof Error ? err.message : String(err))
+      setError(msg)
+
+      const errorType = getErrorType(msg)
+      trackEvent({ action: 'registration_error', category: 'authentication', label: 'register', custom_data: { version, error_type: errorType } })
+
+      return { success: false, error: msg }
     } finally {
       setIsLoading(false)
     }
   }
 
   const loginWithProvider = async (
-    provider: "google" | "github", 
-    options?: { version?: "standard" | "corporate", redirectTo?: string }
+    provider: 'google' | 'github',
+    options?: { version?: ExperienceType; redirectTo?: string }
   ) => {
     setIsLoading(true)
     setError(null)
+    const version = options?.version ?? 'standard'
+
+    trackEvent({ action: 'social_login_attempt', category: 'authentication', label: provider, custom_data: { version } })
 
     try {
-      const version = options?.version || "standard"
-      
-      // Track social login attempt
-      trackEvent({
-        action: "social_login_attempt",
-        category: "authentication",
-        label: provider,
-        custom_data: { version },
-      })
-
       await signInWithProvider(provider, options)
       return { success: true }
-    } catch (err: any) {
-      setError(err.message || `Failed to sign in with ${provider}`)
-      
-      // Track social login error
-      trackEvent({
-        action: "social_login_error",
-        category: "authentication",
-        label: provider,
-        custom_data: { 
-          error: String(err),
-          version: options?.version || "standard",
-        },
-      })
-      
-      return { success: false, error: err.message }
+    } catch (err: unknown) {
+      const msg = (err instanceof Error ? err.message : String(err))
+      setError(msg)
+      const errorType = getErrorType(msg)
+      trackEvent({ action: 'social_login_error', category: 'authentication', label: provider, custom_data: { version, error_type: errorType } })
+      return { success: false, error: msg }
     } finally {
       setIsLoading(false)
     }
@@ -169,39 +143,21 @@ export function useAuth() {
 
   const logout = async () => {
     setIsLoading(true)
-    
     try {
-      // Track logout attempt
-      trackEvent({
-        action: "logout_attempt",
-        category: "authentication",
-      })
-      
+      trackEvent({ action: 'logout_attempt', category: 'authentication' })
       await signOut()
-      
-      // Track successful logout
-      trackEvent({
-        action: "logout_success",
-        category: "authentication",
-      })
-      
-      router.push("/")
+      trackEvent({ action: 'logout_success', category: 'authentication' })
+      router.push('/')
       router.refresh()
       return { success: true }
-    } catch (err: any) {
-      setError(err.message || "Failed to sign out")
-      return { success: false, error: err.message }
+    } catch (err: unknown) {
+      const msg = (err instanceof Error ? err.message : String(err))
+      setError(msg)
+      return { success: false, error: msg }
     } finally {
       setIsLoading(false)
     }
   }
 
-  return {
-    login,
-    register,
-    loginWithProvider,
-    logout,
-    isLoading,
-    error,
-  }
+  return { login, register, loginWithProvider, logout, isLoading, error }
 }

@@ -2,17 +2,14 @@
 
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { ExperienceType, ThemeVariant } from "@/src/types"
 import { useState } from "react"
-import { VersionType } from "../../VersionSelectionPage"
-
-// All available themes
-export type ThemeVariant = "light" | "dark" | "neuralliquid" | "corporate" | "veritasvault" | "cosmic"
 
 interface ThemeSelectionModalProps {
   isOpen: boolean
   onClose: () => void
-  selectedVersion: VersionType
-  onThemeSelect: (version: VersionType, theme: ThemeVariant) => void
+  selectedVersion: ExperienceType
+  onThemeSelect: (version: ExperienceType, theme: ThemeVariant) => void
 }
 
 export function ThemeSelectionModal({ isOpen, onClose, selectedVersion, onThemeSelect }: ThemeSelectionModalProps) {

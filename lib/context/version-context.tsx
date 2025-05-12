@@ -6,10 +6,10 @@ import { createContext, useContext, useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
 import { getCookie } from "@/lib/cookies"
 
-type VersionType = "standard" | "corporate" | null
+type ExperienceType = "standard" | "corporate" | null
 
 interface VersionContextType {
-  version: VersionType
+  version: ExperienceType
   isStandard: boolean
   isCorporate: boolean
 }
@@ -21,7 +21,7 @@ const VersionContext = createContext<VersionContextType>({
 })
 
 export function VersionProvider({ children }: { children: React.ReactNode }) {
-  const [version, setVersion] = useState<VersionType>(null)
+  const [version, setVersion] = useState<ExperienceType>(null)
   const pathname = usePathname()
 
   useEffect(() => {

@@ -6,14 +6,13 @@ import { cn } from "@/lib/utils"
 import { Building2, User } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-
-export type VersionType = "standard" | "corporate"
+import { ExperienceType } from "../types"
 
 interface VersionControlProps {
-  currentVersion?: VersionType
+  currentVersion?: ExperienceType
   mode?: "selector" | "switcher" | "enhanced"
   className?: string
-  onVersionSelect?: (version: VersionType) => void
+  onVersionSelect?: (version: ExperienceType) => void
   disableNavigation?: boolean
 }
 
@@ -25,7 +24,7 @@ export function VersionControl({
   disableNavigation = false
 }: VersionControlProps) {
   const router = useRouter()
-  const [activeVersion, setActiveVersion] = useState<VersionType>(currentVersion || "standard")
+  const [activeVersion, setActiveVersion] = useState<ExperienceType>(currentVersion || "standard")
   const [mounted, setMounted] = useState(false)
 
   // Prevent hydration mismatch
@@ -34,14 +33,14 @@ export function VersionControl({
     
     // If no currentVersion is provided, try to get from localStorage
     if (!currentVersion) {
-      const storedVersion = localStorage.getItem("site-version") as VersionType | null
+      const storedVersion = localStorage.getItem("site-version") as ExperienceType | null
       if (storedVersion === "standard" || storedVersion === "corporate") {
         setActiveVersion(storedVersion)
       }
     }
   }, [currentVersion])
 
-  const handleVersionChange = (version: VersionType) => {
+  const handleVersionChange = (version: ExperienceType) => {
     setActiveVersion(version)
     
     // Call the onVersionSelect callback if provided

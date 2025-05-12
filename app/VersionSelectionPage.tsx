@@ -10,21 +10,19 @@ import { CorporateVersionCard } from "./components/version-selection/CorporateVe
 import { ThemeSelectionModal } from "./components/version-selection/ThemeSelectionModal"
 import { VersionBackground } from "./components/version-selection/VersionBackground"
 
-export type VersionType = "standard" | "corporate"
-export type ThemeVariant = "standard" | "neuralliquid" | "corporate" | "veritasvault"
 
 export function EnhancedVersionSelectionPage() {
   const router = useRouter()
-  const [selectedVersion, setSelectedVersion] = useState<VersionType | null>(null)
+  const [selectedVersion, setSelectedVersion] = useState<ExperienceType | null>(null)
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false)
   
   // Handle version selection
-  const handleVersionSelect = (version: VersionType) => {
+  const handleVersionSelect = (version: ExperienceType) => {
     setSelectedVersion(version)
   }
 
   // Navigate to selected version with default theme
-const navigateToVersion = (version: VersionType) => {
+const navigateToVersion = (version: ExperienceType) => {
   // Save user preference
   setCookie("preferred-version", version, 30)
   
@@ -38,7 +36,7 @@ const navigateToVersion = (version: VersionType) => {
   }
   
   // Handle theme selection and navigation
-  const handleThemeSelect = (version: VersionType, theme: ThemeVariant) => {
+  const handleThemeSelect = (version: ExperienceType, theme: ThemeVariant) => {
     // Save user preferences
     setCookie("preferred-version", version, 30)
     setCookie("preferred-theme", theme, 30)

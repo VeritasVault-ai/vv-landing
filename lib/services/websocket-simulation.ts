@@ -1,14 +1,31 @@
-"use client"
+// src/lib/services/useVotingWebSocketSimulation.ts
+'use client'
 
-import { useEffect } from "react"
-import { votingEvents } from "@/lib/events/voting-events"
-import { ActiveProposal, PastProposal, VotingOverview } from "@/lib/repositories/voting-repository"
-import { votingService } from "./voting-service"
+import { useEffect } from 'react'
+import { votingEvents } from '@/lib/events/voting-events'
+import {
+  ActiveProposal,
+  PastProposal,
+  VotingOverview,
+} from '@/lib/repositories/voting-repository'
+import { votingService } from './voting-service'
 
-/**
- * This service simulates WebSocket events for demonstration purposes.
- * In a real application, this would be replaced with an actual WebSocket connection.
- */
+/** Parses `"7 days 5 hours"` → total hours (e.g. 173) */
+function parseHours(timeStr: string): number {
+  const m = timeStr.match(/(\d+)\s*days?\s*(\d+)\s*hours?/)
+  if (!m) return 0
+  const days = parseInt(m[1], 10)
+  const hours = parseInt(m[2], 10)
+  return days * 24 + hours
+}
+
+/** Formats hours → `"X days Y hours"` */
+function formatHours(totalHours: number): string {
+  const days = Math.floor(totalHours / 24)
+  const hours = totalHours % 24
+  return `${days} days ${hours} hours`
+}
+
 export function useVotingWebSocketSimulation() {
   useEffect(() => {
     let isActive = true
@@ -20,135 +37,120 @@ export function useVotingWebSocketSimulation() {
       try {
         votingPower = await votingService.getVotingOverview()
         activeProposals = await votingService.getActiveProposals()
-      } catch (error) {
-        console.error("Failed to fetch initial data for simulation:", error)
+      } catch (err) {
+        console.error('Failed to fetch initial data:', err)
       }
     }
-
     fetchInitialData()
 
-    // Simulate proposal updates
-    const proposalUpdateInterval = setInterval(() => {
-      if (!isActive || !activeProposals.length) return
+    // Every 15s: simulate vote activity & tick down timeRemaining
+    const tickInterval = setInterval(() => {
+      if (!isActive || activeProposals.length === 0) return
 
-      // Randomly select a proposal to update
-      const randomIndex = Math.floor(Math.random() * activeProposals.length)
-      const proposalToUpdate = activeProposals[randomIndex]
+      activeProposals = activeProposals.flatMap((proposal) => {
+        // 1) Apply random vote bump
+        const isVoteFor = Math.random() > 0.5
+        const bump = Math.floor(Math.random() * 50_000) + 10_000
+        const votesFor   = isVoteFor ? proposal.votesFor + bump   : proposal.votesFor
+        const votesAgainst = !isVoteFor ? proposal.votesAgainst + bump : proposal.votesAgainst
+        const totalVotes = votesFor + votesAgainst
 
-      // Randomly decide whether to add votes for or against
-      const isVoteFor = Math.random() > 0.5
-      const voteAmount = Math.floor(Math.random() * 50000) + 10000 // Random votes between 10k and 60k
+        // 2) Tick down timeRemaining by 1 hour
+        const remainingHrs = Math.max(parseHours(proposal.timeRemaining) - 1, 0)
+        const newTimeRem = formatHours(remainingHrs)
 
-      // Create updated proposal
-      const updatedProposal: ActiveProposal = {
-        ...proposalToUpdate,
-        votesFor: isVoteFor ? proposalToUpdate.votesFor + voteAmount : proposalToUpdate.votesFor,
-        votesAgainst: !isVoteFor ? proposalToUpdate.votesAgainst + voteAmount : proposalToUpdate.votesAgainst
-      }
-
-      // Update our local cache
-      activeProposals[randomIndex] = updatedProposal
-
-      // Emit the update event
-      votingEvents.emit('proposal-updated', { proposal: updatedProposal })
-
-      // Check if proposal has reached conclusion (30% chance after quorum)
-      const totalVotes = updatedProposal.votesFor + updatedProposal.votesAgainst
-      if (totalVotes >= updatedProposal.quorum && Math.random() < 0.05) {
-        // Convert to past proposal
-        const pastProposal: PastProposal = {
-          id: updatedProposal.id,
-          title: updatedProposal.title,
-          result: updatedProposal.votesFor > updatedProposal.votesAgainst ? 'passed' : 'failed',
-          date: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
-          votesFor: updatedProposal.votesFor,
-          votesAgainst: updatedProposal.votesAgainst,
-          yourVote: updatedProposal.yourVote,
-          category: ['treasury', 'governance', 'technical', 'security'][Math.floor(Math.random() * 4)]
+        const updated: ActiveProposal = {
+          ...proposal,
+          votesFor,
+          votesAgainst,
+          totalVotes,
+          timeRemaining: newTimeRem,
         }
 
-        // Emit proposal closed event
-        votingEvents.emit('proposal-closed', {
-          proposalId: updatedProposal.id,
-          result: pastProposal.result,
-          pastProposal
-        })
+        // Emit the update
+        votingEvents.emit('proposal-updated', { proposal: updated })
 
-        // Remove from our local cache
-        activeProposals = activeProposals.filter(p => p.id !== updatedProposal.id)
-      }
-    }, 15000) // Update every 15 seconds
+        // Check deterministic closure: either ran out of time or reached quorum
+        const reachedQuorum = totalVotes >= proposal.quorum
+        const timeUp = remainingHrs <= 0
 
-    // Simulate voting power changes
-    const votingPowerInterval = setInterval(() => {
+        if (timeUp || reachedQuorum) {
+          const passed = votesFor > votesAgainst
+          const past: PastProposal = {
+            id:        updated.id,
+            title:     updated.title,
+            result:    passed ? 'passed' : 'failed',
+            date:      new Date().toISOString().split('T')[0],
+            votesFor:  votesFor,
+            votesAgainst: votesAgainst,
+            yourVote:  updated.yourVote,
+            category:  ['treasury','governance','technical','security'][Math.floor(Math.random() * 4)],
+          }
+
+          votingEvents.emit('proposal-closed', {
+            proposalId: updated.id,
+            result:     passed ? 'passed' : 'failed',
+            pastProposal: past,
+          })
+          // Filter out closed proposal
+          return []
+        }
+
+        return [updated]
+      })
+    }, 15_000)
+
+    // Voting-power simulation unchanged…
+    const powerInterval = setInterval(() => {
       if (!isActive || !votingPower) return
 
-      // Small random change to voting power (±0.2%)
       const change = (Math.random() * 0.4) - 0.2
-      const newPercentage = Math.max(0, Math.min(100, votingPower.votingPower.percentage + change))
-      
-      // Calculate new vote count based on percentage
-      const newVotes = Math.round((newPercentage / 100) * votingPower.votingPower.totalVotes)
-      
-      // Create updated voting power data
-      const updatedVotingPower: VotingOverview = {
+      const newPct = Math.min(100, Math.max(0, votingPower.votingPower.percentage + change))
+      const newVotes = Math.round((newPct / 100) * votingPower.votingPower.totalVotes)
+
+      const updated: VotingOverview = {
         ...votingPower,
-        votingPower: {
-          ...votingPower.votingPower,
-          percentage: newPercentage,
-          votes: newVotes
-        },
+        votingPower: { ...votingPower.votingPower, percentage: newPct, votes: newVotes },
         votingPowerDistribution: [
-          { name: "Your Voting Power", value: newPercentage },
-          { name: "Other Delegates", value: Math.max(0, 100 - newPercentage - votingPower.votingPowerDistribution[2].value) },
-          { name: "Undelegated", value: votingPower.votingPowerDistribution[2].value }
-        ]
+          { name: 'Your Voting Power', value: newPct },
+          { name: 'Other Delegates',  value: Math.max(0, 100 - newPct - votingPower.votingPowerDistribution[2].value) },
+          { name: 'Undelegated',      value: votingPower.votingPowerDistribution[2].value },
+        ],
       }
+      votingPower = updated
+      votingEvents.emit('voting-power-changed', { overview: updated })
+    }, 30_000)
 
-      // Update our local cache
-      votingPower = updatedVotingPower
-
-      // Emit the update event
-      votingEvents.emit('voting-power-changed', { overview: updatedVotingPower })
-    }, 30000) // Update every 30 seconds
-
-    // Simulate new proposals (every 2 minutes, 10% chance)
-    const newProposalInterval = setInterval(() => {
+    // New proposals simulation unchanged…
+    const newPropInterval = setInterval(() => {
       if (!isActive || Math.random() > 0.1) return
 
-      // Generate a new proposal ID
-      const lastId = activeProposals.length > 0 
-        ? parseInt(activeProposals[0].id.split('-')[1]) 
+      const lastId = activeProposals[0]?.id.match(/-(\d+)$/)?.[1]
+        ? parseInt(activeProposals[0]!.id.split('-')[1], 10)
         : 25
-      const newId = `VIP-${lastId + 1}`
-
-      // Create a new proposal
-      const newProposal: ActiveProposal = {
-        id: newId,
-        title: `New ${['Treasury', 'Protocol', 'Security', 'Governance'][Math.floor(Math.random() * 4)]} Proposal`,
-        description: `This is a newly created proposal that was just submitted to the governance system.`,
-        status: "active",
-        timeRemaining: "7 days 0 hours",
-        votesFor: 0,
-        votesAgainst: 0,
-        totalVotes: 10000000,
-        quorum: 3000000,
-        yourVote: null
+      const idNum = lastId + 1
+      const newProp: ActiveProposal = {
+        id:            `VIP-${idNum}`,
+        title:         `New ${['Treasury','Protocol','Security','Governance'][Math.floor(Math.random()*4)]} Proposal`,
+        description:   'Fresh governance proposal.',
+        status:        'active',
+        timeRemaining: '7 days 0 hours',
+        votesFor:      0,
+        votesAgainst:  0,
+        totalVotes:    0,
+        quorum:        3_000_000,
+        yourVote:      null,
       }
 
-      // Add to our local cache
-      activeProposals = [newProposal, ...activeProposals]
+      activeProposals.unshift(newProp)
+      votingEvents.emit('new-proposal', { proposal: newProp })
+    }, 120_000)
 
-      // Emit the new proposal event
-      votingEvents.emit('new-proposal', { proposal: newProposal })
-    }, 120000) // Check every 2 minutes
-
-    // Clean up intervals when component unmounts
     return () => {
       isActive = false
-      clearInterval(proposalUpdateInterval)
-      clearInterval(votingPowerInterval)
-      clearInterval(newProposalInterval)
+      clearInterval(tickInterval)
+      clearInterval(powerInterval)
+      clearInterval(newPropInterval)
     }
   }, [])
 }

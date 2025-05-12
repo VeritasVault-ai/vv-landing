@@ -1,4 +1,4 @@
-import { VersionType } from "@/components/version-control"
+import { ExperienceType } from "@/src/components/VersionControl"
 import { CUSTOM_DIMENSIONS } from "./custom-dimensions"
 import { EventCategory, type EventName } from "./event-taxonomy"
 
@@ -143,46 +143,56 @@ export function trackLiquidityEvent(
 export interface NavigationEventData {
   eventName: EventName,
     feature_name: string;
-    tab_destination: VersionType;
+    tab_destination: ExperienceType;
 }
+
 // Function to track navigation events
 export function trackNavigationEvent(
   params: {
-    eventName?: string,
+    eventName?: string
     source?: string
     destination?: string
     tab_name?: string
     section?: string
     feature_name?: string
-    tab_destination?: VersionType
+    tab_destination?: ExperienceType
     [key: string]: any
   } = {},
 ) {
-  // Map standard parameters to custom dimensions
+  const {
+    eventName,
+    source,
+    destination,
+    section,
+    feature_name,
+    tab_destination,
+    ...rest
+  } = params
+
   const enhancedParams: Record<string, any> = {
     event_category: EventCategory.NAVIGATION,
-    ...params,
+    ...rest,
   }
 
-  // Map to custom dimensions
-  if (params.destination) {
-    enhancedParams[CUSTOM_DIMENSIONS.TAB_DESTINATION] = params.destination
+  if (source) {
+    enhancedParams[CUSTOM_DIMENSIONS.TAB_SOURCE] = source
+  }
+  if (destination) {
+    enhancedParams[CUSTOM_DIMENSIONS.TAB_DESTINATION] = destination
+  }
+  if (section) {
+    enhancedParams[CUSTOM_DIMENSIONS.FEATURE_SECTION] = section
+  }
+  if (feature_name) {
+    enhancedParams[CUSTOM_DIMENSIONS.FEATURE_NAME] = feature_name
+  }
+  if (tab_destination) {
+    enhancedParams[CUSTOM_DIMENSIONS.TAB_DESTINATION] = tab_destination
   }
 
-  if (params.source) {
-    enhancedParams[CUSTOM_DIMENSIONS.TAB_SOURCE] = params.source
-  }
-
-  if (params.section) {
-    enhancedParams[CUSTOM_DIMENSIONS.FEATURE_SECTION] = params.section
-  }
-
-  // Use a default event name if not provided
-  const eventName = params.eventName || "navigation_action"
-  
-  // Send the event to Google Analytics
-  if (typeof window !== "undefined" && window.gtag) {
-    window.gtag("event", eventName, enhancedParams)
+  const name = eventName || 'navigation_action'
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', name, enhancedParams)
   }
 }
 
