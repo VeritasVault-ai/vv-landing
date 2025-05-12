@@ -125,17 +125,39 @@ export function useVotingWebSocketSimulation() {
     const powerInterval = setInterval(() => {
       if (!isActive || !votingPower) return
 
+      // Ensure votingPowerDistribution has the expected structure
+      if (
+        !votingPower.votingPowerDistribution ||
+        votingPower.votingPowerDistribution.length < 3
+      ) {
+        console.error('Invalid votingPowerDistribution structure', votingPower)
+        return
+      }
+
       const change = (Math.random() * 0.4) - 0.2
-      const newPct = Math.min(100, Math.max(0, votingPower.votingPower.percentage + change))
+      const newPct = Math.min(
+        100,
+        Math.max(0, votingPower.votingPower.percentage + change)
+      )
       const newVotes = Math.round((newPct / 100) * votingPower.votingPower.totalVotes)
 
       const updated: VotingOverview = {
         ...votingPower,
-        votingPower: { ...votingPower.votingPower, percentage: newPct, votes: newVotes },
+        votingPower: {
+          ...votingPower.votingPower,
+          percentage: newPct,
+          votes: newVotes,
+        },
         votingPowerDistribution: [
           { name: 'Your Voting Power', value: newPct },
-          { name: 'Other Delegates',  value: Math.max(0, 100 - newPct - votingPower.votingPowerDistribution[2].value) },
-          { name: 'Undelegated',      value: votingPower.votingPowerDistribution[2].value },
+          {
+            name: 'Other Delegates',
+            value: Math.max(
+              0,
+              100 - newPct - votingPower.votingPowerDistribution[2].value
+            ),
+          },
+          { name: 'Undelegated', value: votingPower.votingPowerDistribution[2].value },
         ],
       }
       votingPower = updated
