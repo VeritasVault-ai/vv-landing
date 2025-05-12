@@ -56,7 +56,12 @@ export const getThemeClassName = (theme: string | undefined): string => {
 }
 
 // Helper function to get the image path based on theme
-export const getThemeAwareImagePath = (basePath: string, theme: string | undefined): string => {
+export const getThemeAwareImagePath = (basePath: string | undefined, theme: string | undefined): string => {
+  // Handle undefined basePath
+  if (!basePath) {
+    return "";
+  }
+  
   const suffix = getThemeImageSuffix(theme)
 
   // Handle file extension
@@ -89,25 +94,4 @@ export const getThemeVariablesStyle = (theme: string | undefined): string => {
   return Object.entries(variables)
     .map(([key, value]) => `--${key}: ${value};`)
     .join(" ")
-}
-
-export const getThemeAwareImagePath = (basePath: string | undefined, theme: string | undefined): string => {
-  // Handle undefined basePath
-  if (!basePath) {
-    return "";
-  }
-  
-  const suffix = getThemeImageSuffix(theme)
-
-  // Handle file extension
-  const lastDotIndex = basePath.lastIndexOf(".")
-  if (lastDotIndex === -1) {
-    // No file extension
-    return `${basePath}${suffix}`
-  }
-
-  const pathWithoutExtension = basePath.substring(0, lastDotIndex)
-  const extension = basePath.substring(lastDotIndex)
-
-  return `${pathWithoutExtension}${suffix}${extension}`
 }

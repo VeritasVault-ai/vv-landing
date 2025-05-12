@@ -1,7 +1,15 @@
-import { EventCategory, type EventName } from "./event-taxonomy"
+import { ExperienceType } from "@/src/components/VersionControl"
 import { CUSTOM_DIMENSIONS } from "./custom-dimensions"
+import { EventCategory, type EventName } from "./event-taxonomy"
 
-// Function to track authentication events
+/**
+ * Tracks an authentication-related event and sends it to Google Analytics.
+ *
+ * Enhances the event with the authentication category and, if the authentication method was successful, maps the method to a custom dimension for successful login methods.
+ *
+ * @param eventName - The name of the authentication event to track.
+ * @param params - Additional event parameters, such as authentication method, success status, error message, or provider.
+ */
 export function trackAuthEvent(
   eventName: EventName,
   params: {
@@ -89,7 +97,14 @@ export function trackStrategyEvent(
   }
 }
 
-// Function to track liquidity events
+/**
+ * Tracks a liquidity-related event and sends it to Google Analytics with appropriate custom dimensions.
+ *
+ * Enhances the event parameters with the `LIQUIDITY` event category and maps relevant liquidity details (such as pool name, amount, protocol, rewards amount, and pool ID) to custom dimensions based on the event type before dispatching.
+ *
+ * @param eventName - The name of the liquidity event (e.g., "add_liquidity", "deposit", "claim_rewards").
+ * @param params - Optional event parameters, including pool and protocol details, amounts, and rewards information.
+ */
 export function trackLiquidityEvent(
   eventName: EventName,
   params: {
@@ -139,39 +154,65 @@ export function trackLiquidityEvent(
   }
 }
 
-// Function to track navigation events
-export function trackNavigationEvent(
+export interface NavigationEventData {
   eventName: EventName,
+    feature_name: string;
+    tab_destination: ExperienceType;
+}
+
+/**
+ * Tracks a navigation event by sending it to Google Analytics with relevant custom dimensions.
+ *
+ * Enhances the event with navigation-specific parameters such as source, destination, section, feature name, and tab destination before dispatching. If no event name is provided, defaults to `'navigation_action'`.
+ *
+ * @param params - Navigation event details, including optional event name, source, destination, section, feature name, and tab destination.
+ */
+export function trackNavigationEvent(
   params: {
+    eventName?: string
     source?: string
     destination?: string
     tab_name?: string
     section?: string
+    feature_name?: string
+    tab_destination?: ExperienceType
     [key: string]: any
   } = {},
 ) {
-  // Map standard parameters to custom dimensions
+  const {
+    eventName,
+    source,
+    destination,
+    section,
+    feature_name,
+    tab_destination,
+    ...rest
+  } = params
+
   const enhancedParams: Record<string, any> = {
     event_category: EventCategory.NAVIGATION,
-    ...params,
+    ...rest,
   }
 
-  // Map to custom dimensions
-  if (params.destination) {
-    enhancedParams[CUSTOM_DIMENSIONS.TAB_DESTINATION] = params.destination
+  if (source) {
+    enhancedParams[CUSTOM_DIMENSIONS.TAB_SOURCE] = source
+  }
+  if (destination) {
+    enhancedParams[CUSTOM_DIMENSIONS.TAB_DESTINATION] = destination
+  }
+  if (section) {
+    enhancedParams[CUSTOM_DIMENSIONS.FEATURE_SECTION] = section
+  }
+  if (feature_name) {
+    enhancedParams[CUSTOM_DIMENSIONS.FEATURE_NAME] = feature_name
+  }
+  if (tab_destination) {
+    enhancedParams[CUSTOM_DIMENSIONS.TAB_DESTINATION] = tab_destination
   }
 
-  if (params.source) {
-    enhancedParams[CUSTOM_DIMENSIONS.TAB_SOURCE] = params.source
-  }
-
-  if (params.section) {
-    enhancedParams[CUSTOM_DIMENSIONS.FEATURE_SECTION] = params.section
-  }
-
-  // Send the event to Google Analytics
-  if (typeof window !== "undefined" && window.gtag) {
-    window.gtag("event", eventName, enhancedParams)
+  const name = eventName || 'navigation_action'
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', name, enhancedParams)
   }
 }
 

@@ -1,55 +1,67 @@
 "use client"
 
-import { Card } from "@/components/ui/card"
 import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Building2, User, CheckCircle } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ThemeToggleClient } from "@/components/theme-toggle-client"
-import { cn } from "@/lib/utils"
+import { setCookie } from "@/lib/cookies"
+import { VersionHeader } from "./components/version-selection/VersionHeader"
+import { VersionFooter } from "./components/version-selection/VersionFooter"
+import { StandardVersionCard } from "./components/version-selection/StandardVersionCard"
+import { CorporateVersionCard } from "./components/version-selection/CorporateVersionCard"
+import { ThemeSelectionModal } from "./components/version-selection/ThemeSelectionModal"
+import { VersionBackground } from "./components/version-selection/VersionBackground"
 
-export function VersionSelectionPage() {
+
+/**
+ * Renders the enhanced version selection page for choosing between standard and corporate experiences, with optional theme customization.
+ *
+ * Displays selectable cards for each experience type, allows users to customize the theme via a modal, and persists preferences in cookies before navigating to the selected interface.
+ *
+ * @returns The version selection page React element.
+ */
+export function EnhancedVersionSelectionPage() {
   const router = useRouter()
-  const [selectedVersion, setSelectedVersion] = useState<"standard" | "corporate" | null>(null)
-
-  const handleVersionSelect = (version: "standard" | "corporate") => {
+  const [selectedVersion, setSelectedVersion] = useState<ExperienceType | null>(null)
+  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false)
+  
+  // Handle version selection
+  const handleVersionSelect = (version: ExperienceType) => {
     setSelectedVersion(version)
   }
 
-  const navigateToVersion = (version: "standard" | "corporate") => {
-    router.push(`/${version}`)
+  // Navigate to selected version with default theme
+const navigateToVersion = (version: ExperienceType) => {
+  // Save user preference
+  setCookie("preferred-version", version, 30)
+  
+  // Navigate to the selected version's main page
+  router.push(`/${version}`)
+}
+  
+  // Open theme selection modal
+  const openThemeModal = () => {
+    setIsThemeModalOpen(true)
   }
-
-  return (
+  
+  // Handle theme selection and navigation
+  const handleThemeSelect = (version: ExperienceType, theme: ThemeVariant) => {
+    // Save user preferences
+    setCookie("preferred-version", version, 30)
+    setCookie("preferred-theme", theme, 30)
+    
+    // Close modal
+    setIsThemeModalOpen(false)
+    
+    // Navigate to the selected version with theme parameter
+    router.push(`/${version}?theme=${theme}`)
+  }
+    return (
     <div className="relative min-h-screen flex flex-col bg-[#0a1025] text-white">
-      {/* Background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-[#0a1025]"></div>
-        <div className="absolute -top-[40%] -right-[10%] w-[70%] h-[70%] rounded-full bg-blue-900/10 blur-3xl"></div>
-        <div className="absolute top-[60%] -left-[5%] w-[40%] h-[40%] rounded-full bg-purple-900/10 blur-3xl"></div>
-      </div>
-
+      {/* Background */}
+      <VersionBackground />
+      
       {/* Header */}
-      <header className="relative z-10 border-b border-white/10 bg-black/20 backdrop-blur-sm">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Image src="/logo.png" alt="NeuralLiquid Logo" width={36} height={36} className="rounded-full" />
-            <span className="text-blue-400 font-semibold text-xl">NeuralLiquid</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <ThemeToggleClient />
-            <Link href="/auth/login">
-              <Button variant="outline" className="border-blue-500/30 text-white hover:bg-blue-500/20">
-                Sign In
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
-
+      <VersionHeader />
+      
       {/* Main Content */}
       <main className="flex-1 relative z-10">
         <div className="container mx-auto px-4 py-16 max-w-5xl">
@@ -63,114 +75,56 @@ export function VersionSelectionPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Standard Version - Blue Card */}
-            <Card
-              className={cn(
-                "p-6 bg-gradient-to-br from-blue-900/30 to-blue-800/10 border",
-                selectedVersion === "standard"
-                  ? "border-blue-500 ring-2 ring-blue-500/50"
-                  : "border-blue-500/20 hover:border-blue-500/50",
-                "rounded-lg transition-all duration-300 cursor-pointer h-full",
-              )}
-              onClick={() => handleVersionSelect("standard")}
-            >
-              <div className="flex items-center justify-center h-16 w-16 rounded-full bg-blue-500/20 mx-auto mb-6">
-                <User className="h-8 w-8 text-blue-400" />
-              </div>
-              <h2 className="text-2xl font-semibold text-center text-white mb-4">Standard Experience</h2>
-              <p className="text-white/70 text-center mb-6">
-                Perfect for individual traders and DeFi enthusiasts looking for a streamlined interface with powerful AI
-                insights
-              </p>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center text-white/80">
-                  <CheckCircle className="h-4 w-4 text-blue-500 mr-2" />
-                  Personalized dashboard
-                </li>
-                <li className="flex items-center text-white/80">
-                  <CheckCircle className="h-4 w-4 text-blue-500 mr-2" />
-                  AI-powered strategy recommendations
-                </li>
-                <li className="flex items-center text-white/80">
-                  <CheckCircle className="h-4 w-4 text-blue-500 mr-2" />
-                  Real-time analytics
-                </li>
-                <li className="flex items-center text-white/80">
-                  <CheckCircle className="h-4 w-4 text-blue-500 mr-2" />
-                  Multi-chain support
-                </li>
-              </ul>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => navigateToVersion("standard")}>
-                Select Standard Version
-              </Button>
-            </Card>
+            {/* Standard Version Card */}
+            <StandardVersionCard 
+              isSelected={selectedVersion === "standard"}
+              onSelect={() => handleVersionSelect("standard")}
+              onContinue={() => navigateToVersion("standard")}
+            />
 
-            {/* Corporate Version - Purple Card */}
-            <Card
-              className={cn(
-                "p-6 bg-gradient-to-br from-purple-900/30 to-purple-800/10 border",
-                selectedVersion === "corporate"
-                  ? "border-purple-500 ring-2 ring-purple-500/50"
-                  : "border-purple-500/20 hover:border-purple-500/50",
-                "rounded-lg transition-all duration-300 cursor-pointer h-full",
-              )}
-              onClick={() => handleVersionSelect("corporate")}
-            >
-              <div className="flex items-center justify-center h-16 w-16 rounded-full bg-purple-500/20 mx-auto mb-6">
-                <Building2 className="h-8 w-8 text-purple-400" />
-              </div>
-              <h2 className="text-2xl font-semibold text-center text-white mb-4">Corporate Experience</h2>
-              <p className="text-white/70 text-center mb-6">
-                Designed for institutional investors and teams with advanced features and comprehensive reporting tools
-              </p>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center text-white/80">
-                  <CheckCircle className="h-4 w-4 text-purple-500 mr-2" />
-                  Institutional-grade security
-                </li>
-                <li className="flex items-center text-white/80">
-                  <CheckCircle className="h-4 w-4 text-purple-500 mr-2" />
-                  Advanced portfolio optimization
-                </li>
-                <li className="flex items-center text-white/80">
-                  <CheckCircle className="h-4 w-4 text-purple-500 mr-2" />
-                  Compliance and audit features
-                </li>
-                <li className="flex items-center text-white/80">
-                  <CheckCircle className="h-4 w-4 text-purple-500 mr-2" />
-                  Enterprise API access
-                </li>
-              </ul>
-              <Button
-                className="w-full bg-purple-600 hover:bg-purple-700"
-                onClick={() => navigateToVersion("corporate")}
-              >
-                Select Corporate Version
-              </Button>
-            </Card>
+            {/* Corporate Version Card */}
+            <CorporateVersionCard 
+              isSelected={selectedVersion === "corporate"}
+              onSelect={() => handleVersionSelect("corporate")}
+              onContinue={() => navigateToVersion("corporate")}
+            />
           </div>
 
           {/* Continue Button */}
           <div className="mt-12 text-center">
             {selectedVersion && (
-              <Button
-                size="lg"
-                onClick={() => navigateToVersion(selectedVersion)}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-6 text-lg rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-              >
-                Continue to {selectedVersion === "standard" ? "Standard" : "Corporate"} Experience
-              </Button>
+              <div className="flex flex-col items-center gap-4">
+                <button
+                  onClick={openThemeModal}
+                  className="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-lg transition-all duration-300"
+                >
+                  Customize Theme Options
+                </button>
+                
+                <button
+                  onClick={() => navigateToVersion(selectedVersion)}
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-6 text-lg rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+                >
+                  Continue to {selectedVersion === "standard" ? "Standard" : "Corporate"} Experience
+                </button>
+              </div>
             )}
           </div>
         </div>
       </main>
-
+      
       {/* Footer */}
-      <footer className="relative z-10 py-8 border-t border-white/10">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-white/50 text-sm">© {new Date().getFullYear()} NeuralLiquid. All rights reserved.</p>
-        </div>
-      </footer>
+      <VersionFooter />
+      
+      {/* Theme Selection Modal */}
+      {selectedVersion && (
+        <ThemeSelectionModal
+          isOpen={isThemeModalOpen}
+          onClose={() => setIsThemeModalOpen(false)}
+          selectedVersion={selectedVersion}
+          onThemeSelect={handleThemeSelect}
+        />
+      )}
     </div>
   )
 }

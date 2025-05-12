@@ -1,20 +1,27 @@
 "use client"
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { VersionType } from "../../EnhancedVersionSelectionPage"
-
-// All available themes
-export type ThemeVariant = "light" | "dark" | "neuralliquid" | "corporate" | "veritasvault" | "cosmic"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { ExperienceType, ThemeVariant } from "@/src/types"
+import { useState } from "react"
 
 interface ThemeSelectionModalProps {
   isOpen: boolean
   onClose: () => void
-  selectedVersion: VersionType
-  onThemeSelect: (version: VersionType, theme: ThemeVariant) => void
+  selectedVersion: ExperienceType
+  onThemeSelect: (version: ExperienceType, theme: ThemeVariant) => void
 }
 
+/**
+ * Displays a modal dialog for selecting and applying a UI theme for the specified experience version.
+ *
+ * Presents a list of available themes as selectable cards. When a theme is selected and "Apply Theme" is clicked, invokes the provided callback with the selected version and theme. The modal can be closed with the "Cancel" button or by triggering the close callback.
+ *
+ * @param isOpen - Whether the modal is visible.
+ * @param onClose - Callback to close the modal.
+ * @param selectedVersion - The current experience version for which the theme is being selected.
+ * @param onThemeSelect - Callback invoked with the selected version and theme when a theme is applied.
+ */
 export function ThemeSelectionModal({ isOpen, onClose, selectedVersion, onThemeSelect }: ThemeSelectionModalProps) {
   const [selectedTheme, setSelectedTheme] = useState<ThemeVariant | null>(null)
   

@@ -1,0 +1,92 @@
+{
+  "pastProposals": [
+    {
+      "id": "VIP-22",
+      "title": "Liquidity Mining Program Extension",
+      "result": "passed",
+      "date": "2023-04-15",
+      "votesFor": 6250000,
+      "votesAgainst": 1750000,
+      "yourVote": "for",
+      "category": "treasury"
+    },
+    {
+      "id": "VIP-21",
+      "title": "Security Audit Provider Selection",
+      "result": "passed",
+      "date": "2023-03-28",
+      "votesFor": 5850000,
+      "votesAgainst": 1150000,
+      "yourVote": "for",
+      "category": "security"
+    },
+    {
+      "id": "VIP-20",
+      "title": "Protocol Upgrade to v2.5",
+      "result": "passed",
+      "date": "2023-03-10",
+      "votesFor": 5450000,
+      "votesAgainst": 2550000,
+      "yourVote": "for",
+      "category": "technical"
+    },
+    {
+      "id": "VIP-19",
+      "title": "Community Fund Allocation",
+      "result": "passed",
+      "date": "2023-02-22",
+      "votesFor": 4950000,
+      "votesAgainst": 3050000,
+      "yourVote": null,
+      "category": "treasury"
+    },
+    {
+      "id": "VIP-18",
+      "title": "Governance Parameter Adjustment",
+      "result": "failed",
+      "date": "2023-02-05",
+      "votesFor": 3750000,
+      "votesAgainst": 4250000,
+      "yourVote": "against",
+      "category": "governance"
+    }
+  ],
+  "activeProposals": [
+    {
+      "id": "VIP-23",
+      "title": "Treasury Diversification Strategy",
+      "description": "Proposal to diversify 15% of the treasury into stablecoins across multiple chains for improved liquidity management.",
+      "status": "active",
+      "timeRemaining": "2 days 14 hours",
+      "votesFor": 4250000,
+      "votesAgainst": 1750000,
+      "totalVotes": 10000000,
+      "quorum": 3000000,
+      "yourVote": null
+    },
+    {
+      "id": "VIP-24",
+      "title": "Protocol Fee Adjustment",
+      "description": "Reduce protocol fees from 0.3% to 0.25% to remain competitive with other liquidity providers in the market.",
+      "status": "active",
+      "timeRemaining": "4 days 8 hours",
+      "votesFor": 3850000,
+      "votesAgainst": 2150000,
+      "totalVotes": 10000000,
+      "quorum": 3000000,
+      "yourVote": "for"
+    },
+    {
+      "id": "VIP-25",
+      "title": "New Asset Integration",
+      "description": "Add support for ATOM and integrate with the Cosmos ecosystem to expand cross-chain capabilities.",
+      "status": "active",
+      "timeRemaining": "5 days 22 hours",
+      "votesFor": 2750000,
+      "votesAgainst": 1250000,
+      "totalVotes": 10000000,
+      "quorum": 3000000,
+      "yourVote": "against"
+    }
+  ]
+}

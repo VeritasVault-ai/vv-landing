@@ -3,24 +3,7 @@ import { standardLightTheme, standardDarkTheme } from './standard-theme';
 import { corporateLightTheme, corporateDarkTheme } from './corporate-theme';
 import { neuralliquidLightTheme, neuralliquidDarkTheme } from './neuralliquid-theme';
 import { veritasVaultLightTheme, veritasVaultDarkTheme } from './veritasvault-theme';
-
-// Define the main experience types
-export type ExperienceType = 'standard' | 'corporate';
-
-// Define theme variants for each experience
-export type StandardThemeVariant = 'standard' | 'neuralliquid';
-export type CorporateThemeVariant = 'corporate' | 'veritasvault';
-
-// Combined theme variant type
-export type ThemeVariant = StandardThemeVariant | CorporateThemeVariant;
-
-export type ColorMode = 'light' | 'dark';
-
-export type ThemeConfig = {
-  experience: ExperienceType;
-  variant: ThemeVariant;
-  colorMode: ColorMode;
-};
+import { ExperienceType, ThemeVariant, ColorMode } from '@/src/types';
 
 // Theme registry organized by experience and variant
 export const themeRegistry = {

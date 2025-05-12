@@ -2,8 +2,13 @@
 
 import { useTheme } from "next-themes"
 import { useEffect } from "react"
-import { EnhancedVersionSelectionPage } from "./EnhancedVersionSelectionPage"
+import { EnhancedVersionSelectionPage } from "./VersionSelectionPage"
 
+/**
+ * React component that sets the theme to "cosmic" on mount and renders the version selection page.
+ *
+ * @returns The version selection page component with the "cosmic" theme applied.
+ */
 export default function Home() {
   const { setTheme } = useTheme()
   

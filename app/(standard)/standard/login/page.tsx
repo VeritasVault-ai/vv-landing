@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { VersionAwareLoginForm } from "@/components/auth/version-aware-login-form"
 
 export const metadata: Metadata = {
@@ -6,6 +7,11 @@ export const metadata: Metadata = {
   description: "Sign in to your Tezos Liquidity Management account",
 }
 
+/**
+ * Renders the standard login page for the Tezos Liquidity Management application.
+ *
+ * Displays the application title, a subtitle, and a version-aware login form with a loading state while the form is being loaded asynchronously.
+ */
 export default function StandardLoginPage() {
   return (
     <div className="container flex h-screen w-full flex-col items-center justify-center">
@@ -16,7 +22,9 @@ export default function StandardLoginPage() {
           </h1>
           <p className="text-sm text-muted-foreground">Optimize your liquidity strategy</p>
         </div>
-        <VersionAwareLoginForm version="standard" redirectTo="/standard/dashboard" />
+        <Suspense fallback={<div className="p-4 text-center">Loading login form...</div>}>
+          <VersionAwareLoginForm version="standard" redirectTo="/standard/dashboard" />
+        </Suspense>
       </div>
     </div>
   )
