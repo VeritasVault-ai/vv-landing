@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes"
 import { useEffect } from "react"
-import { EnhancedVersionSelectionPage } from "./EnhancedVersionSelectionPage"
+import { EnhancedVersionSelectionPage } from "./VersionSelectionPage"
 
 export default function Home() {
   const { setTheme } = useTheme()

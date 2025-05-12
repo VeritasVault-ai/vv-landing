@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { VersionType } from "../../EnhancedVersionSelectionPage"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useState } from "react"
+import { VersionType } from "../../VersionSelectionPage"
 
 // All available themes
 export type ThemeVariant = "light" | "dark" | "neuralliquid" | "corporate" | "veritasvault" | "cosmic"

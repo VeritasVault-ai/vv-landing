@@ -1,6 +1,6 @@
-import { EventCategory, type EventName } from "./event-taxonomy"
-import { CUSTOM_DIMENSIONS } from "./custom-dimensions"
 import { VersionType } from "@/components/version-control"
+import { CUSTOM_DIMENSIONS } from "./custom-dimensions"
+import { EventCategory, type EventName } from "./event-taxonomy"
 
 // Function to track authentication events
 export function trackAuthEvent(
@@ -140,7 +140,7 @@ export function trackLiquidityEvent(
   }
 }
 
-xport interface NavigationEventData {
+export interface NavigationEventData {
   eventName: EventName,
     feature_name: string;
     tab_destination: VersionType;
