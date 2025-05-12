@@ -1,0 +1,26 @@
+{
+  "historicalPerformance": {
+    "timeRanges": ["1D", "1W", "1M", "3M", "6M", "1Y", "YTD", "ALL"],
+    "selectedRange": "1M",
+    "data": [
+      { "date": "2023-03-01", "value": 11200000 },
+      { "date": "2023-03-08", "value": 11350000 },
+      { "date": "2023-03-15", "value": 11500000 },
+      { "date": "2023-03-22", "value": 11800000 },
+      { "date": "2023-03-29", "value": 11950000 },
+      { "date": "2023-04-05", "value": 12100000 },
+      { "date": "2023-04-12", "value": 12250000 },
+      { "date": "2023-04-19", "value": 12400000 }
+    ]
+  },
+  "topPerformers": [
+    { "asset": "AAVE", "performance": 12.4 },
+    { "asset": "ETH", "performance": 8.7 },
+    { "asset": "WBTC", "performance": 6.2 }
+  ],
+  "underperformers": [
+    { "asset": "LINK", "performance": -2.1 },
+    { "asset": "UNI", "performance": -1.4 },
+    { "asset": "COMP", "performance": -0.8 }
+  ]
+}
