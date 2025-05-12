@@ -3,7 +3,7 @@ import { standardLightTheme, standardDarkTheme } from './standard-theme';
 import { corporateLightTheme, corporateDarkTheme } from './corporate-theme';
 import { neuralliquidLightTheme, neuralliquidDarkTheme } from './neuralliquid-theme';
 import { veritasVaultLightTheme, veritasVaultDarkTheme } from './veritasvault-theme';
-import { ExperienceType } from '@/src/types';
+import { ExperienceType, ThemeVariant, ColorMode } from '@/src/types';
 
 // Theme registry organized by experience and variant
 export const themeRegistry = {
