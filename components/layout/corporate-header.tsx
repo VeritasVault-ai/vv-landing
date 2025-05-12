@@ -26,6 +26,13 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { CorporateMobileHeader } from "./corporate-mobile-header"
 
+/**
+ * Renders a responsive corporate website header with dynamic navigation, authentication controls, and theme toggling.
+ *
+ * The header adapts its navigation and authentication UI based on the user's authentication status, supports both desktop and mobile layouts, and provides dialogs for login and registration. Navigation items are dynamically fetched and categorized for display. Includes analytics tracking for authentication actions.
+ *
+ * @returns The corporate header React element.
+ */
 export function CorporateHeader() {
   const pathname = usePathname()
   const router = useRouter()

@@ -16,6 +16,22 @@ interface VersionControlProps {
   disableNavigation?: boolean
 }
 
+/****
+ * Renders UI controls for selecting between "standard" and "corporate" experience versions, supporting selector, switcher, and enhanced modes.
+ *
+ * Depending on the mode, displays either toggle buttons, side-by-side buttons, or large outlined buttons for version selection. Updates the active version state, persists the selection in local storage and cookies, triggers analytics tracking, and navigates to the corresponding route unless navigation is disabled.
+ *
+ * @param currentVersion - The currently active experience version, if controlled externally.
+ * @param mode - The UI mode for version selection: "selector", "switcher", or "enhanced".
+ * @param className - Additional CSS classes for custom styling.
+ * @param onVersionSelect - Optional callback invoked when a version is selected.
+ * @param disableNavigation - If true, disables navigation and storage updates on version change.
+ *
+ * @returns The rendered version control UI, or null if in enhanced mode before mounting.
+ *
+ * @remark
+ * In "enhanced" mode, the component returns null on the server to prevent hydration mismatch, rendering only after mounting on the client.
+ ****/
 export function VersionControl({ 
   currentVersion, 
   mode = "selector", 

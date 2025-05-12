@@ -6,6 +6,13 @@ import { getCookie, setCookie } from "@/lib/cookies"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ExperienceType, ThemeVariant } from "@/src/types"
 
+/**
+ * React hook for managing user experience and theme preferences using cookies, URL parameters, and navigation.
+ *
+ * Initializes experience and theme from cookies or URL parameters, and provides functions to update these preferences and navigate accordingly.
+ *
+ * @returns An object containing the current experience, theme, loading state, and functions to update experience, theme, or both together.
+ */
 export function useExperienceTheme() {
   const { theme, setTheme } = useTheme()
   const router = useRouter()

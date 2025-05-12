@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   description: "Sign in to your Tezos Liquidity Management account",
 }
 
+/**
+ * Renders the standard login page for the Tezos Liquidity Management application.
+ *
+ * Displays the application title, a subtitle, and a version-aware login form with a loading state while the form is being loaded asynchronously.
+ */
 export default function StandardLoginPage() {
   return (
     <div className="container flex h-screen w-full flex-col items-center justify-center">

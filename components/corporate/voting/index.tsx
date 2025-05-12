@@ -8,6 +8,11 @@ import { ActiveProposals } from "./active-proposals"
 import { VotingHistory } from "./voting-history"
 import { VotingOverview } from "./voting-overview"
 
+/**
+ * Renders a governance voting dashboard with tabbed navigation for overview, active proposals, and voting history.
+ *
+ * Displays real-time voting updates and allows users to switch between different views related to protocol governance.
+ */
 export function DashboardVoting() {
   const [activeTab, setActiveTab] = useState("overview")
   

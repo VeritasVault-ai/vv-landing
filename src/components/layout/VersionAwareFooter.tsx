@@ -6,6 +6,11 @@ import { Footer } from './Footer'
 import { useTheme } from '@/lib/context/ThemeProvider'
 import { getFooterNavigationByExperience } from '@/lib/navigation'
 
+/**
+ * Renders a footer component with navigation and branding tailored to the current user experience.
+ *
+ * Selects navigation links and brand information based on the active experience context, and provides a fixed newsletter subscription API endpoint to the footer.
+ */
 export function VersionAwareFooter() {
   const { experience } = useTheme()
   const nav = getFooterNavigationByExperience(experience)

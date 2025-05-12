@@ -7,6 +7,11 @@ interface VoteProgressProps {
   proposal: ActiveProposal
 }
 
+/**
+ * Displays a visual summary of voting progress for a proposal, including vote percentages, quorum status, and a progress bar.
+ *
+ * Renders the proportion of votes for and against, indicates whether quorum has been reached, and shows both percentage and absolute counts for each voting option.
+ */
 export function VoteProgress({ proposal }: VoteProgressProps) {
   const votesForPercentage = (proposal.votesFor / proposal.totalVotes) * 100
   const votesAgainstPercentage = (proposal.votesAgainst / proposal.totalVotes) * 100

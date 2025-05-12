@@ -23,6 +23,13 @@ const ProposalSchema = z.object({
 });
 const ProposalsArraySchema = z.array(ProposalSchema);
 
+/**
+ * Handles GET requests to fetch paginated active proposals for authenticated users.
+ *
+ * Parses and validates pagination parameters from the query string, checks user authentication, retrieves active proposals, and validates the response data. Returns appropriate HTTP error responses for invalid input, authentication failure, data validation errors, or unexpected server errors.
+ *
+ * @returns A JSON response containing the current page, limit, and an array of active proposals, or an error message with the corresponding HTTP status code.
+ */
 export async function GET(request: NextRequest) {
   // Parse and validate pagination query
   const url = new URL(request.url);

@@ -12,7 +12,9 @@ import CorporateHeader from './CorporateHeader'
 import StandardHeader from './StandardHeader'
 
 /**
- * Version-aware header that picks the correct variant based on 'experience' from context
+ * Renders a header component variant based on the current user experience context.
+ *
+ * Selects and displays either a corporate or standard header, providing navigation and authentication-related handlers tailored to the user's session and experience type.
  */
 export function VersionAwareHeader() {
   const { experience } = useTheme()

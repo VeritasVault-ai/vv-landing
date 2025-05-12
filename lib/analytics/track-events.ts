@@ -2,7 +2,14 @@ import { ExperienceType } from "@/src/components/VersionControl"
 import { CUSTOM_DIMENSIONS } from "./custom-dimensions"
 import { EventCategory, type EventName } from "./event-taxonomy"
 
-// Function to track authentication events
+/**
+ * Tracks an authentication-related event and sends it to Google Analytics.
+ *
+ * Enhances the event with the authentication category and, if the authentication method was successful, maps the method to a custom dimension for successful login methods.
+ *
+ * @param eventName - The name of the authentication event to track.
+ * @param params - Additional event parameters, such as authentication method, success status, error message, or provider.
+ */
 export function trackAuthEvent(
   eventName: EventName,
   params: {
@@ -90,7 +97,14 @@ export function trackStrategyEvent(
   }
 }
 
-// Function to track liquidity events
+/**
+ * Tracks a liquidity-related event and sends it to Google Analytics with appropriate custom dimensions.
+ *
+ * Enhances the event parameters with the `LIQUIDITY` event category and maps relevant liquidity details (such as pool name, amount, protocol, rewards amount, and pool ID) to custom dimensions based on the event type before dispatching.
+ *
+ * @param eventName - The name of the liquidity event (e.g., "add_liquidity", "deposit", "claim_rewards").
+ * @param params - Optional event parameters, including pool and protocol details, amounts, and rewards information.
+ */
 export function trackLiquidityEvent(
   eventName: EventName,
   params: {
@@ -146,7 +160,13 @@ export interface NavigationEventData {
     tab_destination: ExperienceType;
 }
 
-// Function to track navigation events
+/**
+ * Tracks a navigation event by sending it to Google Analytics with relevant custom dimensions.
+ *
+ * Enhances the event with navigation-specific parameters such as source, destination, section, feature name, and tab destination before dispatching. If no event name is provided, defaults to `'navigation_action'`.
+ *
+ * @param params - Navigation event details, including optional event name, source, destination, section, feature name, and tab destination.
+ */
 export function trackNavigationEvent(
   params: {
     eventName?: string

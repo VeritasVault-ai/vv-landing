@@ -19,6 +19,20 @@ interface CorporateMobileHeaderProps {
   onLogout: () => void
 }
 
+/**
+ * Renders a mobile-friendly corporate header navigation menu with support for featured links, grouped navigation, and authentication actions.
+ *
+ * Displays featured navigation items at the top, followed by regular navigation links and dropdown groups. Shows login and registration buttons for unauthenticated users, or an account menu with dashboard, profile, settings, and sign-out options for authenticated users. Active links are highlighted based on the current pathname, and menu actions trigger provided callbacks.
+ *
+ * @param headerNav - Navigation items to display, including featured and grouped links.
+ * @param pathname - The current URL path used to highlight active navigation links.
+ * @param isAuthenticated - Indicates if the user is currently authenticated.
+ * @param status - The authentication status, used to control loading and button visibility.
+ * @param onClose - Callback invoked when a navigation link is clicked to close the menu.
+ * @param onLoginClick - Callback for the login button.
+ * @param onRegisterClick - Callback for the registration button.
+ * @param onLogout - Callback for the sign-out action.
+ */
 export function CorporateMobileHeader({
   headerNav,
   pathname,

@@ -15,6 +15,13 @@ interface ProposalCardProps {
   proposal: ActiveProposal
 }
 
+/**
+ * Renders a card interface for an active proposal, allowing users to view details and submit or change their vote.
+ *
+ * Displays the proposal's title, description, ID, remaining time, and current voting progress. Users can vote "for," "against," or remove their vote, with real-time feedback and notifications on submission status.
+ *
+ * @param proposal - The active proposal to display and interact with.
+ */
 export function ProposalCard({ proposal }: ProposalCardProps) {
   const [isVoting, setIsVoting] = useState(false)
   
