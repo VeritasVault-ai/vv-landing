@@ -39,9 +39,44 @@ export interface ProposalsData { pastProposals: PastProposal[]; activeProposals:
 
 class VotingRepository {
   private basePath: string;
++  private cache: {
++    overview?: { data: VotingOverview; timestamp: number };
++    proposals?: { data: ProposalsData; timestamp: number };
++  };
++  private readonly CACHE_TTL = 60000; // 1 minute in milliseconds
+
   constructor() {
     this.basePath = path.join(process.cwd(), 'data', 'voting');
++    this.cache = {};
   }
+
++  private isCacheValid(key: 'overview' | 'proposals'): boolean {
++    const cacheEntry = this.cache[key];
++    if (!cacheEntry) return false;
++    return Date.now() - cacheEntry.timestamp < this.CACHE_TTL;
++  }
+
+  async getVotingOverview(): Promise<VotingOverview> {
++    if (this.isCacheValid('overview')) {
++      return this.cache.overview!.data;
++    }
+    try {
+      const data = await fs.readFile(
+        path.join(this.basePath, 'overview.json'),
+        'utf8'
+      );
+-      return JSON.parse(data) as VotingOverview;
++      const parsed = JSON.parse(data) as VotingOverview;
++      this.cache.overview = { data: parsed, timestamp: Date.now() };
++      return parsed;
+    } catch (error) {
+      console.error('Error reading voting overview data:', error);
+      throw new Error('Failed to fetch voting overview data');
+    }
+  }
+
+  // …other methods (e.g. getProposals) would be updated similarly
+}
 
   async getVotingOverview(): Promise<VotingOverview> {
     try {
