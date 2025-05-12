@@ -1,14 +1,12 @@
 "use client"
 
 import { ReactNode, useEffect, Suspense } from "react"
-import { ThemeProvider } from "@/components/theme-provider"
 import { CorporateHeader } from "@/components/layout/corporate-header"
 import { SimpleFooter } from "@/components/ui/simple-footer"
 import { CorporateFooter } from "@/components/layout/corporate-footer"
 import { useTheme } from "next-themes"
 import { useSearchParams } from "next/navigation"
 import { getCookie, setCookie } from "@/lib/cookies"
-import { ThemeScript } from "@/components/theme-script"
 
 // Create a client component that uses the searchParams hook
 function ThemeHandler() {

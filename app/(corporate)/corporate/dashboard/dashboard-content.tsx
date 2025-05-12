@@ -1,6 +1,19 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { AlertTriangle, ArrowUpRight, BarChart3, Download, TrendingUp, Calculator, Vote } from "lucide-react"
+import { DashboardOverview } from "@/components/corporate/dashboard-overview"
+import { DashboardPerformance } from "@/components/corporate/dashboard-performance"
+import { ModelResults } from "@/components/corporate/model-results"
+import { DashboardVoting } from "@/components/corporate/voting"
+
 export function DashboardContent() {
+  const handleTabChange = (value: string) => {
+    // You can add analytics tracking here if needed
+  }
+
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
@@ -51,49 +64,110 @@ export function DashboardContent() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-6">Corporate Dashboard</h1>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Corporate Dashboard</h1>
+            <p className="text-slate-600 dark:text-slate-400">Portfolio overview and performance metrics</p>
+          </div>
+          <div className="flex gap-3 mt-4 md:mt-0">
+            <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              <span>Export Report</span>
+            </Button>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Portfolio Value</h2>
-            <p className="text-3xl font-bold text-blue-700 dark:text-blue-400">$12.4M</p>
-            <p className="text-sm text-green-600 dark:text-green-400 mt-2">+2.4% from last week</p>
-          </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription>Portfolio Value</CardDescription>
+              <CardTitle className="text-3xl font-bold flex items-center">
+                $12.4M
+                <span className="text-green-600 dark:text-green-500 text-sm font-normal ml-2 flex items-center">
+                  <ArrowUpRight className="h-4 w-4 mr-1" />
+                  2.4%
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Updated 10 minutes ago</p>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Active Strategies</h2>
-            <p className="text-3xl font-bold text-blue-700 dark:text-blue-400">7</p>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">3 optimized this week</p>
-          </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription>Active Strategies</CardDescription>
+              <CardTitle className="text-3xl font-bold flex items-center">
+                7
+                <span className="text-blue-600 dark:text-blue-500 text-sm font-normal ml-2">
+                  3 optimized
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Last updated today</p>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Risk Score</h2>
-            <p className="text-3xl font-bold text-blue-700 dark:text-blue-400">Low</p>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">Within institutional parameters</p>
-          </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription>Risk Score</CardDescription>
+              <CardTitle className="text-3xl font-bold flex items-center">
+                Low
+                <span className="text-green-600 dark:text-green-500 text-sm font-normal ml-2 flex items-center">
+                  <AlertTriangle className="h-4 w-4 mr-1" />
+                  Optimal
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Within institutional parameters</p>
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Performance Overview</h2>
-            <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded flex items-center justify-center">
-              <p className="text-slate-500 dark:text-slate-400">Performance Chart</p>
-            </div>
-          </div>
+        <Tabs defaultValue="overview" className="space-y-6" onValueChange={handleTabChange}>
+          <TabsList>
+            <TabsTrigger value="overview" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              <span>Overview</span>
+            </TabsTrigger>
+            <TabsTrigger value="performance" className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              <span>Performance</span>
+            </TabsTrigger>
+            <TabsTrigger value="models" className="flex items-center gap-2">
+              <Calculator className="h-4 w-4" />
+              <span>Model Results</span>
+            </TabsTrigger>
+            <TabsTrigger value="voting" className="flex items-center gap-2">
+              <Vote className="h-4 w-4" />
+              <span>Governance</span>
+            </TabsTrigger>
+          </TabsList>
 
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Asset Allocation</h2>
-            <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded flex items-center justify-center">
-              <p className="text-slate-500 dark:text-slate-400">Allocation Chart</p>
-            </div>
-          </div>
-        </div>
+          <TabsContent value="overview">
+            <DashboardOverview />
+          </TabsContent>
+
+          <TabsContent value="performance">
+            <DashboardPerformance />
+          </TabsContent>
+
+          <TabsContent value="models">
+            <ModelResults />
+          </TabsContent>
+          
+          <TabsContent value="voting">
+            <DashboardVoting />
+          </TabsContent>
+        </Tabs>
       </main>
 
       <footer className="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-6">
         <div className="container mx-auto px-4">
           <p className="text-center text-slate-600 dark:text-slate-400">
-            &copy; 2023 VeritasVault.ai. All rights reserved.
+            &copy; 2025 VeritasVault.ai. All rights reserved.
           </p>
         </div>
       </footer>
