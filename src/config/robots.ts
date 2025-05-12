@@ -22,9 +22,15 @@ const configs: Record<Env, MetadataRoute.Robots> = {
 
 export function getRobotsConfig(): RobotsConfig {
   const base = configs[ENV] ?? configs.production;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  if (!appUrl) {
+    console.warn('NEXT_PUBLIC_APP_URL is not defined. Sitemap URL may be incorrect.');
+  }
+
   return {
     ...base,
-    sitemap: `${process.env.NEXT_PUBLIC_APP_URL}/sitemap.xml`,
+    sitemap: appUrl ? `${appUrl}/sitemap.xml` : undefined,
     env: ENV,
   };
 }
