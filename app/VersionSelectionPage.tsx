@@ -1,24 +1,50 @@
 "use client"
 
+import { ThemeToggleClient } from "@/components/theme-toggle-client"
+import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { useState } from "react"
+import { VersionControl, VersionType } from "@/components/version-control"
+import { trackNavigationEvent } from "@/lib/analytics/track-events"
+import { cn } from "@/lib/utils"
+import { Building2, CheckCircle, User } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Building2, User, CheckCircle } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ThemeToggleClient } from "@/components/theme-toggle-client"
-import { cn } from "@/lib/utils"
+import { useEffect, useState } from "react"
 
 export function VersionSelectionPage() {
   const router = useRouter()
-  const [selectedVersion, setSelectedVersion] = useState<"standard" | "corporate" | null>(null)
+  const [selectedVersion, setSelectedVersion] = useState<VersionType | null>(null)
+  const [mounted, setMounted] = useState(false)
 
-  const handleVersionSelect = (version: "standard" | "corporate") => {
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+    
+    // Try to get from localStorage
+    const storedVersion = localStorage.getItem("site-version") as VersionType | null
+    if (storedVersion === "standard" || storedVersion === "corporate") {
+      setSelectedVersion(storedVersion)
+    }
+  }, [])
+
+  const handleVersionSelect = (version: VersionType) => {
     setSelectedVersion(version)
   }
 
-  const navigateToVersion = (version: "standard" | "corporate") => {
+
+  const navigateToVersion = (version: VersionType) => {
+    // Store the preference in localStorage and cookies
+    localStorage.setItem("site-version", version)
+    document.cookie = `site-version=${version}; path=/; max-age=${60 * 60 * 24 * 365}` // 1 year
+
+    // Track the version selection
+    trackNavigationEvent({
+      feature_name: "version_selection",
+      tab_destination: version,
+    })
+
+    // Navigate to the selected version
     router.push(`/${version}`)
   }
 
@@ -150,9 +176,9 @@ export function VersionSelectionPage() {
             </Card>
           </div>
 
-          {/* Continue Button */}
+          {/* Continue Button with Enhanced Version Control */}
           <div className="mt-12 text-center">
-            {selectedVersion && (
+            {selectedVersion ? (
               <Button
                 size="lg"
                 onClick={() => navigateToVersion(selectedVersion)}
@@ -160,6 +186,18 @@ export function VersionSelectionPage() {
               >
                 Continue to {selectedVersion === "standard" ? "Standard" : "Corporate"} Experience
               </Button>
+            ) : (
+              <div className="mt-8">
+                <p className="text-white/70 mb-4">Or use our enhanced version selector:</p>
+                {mounted && (
+                  <VersionControl 
+                    mode="enhanced" 
+                    className="mx-auto inline-block" 
+                    onVersionSelect={handleVersionSelect}
+                    disableNavigation={true}
+                  />
+                )}
+              </div>
             )}
           </div>
         </div>

@@ -23,7 +23,7 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { CorporateMobileHeader } from "./corporate-mobile-header"
 
 export function CorporateHeader() {
@@ -35,12 +35,18 @@ export function CorporateHeader() {
   const { trackEvent } = useAnalytics()
   const { logout } = useAuth()
   
+  // Client-side only rendering for session
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
   // Handle session safely with fallback for server-side rendering
   const { data: session, status } = useSession()
-  const isAuthenticated = status === 'authenticated'
+  const isAuthenticated = mounted && status === 'authenticated'
   
-  // Only fetch navigation items when session status is known
-  const headerNav = getHeaderNavigationByExperience('corporate', isAuthenticated)
+  // Only fetch navigation items when component is mounted
+  const headerNav = mounted ? getHeaderNavigationByExperience('corporate', isAuthenticated) : []
   
   // Separate featured items from regular items
   const featuredItems = headerNav.filter(item => item.featured)

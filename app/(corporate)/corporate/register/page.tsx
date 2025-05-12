@@ -1,8 +1,13 @@
 import type { Metadata } from "next"
+import { Metadata } from "next"
+import { VersionAwareRegisterFormWrapper } from "@/components/auth/version-aware-register-form-wrapper"
+import { CorporateLayout } from "@/components/layout/corporate-layout"
 
 export const metadata: Metadata = {
   title: "Register | VeritasVault.ai",
   description: "Create a new VeritasVault.ai corporate account.",
+  title: "Register for Corporate Account | VeritasVault",
+  description: "Create your corporate account to access advanced features and enterprise solutions.",
 }
 
 export default function CorporateRegisterPage() {
@@ -150,5 +155,15 @@ export default function CorporateRegisterPage() {
         </div>
       </footer>
     </>
+    <CorporateLayout>
+      <div className="container flex flex-col items-center justify-center py-10 md:py-16">
+        <div className="mx-auto w-full max-w-md">
+          <VersionAwareRegisterFormWrapper 
+            version="corporate" 
+            redirectTo="/corporate/dashboard" 
+          />
+        </div>
+      </div>
+    </CorporateLayout>
   )
 }
