@@ -3,10 +3,26 @@ import path from 'path';
 import { promises as fs } from 'fs';
 
 // Define types for our data
-export interface VotingPower { percentage: number; votes: number; totalVotes: number; }
-export interface Participation { participated: number; totalProposals: number; rate: number; comparedToAverage: number; }
-export interface VotingPowerDistribution { name: string; value: number; }
-export interface Delegation { address: string; timeAgo: string; votes: number; }
+export interface VotingPower {
+  percentage: number;
+  votes: number;
+  totalVotes: number;
+}
+export interface Participation {
+  participated: number;
+  totalProposals: number;
+  rate: number;
+  comparedToAverage: number;
+}
+export interface VotingPowerDistribution {
+  name: string;
+  value: number;
+}
+export interface Delegation {
+  address: string;
+  timeAgo: string;
+  votes: number;
+}
 export interface VotingOverview {
   votingPower: VotingPower;
   participation: Participation;
@@ -35,55 +51,42 @@ export interface ActiveProposal {
   quorum: number;
   yourVote: 'for' | 'against' | null;
 }
-export interface ProposalsData { pastProposals: PastProposal[]; activeProposals: ActiveProposal[]; }
+export interface ProposalsData {
+  pastProposals: PastProposal[];
+  activeProposals: ActiveProposal[];
+}
 
 class VotingRepository {
   private basePath: string;
-+  private cache: {
-+    overview?: { data: VotingOverview; timestamp: number };
-+    proposals?: { data: ProposalsData; timestamp: number };
-+  };
-+  private readonly CACHE_TTL = 60000; // 1 minute in milliseconds
+  private cache: {
+    overview?: { data: VotingOverview; timestamp: number };
+    proposals?: { data: ProposalsData; timestamp: number };
+  } = {};
+  private readonly CACHE_TTL = 60_000; // 1 minute
 
   constructor() {
     this.basePath = path.join(process.cwd(), 'data', 'voting');
-+    this.cache = {};
   }
 
-+  private isCacheValid(key: 'overview' | 'proposals'): boolean {
-+    const cacheEntry = this.cache[key];
-+    if (!cacheEntry) return false;
-+    return Date.now() - cacheEntry.timestamp < this.CACHE_TTL;
-+  }
+  private isCacheValid(key: 'overview' | 'proposals'): boolean {
+    const entry = this.cache[key];
+    return !!entry && (Date.now() - entry.timestamp < this.CACHE_TTL);
+  }
 
   async getVotingOverview(): Promise<VotingOverview> {
-+    if (this.isCacheValid('overview')) {
-+      return this.cache.overview!.data;
-+    }
+    if (this.isCacheValid('overview')) {
+      return this.cache.overview!.data;
+    }
     try {
-      const data = await fs.readFile(
+      const raw = await fs.readFile(
         path.join(this.basePath, 'overview.json'),
         'utf8'
       );
--      return JSON.parse(data) as VotingOverview;
-+      const parsed = JSON.parse(data) as VotingOverview;
-+      this.cache.overview = { data: parsed, timestamp: Date.now() };
-+      return parsed;
-    } catch (error) {
-      console.error('Error reading voting overview data:', error);
-      throw new Error('Failed to fetch voting overview data');
-    }
-  }
-
-  // …other methods (e.g. getProposals) would be updated similarly
-}
-
-  async getVotingOverview(): Promise<VotingOverview> {
-    try {
-      const data = await fs.readFile(path.join(this.basePath, 'overview.json'), 'utf8');
-      return JSON.parse(data) as VotingOverview;
-    } catch (error) {
-      console.error('Error reading voting overview data:', error);
+      const data = JSON.parse(raw) as VotingOverview;
+      this.cache.overview = { data, timestamp: Date.now() };
+      return data;
+    } catch (err) {
+      console.error('Error reading voting overview data:', err);
       throw new Error('Failed to fetch voting overview data');
     }
   }
@@ -93,67 +96,65 @@ class VotingRepository {
       return this.cache.proposals!.data;
     }
     try {
-      const data = await fs.readFile(path.join(this.basePath, 'proposals.json'), 'utf8');
-      const parsed = JSON.parse(data) as ProposalsData;
-      this.cache.proposals = { data: parsed, timestamp: Date.now() };
-      return parsed;
-    } catch (error) {
-      console.error('Error reading proposals data:', error);
+      const raw = await fs.readFile(
+        path.join(this.basePath, 'proposals.json'),
+        'utf8'
+      );
+      const data = JSON.parse(raw) as ProposalsData;
+      this.cache.proposals = { data, timestamp: Date.now() };
+      return data;
+    } catch (err) {
+      console.error('Error reading proposals data:', err);
       throw new Error('Failed to fetch proposals data');
     }
   }
 
-  /**
-   * Update a vote on an active proposal, adjusting tallies and totalVotes
-   */
+  async getActiveProposals(): Promise<ActiveProposal[]> {
+    try {
+      const { activeProposals } = await this.getAllProposals();
+      return activeProposals;
+    } catch (err) {
+      console.error('Error reading active proposals data:', err);
+      throw new Error('Failed to fetch active proposals data');
+    }
+  }
+
+  async getPastProposals(): Promise<PastProposal[]> {
+    try {
+      const { pastProposals } = await this.getAllProposals();
+      return pastProposals;
+    } catch (err) {
+      console.error('Error reading past proposals data:', err);
+      throw new Error('Failed to fetch past proposals data');
+    }
+  }
+
   async updateVote(
     proposalId: string,
     newVote: 'for' | 'against' | null
   ): Promise<ActiveProposal[]> {
     try {
       const allData = await this.getAllProposals();
-      const updatedActive = allData.activeProposals.map((proposal) => {
-        if (proposal.id !== proposalId) return proposal;
-
-        // Clone for mutation
-        let votesFor = proposal.votesFor;
-        let votesAgainst = proposal.votesAgainst;
-        const prevVote = proposal.yourVote;
-
-        // Decrement previous vote tally
-        if (prevVote === 'for') votesFor = Math.max(votesFor - 1, 0);
-        if (prevVote === 'against') votesAgainst = Math.max(votesAgainst - 1, 0);
-
-        // Increment new vote tally
-        if (newVote === 'for') votesFor += 1;
-        if (newVote === 'against') votesAgainst += 1;
-
-        // Recalculate totalVotes
+      const updatedActive = allData.activeProposals.map((p) => {
+        if (p.id !== proposalId) return p;
+        let { votesFor, votesAgainst, yourVote } = p;
+        if (yourVote === 'for') votesFor = Math.max(votesFor - 1, 0);
+        if (yourVote === 'against') votesAgainst = Math.max(votesAgainst - 1, 0);
+        if (newVote === 'for') votesFor++;
+        if (newVote === 'against') votesAgainst++;
         const totalVotes = votesFor + votesAgainst;
-
-        return {
-          ...proposal,
-          votesFor,
-          votesAgainst,
-          totalVotes,
-          yourVote: newVote,
-        };
+        return { ...p, votesFor, votesAgainst, totalVotes, yourVote: newVote };
       });
-
-      // Persist updated data
       const updatedData: ProposalsData = {
         ...allData,
         activeProposals: updatedActive,
       };
-      await fs.writeFile(
-        path.join(this.basePath, 'proposals.json'),
-        JSON.stringify(updatedData, null, 2),
-        'utf8'
-      );
-
+      const file = path.join(this.basePath, 'proposals.json');
+      await fs.writeFile(file, JSON.stringify(updatedData, null, 2), 'utf8');
+      this.cache.proposals = { data: updatedData, timestamp: Date.now() };
       return updatedActive;
-    } catch (error) {
-      console.error('Error updating vote:', error);
+    } catch (err) {
+      console.error('Error updating vote:', err);
       throw new Error('Failed to update vote');
     }
   }

@@ -11,11 +11,12 @@ import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronDown, Menu, User, X } from 'lucide-react'
-import { ThemeToggle } from '@/components/theme-toggle'
+import { ThemeToggle } from '@/src/components/ThemeToggle'
 import { LoginDialog } from '@/components/auth/login-dialog'
 import { RegisterDialog } from '@/components/auth/register-dialog'
 import { CorporateMobileHeader } from './CorporateMobileHeader'
 import { cn } from '@/lib/utils'
+import { EventCategory } from '@/lib/analytics/event-taxonomy'
 
 /**
  * Renders the responsive corporate website header with navigation, authentication controls, and theme toggling.
@@ -47,13 +48,15 @@ export function CorporateHeader() {
   const dropdownItems = headerNav.filter(i => i.type === 'dropdown' && i.items)
 
   const handleLoginClick = () => {
-    trackEvent({ action:'login_click', category:'nav', label:'corporate' })
+    trackEvent('login_click', EventCategory.NAVIGATION, { label: 'corporate' })
     setLoginDialogOpen(true)
   }
+
   const handleRegisterClick = () => {
-    trackEvent({ action:'register_click', category:'nav', label:'corporate' })
+    trackEvent('register_click', EventCategory.NAVIGATION, { label: 'corporate' })
     setRegisterDialogOpen(true)
   }
+  
   const handleLogout = async () => { await logout() }
 
   return (

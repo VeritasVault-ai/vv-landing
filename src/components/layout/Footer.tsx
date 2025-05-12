@@ -97,7 +97,9 @@ export function Footer({ brand, nav, subscribeApi }: FooterProps) {
           )}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          {Object.entries(nav).map(([section, items]) => (
+          {Object.entries(nav)
+            .filter(([section]) => section !== 'social')
+            .map(([section, items]) => (
             <div key={section}>
               <h3 className="mb-4 text-lg font-semibold capitalize">{section}</h3>
               <ul className="space-y-2 text-sm">

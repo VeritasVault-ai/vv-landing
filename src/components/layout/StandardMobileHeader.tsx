@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { HeaderNavigationItem, NavigationSubItem } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 import { useAnalytics } from '@/hooks/use-analytics'
++import { EventCategory } from '@/lib/analytics/constants' 
 import Link from 'next/link'
 
 export interface StandardMobileHeaderProps {

@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation"
 import { getCookie, setCookie } from "@/lib/cookies"
 import { VersionAwareHeader } from "@/src/components/layout/VersionAwareHeader"
 import { ThemeProvider } from "@/src/lib/hooks/context/ThemeProvider"
+import { VersionAwareFooter } from "@/src/components/layout/VersionAwareFooter"
 
 /**
  * Provides the corporate-themed layout for pages, wrapping content with a theme provider and version-aware headers.
@@ -20,7 +21,7 @@ export default function CorporateLayout({ children }) {
     <ThemeProvider defaultExperience="corporate">
       <VersionAwareHeader/>
       <main>{children}</main>
-      <VersionAwareHeader/>
+      <VersionAwareFooter/>
     </ThemeProvider>
   )
 }
