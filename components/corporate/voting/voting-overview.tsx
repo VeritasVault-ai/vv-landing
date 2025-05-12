@@ -1,23 +1,49 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
+import { VotingOverview as VotingOverviewType } from "@/lib/repositories/voting-repository"
+import { votingService } from "@/lib/services/voting-service"
+import { votingEvents } from "@/lib/events/voting-events"
 
-// Sample data for the voting power distribution chart
-const votingPowerData = [
-  { name: "Your Voting Power", value: 12.5 },
-  { name: "Other Delegates", value: 45.3 },
-  { name: "Undelegated", value: 42.2 },
-]
-
+// Colors for the chart
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"]
 
 export function VotingOverview() {
+  const [data, setData] = useState<VotingOverviewType | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const result = await votingService.getVotingOverview()
+        setData(result)
+      } catch (err) {
+        console.error('Error fetching voting overview:', err)
+        setError('Failed to load voting data. Please try again later.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+
+    // Subscribe to voting-power-changed events for real-time updates
+    const unsubscribe = votingEvents.subscribe('voting-power-changed', ({ overview }) => {
+      setData(overview)
+    })
+
+    // Clean up subscription when component unmounts
+    return () => unsubscribe()
+  }, [])
+
   // Create a config object for the chart
-  const chartConfig = votingPowerData.reduce(
+  const chartConfig = data?.votingPowerDistribution?.reduce(
     (acc, item, index) => {
       acc[item.name] = {
         label: item.name,
@@ -26,7 +52,67 @@ export function VotingOverview() {
       return acc
     },
     {} as Record<string, { label: string; color: string }>,
-  )
+  ) || {}
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Card key={i}>
+              <CardHeader className="pb-2">
+                <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+                <div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mt-2"></div>
+              </CardHeader>
+              <CardContent>
+                <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <div className="h-6 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+            </CardHeader>
+            <CardContent className="h-80">
+              <div className="h-full w-full bg-slate-100 dark:bg-slate-800 rounded animate-pulse"></div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <div className="h-6 w-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex justify-between items-center">
+                    <div className="space-y-2">
+                      <div className="h-5 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+                      <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+                    </div>
+                    <div className="h-6 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 rounded-md">
+        <p className="text-red-800 dark:text-red-200">{error}</p>
+      </div>
+    )
+  }
+
+  if (!data) {
+    return null
+  }
 
   return (
     <div className="space-y-6">
@@ -34,31 +120,37 @@ export function VotingOverview() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Your Voting Power</CardDescription>
-            <CardTitle className="text-3xl font-bold">12.5%</CardTitle>
+            <CardTitle className="text-3xl font-bold">{data.votingPower.percentage}%</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-500 dark:text-slate-400">1,250,000 votes of 10,000,000 total</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              {data.votingPower.votes.toLocaleString()} votes of {data.votingPower.totalVotes.toLocaleString()} total
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Proposals Participated</CardDescription>
-            <CardTitle className="text-3xl font-bold">24</CardTitle>
+            <CardTitle className="text-3xl font-bold">{data.participation.participated}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Out of 28 total proposals</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Out of {data.participation.totalProposals} total proposals
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Participation Rate</CardDescription>
-            <CardTitle className="text-3xl font-bold">85.7%</CardTitle>
+            <CardTitle className="text-3xl font-bold">{data.participation.rate}%</CardTitle>
           </CardHeader>
           <CardContent>
-            <Progress value={85.7} className="h-2" />
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">Above average by 23%</p>
+            <Progress value={data.participation.rate} className="h-2" />
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+              Above average by {data.participation.comparedToAverage}%
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -74,7 +166,7 @@ export function VotingOverview() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={votingPowerData}
+                    data={data.votingPowerDistribution}
                     cx="50%"
                     cy="50%"
                     labelLine={true}
@@ -83,7 +175,7 @@ export function VotingOverview() {
                     dataKey="value"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
                   >
-                    {votingPowerData.map((entry, index) => (
+                    {data.votingPowerDistribution.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -102,34 +194,15 @@ export function VotingOverview() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="font-medium">0x7a23...45df</div>
-                  <div className="text-sm text-slate-500">Delegated 3 months ago</div>
+              {data.delegations.map((delegation, index) => (
+                <div key={index} className="flex justify-between items-center">
+                  <div>
+                    <div className="font-medium">{delegation.address}</div>
+                    <div className="text-sm text-slate-500">Delegated {delegation.timeAgo}</div>
+                  </div>
+                  <Badge variant="secondary">{delegation.votes.toLocaleString()} votes</Badge>
                 </div>
-                <Badge variant="secondary">450,000 votes</Badge>
-              </div>
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="font-medium">0x3f89...12ab</div>
-                  <div className="text-sm text-slate-500">Delegated 5 months ago</div>
-                </div>
-                <Badge variant="secondary">350,000 votes</Badge>
-              </div>
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="font-medium">0x9c12...78ef</div>
-                  <div className="text-sm text-slate-500">Delegated 2 weeks ago</div>
-                </div>
-                <Badge variant="secondary">250,000 votes</Badge>
-              </div>
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="font-medium">Self-delegated</div>
-                  <div className="text-sm text-slate-500">Your own voting power</div>
-                </div>
-                <Badge variant="secondary">200,000 votes</Badge>
-              </div>
+              ))}
             </div>
           </CardContent>
         </Card>

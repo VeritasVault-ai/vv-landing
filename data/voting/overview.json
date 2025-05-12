@@ -1,0 +1,40 @@
+{
+  "votingPower": {
+    "percentage": 12.5,
+    "votes": 1250000,
+    "totalVotes": 10000000
+  },
+  "participation": {
+    "participated": 24,
+    "totalProposals": 28,
+    "rate": 85.7,
+    "comparedToAverage": 23
+  },
+  "votingPowerDistribution": [
+    { "name": "Your Voting Power", "value": 12.5 },
+    { "name": "Other Delegates", "value": 45.3 },
+    { "name": "Undelegated", "value": 42.2 }
+  ],
+  "delegations": [
+    {
+      "address": "0x7a23...45df",
+      "timeAgo": "3 months ago",
+      "votes": 450000
+    },
+    {
+      "address": "0x3f89...12ab",
+      "timeAgo": "5 months ago",
+      "votes": 350000
+    },
+    {
+      "address": "0x9c12...78ef",
+      "timeAgo": "2 weeks ago",
+      "votes": 250000
+    },
+    {
+      "address": "Self-delegated",
+      "timeAgo": "Your own voting power",
+      "votes": 200000
+    }
+  ]
+}
