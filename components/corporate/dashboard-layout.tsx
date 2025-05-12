@@ -23,14 +23,33 @@ export function DashboardLayout({
   const { settings, refreshData } = useDashboard()
   const { themeVariant } = useTheme()
 
-  const handleRefresh = async () => {
+// at the top of your component (make sure `useState` is imported)
+const [isRefreshing, setIsRefreshing] = useState(false)
+
+const handleRefresh = async () => {
+  if (isRefreshing) return
+  try {
+    setIsRefreshing(true)
     if (onRefresh) {
       await onRefresh()
     } else {
       await refreshData()
     }
+  } finally {
+    setIsRefreshing(false)
   }
+}
 
+// …later in your JSX…
+<Button
+  variant="outline"
+  size="sm"
+  className="flex items-center gap-2"
+  onClick={handleRefresh}
+  disabled={isRefreshing}
+>
+  Refresh
+</Button>
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
