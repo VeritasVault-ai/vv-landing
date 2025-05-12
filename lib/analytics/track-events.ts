@@ -1,5 +1,6 @@
 import { EventCategory, type EventName } from "./event-taxonomy"
 import { CUSTOM_DIMENSIONS } from "./custom-dimensions"
+import { VersionType } from "@/components/version-control"
 
 // Function to track authentication events
 export function trackAuthEvent(
@@ -139,14 +140,21 @@ export function trackLiquidityEvent(
   }
 }
 
+xport interface NavigationEventData {
+  eventName: EventName,
+    feature_name: string;
+    tab_destination: VersionType;
+}
 // Function to track navigation events
 export function trackNavigationEvent(
-  eventName: EventName,
   params: {
+    eventName?: string,
     source?: string
     destination?: string
     tab_name?: string
     section?: string
+    feature_name?: string
+    tab_destination?: VersionType
     [key: string]: any
   } = {},
 ) {
@@ -169,6 +177,9 @@ export function trackNavigationEvent(
     enhancedParams[CUSTOM_DIMENSIONS.FEATURE_SECTION] = params.section
   }
 
+  // Use a default event name if not provided
+  const eventName = params.eventName || "navigation_action"
+  
   // Send the event to Google Analytics
   if (typeof window !== "undefined" && window.gtag) {
     window.gtag("event", eventName, enhancedParams)
