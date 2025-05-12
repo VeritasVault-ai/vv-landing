@@ -9,6 +9,13 @@ import { ThemeProvider } from "@/src/lib/hooks/context/ThemeProvider"
 
 export const metadata: Metadata = standardMetadata
 
+/**
+ * Provides a themed layout for debugging pages, including SEO structured data, a version-aware header, and theme debugging tools.
+ *
+ * Wraps the content in a `ThemeProvider` with system color mode and standard version, and arranges the layout with header, main content area, and theme debugging utilities.
+ *
+ * @param children - The content to display within the main area of the layout.
+ */
 export default function DebugLayout({
   children,
 }: {

@@ -10,7 +10,12 @@ import {
 } from '@/lib/repositories/voting-repository'
 import { votingService } from './voting-service'
 
-/** Parses `"7 days 5 hours"` → total hours (e.g. 173) */
+/**
+ * Converts a string in the format "X days Y hours" to the total number of hours.
+ *
+ * @param timeStr - A string representing a duration, such as "7 days 5 hours".
+ * @returns The total number of hours represented by {@link timeStr}, or 0 if the format is invalid.
+ */
 function parseHours(timeStr: string): number {
   const m = timeStr.match(/(\d+)\s*days?\s*(\d+)\s*hours?/)
   if (!m) return 0
@@ -19,13 +24,25 @@ function parseHours(timeStr: string): number {
   return days * 24 + hours
 }
 
-/** Formats hours → `"X days Y hours"` */
+/**
+ * Converts a total number of hours into a string formatted as "X days Y hours".
+ *
+ * @param totalHours - The total number of hours to format.
+ * @returns A string representing the equivalent days and hours.
+ */
 function formatHours(totalHours: number): string {
   const days = Math.floor(totalHours / 24)
   const hours = totalHours % 24
   return `${days} days ${hours} hours`
 }
 
+/**
+ * Simulates real-time voting activity and proposal lifecycle events for demonstration purposes.
+ *
+ * Sets up periodic intervals to randomly update active proposals, adjust voting power, and occasionally introduce new proposals. Emits corresponding events such as 'proposal-updated', 'proposal-closed', 'voting-power-changed', and 'new-proposal' to mimic WebSocket-driven updates. Cleans up all intervals on unmount.
+ *
+ * @remark This hook is intended for simulation and should not be used in production environments.
+ */
 export function useVotingWebSocketSimulation() {
   useEffect(() => {
     let isActive = true

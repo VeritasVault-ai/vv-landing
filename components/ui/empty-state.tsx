@@ -9,6 +9,17 @@ interface EmptyStateProps {
   children?: React.ReactNode
 }
 
+/**
+ * Displays a styled empty state with an optional icon, title, description, and custom content.
+ *
+ * Use this component to indicate the absence of data or content in a section of the UI.
+ *
+ * @param title - The main heading text to display.
+ * @param description - Optional descriptive text shown below the title.
+ * @param icon - Optional icon or graphic displayed above the title.
+ * @param className - Optional additional CSS classes for the container.
+ * @param children - Optional custom React elements rendered below the description.
+ */
 export function EmptyState({
   title,
   description,

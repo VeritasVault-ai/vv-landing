@@ -19,6 +19,20 @@ export interface StandardMobileHeaderProps {
   onLogout: () => void
 }
 
+/****
+ * Renders a mobile-optimized navigation header with featured and regular navigation items, and authentication controls.
+ *
+ * Displays navigation links based on the provided items, highlights the active route, and conditionally renders authentication buttons or account links depending on the user's authentication status.
+ *
+ * @param headerNav - Navigation items to display in the header.
+ * @param pathname - The current route path for highlighting active links.
+ * @param isAuthenticated - Indicates if the user is authenticated.
+ * @param status - The current authentication status.
+ * @param onClose - Callback invoked when a navigation link is clicked.
+ * @param onLoginClick - Callback invoked when the "Log In" button is clicked.
+ * @param onRegisterClick - Callback invoked when the "Sign Up" button is clicked.
+ * @param onLogout - Callback invoked when the "Sign Out" button is clicked.
+ */
 export function StandardMobileHeader({
   headerNav,
   pathname,

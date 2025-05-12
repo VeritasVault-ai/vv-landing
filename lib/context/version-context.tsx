@@ -20,6 +20,13 @@ const VersionContext = createContext<VersionContextType>({
   isCorporate: false,
 })
 
+/**
+ * Provides the current user experience version context to its child components.
+ *
+ * Determines the experience version ("standard" or "corporate") based on the current URL pathname or a "preferred-version" cookie, defaulting to "standard" if neither is set. Supplies the version and related flags to descendants via React context.
+ *
+ * @param children - The React nodes that will have access to the version context.
+ */
 export function VersionProvider({ children }: { children: React.ReactNode }) {
   const [version, setVersion] = useState<ExperienceType>(null)
   const pathname = usePathname()

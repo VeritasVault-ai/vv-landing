@@ -7,7 +7,12 @@ import { signInWithEmail, signInWithProvider, signOut, signUpWithEmail } from '@
 import { useAnalytics } from './use-analytics'
 import { ExperienceType } from '@/src/types'
 
-// Helper to categorize errors more robustly
+/**
+ * Categorizes an error message into a specific authentication error type.
+ *
+ * @param message - The error message to analyze.
+ * @returns The error type: 'invalid_credentials', 'rate_limited', 'system_error', or 'unknown_error' if no message is provided.
+ */
 function getErrorType(message?: string): string {
   if (!message) return 'unknown_error'
   const m = message.toLowerCase()
@@ -20,6 +25,13 @@ function getErrorType(message?: string): string {
   return 'system_error'
 }
 
+/**
+ * Provides authentication state and actions for user login, registration, social login, and logout in a Next.js client environment.
+ *
+ * Exposes methods for email/password login, user registration, social login with Google or GitHub, and logout, along with loading and error state for UI feedback.
+ *
+ * @returns An object containing authentication methods (`login`, `register`, `loginWithProvider`, `logout`) and state (`isLoading`, `error`).
+ */
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)

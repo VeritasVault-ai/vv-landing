@@ -2,6 +2,11 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
+/**
+ * Renders a static dashboard section displaying historical portfolio performance and lists of top and underperforming assets.
+ *
+ * The dashboard includes a placeholder for a performance chart, a card highlighting assets with the highest returns, and a card for assets with negative or low returns. All data is hardcoded and intended for demonstration or layout purposes.
+ */
 export function DashboardPerformance() {
   return (
     <div className="space-y-6">

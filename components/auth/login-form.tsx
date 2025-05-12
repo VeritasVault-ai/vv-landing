@@ -22,7 +22,14 @@ const formSchema = z.object({
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
 })
 
-// Inner component that uses searchParams
+/**
+ * Renders a login form with email/password authentication, social login options, and analytics tracking.
+ *
+ * Displays validation errors, loading states, and supports redirecting users after successful login. Integrates with Supabase for authentication and user profile retrieval, and tracks authentication events for analytics.
+ *
+ * @param callbackUrl - Optional URL to redirect to after successful login.
+ * @param error - Optional initial error message to display.
+ */
 function LoginFormInner({ callbackUrl, error: initialError }: { callbackUrl?: string, error?: string | null }) {
   const [error, setError] = useState<string | null>(initialError || null)
   const [isLoading, setIsLoading] = useState(false)
@@ -39,6 +46,15 @@ function LoginFormInner({ callbackUrl, error: initialError }: { callbackUrl?: st
     },
   })
 
+  /**
+   * Handles login form submission using email and password authentication.
+   *
+   * Attempts to sign in the user with the provided credentials via Supabase, tracks authentication events, retrieves user profile data, and sets analytics properties. On success, redirects the user to the intended page; on failure, displays an error and tracks the failed attempt.
+   *
+   * @param values - The email and password entered by the user.
+   *
+   * @throws {AuthApiError} If authentication with Supabase fails.
+   */
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Login form submission logic (unchanged)
     setIsLoading(true)
@@ -265,6 +281,12 @@ function LoginFormInner({ callbackUrl, error: initialError }: { callbackUrl?: st
   )
 }
 
+/**
+ * Displays the login form within a React Suspense boundary, showing a loading message until the form is ready.
+ *
+ * @param callbackUrl - Optional URL to redirect to after successful login.
+ * @param error - Optional error message to display on the form.
+ */
 export function LoginForm({ callbackUrl, error }: { callbackUrl?: string, error?: string | null }) {
   return (
     <Suspense fallback={<div className="p-4 text-center">Loading login form...</div>}>

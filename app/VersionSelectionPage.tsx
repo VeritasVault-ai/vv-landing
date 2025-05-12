@@ -11,6 +11,13 @@ import { ThemeSelectionModal } from "./components/version-selection/ThemeSelecti
 import { VersionBackground } from "./components/version-selection/VersionBackground"
 
 
+/**
+ * Renders the enhanced version selection page for choosing between standard and corporate experiences, with optional theme customization.
+ *
+ * Displays selectable cards for each experience type, allows users to customize the theme via a modal, and persists preferences in cookies before navigating to the selected interface.
+ *
+ * @returns The version selection page React element.
+ */
 export function EnhancedVersionSelectionPage() {
   const router = useRouter()
   const [selectedVersion, setSelectedVersion] = useState<ExperienceType | null>(null)

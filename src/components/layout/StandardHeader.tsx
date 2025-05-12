@@ -17,6 +17,11 @@ import { RegisterDialog } from '@/components/auth/register-dialog'
 import { StandardMobileHeader } from './StandardMobileHeader'
 import { cn } from '@/lib/utils'
 
+/**
+ * Renders a responsive website header with navigation, theme toggle, and authentication controls.
+ *
+ * Displays navigation links and dropdown menus based on user authentication status, with support for mobile and desktop layouts. Includes login and registration dialogs, a user menu for authenticated users, and event tracking for authentication actions.
+ */
 export function StandardHeader() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)

@@ -42,7 +42,15 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   )
 }
 
-// Format view function
+/**
+ * Formats a portfolio view into a human-readable string showing asset weights and return.
+ *
+ * The output lists each asset with its weight, using specific formatting rules for signs and multipliers, and appends the total return as a percentage.
+ *
+ * @param weights - Array of asset weights to format.
+ * @param returnValue - The return value as a decimal (e.g., 0.05 for 5%).
+ * @returns A formatted string representing the view's asset weights and return percentage.
+ */
 export function formatView(weights: Weight[], returnValue: number): string {
   const formattedWeights = weights
     .map((item, index) => {
@@ -65,6 +73,15 @@ export function formatView(weights: Weight[], returnValue: number): string {
   return `${formattedWeights} = ${formattedReturn}%`
 }
 
+/**
+ * Displays a card summarizing a model portfolio's views and asset allocations.
+ *
+ * Renders a list of formatted views and a two-column layout showing asset allocations as both a table and a pie chart.
+ *
+ * @param modelIndex - The zero-based index of the model portfolio.
+ * @param views - An array of views, each containing asset weights and a return value.
+ * @param allocations - An array of asset weights representing the portfolio's allocations.
+ */
 function ModelResultCard({ modelIndex, views, allocations }: { modelIndex: number; views: View[]; allocations: Weight[] }) {
   // Format the chart data
   const chartData = allocations.map((allocation) => ({
@@ -153,6 +170,11 @@ function ModelResultCard({ modelIndex, views, allocations }: { modelIndex: numbe
   )
 }
 
+/**
+ * Displays portfolio model results, including views and allocations, with loading and error handling.
+ *
+ * Fetches model results asynchronously and renders a header with the model name, followed by a list of cards for each model result. Each card presents formatted views and allocation data using tables and pie charts. Shows a loading spinner while fetching data and an error message if loading fails.
+ */
 export function ModelResults() {
   const [modelData, setModelData] = useState<ModelResultsResponse | null>(null)
   const [loading, setLoading] = useState(true)

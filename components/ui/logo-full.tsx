@@ -12,6 +12,18 @@ interface LogoFullProps {
   className?: string
 }
 
+/**
+ * Renders the full VeritasVault logo with a shield image and styled text.
+ *
+ * Displays a shield icon alongside the "VeritasVault" name, allowing customization of colors, size, and additional CSS classes.
+ *
+ * @param width - The overall width of the logo in pixels.
+ * @param height - The overall height of the logo in pixels.
+ * @param primaryColor - Color for the "Veritas" text segment.
+ * @param secondaryColor - Color for the "Vault" text segment.
+ * @param tertiaryColor - Background color for the shield icon.
+ * @param className - Additional CSS classes for the container.
+ */
 export function LogoFull({
   width = 280,
   height = 60,

@@ -17,6 +17,11 @@ import { RegisterDialog } from '@/components/auth/register-dialog'
 import { CorporateMobileHeader } from './CorporateMobileHeader'
 import { cn } from '@/lib/utils'
 
+/**
+ * Renders the responsive corporate website header with navigation, authentication controls, and theme toggling.
+ *
+ * Displays navigation items based on authentication status and user experience, including featured links, regular links, and dropdown menus. Provides login, registration, and logout functionality, as well as a theme toggle and mobile menu support. Authentication dialogs and analytics tracking are integrated.
+ */
 export function CorporateHeader() {
   const pathname = usePathname()
   const router = useRouter()

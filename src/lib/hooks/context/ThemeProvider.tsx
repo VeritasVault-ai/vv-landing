@@ -26,7 +26,15 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
-// Outer: next-themes wrapper
+/**
+ * Provides theming context and color mode management for the application.
+ *
+ * Wraps children with a theme provider that integrates with `next-themes` for light/dark mode and system preference detection, and supplies additional context for experience type and theme variants.
+ *
+ * @param children - The React elements to be rendered within the theme context.
+ * @param defaultExperience - The initial experience type, defaults to 'standard'.
+ * @param defaultColorMode - The initial color mode, defaults to 'light'.
+ */
 export function ThemeProvider({
   children,
   defaultExperience = 'standard',
@@ -43,7 +51,15 @@ export function ThemeProvider({
   );
 }
 
-// Inner provider handles variants, experience, and URL/cookie overrides
+/**
+ * Provides theme context state and logic for experience type, theme variant, and color mode, synchronizing preferences with cookies, URL parameters, and HTML classes.
+ *
+ * @param children - The React nodes to render within the provider.
+ * @param defaultExperience - The initial experience type to use.
+ *
+ * @remark
+ * Waits for the theme to be resolved before providing context to avoid UI flicker. Updates the root HTML element's classes and persists preferences in cookies. Supports overriding color mode via the `theme` URL parameter.
+ */
 function InnerProvider({ children, defaultExperience }: { children: ReactNode; defaultExperience: ExperienceType; }) {
   const { resolvedTheme, setTheme: setNextTheme } = useNextTheme();
 
@@ -116,17 +132,34 @@ function InnerProvider({ children, defaultExperience }: { children: ReactNode; d
   );
 }
 
+/**
+ * Returns the current theme context, including experience, theme variant, color mode, and related setters.
+ *
+ * @returns The current {@link ThemeContextValue}.
+ *
+ * @throws {Error} If called outside of a {@link ThemeProvider}.
+ */
 export function useTheme() {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error('useTheme must be within ThemeProvider');
   return ctx;
 }
 
+/**
+ * Returns the current theme object based on the active experience, theme variant, and color mode.
+ *
+ * @returns The resolved theme object for the current context.
+ */
 export function useCurrentTheme() {
   const { experience, themeVariant, colorMode } = useTheme();
   return getTheme(experience, themeVariant, colorMode);
 }
 
+/**
+ * Returns the list of theme variants available for the current experience.
+ *
+ * @returns An array of theme variants corresponding to the current experience type.
+ */
 export function useAvailableThemeVariants() {
   const { experience } = useTheme();
   return experience === 'standard' ? standardVariants : corporateVariants;

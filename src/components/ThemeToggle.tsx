@@ -17,6 +17,11 @@ import { useAvailableThemeVariants, useTheme } from '../lib/hooks/context/ThemeP
 import { ColorMode } from '@/styles/theme'
 import { ThemeVariant } from '../lib/hooks/context/theme-variant'
 
+/**
+ * Renders a theme toggle button with a dropdown menu for selecting color modes and theme variants.
+ *
+ * Provides a smart toggle between light and dark modes, automatically selecting a corresponding theme variant based on the current experience. Users can also explicitly choose from available light and dark theme variants via the dropdown menu. The component ensures correct rendering during hydration by delaying UI display until mounted.
+ */
 export function ThemeToggle() {
   const {
     colorMode,

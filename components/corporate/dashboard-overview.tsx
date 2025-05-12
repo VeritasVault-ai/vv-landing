@@ -3,6 +3,11 @@
 import { AllocationChart } from "@/components/allocation-chart"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
+/**
+ * Renders a dashboard overview with asset allocation, risk exposure, and top holdings summaries.
+ *
+ * Displays two cards with allocation charts for asset classes and risk categories, and a third card with a table of the largest asset holdings, including value, allocation, yield, and risk score.
+ */
 export function DashboardOverview() {
   return (
     <div className="space-y-6">

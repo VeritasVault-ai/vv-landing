@@ -254,7 +254,14 @@ export const footerNavigation = {
   ],
 }
 
-// Helper function to filter navigation items by experience
+/**
+ * Returns header navigation items filtered by user experience, position, and authentication status.
+ *
+ * @param experience - The user experience context to filter by ('standard' or 'corporate').
+ * @param position - The navigation position to filter by ('header', 'footer', or 'both').
+ * @param isAuthenticated - Whether the user is authenticated; used to include items requiring authentication.
+ * @returns An array of navigation items matching the specified experience, position, and authentication status.
+ */
 export function getNavigationByExperience(
   experience: 'standard' | 'corporate',
   position: 'header' | 'footer' | 'both',
@@ -274,7 +281,14 @@ export function getNavigationByExperience(
   })
 }
 
-// Helper function to filter footer navigation by experience
+/**
+ * Returns footer navigation items filtered by user experience type.
+ *
+ * Filters the footer navigation sections to include only items matching the specified experience ('standard' or 'corporate') and positioned for the footer.
+ *
+ * @param experience - The user experience type to filter by.
+ * @returns A categorized object containing footer navigation items relevant to the specified experience.
+ */
 export function getFooterNavigationByExperience(
   experience: 'standard' | 'corporate'
 ): FooterNavigationSection {
@@ -290,7 +304,13 @@ export function getFooterNavigationByExperience(
   return result
 }
 
-// Helper function specifically for header navigation
+/**
+ * Returns header navigation items filtered by user experience and authentication status.
+ *
+ * @param experience - The user experience context to filter navigation items ('standard' or 'corporate').
+ * @param isAuthenticated - Whether the user is authenticated. Defaults to false.
+ * @returns An array of header navigation items matching the specified experience and authentication state.
+ */
 export function getHeaderNavigationByExperience(
   experience: 'standard' | 'corporate',
   isAuthenticated: boolean = false

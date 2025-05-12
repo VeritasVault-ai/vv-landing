@@ -9,6 +9,14 @@ import { PastProposal } from "@/lib/repositories/voting-repository"
 import { votingService } from "@/lib/services/voting-service"
 import { votingEvents } from "@/lib/events/voting-events"
 
+/**
+ * Displays a user's past voting proposals with filtering options and voting statistics.
+ *
+ * Fetches and displays past proposals, allows filtering by participation and category, and updates in real-time as new proposals close. Shows voting statistics including total proposals, participation count, majority alignment, and participation rate.
+ *
+ * @remark
+ * If fetching proposals fails, an error message is displayed. The component updates automatically when new proposals are closed.
+ */
 export function VotingHistory() {
   const [pastProposals, setPastProposals] = useState<PastProposal[]>([])
   const [filter, setFilter] = useState("all")

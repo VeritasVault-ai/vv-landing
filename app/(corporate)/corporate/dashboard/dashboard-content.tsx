@@ -24,6 +24,11 @@ import { DashboardPerformance } from '@/components/corporate/dashboard-performan
 import { ModelResults } from '@/components/corporate/model-results';
 import { DashboardVoting } from '@/components/corporate/voting';
 
+/**
+ * Renders the main corporate dashboard interface with navigation, summary metrics, export functionality, and tabbed detailed views.
+ *
+ * Displays a sticky header with navigation links and branding, summary cards for portfolio value, active strategies, and risk score, an export report button, and a tabbed section for overview, performance, model results, and governance content.
+ */
 export function DashboardContent() {
   const { portfolioValue, activeStrategies, riskScore } = useDashboardMetrics();
 

@@ -9,6 +9,15 @@ export interface DashboardMetrics {
   riskScore: { value: string; status: string; details: string };
 }
 
+/**
+ * React hook that retrieves and manages dashboard metrics data.
+ *
+ * Initializes with default metric values and fetches updated metrics from the `/api/dashboard/metrics` endpoint on mount. Returns the current metrics state for use in components.
+ *
+ * @returns The latest dashboard metrics, including portfolio value, active strategies, and risk score.
+ *
+ * @remark If fetching fails, the hook logs an error and retains the default metric values.
+ */
 export function useDashboardMetrics() {
   const [metrics, setMetrics] = useState<DashboardMetrics>({
     portfolioValue: { value: '$0', change: '0%', updatedAt: '' },

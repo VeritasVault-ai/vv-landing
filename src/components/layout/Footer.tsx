@@ -14,6 +14,17 @@ export interface FooterProps {
   subscribeApi?: string
 }
 
+/**
+ * Renders a responsive footer with brand information, navigation links, social media icons, and an optional newsletter subscription form.
+ *
+ * @param brand - Contains the brand's name and description to display.
+ * @param nav - Navigation structure including sections and social media links.
+ * @param subscribeApi - Optional API endpoint URL for newsletter subscriptions; if provided, a subscription form is shown.
+ *
+ * @returns The footer JSX element.
+ *
+ * @remark The subscription form validates email format and displays success or error messages based on the API response.
+ */
 export function Footer({ brand, nav, subscribeApi }: FooterProps) {
   const currentYear = new Date().getFullYear()
   const [email, setEmail] = useState('')

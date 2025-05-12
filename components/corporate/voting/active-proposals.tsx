@@ -8,6 +8,11 @@ import { votingEvents } from "@/lib/events/voting-events"
 import { ProposalCard } from "./proposals/proposal-card"
 import { EmptyState } from "@/components/ui/empty-state"
 
+/**
+ * Displays a real-time list of active voting proposals with automatic updates.
+ *
+ * Fetches active proposals on mount and subscribes to voting-related events to keep the list current. Handles loading and error states, and renders a message if no proposals are available.
+ */
 export function ActiveProposals() {
   const [proposals, setProposals] = useState<ActiveProposal[]>([])
   const [loading, setLoading] = useState(true)

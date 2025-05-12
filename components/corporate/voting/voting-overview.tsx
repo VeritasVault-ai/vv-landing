@@ -13,6 +13,13 @@ import { votingEvents } from "@/lib/events/voting-events"
 // Colors for the chart
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"]
 
+/****
+ * Displays a comprehensive overview of voting data, including voting power, participation statistics, voting power distribution, and delegations.
+ *
+ * Fetches voting overview data on mount and updates in real time when voting power changes. Shows loading placeholders while data is being fetched and displays an error message if loading fails.
+ *
+ * @returns A React element rendering summary cards, a voting power distribution pie chart, and a list of delegations, or appropriate loading/error UI.
+ */
 export function VotingOverview() {
   const [data, setData] = useState<VotingOverviewType | null>(null)
   const [loading, setLoading] = useState(true)
