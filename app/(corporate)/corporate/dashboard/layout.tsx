@@ -1,9 +1,8 @@
-// src/app/dashboard/layout.tsx
-'use client';
-
+// Server component for dashboard layout
 import React, { ReactNode } from 'react';
-import { ThemeProvider } from '@/lib/context/ThemeProvider';
 import DashboardSidebar from '@/components/dashboard/Sidebar';
+import { EXPERIENCE_TYPES } from '@/src/constants/theme';
+import { ThemeProvider } from '@/src/lib/context/ThemeProvider';
 
 export const metadata = {
   title: 'Dashboard | VeritasVault.ai',
@@ -12,12 +11,9 @@ export const metadata = {
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider defaultExperience="corporate">
+    <ThemeProvider defaultExperience={EXPERIENCE_TYPES.CORPORATE}>
       <div className="flex h-screen">
-        {/* Sidebar on the left */}
         <DashboardSidebar />
-
-        {/* Main content area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {children}
         </div>

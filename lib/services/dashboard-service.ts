@@ -9,9 +9,11 @@ class DashboardService {
    */
   async getDashboardOverview(): Promise<DashboardOverview> {
     const response = await fetch('/api/dashboard/overview');
+    
     if (!response.ok) {
-      throw new Error(`Failed to fetch dashboard overview: ${response.statusText}`);
+      await this.handleErrorResponse(response, 'dashboard overview');
     }
+    
     return response.json();
   }
 
@@ -20,10 +22,41 @@ class DashboardService {
    */
   async getDashboardPerformance(): Promise<DashboardPerformance> {
     const response = await fetch('/api/dashboard/performance');
+    
     if (!response.ok) {
-      throw new Error(`Failed to fetch dashboard performance: ${response.statusText}`);
+      await this.handleErrorResponse(response, 'dashboard performance');
     }
+    
     return response.json();
+  }
+
+  /**
+   * Handle error responses with comprehensive error information
+   * @param response - The fetch Response object
+   * @param resourceName - Name of the resource being fetched
+   */
+  private async handleErrorResponse(response: Response, resourceName: string): Promise<never> {
+    let errorBody: string | object = '';
+    
+    try {
+      // Try to parse response as JSON
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        errorBody = await response.clone().json();
+      } else {
+        // Fall back to text if not JSON
+        errorBody = await response.clone().text();
+      }
+    } catch (e) {
+      // If we can't read the body, continue with what we have
+      errorBody = 'Unable to parse error response body';
+    }
+
+    const errorMessage = `Failed to fetch ${resourceName}: [${response.status} ${response.statusText}] ${
+      typeof errorBody === 'object' ? JSON.stringify(errorBody) : errorBody
+    }`;
+    
+    throw new Error(errorMessage);
   }
 }
 
