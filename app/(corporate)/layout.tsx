@@ -4,16 +4,11 @@ import { ReactNode, useEffect, Suspense } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
 import { CorporateHeader } from "@/components/layout/corporate-header"
 import { SimpleFooter } from "@/components/ui/simple-footer"
+import { CorporateFooter } from "@/components/layout/corporate-footer"
 import { useTheme } from "next-themes"
 import { useSearchParams } from "next/navigation"
 import { getCookie, setCookie } from "@/lib/cookies"
 import { ThemeScript } from "@/components/theme-script"
-
-// Metadata is now exported from metadata.tsx
-
-interface CorporateLayoutProps {
-  children: ReactNode
-}
 
 // Create a client component that uses the searchParams hook
 function ThemeHandler() {
@@ -41,18 +36,22 @@ function ThemeHandler() {
   return null
 }
 
-export default function CorporateLayout({ children }: CorporateLayoutProps) {
+export default function CorporateLayout({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider version="corporate">
-      <ThemeScript />
-      {/* Wrap the component using searchParams in Suspense */}
+      <Suspense fallback={null}>
+        <ThemeScript version="corporate" />
+      </Suspense>
+      
       <Suspense fallback={null}>
         <ThemeHandler />
       </Suspense>
+      
       <div className="min-h-screen flex flex-col">
         <CorporateHeader />
         <main className="flex-grow">{children}</main>
         <SimpleFooter version="corporate" />
+        <CorporateFooter />
       </div>
     </ThemeProvider>
   )

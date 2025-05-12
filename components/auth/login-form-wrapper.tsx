@@ -16,6 +16,8 @@ function LoginFormWrapperInner() {
 }
 
 export function LoginFormWrapper() {
+  // The Suspense boundary is here to handle the client-side rendering bailout
+  // that happens with useSearchParams() - this is required for Next.js App Router
   return (
     <Suspense fallback={<div className="p-4 text-center">Loading login form...</div>}>
       <LoginFormWrapperInner />

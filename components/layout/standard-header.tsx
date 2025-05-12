@@ -1,7 +1,6 @@
 "use client"
 
-import { LoginDialog } from "@/components/auth/login-dialog"
-import { RegisterDialog } from "@/components/auth/register-dialog"
+import { useState } from "react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,10 +22,11 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useState } from "react"
-import { CorporateMobileHeader } from "./corporate-mobile-header"
+import { LoginDialog } from "@/components/auth/login-dialog"
+import { RegisterDialog } from "@/components/auth/register-dialog"
+import { StandardMobileHeader } from "./standard-mobile-header"
 
-export function CorporateHeader() {
+export function StandardHeader() {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -40,7 +40,7 @@ export function CorporateHeader() {
   const isAuthenticated = status === 'authenticated'
   
   // Only fetch navigation items when session status is known
-  const headerNav = getHeaderNavigationByExperience('corporate', isAuthenticated)
+  const headerNav = getHeaderNavigationByExperience('standard', isAuthenticated)
   
   // Separate featured items from regular items
   const featuredItems = headerNav.filter(item => item.featured)
@@ -56,7 +56,7 @@ export function CorporateHeader() {
       action: "login_button_click",
       category: "navigation",
       label: "header_button",
-      custom_data: { version: "corporate" },
+      custom_data: { version: "standard" },
     })
     setLoginDialogOpen(true)
   }
@@ -66,7 +66,7 @@ export function CorporateHeader() {
       action: "register_button_click", 
       category: "navigation",
       label: "header_button",
-      custom_data: { version: "corporate" },
+      custom_data: { version: "standard" },
     })
     setRegisterDialogOpen(true)
   }
@@ -77,12 +77,12 @@ export function CorporateHeader() {
   
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
               <Image 
-                src="/logo-corporate.svg" 
+                src="/logo.svg" 
                 alt="VeritasVault Logo" 
                 width={32} 
                 height={32} 
@@ -99,10 +99,10 @@ export function CorporateHeader() {
                   key={`featured-${index}`}
                   href={item.href || '#'} 
                   className={cn(
-                    "transition-colors hover:text-slate-900 dark:hover:text-white relative group font-medium", 
+                    "transition-colors hover:text-foreground relative group font-medium", 
                     pathname === item.href 
-                      ? "text-slate-900 dark:text-white after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-1/2 after:h-0.5 after:bg-blue-600 dark:after:bg-blue-400" 
-                      : "text-slate-800 dark:text-slate-200 hover:after:absolute hover:after:bottom-0 hover:after:left-1/2 hover:after:-translate-x-1/2 hover:after:w-1/3 hover:after:h-0.5 hover:after:bg-blue-600/50 dark:hover:after:bg-blue-400/50"
+                      ? "text-foreground after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-1/2 after:h-0.5 after:bg-emerald-600 dark:after:bg-emerald-500" 
+                      : "text-foreground/70 hover:after:absolute hover:after:bottom-0 hover:after:left-1/2 hover:after:-translate-x-1/2 hover:after:w-1/3 hover:after:h-0.5 hover:after:bg-emerald-600/50 dark:hover:after:bg-emerald-500/50"
                   )}
                 >
                   {item.title}
@@ -115,10 +115,10 @@ export function CorporateHeader() {
                   key={`link-${index}`}
                   href={item.href || '#'} 
                   className={cn(
-                    "transition-colors hover:text-slate-900/80 dark:hover:text-slate-100/80 relative group", 
+                    "transition-colors hover:text-foreground/80 relative group", 
                     pathname === item.href 
-                      ? "text-slate-900 dark:text-slate-100 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-1/2 after:h-0.5 after:bg-blue-600/70 dark:after:bg-blue-400/70" 
-                      : "text-slate-700 dark:text-slate-300"
+                      ? "text-foreground after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-1/2 after:h-0.5 after:bg-emerald-600/70 dark:after:bg-emerald-500/70" 
+                      : "text-foreground/60"
                   )}
                 >
                   {item.title}
@@ -129,18 +129,18 @@ export function CorporateHeader() {
               {dropdownItems.map((item: HeaderNavigationItem, index: number) => (
                 item.items && (
                   <DropdownMenu key={`dropdown-${index}`}>
-                    <DropdownMenuTrigger className="flex items-center gap-1 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 group">
+                    <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/60 hover:text-foreground/80 group">
                       {item.title}
                       <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="border-slate-200 dark:border-slate-700">
+                    <DropdownMenuContent align="start">
                       {item.items.map((subItem: NavigationSubItem, subIndex: number) => (
                         <DropdownMenuItem key={subIndex} asChild>
                           <Link href={subItem.href || '#'}>
                             <div className="flex flex-col">
                               <span>{subItem.title}</span>
                               {subItem.description && (
-                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                <span className="text-xs text-muted-foreground">
                                   {subItem.description}
                                 </span>
                               )}
@@ -164,17 +164,17 @@ export function CorporateHeader() {
             ) : !isAuthenticated ? (
               <div className="hidden md:flex items-center gap-2">
                 <Button 
-                  variant="outline" 
+                  variant="ghost" 
                   size="sm" 
                   onClick={handleLoginClick}
-                  className="border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="text-foreground/70 hover:text-foreground hover:bg-background/80"
                 >
                   Log In
                 </Button>
                 <Button 
                   size="sm" 
                   onClick={handleRegisterClick}
-                  className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
                 >
                   Sign Up
                 </Button>
@@ -182,29 +182,22 @@ export function CorporateHeader() {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                  >
+                  <Button variant="ghost" size="icon" className="rounded-full">
                     <User className="h-5 w-5" />
                     <span className="sr-only">User menu</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="border-slate-200 dark:border-slate-700">
+                <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="text-slate-700 dark:text-slate-300">Dashboard</Link>
+                    <Link href="/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/profile" className="text-slate-700 dark:text-slate-300">Profile</Link>
+                    <Link href="/profile">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="text-slate-700 dark:text-slate-300">Settings</Link>
+                    <Link href="/settings">Settings</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="text-red-600 dark:text-red-400"
-                    onClick={handleLogout}
-                  >
+                  <DropdownMenuItem onClick={handleLogout}>
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -215,7 +208,7 @@ export function CorporateHeader() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -226,7 +219,7 @@ export function CorporateHeader() {
         
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <CorporateMobileHeader 
+          <StandardMobileHeader 
             headerNav={headerNav}
             pathname={pathname}
             isAuthenticated={isAuthenticated}
@@ -252,15 +245,15 @@ export function CorporateHeader() {
       <LoginDialog 
         isOpen={loginDialogOpen} 
         onClose={() => setLoginDialogOpen(false)} 
-        version="corporate"
-        redirectTo="/corporate/dashboard"
+        version="standard"
+        redirectTo="/standard/dashboard"
       />
       
       <RegisterDialog 
         isOpen={registerDialogOpen} 
         onClose={() => setRegisterDialogOpen(false)} 
-        version="corporate"
-        redirectTo="/corporate/dashboard"
+        version="standard"
+        redirectTo="/standard/dashboard"
       />
     </>
   )

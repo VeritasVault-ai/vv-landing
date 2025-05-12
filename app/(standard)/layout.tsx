@@ -1,17 +1,13 @@
 "use client"
 
-import { ReactNode, useEffect, Suspense } from "react"
+import { StandardFooter } from "@/components/layout/standard-footer"
+import { StandardHeader } from "@/components/layout/standard-header"
 import { ThemeProvider } from "@/components/theme-provider"
-import { SimpleHeader } from "@/components/ui/simple-header"
-import { SimpleFooter } from "@/components/ui/simple-footer"
+import { ThemeScript } from "@/components/theme-script"
+import { getCookie, setCookie } from "@/lib/cookies"
 import { useTheme } from "next-themes"
 import { useSearchParams } from "next/navigation"
-import { getCookie, setCookie } from "@/lib/cookies"
-import { ThemeScript } from "@/components/theme-script"
-
-interface StandardLayoutProps {
-  children: ReactNode
-}
+import { ReactNode, Suspense, useEffect } from "react"
 
 // Create a client component that uses the searchParams hook
 function ThemeHandler() {
@@ -39,20 +35,25 @@ function ThemeHandler() {
   return null
 }
 
-export default function StandardLayout({ children }: StandardLayoutProps) {
+export default function StandardLayout({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider version="standard">
       <Suspense fallback={null}>
-        <ThemeScript />
+        <ThemeScript version="standard" />
       </Suspense>
-      {/* Wrap the component using searchParams in Suspense */}
       <Suspense fallback={null}>
         <ThemeHandler />
       </Suspense>
+      
       <div className="min-h-screen flex flex-col">
-        <SimpleHeader />
+        <div className="header-group sticky top-0 z-50 w-full">
+          {/* Optional announcement banner could go here */}
+          <StandardHeader />
+        </div>
         <main className="flex-grow">{children}</main>
-        <SimpleFooter version="standard" />
+        <div className="footer-group">
+          <StandardFooter />
+        </div>
       </div>
     </ThemeProvider>
   )

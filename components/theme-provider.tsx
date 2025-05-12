@@ -1,13 +1,14 @@
 "use client"
 
+import { setCookie } from "@/lib/cookies"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
-import { useEffect } from "react"
-import { getCookie, setCookie } from "@/lib/cookies"
+import { ReactNode, useEffect } from "react"
 
 export type ExperienceType = "standard" | "corporate"
 
 interface EnhancedThemeProviderProps extends ThemeProviderProps {
   version?: ExperienceType
+  children: ReactNode;
 }
 
 export function ThemeProvider({ 

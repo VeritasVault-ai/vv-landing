@@ -9,9 +9,9 @@ import {
 import { Github, Linkedin, Twitter } from "lucide-react"
 import Link from "next/link"
 
-export function CorporateFooter() {
+export function StandardFooter() {
   const currentYear = new Date().getFullYear()
-  const footerNav = getFooterNavigationByExperience('corporate')
+  const footerNav = getFooterNavigationByExperience('standard')
   
   // Helper function to render the icon based on the icon name
   const renderIcon = (icon: string | undefined) => {
@@ -19,25 +19,25 @@ export function CorporateFooter() {
     
     switch (icon) {
       case 'github':
-        return <Github className="h-5 w-5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300" />
+        return <Github className="h-5 w-5 text-muted-foreground hover:text-foreground" />
       case 'twitter':
-        return <Twitter className="h-5 w-5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300" />
+        return <Twitter className="h-5 w-5 text-muted-foreground hover:text-foreground" />
       case 'linkedin':
-        return <Linkedin className="h-5 w-5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300" />
+        return <Linkedin className="h-5 w-5 text-muted-foreground hover:text-foreground" />
       default:
         return null
     }
   }
   
   return (
-    <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 mt-auto">
+    <footer className="border-t bg-background/80 backdrop-blur-sm mt-auto">
       <div className="container py-8 md:py-12">
         {/* Top section with logo, description, and newsletter */}
         <div className="flex flex-col md:flex-row justify-between gap-8 mb-8">
           <div className="space-y-4 max-w-sm">
-            <h3 className="font-bold">VeritasVault</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Enterprise-grade security and compliance solutions for institutional liquidity management. Trusted by the world's leading financial institutions.
+            <h3 className="font-bold">NeuralLiquid</h3>
+            <p className="text-sm text-muted-foreground">
+              AI-powered liquidity management platform for Tezos. Optimize your yields with advanced machine learning algorithms.
             </p>
           </div>
           <div className="space-y-4 max-w-sm">
@@ -57,7 +57,7 @@ export function CorporateFooter() {
             <ul className="space-y-2 text-sm">
               {footerNav.platform?.map((item: FooterNavigationItem, index: number) => (
                 <li key={index}>
-                  <Link href={item.href || '#'} className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                  <Link href={item.href || '#'} className="text-muted-foreground hover:text-foreground">
                     {item.title}
                   </Link>
                 </li>
@@ -71,7 +71,7 @@ export function CorporateFooter() {
             <ul className="space-y-2 text-sm">
               {footerNav.resources?.map((item: FooterNavigationItem, index: number) => (
                 <li key={index}>
-                  <Link href={item.href || '#'} className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                  <Link href={item.href || '#'} className="text-muted-foreground hover:text-foreground">
                     {item.title}
                   </Link>
                 </li>
@@ -85,7 +85,7 @@ export function CorporateFooter() {
             <ul className="space-y-2 text-sm">
               {footerNav.company?.map((item: FooterNavigationItem, index: number) => (
                 <li key={index}>
-                  <Link href={item.href || '#'} className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                  <Link href={item.href || '#'} className="text-muted-foreground hover:text-foreground">
                     {item.title}
                   </Link>
                 </li>
@@ -99,7 +99,7 @@ export function CorporateFooter() {
             <ul className="space-y-2 text-sm">
               {footerNav.legal?.map((item: FooterNavigationItem, index: number) => (
                 <li key={index}>
-                  <Link href={item.href || '#'} className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                  <Link href={item.href || '#'} className="text-muted-foreground hover:text-foreground">
                     {item.title}
                   </Link>
                 </li>
@@ -109,9 +109,9 @@ export function CorporateFooter() {
         </div>
         
         {/* Bottom section with copyright and social links */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-slate-200 dark:border-slate-800">
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            © {currentYear} VeritasVault. All rights reserved.
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t">
+          <p className="text-sm text-muted-foreground">
+            © {currentYear} NeuralLiquid. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             {footerNav.social?.map((item: FooterNavigationItem, index: number) => (
