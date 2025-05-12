@@ -146,10 +146,14 @@ export function useVotingWebSocketSimulation() {
     const newPropInterval = setInterval(() => {
       if (!isActive || Math.random() > 0.1) return
 
-      const lastId = activeProposals[0]?.id.match(/-(\d+)$/)?.[1]
-        ? parseInt(activeProposals[0]!.id.split('-')[1], 10)
-        : 25
-      const idNum = lastId + 1
+      // Find the highest proposal ID number and increment it
+      const highestId = activeProposals.reduce((max, prop) => {
+        const match = prop.id.match(/-(\d+)$/)
+        if (!match) return max
+        const id = parseInt(match[1], 10)
+        return id > max ? id : max
+      }, 25)
+      const idNum = highestId + 1
       const newProp: ActiveProposal = {
         id:            `VIP-${idNum}`,
         title:         `New ${['Treasury','Protocol','Security','Governance'][Math.floor(Math.random()*4)]} Proposal`,
