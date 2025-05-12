@@ -46,7 +46,9 @@ export function ThemeProvider({
 }) {
   return (
     <NextThemesProvider attribute="class" enableSystem defaultTheme={defaultColorMode} themes={['light','dark']}>
-      <InnerProvider children={children} defaultExperience={defaultExperience} />
+      <InnerProvider defaultExperience={defaultExperience}>
+        {children}
+      </InnerProvider>
     </NextThemesProvider>
   );
 }
