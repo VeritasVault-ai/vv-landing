@@ -21,7 +21,7 @@ export function DashboardLayout({
   onRefresh 
 }: DashboardLayoutProps) {
   const { settings, refreshData } = useDashboard()
-  const { experience, themeVariant } = useTheme()
+  const { themeVariant } = useTheme()
 
   const handleRefresh = async () => {
     if (onRefresh) {
