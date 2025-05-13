@@ -1,37 +1,10 @@
 'use client'
 
-import { DashboardLayout } from "@/components/corporate/dashboard-layout"
+// Analytics tracking for tab changes
 import { DashboardOverview } from "@/components/corporate/dashboard-overview"
 import { DashboardPerformance } from "@/components/corporate/dashboard-performance"
-import { DashboardSummary } from "@/components/corporate/dashboard-summary"
 import { ModelResults } from "@/components/corporate/model-results"
 import { DashboardVoting } from "@/components/corporate/voting"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { DashboardProvider, useDashboard } from "@/contexts/dashboard-context-improved"
-import { useDashboardRealtime } from "@/lib/services/dashboard-realtime-manager"
-import { BarChart3, Calculator, TrendingUp, Vote } from "lucide-react"
-import { useEffect } from "react"
-
-// Define valid tabs as a constant to ensure consistency
-const VALID_TABS = ['overview', 'performance', 'models', 'voting'] as const
-type DashboardTab = typeof VALID_TABS[number]
-
-// Utility function to validate tab values
-const isValidTab = (tab: string): tab is DashboardTab => 
-  VALID_TABS.includes(tab as DashboardTab)
-
-function DashboardContentInner() {
-  // Get dashboard state from context
-  const { 
-    activeTab, 
-    setActiveTab, 
-    refreshData
-  } = useDashboard()
-  
-  // Initialize all real-time connections through the centralized manager
-  useDashboardRealtime()
-
-  // Analytics tracking for tab changes
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DashboardProvider, useDashboard } from "@/contexts/dashboard-context-improved"
 import { useDashboardRealtime } from "@/lib/services/dashboard-realtime-manager"
@@ -116,13 +89,7 @@ function DashboardContentInner() {
         <TabsContent value="overview">
           <DashboardOverview />
         </TabsContent>
-        <TabsContent value="overview">
-          <DashboardOverview />
-        </TabsContent>
 
-        <TabsContent value="performance">
-          <DashboardPerformance />
-        </TabsContent>
         <TabsContent value="performance">
           <DashboardPerformance />
         </TabsContent>
