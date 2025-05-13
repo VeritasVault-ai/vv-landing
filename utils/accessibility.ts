@@ -36,7 +36,14 @@ export function makeScreenReaderAnnouncement(
     props: { "aria-live": politeness, "aria-atomic": true },
     content: message,
   };
-}
+export function makeScreenReaderAnnouncement(
+  message: string,
+  politeness: "polite" | "assertive" = "polite"
+): { props: React.AriaAttributes; content: string } {
+  return {
+    props: { "aria-live": politeness, "aria-atomic": true },
+    content: message,
+  };
 }
 
 /**
