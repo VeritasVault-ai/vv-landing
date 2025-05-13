@@ -30,8 +30,11 @@ export const isAuthenticated = async (req: Request) => {
   return !!authHeader;
 };
 
-export const hasPermission = async (userId: string, permission: string) => {
+export type Permission = 'read' | 'write' | 'admin'; // Define allowed permissions
+
+export const hasPermission = async (userId: string, permission: Permission) => {
   // In a real implementation, this would check if the user has the specified permission
+  console.warn(`Mock permission check: ${userId} requesting ${permission}`);
   // For now, just return true for demo purposes
   return true;
 };
