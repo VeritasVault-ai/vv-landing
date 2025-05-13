@@ -223,7 +223,7 @@ export function VirtualizedTable<T extends { id?: string | number }>({
             
             return (
               <div
-                key={virtualRow.index}
+                key={(item as any).id ?? virtualRow.index}
                 data-index={virtualRow.index}
                 className={cn(
                   "absolute top-0 left-0 w-full border-b border-slate-100 dark:border-slate-800",
