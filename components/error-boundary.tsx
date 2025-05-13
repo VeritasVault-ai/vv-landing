@@ -39,11 +39,27 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // You can log the error to an error reporting service
-    console.error("Error caught by ErrorBoundary:", error, errorInfo)
-    this.setState({
-      error,
-      errorInfo
-    })
+ componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+   // You can log the error to an error reporting service
+   // Sanitize error information before logging
+   const sanitizedError = {
+     name: error.name,
+     message: error.message,
+     // Avoid logging potentially sensitive stack information in production
+     stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined
+   }
+   console.error(
+     "Error caught by ErrorBoundary:",
+     sanitizedError,
+     process.env.NODE_ENV !== 'production'
+       ? errorInfo
+       : { componentStack: 'hidden in production' }
+   )
+   this.setState({
+     error,
+     errorInfo
+   })
+ }
   }
 
   // Reset the error boundary state
@@ -75,9 +91,12 @@ export class ErrorBoundary extends Component<Props, State> {
           {this.state.error && (
             <div className="bg-red-100 dark:bg-red-900/30 p-4 rounded-md mb-6 max-w-full overflow-auto text-left">
               <p className="font-mono text-sm text-red-800 dark:text-red-300 mb-2">
-                {this.state.error.toString()}
+                {/* Only show generic error information in production */}
+                {process.env.NODE_ENV === 'production'
+                  ? 'An unexpected error occurred.'
+                  : this.state.error.toString()}
               </p>
-              {this.state.errorInfo && (
+              {this.state.errorInfo && process.env.NODE_ENV !== 'production' && (
                 <details className="mt-2">
                   <summary className="text-sm font-medium cursor-pointer">
                     Component Stack
@@ -89,6 +108,8 @@ export class ErrorBoundary extends Component<Props, State> {
               )}
             </div>
           )}
+        </div>
+      );
           <Button 
             variant="outline" 
             onClick={this.handleReset}

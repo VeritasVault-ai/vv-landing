@@ -32,12 +32,13 @@ export abstract class BaseService {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     try {
+      const { headers: optHeaders, ...rest } = options;
       const response = await fetch(url, {
+        ...rest,
         headers: {
           'Content-Type': 'application/json',
-          ...options.headers,
+          ...optHeaders,
         },
-        ...options,
       });
 
       if (!response.ok) {

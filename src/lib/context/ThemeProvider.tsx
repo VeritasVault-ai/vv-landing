@@ -25,7 +25,7 @@ import {
   ColorMode,
   getTheme,
 } from '@/styles/theme';
-import { standardVariants, corporateVariants, getDefaultVariant, ThemeVariant } from '@/config/theme-variants';
+import { standardVariants, corporateVariants, getDefaultVariant, ThemeVariant } from '@/context/theme-variants';
 
 // Context shape
 export type ThemeContextType = {
@@ -67,9 +67,15 @@ function InnerProvider({ children, defaultExperience }: { children: ReactNode; d
 
   // enforce valid variant list on experience change
   useEffect(() => {
-    if (experience === 'standard' && !standardVariants.includes(themeVariant as any)) {
+    if (
+      experience === 'standard' &&
+      !standardVariants.includes(themeVariant as StandardThemeVariant)
+    ) {
       setThemeVariant(getDefaultVariant('standard'));
-    } else if (experience === 'corporate' && !corporateVariants.includes(themeVariant as any)) {
+    } else if (
+      experience === 'corporate' &&
+      !corporateVariants.includes(themeVariant as CorporateThemeVariant)
+    ) {
       setThemeVariant(getDefaultVariant('corporate'));
     }
   }, [experience, themeVariant]);

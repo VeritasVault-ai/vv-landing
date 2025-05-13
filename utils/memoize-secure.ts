@@ -33,6 +33,9 @@ function isSensitiveFieldName(key: string): boolean {
  * @param obj The object to sanitize
  * @returns A sanitized copy of the object
  */
+// At the top of utils/memoize-secure.ts
+const seen = new WeakSet<object>();
+
 function sanitizeObject(obj: any): any {
   if (obj === null || obj === undefined) return obj;
   
@@ -43,6 +46,12 @@ function sanitizeObject(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.map(item => sanitizeObject(item));
   }
+
+  // Protect against circular references
+  if (seen.has(obj)) {
+    return '[CIRCULAR]';
+  }
+  seen.add(obj);
   
   // Handle objects
   const sanitized: Record<string, any> = {};

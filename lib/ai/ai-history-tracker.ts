@@ -212,29 +212,30 @@ export class AIHistoryTracker {
    * Sanitize an interaction to remove sensitive information
    */
   private sanitizeInteraction(interaction: AIInteraction): AIInteraction {
-    // Create a deep copy to avoid modifying the original
-    const sanitized = JSON.parse(JSON.stringify(interaction)) as AIInteraction;
-    
+    // Create a shallow clone to avoid JSON-stringify pitfalls
+-    const sanitized = JSON.parse(JSON.stringify(interaction)) as AIInteraction;
++    const sanitized = { ...interaction, metadata: { ...(interaction.metadata ?? {}) } };
+
     // Truncate long inputs/outputs
     if (sanitized.input && sanitized.input.length > 500) {
       sanitized.input = sanitized.input.substring(0, 500) + '...';
     }
-    
+
     if (sanitized.output && sanitized.output.length > 1000) {
       sanitized.output = sanitized.output.substring(0, 1000) + '...';
     }
-    
+
     // Remove potentially sensitive information from metadata
     if (sanitized.metadata) {
       const sensitiveKeys = ['password', 'token', 'key', 'secret', 'credentials'];
-      
+
       for (const key of Object.keys(sanitized.metadata)) {
         if (sensitiveKeys.some(sk => key.toLowerCase().includes(sk))) {
           sanitized.metadata[key] = '[REDACTED]';
         }
       }
     }
-    
+
     return sanitized;
   }
   

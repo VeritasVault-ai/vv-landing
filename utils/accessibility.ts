@@ -31,11 +31,12 @@ export function makeKeyboardAccessible(onClick: (event: React.MouseEvent | React
 export function makeScreenReaderAnnouncement(
   message: string,
   politeness: "polite" | "assertive" = "polite"
-) {
+): { props: React.AriaAttributes; content: string } {
   return {
-    "aria-live": politeness,
-    "aria-atomic": true,
+    props: { "aria-live": politeness, "aria-atomic": true },
+    content: message,
   };
+}
 }
 
 /**

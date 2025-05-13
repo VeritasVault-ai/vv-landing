@@ -21,9 +21,19 @@ export function useDashboardRealtime() {
     // You could add additional initialization logic here
     // For example, setting up global event listeners or error handlers
     
+    // Set up global error handler for WebSocket simulation errors
+    const handleError = (error: Error) => {
+      console.error("WebSocket simulation error:", error);
+      // Implement error reporting or recovery logic here
+    };
+    
+    // Subscribe to error events from the simulation services
+    window.addEventListener("websocket-simulation-error", handleError as EventListener);
+    
     return () => {
       console.log("Dashboard real-time connections cleaned up")
       // Any additional cleanup logic
+      window.removeEventListener("websocket-simulation-error", handleError as EventListener);
     }
   }, [])
 }

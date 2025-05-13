@@ -72,7 +72,11 @@ class DashboardService extends BaseService {
       const data = await response.json();
       return data.token;
     } catch (error) {
-      console.error('Error getting authentication token:', error);
+      console.error('Error getting authentication token');
+      // Log error details safely in a development environment only
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Details:', error instanceof Error ? error.message : String(error));
+      }
       throw new Error('Authentication failed');
     }
   }

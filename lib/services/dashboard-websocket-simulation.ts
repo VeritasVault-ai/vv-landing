@@ -38,8 +38,10 @@ export function useDashboardWebSocketSimulation() {
       
       // Calculate new percentage change from previous value
       const previousValue = overviewData.portfolioValue.previous
-      const newPercentageChange = ((newValue - previousValue) / previousValue) * 100
-      
+      const newPercentageChange =
+        previousValue === 0
+          ? 0
+          : ((newValue - previousValue) / previousValue) * 100
       // Update our local cache
       overviewData = {
         ...overviewData,
