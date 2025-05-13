@@ -1,6 +1,6 @@
 {
-  "Model": "BlackLitterman",
-  "ModelResults": [
+  "model": "BlackLitterman",
+  "modelResults": [
     {
       "Views": [
         {
