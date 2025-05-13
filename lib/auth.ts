@@ -27,7 +27,8 @@ export const isAuthenticated = async (req: Request) => {
   
   // For now, just check if there's an authorization header
   const authHeader = req.headers.get('authorization');
-  return !!authHeader;
+  // Add basic validation that it follows "Bearer token" format
+  return !!authHeader && authHeader.startsWith('Bearer ') && authHeader.length > 7;
 };
 
 export type Permission = 'read' | 'write' | 'admin'; // Define allowed permissions
