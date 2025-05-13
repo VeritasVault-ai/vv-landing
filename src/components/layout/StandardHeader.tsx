@@ -1,21 +1,21 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import { getHeaderNavigationByExperience, HeaderNavigationItem, NavigationSubItem } from '@/lib/navigation'
-import { useAnalytics } from '@/hooks/use-analytics'
-import { useAuth } from '@/hooks/use-auth'
-import { useSession } from 'next-auth/react'
-import { usePathname } from 'next/navigation'
-import Link from 'next/link'
-import Image from 'next/image'
-import { ChevronDown, Menu, X, User } from 'lucide-react'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { LoginDialog } from '@/components/auth/login-dialog'
 import { RegisterDialog } from '@/components/auth/register-dialog'
-import { StandardMobileHeader } from './StandardMobileHeader'
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useAnalytics } from '@/hooks/use-analytics'
+import { useAuth } from '@/hooks/use-auth'
+import { getHeaderNavigationByExperience } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
+import { ThemeToggle } from '@/src/components/ThemeToggle'
+import { ChevronDown, Menu, User, X } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { StandardMobileHeader } from './StandardMobileHeader'
 
 /**
  * Renders a responsive website header with navigation, theme toggle, and authentication controls.
@@ -27,8 +27,19 @@ export function StandardHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [loginDialogOpen, setLoginDialogOpen] = useState(false)
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const { trackEvent } = useAnalytics()
   const { logout } = useAuth()
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   const { data: session, status } = useSession()
   const isAuthenticated = status === 'authenticated'
@@ -50,13 +61,18 @@ export function StandardHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b backdrop-blur bg-background/90">
+      <header className={cn(
+        "sticky top-0 z-50 w-full transition-all duration-300",
+        isScrolled 
+          ? "bg-background/90 backdrop-blur-md border-b shadow-sm" 
+          : "bg-background/70 backdrop-blur-sm border-b"
+      )}>
         <div className="container flex h-16 items-center justify-between">
           {/* Logo & Nav */}
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <Image src="/logo.svg" alt="NeuralLiquid" width={32} height={32} className="dark:invert" />
-              <span className="hidden font-bold sm:inline-block">NeuralLiquid</span>
+              <span className="hidden font-bold sm:inline-block bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">NeuralLiquid</span>
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm">
               {featuredItems.map(item => (

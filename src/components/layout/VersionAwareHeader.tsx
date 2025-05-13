@@ -2,14 +2,14 @@
 'use client'
 
 import React from 'react'
-import { useTheme } from '@/lib/context/ThemeProvider'
 import { getHeaderNavigationByExperience } from '@/lib/navigation'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/hooks/use-auth'
 import { useAnalytics } from '@/hooks/use-analytics'
-import CorporateHeader from './CorporateHeader'
-import StandardHeader from './StandardHeader'
+import { useTheme } from '@/src/lib/hooks/context/ThemeProvider'
+import { CorporateHeader } from './CorporateHeader'
+import { StandardHeader } from './StandardHeader'
 
 /**
  * Renders a header component variant based on the current user experience context.
