@@ -1,4 +1,6 @@
 import { DashboardOverview, DashboardPerformance } from '@/lib/repositories/dashboard-repository';
+import { ApiResponse } from '../api/api-response';
+import { ApiRequestOptions, BaseService } from '../services/base-service';
 
 /**
  * Type definitions for dashboard service responses

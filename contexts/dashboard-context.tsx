@@ -7,6 +7,7 @@ import type {
   DashboardPerformance,
   DashboardSettings,
 } from "./dashboard/types";
+import { dashboardEvents } from "./dashboard";
 
 // Define the context state type
 interface DashboardContextType {
