@@ -1,39 +1,78 @@
-"use client"
+import { useCallback, useEffect, useState } from 'react';
+import { useDashboardWebSocketSimulation, useModelWebSocketSimulation, useVotingWebSocketSimulation } from './websocket-simulations';
 
-import { useEffect } from "react"
-import { useVotingWebSocketSimulation } from "./websocket-simulation"
-import { useModelWebSocketSimulation } from "./model-websocket-simulation"
-import { useDashboardWebSocketSimulation } from "./dashboard-websocket-simulation"
+export type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
-/**
- * This hook centralizes all WebSocket simulations for the dashboard.
- * It initializes all the real-time data connections in one place.
- */
+interface WebSocketState {
+  voting: WebSocketStatus;
+  model: WebSocketStatus;
+  dashboard: WebSocketStatus;
+}
+
 export function useDashboardRealtime() {
-  // Initialize all WebSocket simulations
-  useVotingWebSocketSimulation()
-  useModelWebSocketSimulation()
-  useDashboardWebSocketSimulation()
+  // Track connection status for each WebSocket
+  const [status, setStatus] = useState<WebSocketState>({
+    voting: 'connecting',
+    model: 'connecting',
+    dashboard: 'connecting'
+  });
+
+  // Track whether any connection has an error
+  const hasError = Object.values(status).some(s => s === 'error');
   
+  // Track whether all connections are established
+  const isConnected = Object.values(status).every(s => s === 'connected');
+
+  // Handlers for each WebSocket connection
+  const handleVotingStatus = useCallback((newStatus: WebSocketStatus) => {
+    setStatus(prev => ({ ...prev, voting: newStatus }));
+  }, []);
+  
+  const handleModelStatus = useCallback((newStatus: WebSocketStatus) => {
+    setStatus(prev => ({ ...prev, model: newStatus }));
+  }, []);
+  
+  const handleDashboardStatus = useCallback((newStatus: WebSocketStatus) => {
+    setStatus(prev => ({ ...prev, dashboard: newStatus }));
+  }, []);
+
+  // Initialize WebSocket connections with status handlers
+  const votingData = useVotingWebSocketSimulation(handleVotingStatus);
+  const modelData = useModelWebSocketSimulation(handleModelStatus);
+  const dashboardData = useDashboardWebSocketSimulation(handleDashboardStatus);
+
+  // Reconnect all WebSockets
+  const reconnect = useCallback(() => {
+    // Reset status to connecting
+    setStatus({
+      voting: 'connecting',
+      model: 'connecting',
+      dashboard: 'connecting'
+    });
+    
+    // Call reconnect methods from each WebSocket hook
+    votingData.reconnect();
+    modelData.reconnect();
+    dashboardData.reconnect();
+  }, [votingData, modelData, dashboardData]);
+
+  // Log connection status changes in development
   useEffect(() => {
-    console.log("Dashboard real-time connections initialized")
-    
-    // You could add additional initialization logic here
-    // For example, setting up global event listeners or error handlers
-    
-    // Set up global error handler for WebSocket simulation errors
-    const handleError = (error: Error) => {
-      console.error("WebSocket simulation error:", error);
-      // Implement error reporting or recovery logic here
-    };
-    
-    // Subscribe to error events from the simulation services
-    window.addEventListener("websocket-simulation-error", handleError as EventListener);
-    
-    return () => {
-      console.log("Dashboard real-time connections cleaned up")
-      // Any additional cleanup logic
-      window.removeEventListener("websocket-simulation-error", handleError as EventListener);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('WebSocket status changed:', status);
     }
-  }, [])
+  }, [status]);
+
+  return {
+    // Connection status
+    status,
+    isConnected,
+    hasError,
+    reconnect,
+    
+    // Data from WebSockets
+    votingData: votingData.data,
+    modelData: modelData.data,
+    dashboardData: dashboardData.data,
+  };
 }
