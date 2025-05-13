@@ -74,9 +74,9 @@ export class ErrorBoundary extends Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // Create sanitized versions for logging
     const sanitizedError = {
-      ...error,
+      name: error.name,
       message: sanitizeErrorMessage(error.message),
-      stack: sanitizeStackTrace(error.stack)
+      stack: sanitizeStackTrace(error.stack),
     };
     
     const sanitizedErrorInfo = {

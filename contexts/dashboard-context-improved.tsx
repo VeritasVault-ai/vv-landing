@@ -116,30 +116,34 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const [activeTab, setActiveTab] = useState("overview")
   
   // Update settings and save to localStorage
-  const updateSettings = (newSettings: Partial<DashboardSettings>) => {
-    setSettings(prev => {
-      const updated = {
-        ...prev,
-        ...newSettings,
-        // Handle nested objects
-        visibleMetrics: {
-          ...prev.visibleMetrics,
-          ...(newSettings.visibleMetrics || {}),
-        },
-        refreshRates: {
-          ...prev.refreshRates,
-          ...(newSettings.refreshRates || {}),
-        },
-      }
-      
-      // Save to localStorage
-      if (typeof window !== "undefined") {
+const updateSettings = (newSettings: Partial<DashboardSettings>) => {
+  setSettings(prev => {
+    const updated = {
+      ...prev,
+      ...newSettings,
+      // Handle nested objects
+      visibleMetrics: {
+        ...prev.visibleMetrics,
+        ...(newSettings.visibleMetrics || {}),
+      },
+      refreshRates: {
+        ...prev.refreshRates,
+        ...(newSettings.refreshRates || {}),
+      },
+    }
+    
+    // Save to localStorage
+    if (typeof window !== "undefined") {
+      try {
         localStorage.setItem("dashboardSettings", JSON.stringify(updated))
+      } catch (e) {
+        console.warn("Unable to persist dashboard settings", e)
       }
-      
-      return updated
-    })
-  }
+    }
+    
+    return updated
+  })
+}
   
   // Fetch dashboard overview data
   const fetchOverviewData = async () => {

@@ -1,4 +1,5 @@
-import { BaseService, ApiResponse } from './base-service';
+-import { BaseService, ApiResponse } from './base-service';
++import { BaseService, ApiResponse } from './base-service-secure';
 import { 
   VotingOverview,
   ActiveProposal,
@@ -74,8 +75,7 @@ class VotingService extends BaseService {
       address: string;
       votingPower: number;
       percentage: number;
-    }>(`/api/voting/power?address=${address}`);
-    
+    }>(`/api/voting/power?address=${encodeURIComponent(address)}`);
     return response.data;
   }
 }

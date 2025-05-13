@@ -100,7 +100,7 @@ export abstract class BaseService {
    * Base fetch method with error handling, response parsing, and security enhancements
    */
   protected async fetchApi<T>(
-    url: string, 
+    url: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     // Create a sanitized version of options for logging
@@ -108,8 +108,10 @@ export abstract class BaseService {
     if (sanitizedOptions.headers) {
       sanitizedOptions.headers = { ...sanitizedOptions.headers };
       // Redact any authorization headers
-      if ('Authorization' in sanitizedOptions.headers) {
-        (sanitizedOptions.headers as any).Authorization = '[REDACTED]';
+      for (const k of Object.keys(sanitizedOptions.headers as Record<string,string>)) {
+        if (k.toLowerCase().includes('authorization') || k.toLowerCase().includes('api-key')) {
+          (sanitizedOptions.headers as any)[k] = '[REDACTED]';
+        }
       }
     }
     
@@ -119,15 +121,16 @@ export abstract class BaseService {
     }
 
     try {
-      const mergedHeaders = {
-        ...options.headers,
-        // Only add JSON header when a body is present
-        ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-      };
+      const fullUrl = url.startsWith('http')
+        ? url
+        : `${this.apiBaseUrl.replace(/\/$/, '')}/${url.replace(/^\//, '')}`;
 
-      const response = await fetch(url, {
+      const response = await fetch(fullUrl, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
         ...options,
-        headers: mergedHeaders,
       });
       if (!response.ok) {
         throw new ApiError(
@@ -136,9 +139,11 @@ export abstract class BaseService {
         );
       }
 
-      const text = await response.text();
-      const data = text ? JSON.parse(text) : null;
-      
+      const contentType = response.headers.get('content-type') ?? '';
+      const data =
+        contentType.includes('application/json')
+          ? await response.json()
+          : (await response.text()) as unknown;
       // Log sanitized response in development
       if (process.env.NODE_ENV !== 'production') {
         console.log(`API Response: ${url}`, sanitizeData(data));

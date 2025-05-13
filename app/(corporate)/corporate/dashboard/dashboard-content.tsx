@@ -1,9 +1,8 @@
 'use client'
 
-import { DashboardLayout } from "@/components/corporate/dashboard-layout"
+// Analytics tracking for tab changes
 import { DashboardOverview } from "@/components/corporate/dashboard-overview"
 import { DashboardPerformance } from "@/components/corporate/dashboard-performance"
-import { DashboardSummary } from "@/components/corporate/dashboard-summary"
 import { ModelResults } from "@/components/corporate/model-results"
 import { DashboardVoting } from "@/components/corporate/voting"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -40,14 +39,14 @@ function DashboardContentInner() {
   useEffect(() => {
     // Check if there's a hash in the URL that corresponds to a tab
     const hash = window.location.hash.replace('#', '')
-    if (hash && ['overview', 'performance', 'models', 'voting'].includes(hash)) {
+    if (hash && isValidTab(hash)) {
       setActiveTab(hash)
     }
     
     // Update hash when tab changes
     const handleHashChange = () => {
       const newHash = window.location.hash.replace('#', '')
-      if (newHash && ['overview', 'performance', 'models', 'voting'].includes(newHash)) {
+      if (newHash && isValidTab(newHash)) {
         setActiveTab(newHash)
       }
     }
@@ -58,9 +57,14 @@ function DashboardContentInner() {
 
   // Handle manual refresh based on active tab
   const handleRefresh = async () => {
-    await refreshData(activeTab as any)
+    try {
+      // `activeTab` can be strongly typed as 'overview' | 'performance' | 'models' | 'voting'
+      await refreshData(activeTab)
+    } catch (err) {
+      // TODO: surface a toast / monitoring event instead of silent console
+      console.error('Dashboard manual refresh failed', err)
+    }
   }
-
   return (
     <DashboardLayout 
       title="Corporate Dashboard" 

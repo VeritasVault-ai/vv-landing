@@ -1,13 +1,17 @@
-
 // ThemeProvider.tsx
 'use client';
 
-import { ColorMode, corporateVariants, ExperienceType, standardVariants, ThemeVariant } from '@/src/types';
-import { getDefaultVariant, getTheme } from '@/styles/theme';
 import { ThemeProvider as NextThemesProvider, useTheme as useNextTheme } from 'next-themes';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-
+import { CORPORATE_VARIANTS, STANDARD_VARIANTS } from '@/src/constants';
+import { ThemeVariant } from '@/src/types';
+import {
+  ColorMode,
+  ExperienceType,
+  getTheme,
+} from '@/styles/theme';
+import { standardVariants, corporateVariants, getDefaultVariant, ThemeVariant } from '@/context/theme-variants';
 
 // Context shape
 export type ThemeContextType = {
@@ -22,18 +26,22 @@ export type ThemeContextType = {
   isCorporateExperience: () => boolean;
 };
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+// Default values to use while context is initializing
+const defaultContextValues: ThemeContextType = {
+  experience: 'standard',
+  themeVariant: STANDARD_VARIANTS[0],
+  colorMode: 'light',
+  setExperience: () => {},
+  setThemeVariant: () => {},
+  setColorMode: () => {},
+  toggleColorMode: () => {},
+  isStandardExperience: () => true,
+  isCorporateExperience: () => false,
+};
 
-/**
- * Provides theme context and color mode management for the application.
- *
- * Wraps children with a theme provider that integrates with `next-themes`, enabling light and dark mode support, system theme detection, and experience-based theme variants.
- *
- * @param children - The React elements to render within the theme context.
- * @param defaultExperience - The initial experience type ('standard' or 'corporate'). Defaults to 'standard'.
- * @param defaultColorMode - The initial color mode ('light' or 'dark'). Defaults to 'light'.
- * @param fallback - Optional fallback UI to show while theme is initializing. Defaults to an empty div.
- */
+const ThemeContext = createContext<ThemeContextType>(defaultContextValues);
+
+// Outer: next-themes wrapper
 export function ThemeProvider({
   children,
   defaultExperience = 'standard',
@@ -47,81 +55,62 @@ export function ThemeProvider({
 }) {
   return (
     <NextThemesProvider attribute="class" enableSystem defaultTheme={defaultColorMode} themes={['light','dark']}>
-      <InnerProvider 
-        defaultExperience={defaultExperience} 
-        fallback={fallback}
-      >
+      <InnerProvider defaultExperience={defaultExperience}>
         {children}
       </InnerProvider>
     </NextThemesProvider>
   );
 }
 
-/**
- * Provides theme context state and logic to child components, managing experience type, theme variant, and color mode.
- *
- * Ensures the selected theme variant is valid for the current experience, updates HTML root classes to reflect theme and experience, and synchronizes color mode with the resolved theme.
- *
- * @param children - React elements to receive theme context.
- * @param defaultExperience - The initial experience type to use.
- * @param fallback - UI to render while theme is initializing.
- *
- * @remark
- * Delays rendering children until the resolved theme is available to prevent UI inconsistencies.
- */
 function InnerProvider({ 
   children, 
-  defaultExperience,
-  fallback
+  defaultExperience 
 }: { 
   children: ReactNode; 
-  defaultExperience: ExperienceType;
-  fallback: ReactNode;
+  defaultExperience: ExperienceType; 
 }) {
   const { resolvedTheme, setTheme: setNextTheme } = useNextTheme();
-  const [isThemeReady, setIsThemeReady] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   const [experience, setExperience] = useState<ExperienceType>(defaultExperience);
-  const [themeVariant, setThemeVariant] = useState<ThemeVariant>(getDefaultVariant(defaultExperience));
   
-  // Initialize theme when resolvedTheme becomes available
-  useEffect(() => {
-    if (resolvedTheme) {
-      // Apply initial theme classes
-      const root = document.documentElement;
-      if (experience === 'corporate') root.classList.add('experience-corporate');
-      root.classList.add(`theme-${themeVariant}`);
-      if (resolvedTheme === 'dark') root.classList.add('dark');
-      
-      // Mark theme as ready after a short delay to ensure CSS transitions work properly
-      const timer = setTimeout(() => {
-        setIsThemeReady(true);
-      }, 0);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [resolvedTheme, experience, themeVariant]);
+  // Fix: Use a type-safe approach to get the default variant
+  const getInitialThemeVariant = (exp: ExperienceType): ThemeVariant => {
+    if (exp === 'corporate') return CORPORATE_VARIANTS[0];
+    if (exp === 'standard') return STANDARD_VARIANTS[0];
+    // For 'both' or any future types, default to standard
+    return STANDARD_VARIANTS[0];
+  };
+  
+  const [themeVariant, setThemeVariant] = useState<ThemeVariant>(getInitialThemeVariant(defaultExperience));
 
   // enforce valid variant list on experience change
   useEffect(() => {
-    if (experience === 'standard' && !standardVariants.includes(themeVariant as any)) {
-      setThemeVariant(getDefaultVariant('standard'));
-    } else if (experience === 'corporate' && !corporateVariants.includes(themeVariant as any)) {
-      setThemeVariant(getDefaultVariant('corporate'));
+    if (experience === 'standard' && !STANDARD_VARIANTS.includes(themeVariant as any)) {
+      setThemeVariant(getInitialThemeVariant('standard'));
+    } else if (experience === 'corporate' && !CORPORATE_VARIANTS.includes(themeVariant as any)) {
+      setThemeVariant(getInitialThemeVariant('corporate'));
     }
   }, [experience, themeVariant]);
 
+  // Mark as ready when resolvedTheme is available
+  useEffect(() => {
+    if (resolvedTheme) {
+      setIsReady(true);
+    }
+  }, [resolvedTheme]);
+
   // update html classes
   useEffect(() => {
-    if (!isThemeReady) return;
+    if (!isReady) return;
     
     const root = document.documentElement;
-    root.classList.remove('experience-corporate', ...standardVariants.map(v => `theme-${v}`), ...corporateVariants.map(v => `theme-${v}`));
+    root.classList.remove('experience-corporate', ...STANDARD_VARIANTS.map(v => `theme-${v}`), ...CORPORATE_VARIANTS.map(v => `theme-${v}`));
     if (experience === 'corporate') root.classList.add('experience-corporate');
     root.classList.add(`theme-${themeVariant}`);
     if (resolvedTheme === 'dark') root.classList.add('dark');
     else root.classList.remove('dark');
-  }, [experience, themeVariant, resolvedTheme, isThemeReady]);
+  }, [experience, themeVariant, resolvedTheme, isReady]);
 
   const colorMode = (resolvedTheme ?? 'light') as ColorMode;
   const setColorMode = (mode: ColorMode) => setNextTheme(mode);
@@ -130,23 +119,22 @@ function InnerProvider({
   const isStandardExperience = () => experience === 'standard';
   const isCorporateExperience = () => experience === 'corporate';
 
-  // Show fallback UI while theme is initializing
-  if (!resolvedTheme || !isThemeReady) {
-    return <>{fallback}</>;
-  }
+  // Create context value
+  const contextValue: ThemeContextType = {
+    experience,
+    themeVariant,
+    colorMode,
+    setExperience,
+    setThemeVariant,
+    setColorMode,
+    toggleColorMode,
+    isStandardExperience,
+    isCorporateExperience,
+  };
 
+  // Always provide the context, but use default values until ready
   return (
-    <ThemeContext.Provider value={{
-      experience,
-      themeVariant,
-      colorMode,
-      setExperience,
-      setThemeVariant,
-      setColorMode,
-      toggleColorMode,
-      isStandardExperience,
-      isCorporateExperience,
-    }}>
+    <ThemeContext.Provider value={isReady ? contextValue : defaultContextValues}>
       {children}
     </ThemeContext.Provider>
   );
@@ -161,7 +149,6 @@ function InnerProvider({
  */
 export function useTheme() {
   const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error('useTheme must be within ThemeProvider');
   return ctx;
 }
 
@@ -182,5 +169,5 @@ export function useCurrentTheme() {
  */
 export function useAvailableThemeVariants() {
   const { experience } = useTheme();
-  return experience === 'standard' ? standardVariants : corporateVariants;
+  return experience === 'standard' ? STANDARD_VARIANTS : CORPORATE_VARIANTS;
 }

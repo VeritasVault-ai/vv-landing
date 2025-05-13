@@ -1,27 +1,13 @@
 "use client"
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react"
-import { DashboardOverview, DashboardPerformance } from "@/lib/repositories/dashboard-repository"
-import { dashboardService } from "@/lib/services/dashboard-service"
-import { dashboardEvents } from "@/lib/events/dashboard-events"
-
-// Define types for user preferences
-export interface DashboardSettings {
-  visibleMetrics: {
-    portfolioValue: boolean
-    activeStrategies: boolean
-    riskScore: boolean
-  }
-  refreshRates: {
-    portfolioValue: number // in seconds
-    riskScore: number // in seconds
-    performance: number // in seconds
-    modelResults: number // in seconds
-    voting: number // in seconds
-  }
-  theme: "light" | "dark" | "system"
-  compactView: boolean
-}
+import { dashboardService } from "@/lib/services/dashboard-service";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import type {
+  DashboardOverview,
+  DashboardPerformance,
+  DashboardSettings,
+} from "./dashboard/types";
+import { dashboardEvents } from "./dashboard";
 
 // Define the context state type
 interface DashboardContextType {
@@ -181,10 +167,23 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   }
   
   // Initial data fetch
+  // Initial data fetch
   useEffect(() => {
-    fetchOverviewData()
-    fetchPerformanceData()
-  }, [])
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const fetchInitialData = async () => {
+      await Promise.all([
+        fetchOverviewData({ signal }),
+        fetchPerformanceData({ signal })
+      ]);
+    };
+
+    fetchInitialData();
+
+    // Cleanup function to abort any pending requests when unmounting
+    return () => controller.abort();
+  }, []);
   
   // Subscribe to dashboard events
   useEffect(() => {
