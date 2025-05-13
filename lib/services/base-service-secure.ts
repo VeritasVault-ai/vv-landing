@@ -119,14 +119,16 @@ export abstract class BaseService {
     }
 
     try {
-      const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
-        ...options,
-      });
+      const mergedHeaders = {
+        ...options.headers,
+        // Only add JSON header when a body is present
+        ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+      };
 
+      const response = await fetch(url, {
+        ...options,
+        headers: mergedHeaders,
+      });
       if (!response.ok) {
         throw new ApiError(
           `API request failed: ${response.statusText}`,
