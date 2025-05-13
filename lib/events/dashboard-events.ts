@@ -88,7 +88,10 @@ class DashboardService extends BaseService {
       const data = await response.json();
       return data.token;
     } catch (error) {
-      console.error('Error getting authentication token:', error);
+      console.error(
+        'Authentication token retrieval failed:',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
       throw new Error('Authentication failed');
     }
   }
