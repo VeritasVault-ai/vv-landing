@@ -93,11 +93,11 @@ export class ErrorBoundary extends Component<Props, State> {
       this.props.onError(error, errorInfo);
     }
     
+    // Persist only the already-redacted copies
     this.setState({
-      error,
-      errorInfo
+      error: new Error(sanitizedError.message),            // keeps prototype chain intact
+      errorInfo: sanitizedErrorInfo
     });
-    
     // Optional: Send error to monitoring service
     // this.logErrorToService(sanitizedError, sanitizedErrorInfo);
   }
