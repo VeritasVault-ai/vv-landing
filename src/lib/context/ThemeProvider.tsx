@@ -1,37 +1,13 @@
-// theme-variants.ts
-// Centralized lists of valid theme variants per experience
-export const standardVariants = ['standard', 'neuralliquid'] as const;
-export const corporateVariants = ['corporate', 'veritasvault'] as const;
-
-export type StandardThemeVariant = typeof standardVariants[number];
-export type CorporateThemeVariant = typeof corporateVariants[number];
-export type ThemeVariant = StandardThemeVariant | CorporateThemeVariant;
-
-// Helper to get defaults
-export function getDefaultVariant(exp: 'standard'): StandardThemeVariant;
-export function getDefaultVariant(exp: 'corporate'): CorporateThemeVariant;
-/**
- * Returns the default theme variant for the given experience type.
- *
- * @param exp - The experience type, either 'standard' or 'corporate'.
- * @returns The default theme variant string for the specified experience.
- */
-export function getDefaultVariant(exp: 'standard' | 'corporate') {
-  return exp === 'corporate' ? corporateVariants[0] : standardVariants[0];
-}
 
 // ThemeProvider.tsx
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { ColorMode, corporateVariants, ExperienceType, standardVariants, ThemeVariant } from '@/src/types';
+import { getDefaultVariant, getTheme } from '@/styles/theme';
 import { ThemeProvider as NextThemesProvider, useTheme as useNextTheme } from 'next-themes';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-import {
-  ExperienceType,
-  ColorMode,
-  getTheme,
-} from '@/styles/theme';
-import { standardVariants, corporateVariants, getDefaultVariant, ThemeVariant } from '@/config/theme-variants';
+
 
 // Context shape
 export type ThemeContextType = {
@@ -56,19 +32,27 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
  * @param children - The React elements to render within the theme context.
  * @param defaultExperience - The initial experience type ('standard' or 'corporate'). Defaults to 'standard'.
  * @param defaultColorMode - The initial color mode ('light' or 'dark'). Defaults to 'light'.
+ * @param fallback - Optional fallback UI to show while theme is initializing. Defaults to an empty div.
  */
 export function ThemeProvider({
   children,
   defaultExperience = 'standard',
   defaultColorMode = 'light',
+  fallback = <div style={{ visibility: 'hidden' }} />,
 }: {
   children: ReactNode;
   defaultExperience?: ExperienceType;
   defaultColorMode?: ColorMode;
+  fallback?: ReactNode;
 }) {
   return (
     <NextThemesProvider attribute="class" enableSystem defaultTheme={defaultColorMode} themes={['light','dark']}>
-      <InnerProvider children={children} defaultExperience={defaultExperience} />
+      <InnerProvider 
+        defaultExperience={defaultExperience} 
+        fallback={fallback}
+      >
+        {children}
+      </InnerProvider>
     </NextThemesProvider>
   );
 }
@@ -80,15 +64,43 @@ export function ThemeProvider({
  *
  * @param children - React elements to receive theme context.
  * @param defaultExperience - The initial experience type to use.
+ * @param fallback - UI to render while theme is initializing.
  *
  * @remark
  * Delays rendering children until the resolved theme is available to prevent UI inconsistencies.
  */
-function InnerProvider({ children, defaultExperience }: { children: ReactNode; defaultExperience: ExperienceType; }) {
+function InnerProvider({ 
+  children, 
+  defaultExperience,
+  fallback
+}: { 
+  children: ReactNode; 
+  defaultExperience: ExperienceType;
+  fallback: ReactNode;
+}) {
   const { resolvedTheme, setTheme: setNextTheme } = useNextTheme();
+  const [isThemeReady, setIsThemeReady] = useState(false);
 
   const [experience, setExperience] = useState<ExperienceType>(defaultExperience);
   const [themeVariant, setThemeVariant] = useState<ThemeVariant>(getDefaultVariant(defaultExperience));
+  
+  // Initialize theme when resolvedTheme becomes available
+  useEffect(() => {
+    if (resolvedTheme) {
+      // Apply initial theme classes
+      const root = document.documentElement;
+      if (experience === 'corporate') root.classList.add('experience-corporate');
+      root.classList.add(`theme-${themeVariant}`);
+      if (resolvedTheme === 'dark') root.classList.add('dark');
+      
+      // Mark theme as ready after a short delay to ensure CSS transitions work properly
+      const timer = setTimeout(() => {
+        setIsThemeReady(true);
+      }, 0);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [resolvedTheme, experience, themeVariant]);
 
   // enforce valid variant list on experience change
   useEffect(() => {
@@ -101,13 +113,15 @@ function InnerProvider({ children, defaultExperience }: { children: ReactNode; d
 
   // update html classes
   useEffect(() => {
+    if (!isThemeReady) return;
+    
     const root = document.documentElement;
     root.classList.remove('experience-corporate', ...standardVariants.map(v => `theme-${v}`), ...corporateVariants.map(v => `theme-${v}`));
     if (experience === 'corporate') root.classList.add('experience-corporate');
     root.classList.add(`theme-${themeVariant}`);
     if (resolvedTheme === 'dark') root.classList.add('dark');
     else root.classList.remove('dark');
-  }, [experience, themeVariant, resolvedTheme]);
+  }, [experience, themeVariant, resolvedTheme, isThemeReady]);
 
   const colorMode = (resolvedTheme ?? 'light') as ColorMode;
   const setColorMode = (mode: ColorMode) => setNextTheme(mode);
@@ -116,7 +130,10 @@ function InnerProvider({ children, defaultExperience }: { children: ReactNode; d
   const isStandardExperience = () => experience === 'standard';
   const isCorporateExperience = () => experience === 'corporate';
 
-  if (!resolvedTheme) return <>{children}</>;
+  // Show fallback UI while theme is initializing
+  if (!resolvedTheme || !isThemeReady) {
+    return <>{fallback}</>;
+  }
 
   return (
     <ThemeContext.Provider value={{
