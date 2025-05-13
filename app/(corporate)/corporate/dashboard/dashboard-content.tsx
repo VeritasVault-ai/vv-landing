@@ -10,6 +10,12 @@ import { DashboardProvider, useDashboard } from "@/contexts/dashboard-context-im
 import { useDashboardRealtime } from "@/lib/services/dashboard-realtime-manager"
 import { BarChart3, Calculator, TrendingUp, Vote } from "lucide-react"
 import { useEffect } from "react"
+import { DashboardLayout } from "@/components/corporate/dashboard-layout-bridge"
+
+// Helper function to validate tab values
+function isValidTab(tab: string): tab is 'overview' | 'performance' | 'models' | 'voting' {
+  return ['overview', 'performance', 'models', 'voting'].includes(tab)
+}
 
 /**
  * Renders the main content of the corporate dashboard, including summary cards, tabbed navigation, and real-time data updates.
@@ -71,8 +77,8 @@ function DashboardContentInner() {
       description="Portfolio overview and performance metrics"
       onRefresh={handleRefresh}
     >
-      {/* Dashboard Summary Cards */}
-      <DashboardSummary />
+      {/* Dashboard Summary Cards - Temporarily removed for simplicity */}
+      {/* <DashboardSummary /> */}
 
       <Tabs 
         value={activeTab} 
