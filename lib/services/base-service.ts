@@ -32,12 +32,14 @@ export abstract class BaseService {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     try {
+      const mergedHeaders = {
+        'Content-Type': 'application/json',
+        ...(options.headers ?? {}),
+      };
+
       const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
         ...options,
+        headers: mergedHeaders,
       });
 
       if (!response.ok) {
@@ -47,7 +49,8 @@ export abstract class BaseService {
         );
       }
 
-      const data = await response.json();
+      const text = await response.text();
+      const data = text.length ? (JSON.parse(text) as T) : (null as unknown as T);
       
       return {
         data: data as T,

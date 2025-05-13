@@ -100,8 +100,10 @@ export abstract class BaseService {
     if (sanitizedOptions.headers) {
       sanitizedOptions.headers = { ...sanitizedOptions.headers };
       // Redact any authorization headers
-      if ('Authorization' in sanitizedOptions.headers) {
-        (sanitizedOptions.headers as any).Authorization = '[REDACTED]';
+      for (const k of Object.keys(sanitizedOptions.headers as Record<string,string>)) {
+        if (k.toLowerCase().includes('authorization') || k.toLowerCase().includes('api-key')) {
+          (sanitizedOptions.headers as any)[k] = '[REDACTED]';
+        }
       }
     }
     
@@ -126,8 +128,11 @@ export abstract class BaseService {
         );
       }
 
-      const data = await response.json();
-      
+      const contentType = response.headers.get('content-type') ?? '';
+      const data =
+        contentType.includes('application/json')
+          ? await response.json()
+          : (await response.text()) as unknown;
       // Log sanitized response in development
       if (process.env.NODE_ENV !== 'production') {
         console.log(`API Response: ${url}`, sanitizeData(data));

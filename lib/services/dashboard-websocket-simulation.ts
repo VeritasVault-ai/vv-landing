@@ -37,7 +37,7 @@ export function useDashboardWebSocketSimulation() {
       const newValue = Math.round(currentValue * (1 + (changePercentage / 100)))
       
       // Calculate new percentage change from previous value
-      const previousValue = overviewData.portfolioValue.previous
+      const previousValue = overviewData.portfolioValue.current
       const newPercentageChange = ((newValue - previousValue) / previousValue) * 100
       
       // Update our local cache
@@ -45,6 +45,7 @@ export function useDashboardWebSocketSimulation() {
         ...overviewData,
         portfolioValue: {
           ...overviewData.portfolioValue,
+          previous: currentValue,
           current: newValue,
           percentageChange: parseFloat(newPercentageChange.toFixed(1)),
           lastUpdated: "just now"

@@ -73,8 +73,11 @@ class DashboardService extends BaseService {
       const data = await response.json();
       return data.token;
     } catch (error) {
-      console.error('Error getting authentication token:', error);
+    } catch (error) {
+      // Log a sanitized version of the error without sensitive details
+      console.error('Authentication failed - unable to retrieve token');
       throw new Error('Authentication failed');
+    }
     }
   }
   
@@ -87,7 +90,7 @@ class DashboardService extends BaseService {
     try {
       // Try to get error details from response body
       const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
+      if (contentType?.includes('application/json')) {
         const errorData = await response.clone().json();
         return `[${response.status} ${response.statusText}] ${
           errorData.message || JSON.stringify(errorData)
