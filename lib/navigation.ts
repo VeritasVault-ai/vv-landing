@@ -263,7 +263,7 @@ export const footerNavigation = {
  * @returns An array of navigation items matching the specified experience, position, and authentication status.
  */
 export function getNavigationByExperience(
-  experience: 'standard' | 'corporate',
+  experience: ExperienceType,
   position: 'header' | 'footer' | 'both',
   isAuthenticated: boolean = false
 ) {
@@ -312,7 +312,7 @@ export function getFooterNavigationByExperience(
  * @returns An array of header navigation items matching the specified experience and authentication state.
  */
 export function getHeaderNavigationByExperience(
-  experience: 'standard' | 'corporate',
+  experience: ExperienceType,
   isAuthenticated: boolean = false
 ): HeaderNavigationItem[] {
   return getNavigationByExperience(experience, 'header', isAuthenticated) as HeaderNavigationItem[]

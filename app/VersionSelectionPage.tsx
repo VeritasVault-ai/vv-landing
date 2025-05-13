@@ -9,6 +9,7 @@ import { StandardVersionCard } from "./components/version-selection/StandardVers
 import { CorporateVersionCard } from "./components/version-selection/CorporateVersionCard"
 import { ThemeSelectionModal } from "./components/version-selection/ThemeSelectionModal"
 import { VersionBackground } from "./components/version-selection/VersionBackground"
+import { ExperienceType, ThemeVariant } from "@/src/types"
 
 
 /**

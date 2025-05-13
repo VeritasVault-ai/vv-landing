@@ -15,7 +15,7 @@ import { Moon, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useAvailableThemeVariants, useTheme } from '../lib/hooks/context/ThemeProvider'
 import { ColorMode } from '@/styles/theme'
-import { ThemeVariant } from '../lib/hooks/context/theme-variant'
+import { ThemeVariant } from '../types'
 
 /**
  * Renders a theme toggle button with a dropdown menu for selecting color modes and theme variants.

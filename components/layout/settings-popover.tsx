@@ -2,7 +2,7 @@
 import { Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { ThemeToggle } from "@/src/components/ThemeToggle"
 
 export function SettingsPopover() {
   return (
