@@ -15,8 +15,20 @@ interface AIConfidenceIndicatorProps {
 }
 
 /**
- * A component that displays the confidence level of an AI-generated output
- * for transparency and helping users make informed decisions
+ * Displays a visual indicator of AI-generated output confidence as a color-coded progress bar and optional label.
+ *
+ * Shows the AI's confidence level as a percentage, with color and tooltip descriptions reflecting the confidence range. Supports customizable size, label visibility, tooltip, and additional styling.
+ *
+ * @param level - Confidence value between 0 and 1.
+ * @param showLabel - Whether to display the confidence percentage label. Defaults to true.
+ * @param showTooltip - Whether to show a tooltip with descriptive confidence text. Defaults to true.
+ * @param size - Size of the progress bar ("sm", "md", or "lg"). Defaults to "md".
+ * @param className - Additional CSS classes for the container.
+ * @param labelClassName - Additional CSS classes for the label.
+ *
+ * @returns A React element displaying the AI confidence indicator.
+ *
+ * @remark The confidence level is clamped to the range [0, 1]. Color and tooltip content vary by confidence threshold.
  */
 export function AIConfidenceIndicator({
   level,

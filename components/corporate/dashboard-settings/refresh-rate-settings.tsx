@@ -10,6 +10,14 @@ interface RefreshRateSettingsProps {
   onChange: (settings: Partial<DashboardSettings>) => void
 }
 
+/**
+ * Renders a settings card with sliders to configure refresh rates for different dashboard sections.
+ *
+ * Allows users to adjust how frequently each dashboard section updates, with changes propagated via the provided callback.
+ *
+ * @param settings - The current dashboard settings containing refresh rates.
+ * @param onChange - Callback invoked with updated refresh rate values when a slider is changed.
+ */
 export function RefreshRateSettings({ settings, onChange }: RefreshRateSettingsProps) {
   const handleRefreshRateChange = (metric: keyof DashboardSettings["refreshRates"], value: number[]) => {
     onChange({

@@ -72,7 +72,13 @@ const DEFAULT_SETTINGS: DashboardSettings = {
 // Create the context with a default value
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined)
 
-// Provider component
+/**
+ * Provides dashboard state, user settings, and data management logic to child components via React context.
+ *
+ * Initializes and manages dashboard data, loading and error states, user preferences (with persistence), active tab, and theme. Fetches initial data, subscribes to real-time dashboard events for live updates, and applies the selected theme. Exposes functions to update settings, manually refresh data, and change the active tab.
+ *
+ * @remark Must wrap components that require access to dashboard context. Intended for use at the top level of dashboard-related UI.
+ */
 export function DashboardProvider({ children }: { children: ReactNode }) {
   // Dashboard data
   const [overviewData, setOverviewData] = useState<DashboardOverview | null>(null)
@@ -307,7 +313,13 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   )
 }
 
-// Custom hook to use the dashboard context
+/**
+ * Provides access to the dashboard context.
+ *
+ * @returns The current dashboard context value.
+ *
+ * @throws {Error} If called outside of a {@link DashboardProvider}.
+ */
 export function useDashboard() {
   const context = useContext(DashboardContext)
   if (context === undefined) {

@@ -8,7 +8,9 @@ import { useAISettings } from "./ai-settings-provider"
 import { Sparkles, History } from "lucide-react"
 
 /**
- * Component for controlling general AI settings
+ * Renders a settings card for enabling or disabling general AI features and history tracking within the dashboard.
+ *
+ * Provides toggle switches to control whether AI-powered features are active and whether AI interaction history is recorded. The history tracking option is disabled if AI features are turned off.
  */
 export function AISettingsGeneral() {
   const { settings, updateSettings } = useAISettings()

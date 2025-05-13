@@ -17,6 +17,19 @@ interface FeatureToggleProps {
   icon: React.ReactNode
 }
 
+/**
+ * Renders a labeled toggle switch for enabling or disabling a specific feature.
+ *
+ * Displays a title, description, and icon alongside a switch that reflects the current state and can be toggled by the user.
+ *
+ * @param id - Unique identifier for the toggle control.
+ * @param title - Display name of the feature.
+ * @param description - Brief explanation of the feature.
+ * @param checked - Whether the feature is currently enabled.
+ * @param onChange - Callback invoked when the toggle state changes.
+ * @param disabled - If true, the toggle is non-interactive.
+ * @param icon - Icon representing the feature.
+ */
 function FeatureToggle({
   id,
   title,
@@ -49,7 +62,9 @@ function FeatureToggle({
 }
 
 /**
- * Component for controlling feature-specific AI settings
+ * Displays a card interface for toggling individual AI feature settings within the dashboard.
+ *
+ * Renders switches for enabling or disabling specific AI features, reflecting the current settings and disabling controls if AI is globally turned off.
  */
 export function AISettingsFeatures() {
   const { settings, updateFeature } = useAISettings()

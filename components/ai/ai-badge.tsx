@@ -21,8 +21,17 @@ interface AIBadgeProps {
 }
 
 /**
- * A badge component that indicates AI-generated or AI-assisted content
- * for transparency and compliance with AI guidelines
+ * Displays a badge indicating the AI-related status of content, with optional tooltip for additional context.
+ *
+ * Renders a labeled badge with an icon and style corresponding to the specified AI badge type. Optionally wraps the badge in a tooltip displaying either a default or custom message, with configurable position and visibility.
+ *
+ * @param type - The AI badge type to display ("generated", "assisted", "analyzed", or "experimental").
+ * @param className - Optional CSS class for custom styling.
+ * @param showTooltip - Whether to display a tooltip on hover (default: true).
+ * @param tooltipPosition - Position of the tooltip relative to the badge ("top", "bottom", "left", or "right"; default: "top").
+ * @param tooltipContent - Optional custom tooltip text; if not provided, a default message is used.
+ *
+ * @returns A React element representing the AI badge, optionally wrapped in a tooltip.
  */
 export function AIBadge({
   type,

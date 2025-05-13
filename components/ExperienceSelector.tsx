@@ -7,6 +7,11 @@ import { ArrowRight, Brain, Briefcase, Shield, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+/**
+ * Guides the user through selecting an experience type and theme style before navigating to the dashboard.
+ *
+ * Presents a two-step selection process: first, the user chooses between a standard or corporate experience; then, based on that choice, selects a corresponding theme. Once both selections are made, the chosen options are set in context and the user is redirected to the dashboard.
+ */
 export function ExperienceSelector() {
   const router = useRouter();
   const { setExperience, setThemeVariant } = useTheme();

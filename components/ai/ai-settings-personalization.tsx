@@ -9,7 +9,9 @@ import { useAISettings } from "./ai-settings-provider"
 import { UserCircle, Clock } from "lucide-react"
 
 /**
- * Component for controlling AI personalization settings
+ * Renders a user interface for managing AI personalization settings, allowing users to select a personalization level and choose whether to include historical activity data.
+ *
+ * The component disables controls if AI features are turned off and provides contextual information about the impact of personalization choices.
  */
 export function AISettingsPersonalization() {
   const { settings, updatePersonalization } = useAISettings()

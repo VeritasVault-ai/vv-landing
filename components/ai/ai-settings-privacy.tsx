@@ -9,7 +9,9 @@ import { Lock, MessageSquareShare, UserX } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 
 /**
- * Component for controlling AI privacy settings
+ * Renders a user interface for managing AI-related privacy settings.
+ *
+ * Displays toggle switches for data collection, improvement feedback, and anonymizing interactions, allowing users to control how their data is used with AI features. All controls are disabled if AI features are turned off.
  */
 export function AISettingsPrivacy() {
   const { settings, updatePrivacy } = useAISettings()

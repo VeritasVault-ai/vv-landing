@@ -10,6 +10,12 @@ export type ThemeVariant = StandardThemeVariant | CorporateThemeVariant;
 // Helper to get defaults
 export function getDefaultVariant(exp: 'standard'): StandardThemeVariant;
 export function getDefaultVariant(exp: 'corporate'): CorporateThemeVariant;
+/**
+ * Returns the default theme variant for the given experience type.
+ *
+ * @param exp - The experience type, either 'standard' or 'corporate'.
+ * @returns The default theme variant string for the specified experience.
+ */
 export function getDefaultVariant(exp: 'standard' | 'corporate') {
   return exp === 'corporate' ? corporateVariants[0] : standardVariants[0];
 }
@@ -42,7 +48,15 @@ export type ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// Outer: next-themes wrapper
+/**
+ * Provides theme context and color mode management for the application.
+ *
+ * Wraps children with a theme provider that integrates with `next-themes`, enabling light and dark mode support, system theme detection, and experience-based theme variants.
+ *
+ * @param children - The React elements to render within the theme context.
+ * @param defaultExperience - The initial experience type ('standard' or 'corporate'). Defaults to 'standard'.
+ * @param defaultColorMode - The initial color mode ('light' or 'dark'). Defaults to 'light'.
+ */
 export function ThemeProvider({
   children,
   defaultExperience = 'standard',
@@ -59,6 +73,17 @@ export function ThemeProvider({
   );
 }
 
+/**
+ * Provides theme context state and logic to child components, managing experience type, theme variant, and color mode.
+ *
+ * Ensures the selected theme variant is valid for the current experience, updates HTML root classes to reflect theme and experience, and synchronizes color mode with the resolved theme.
+ *
+ * @param children - React elements to receive theme context.
+ * @param defaultExperience - The initial experience type to use.
+ *
+ * @remark
+ * Delays rendering children until the resolved theme is available to prevent UI inconsistencies.
+ */
 function InnerProvider({ children, defaultExperience }: { children: ReactNode; defaultExperience: ExperienceType; }) {
   const { resolvedTheme, setTheme: setNextTheme } = useNextTheme();
 
@@ -110,17 +135,34 @@ function InnerProvider({ children, defaultExperience }: { children: ReactNode; d
   );
 }
 
+/**
+ * Retrieves the current theme context.
+ *
+ * @returns The current {@link ThemeContextType} containing theme state and setters.
+ *
+ * @throws {Error} If called outside of a {@link ThemeProvider}.
+ */
 export function useTheme() {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error('useTheme must be within ThemeProvider');
   return ctx;
 }
 
+/**
+ * Returns the current theme object based on the active experience, theme variant, and color mode.
+ *
+ * @returns The theme configuration for the current experience, variant, and color mode.
+ */
 export function useCurrentTheme() {
   const { experience, themeVariant, colorMode } = useTheme();
   return getTheme(experience, themeVariant, colorMode);
 }
 
+/**
+ * Returns the list of valid theme variants for the current experience type.
+ *
+ * @returns An array of theme variant strings corresponding to the current experience.
+ */
 export function useAvailableThemeVariants() {
   const { experience } = useTheme();
   return experience === 'standard' ? standardVariants : corporateVariants;

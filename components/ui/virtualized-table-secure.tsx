@@ -27,7 +27,13 @@ interface VirtualizedTableProps<T> {
 }
 
 /**
- * Sanitize potentially sensitive data before rendering
+ * Returns a shallow copy of the given item with sensitive fields redacted.
+ *
+ * For each column marked as sensitive, the corresponding property in the item is replaced with the string "[REDACTED]". If the input item is null or undefined, it is returned as-is.
+ *
+ * @param item - The data item to sanitize.
+ * @param columns - The column definitions, used to determine which fields are sensitive.
+ * @returns A shallow copy of {@link item} with sensitive fields redacted, or the original value if null or undefined.
  */
 function sanitizeData<T>(item: T, columns: VirtualizedTableProps<T>["columns"]): T {
   if (!item) return item;
@@ -46,8 +52,27 @@ function sanitizeData<T>(item: T, columns: VirtualizedTableProps<T>["columns"]):
 }
 
 /**
- * A security-enhanced virtualized table component for efficiently rendering large datasets
- * with accessibility improvements and data sanitization
+ * Renders a performant, accessible, and secure virtualized table for large datasets, with support for data sanitization and loading states.
+ *
+ * The table virtualizes rows for efficient rendering, automatically redacts sensitive data in columns marked as such, and provides ARIA roles and keyboard accessibility for enhanced usability. Supports customizable columns, loading placeholders, empty states, and responsive resizing.
+ *
+ * @template T - The type of data items, optionally including an `id` field for row identification.
+ *
+ * @param data - The array of data items to display in the table.
+ * @param columns - Column definitions, including header, cell renderer, and optional sensitivity marking.
+ * @param rowHeight - Height of each row in pixels. Defaults to 48.
+ * @param className - Optional additional CSS classes for the table container.
+ * @param emptyState - Optional custom content to display when there is no data.
+ * @param onRowClick - Optional callback invoked when a row is clicked.
+ * @param isLoading - If true, displays loading placeholder rows instead of data.
+ * @param loadingRows - Number of loading placeholder rows to show when loading. Defaults to 10.
+ * @param ariaLabel - Accessible label for the table region. Defaults to "Data table".
+ * @param ariaDescription - Optional ARIA description for screen readers.
+ *
+ * @returns The rendered virtualized table component.
+ *
+ * @remark
+ * Columns marked with `isSensitive` will have their corresponding data redacted as "[REDACTED]" before rendering.
  */
 export function VirtualizedTable<T extends { id?: string | number }>({
   data,

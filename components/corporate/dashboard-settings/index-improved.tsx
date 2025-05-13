@@ -22,6 +22,11 @@ import { useFocusTrap } from "@/hooks/use-focus-trap"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { makeKeyboardAccessible, expandedState } from "@/utils/accessibility"
 
+/**
+ * Renders a modal dialog for configuring dashboard settings with tabbed navigation.
+ *
+ * Provides an accessible interface for editing dashboard preferences such as visible metrics, refresh rates, theme, and view options. Changes are managed locally until saved, at which point they are applied to the global dashboard context. The dialog includes keyboard and screen reader accessibility features, including focus trapping and live region announcements for successful saves.
+ */
 export function DashboardSettings() {
   const { settings, updateSettings } = useDashboard()
   const [localSettings, setLocalSettings] = useState(settings)

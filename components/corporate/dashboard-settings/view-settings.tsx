@@ -10,6 +10,14 @@ interface ViewSettingsProps {
   onChange: (settings: Partial<DashboardSettings>) => void
 }
 
+/**
+ * Renders UI controls for customizing dashboard view settings, including a toggle for compact layout.
+ *
+ * Displays a card with options allowing users to enable or disable a compact view. Changes are propagated via the provided callback.
+ *
+ * @param settings - Current dashboard settings.
+ * @param onChange - Callback invoked with updated settings when an option is changed.
+ */
 export function ViewSettings({ settings, onChange }: ViewSettingsProps) {
   const handleCompactViewChange = (checked: boolean) => {
     onChange({ compactView: checked })
