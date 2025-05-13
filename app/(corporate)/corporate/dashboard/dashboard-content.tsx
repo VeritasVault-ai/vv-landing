@@ -1,9 +1,8 @@
 'use client'
 
-import { DashboardLayout } from "@/components/corporate/dashboard-layout"
+// Analytics tracking for tab changes
 import { DashboardOverview } from "@/components/corporate/dashboard-overview"
 import { DashboardPerformance } from "@/components/corporate/dashboard-performance"
-import { DashboardSummary } from "@/components/corporate/dashboard-summary"
 import { ModelResults } from "@/components/corporate/model-results"
 import { DashboardVoting } from "@/components/corporate/voting"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -33,14 +32,14 @@ function DashboardContentInner() {
   useEffect(() => {
     // Check if there's a hash in the URL that corresponds to a tab
     const hash = window.location.hash.replace('#', '')
-    if (hash && ['overview', 'performance', 'models', 'voting'].includes(hash)) {
+    if (hash && isValidTab(hash)) {
       setActiveTab(hash)
     }
     
     // Update hash when tab changes
     const handleHashChange = () => {
       const newHash = window.location.hash.replace('#', '')
-      if (newHash && ['overview', 'performance', 'models', 'voting'].includes(newHash)) {
+      if (newHash && isValidTab(newHash)) {
         setActiveTab(newHash)
       }
     }

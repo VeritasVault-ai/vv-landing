@@ -1,5 +1,5 @@
 import { DashboardOverview, DashboardPerformance } from '@/lib/repositories/dashboard-repository';
-import { ApiResponse, BaseService } from './base-service';
+import { ApiError, ApiRequestOptions, ApiResponse, BaseService } from './base-service';
 
 /**
  * Type definitions for dashboard service responses
@@ -13,43 +13,75 @@ export type DashboardPerformanceResponse = ApiResponse<DashboardPerformance>;
 class DashboardService extends BaseService {
   /**
    * Fetch dashboard overview data
+   * @param options Request options including AbortSignal for cancellation
    */
-  async getDashboardOverview(): Promise<DashboardOverview> {
-    const response = await this.get<DashboardOverview>('/api/dashboard/overview');
+  async getDashboardOverview(options?: ApiRequestOptions): Promise<DashboardOverview> {
+    const response = await this.get<DashboardOverview>('/api/dashboard/overview', options);
     return response.data;
   }
 
   /**
    * Fetch dashboard performance data
+   * @param options Request options including AbortSignal for cancellation
    */
-  async getDashboardPerformance(): Promise<DashboardPerformance> {
-    const response = await this.get<DashboardPerformance>('/api/dashboard/performance');
+  async getDashboardPerformance(options?: ApiRequestOptions): Promise<DashboardPerformance> {
+    const response = await this.get<DashboardPerformance>('/api/dashboard/performance', options);
     return response.data;
   }
   
   /**
    * Export dashboard data in the specified format
    * @param format The format to export (csv, pdf, or excel)
+   * @param options Request options including AbortSignal for cancellation
    * @returns A blob containing the exported data
    */
-  async exportDashboardData(format: 'csv' | 'pdf' | 'excel' = 'csv'): Promise<Blob> {
+  async exportDashboardData(
+    format: 'csv' | 'pdf' | 'excel' = 'csv', 
+    options?: ApiRequestOptions
+  ): Promise<Blob> {
     // Get authentication token securely
     const authToken = await this.getAuthToken();
     
-    const response = await fetch(`/api/dashboard/export?format=${format}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/octet-stream',
-        'Authorization': `Bearer ${authToken}`
-      },
-    });
+    // Cancel any ongoing export request
+    this.cancelOngoingRequest(`/api/dashboard/export?format=${format}`, 'GET');
     
-    if (!response.ok) {
-      const errorText = await this.getErrorDetails(response);
-      throw new Error(`Failed to export dashboard data: ${errorText}`);
+    // Create a new AbortController if one wasn't provided
+    const controller = new AbortController();
+    const signal = options?.signal ? 
+      this.createCombinedSignal(controller.signal, options.signal) : 
+      controller.signal;
+    
+    try {
+      const response = await fetch(`/api/dashboard/export?format=${format}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/octet-stream',
+          'Authorization': `Bearer ${authToken}`
+        },
+        signal,
+      });
+      
+      if (!response.ok) {
+        const errorDetails = await this.getErrorDetails(response);
+        throw new ApiError(`Failed to export dashboard data: ${errorDetails}`, response.status);
+      }
+      
+      return await response.blob();
+    } catch (error) {
+      // Don't throw for aborted requests
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        return Promise.reject(new ApiError('Export request was cancelled', 499));
+      }
+      
+      // Re-throw ApiErrors
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      
+      // Handle other errors
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      throw new ApiError(`Export failed: ${errorMessage}`, 500);
     }
-    
-    return await response.blob();
   }
   
   /**
@@ -58,26 +90,23 @@ class DashboardService extends BaseService {
    */
   private async getAuthToken(): Promise<string> {
     try {
-      // In a real implementation, this would get a token from your auth provider
-      // For example, from Supabase or your authentication service
-      
       const response = await fetch('/api/auth/token', {
         method: 'GET',
         credentials: 'include', // Include cookies for session-based auth
       });
       
       if (!response.ok) {
-        throw new Error(`Failed to get authentication token: ${response.statusText}`);
+        throw new ApiError(
+          `Failed to get authentication token: ${response.statusText}`,
+          response.status
+        );
       }
       
       const data = await response.json();
       return data.token;
     } catch (error) {
-    } catch (error) {
-      // Log a sanitized version of the error without sensitive details
-      console.error('Authentication failed - unable to retrieve token');
-      throw new Error('Authentication failed');
-    }
+      console.error('Error getting authentication token:', error);
+      throw new ApiError('Authentication failed', 401);
     }
   }
   
@@ -90,7 +119,7 @@ class DashboardService extends BaseService {
     try {
       // Try to get error details from response body
       const contentType = response.headers.get('content-type');
-      if (contentType?.includes('application/json')) {
+      if (contentType && contentType.includes('application/json')) {
         const errorData = await response.clone().json();
         return `[${response.status} ${response.statusText}] ${
           errorData.message || JSON.stringify(errorData)
@@ -103,6 +132,26 @@ class DashboardService extends BaseService {
       // If parsing fails, return basic error info
       return `[${response.status}] ${response.statusText}`;
     }
+  }
+  
+  /**
+   * Create a signal that aborts when either input signal aborts
+   */
+  private createCombinedSignal(signal1: AbortSignal, signal2: AbortSignal): AbortSignal {
+    const controller = new AbortController();
+    
+    const abortHandler = () => controller.abort();
+    
+    signal1.addEventListener('abort', abortHandler);
+    signal2.addEventListener('abort', abortHandler);
+    
+    // Clean up event listeners when this signal aborts
+    controller.signal.addEventListener('abort', () => {
+      signal1.removeEventListener('abort', abortHandler);
+      signal2.removeEventListener('abort', abortHandler);
+    });
+    
+    return controller.signal;
   }
 }
 
