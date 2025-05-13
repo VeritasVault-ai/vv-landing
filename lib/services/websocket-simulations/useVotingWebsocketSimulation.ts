@@ -50,6 +50,11 @@ export function useVotingWebSocketSimulation(
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
         onStatusChange?.('error');
+
+        // Force closure so the `onclose` handler handles reconnection logic
+        if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+          ws.close();
+        }
       };
       
     } catch (error) {
