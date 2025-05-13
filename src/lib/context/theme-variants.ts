@@ -32,7 +32,9 @@ export function getDefaultVariant(exp: GetDefaultVariantExperience): ThemeVarian
       return corporateVariants[0];
     default:
       // This ensures type safety by exhaustively checking all cases
-      const _exhaustiveCheck: never = exp;
-      return _exhaustiveCheck;
+      {
+        const _exhaustiveCheck: never = exp;
+        return _exhaustiveCheck;
+      }
   }
 }
