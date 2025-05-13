@@ -42,8 +42,14 @@ export const hasPermission = async (userId: string, permission: Permission) => {
 
 export const getServerSession = async () => {
   // In a real implementation, this would return the current server session
-  return {
-    user: await getCurrentUser(),
-    expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours from now
-  };
+  try {
+    const user = await getCurrentUser();
+    return {
+      user,
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours from now
+    };
+  } catch (error) {
+    console.error('Error getting server session:', error);
+    return null;
+  }
 };
