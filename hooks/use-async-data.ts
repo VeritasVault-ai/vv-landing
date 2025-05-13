@@ -85,7 +85,9 @@ export function useAsyncData<T>(
   }, [fetchData])
 
   useEffect(() => {
-    fetchData()
+    if (!skipInitialFetch) {
+      fetchData()
+    }
   }, [...dependencies, fetchFn])
 
   return {
