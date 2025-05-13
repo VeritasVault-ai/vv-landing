@@ -1,13 +1,10 @@
-import type { Metadata } from "next"
-import { baseMetadata } from "@/lib/metadata-utils"
-import VersionComparisonPage from "./comparison-page"
+import { ComparisonPage } from "@/src/components/comparison/ComparisonPage"
 
-export const metadata: Metadata = {
-  ...baseMetadata,
+export const metadata = {
   title: "Compare Versions | NeuralLiquid",
-  description: "Compare Standard and Corporate versions of our AI-powered Tezos liquidity management platform",
+  description: "Compare the features, pricing, and support options for Standard and Corporate versions of NeuralLiquid's AI-powered liquidity management platform.",
 }
 
 export default function ComparePage() {
-  return <VersionComparisonPage />
+  return <ComparisonPage />
 }

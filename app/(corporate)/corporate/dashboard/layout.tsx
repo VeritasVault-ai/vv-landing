@@ -1,6 +1,6 @@
 // Server component for dashboard layout
 import React, { ReactNode } from 'react';
-import DashboardSidebar from '@/components/dashboard/Sidebar';
+import { CollapsibleSidebar } from '@/components/layout/collapsible-sidebar';
 import { EXPERIENCE_TYPES } from '@/src/constants/theme';
 import { ThemeProvider } from '@/src/lib/context/ThemeProvider';
 
@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider defaultExperience={EXPERIENCE_TYPES.CORPORATE}>
       <div className="flex h-screen">
-        <DashboardSidebar />
+        <CollapsibleSidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
           {children}
         </div>

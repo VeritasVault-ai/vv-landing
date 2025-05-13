@@ -75,25 +75,29 @@ export function StandardHeader() {
               <span className="hidden font-bold sm:inline-block bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">NeuralLiquid</span>
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm">
-              {featuredItems.map(item => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    'font-medium group',
-                    pathname === item.href
-                      ? 'text-foreground after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-1/2 after:h-0.5 after:bg-emerald-600'
-                      : 'text-foreground/70 hover:text-foreground'
-                  )}
-                >
+              {featuredItems
+                .filter(item => typeof item.href === 'string')
+                .map(item => (
+                  <Link
+                    key={item.href}
+                    href={item.href!}
+                    className={cn(
+                      'font-medium group',
+                      pathname === item.href
+                        ? 'text-foreground after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-1/2 after:h-0.5 after:bg-emerald-600'
+                        : 'text-foreground/70 hover:text-foreground'
+                    )}
+                  >
                   {item.title}
                 </Link>
               ))}
-              {linkItems.map(item => (
-                <Link key={item.href} href={item.href} className={cn(
-                  'transition-colors',
-                  pathname === item.href ? 'text-foreground' : 'text-foreground/60'
-                )}>
+              {linkItems
+                .filter(item => typeof item.href === 'string')
+                .map(item => (
+                  <Link key={item.href} href={item.href!} className={cn(
+                    'transition-colors',
+                    pathname === item.href ? 'text-foreground' : 'text-foreground/60'
+                  )}>
                   {item.title}
                 </Link>
               ))}
