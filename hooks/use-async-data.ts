@@ -15,15 +15,30 @@ interface AsyncDataState<T> {
  */
 export function useAsyncData<T>(
   fetchFn: () => Promise<T>,
-  dependencies: any[] = [],
-  initialData: T | null = null
+  options: {
+    dependencies?: any[],
+    initialData?: T | null,
+    skipInitialFetch?: boolean,
+    onSuccess?: (data: T) => void,
+    onError?: (error: Error) => void
+  } = {}
 ) {
+  const {
+    dependencies = [],
+    initialData = null,
+    skipInitialFetch = false,
+    onSuccess,
+    onError
+  } = options;
+
   const [state, setState] = useState<AsyncDataState<T>>({
     data: initialData,
-    isLoading: true,
+    isLoading: !skipInitialFetch,
     error: null,
     isRefreshing: false,
   })
+  // …
+}
 
   const fetchData = useCallback(async (showRefreshState = false) => {
     try {
