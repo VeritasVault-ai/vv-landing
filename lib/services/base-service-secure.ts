@@ -134,7 +134,8 @@ export abstract class BaseService {
         );
       }
 
-      const data = await response.json();
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : null;
       
       // Log sanitized response in development
       if (process.env.NODE_ENV !== 'production') {
