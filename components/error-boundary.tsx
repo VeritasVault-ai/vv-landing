@@ -89,6 +89,8 @@ export class ErrorBoundary extends Component<Props, State> {
               )}
             </div>
           )}
+        </div>
+      );
           <Button 
             variant="outline" 
             onClick={this.handleReset}

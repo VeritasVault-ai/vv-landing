@@ -50,9 +50,14 @@ function DashboardContentInner() {
 
   // Handle manual refresh based on active tab
   const handleRefresh = async () => {
-    await refreshData(activeTab as DashboardTab)
+    try {
+      // `activeTab` can be strongly typed as 'overview' | 'performance' | 'models' | 'voting'
+      await refreshData(activeTab)
+    } catch (err) {
+      // TODO: surface a toast / monitoring event instead of silent console
+      console.error('Dashboard manual refresh failed', err)
+    }
   }
-
   return (
     <DashboardLayout 
       title="Corporate Dashboard" 
