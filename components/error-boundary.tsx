@@ -72,7 +72,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-md">
             An error occurred while rendering this component. Please try refreshing the page or contact support if the issue persists.
           </p>
-          {this.state.error && (
+          {process.env.NODE_ENV !== "production" && this.state.error && (
             <div className="bg-red-100 dark:bg-red-900/30 p-4 rounded-md mb-6 max-w-full overflow-auto text-left">
               <p className="font-mono text-sm text-red-800 dark:text-red-300 mb-2">
                 {this.state.error.toString()}
@@ -89,6 +89,8 @@ export class ErrorBoundary extends Component<Props, State> {
               )}
             </div>
           )}
+        </div>
+      );
           <Button 
             variant="outline" 
             onClick={this.handleReset}
