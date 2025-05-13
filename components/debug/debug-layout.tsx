@@ -21,7 +21,7 @@ export default function DebugLayout({
   children: React.ReactNode
 }) {
   return (
-    <ThemeProvider defaultTheme="system" version="standard">
+    <ThemeProvider defaultColorMode="system" defaultExperience="standard">
       <div className="min-h-screen flex flex-col">
         <StructuredData version="standard" />
         <Header />
