@@ -24,7 +24,13 @@ export function useDashboardWebSocketSimulation(
       
       ws.onopen = () => {
         onStatusChange?.('connected');
-        
+
+        // Cancel any pending auto-reconnect
+        if (reconnectTimeoutRef.current) {
+          clearTimeout(reconnectTimeoutRef.current);
+          reconnectTimeoutRef.current = null;
+        }
+
         // For simulation, send initial data
         setTimeout(() => {
           if (ws.readyState === WebSocket.OPEN) {
