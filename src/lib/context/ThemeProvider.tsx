@@ -116,11 +116,25 @@ function InnerProvider({
     if (!isThemeReady) return;
     
     const root = document.documentElement;
-    root.classList.remove('experience-corporate', ...standardVariants.map(v => `theme-${v}`), ...corporateVariants.map(v => `theme-${v}`));
+    root.classList.remove(
+      'experience-corporate',
+      ...standardVariants.map(v => `theme-${v}`),
+      ...corporateVariants.map(v => `theme-${v}`)
+    );
     if (experience === 'corporate') root.classList.add('experience-corporate');
     root.classList.add(`theme-${themeVariant}`);
     if (resolvedTheme === 'dark') root.classList.add('dark');
     else root.classList.remove('dark');
+    
+    // Cleanup function to remove all theme classes when component unmounts
+    return () => {
+      root.classList.remove(
+        'experience-corporate',
+        'dark',
+        ...standardVariants.map(v => `theme-${v}`),
+        ...corporateVariants.map(v => `theme-${v}`)
+      );
+    };
   }, [experience, themeVariant, resolvedTheme, isThemeReady]);
 
   const colorMode = (resolvedTheme ?? 'light') as ColorMode;
