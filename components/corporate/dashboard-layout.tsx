@@ -92,7 +92,12 @@ export function DashboardLayout({
 
           <div className="hidden md:flex items-center gap-4">
             <div className="relative h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-              <span className="text-blue-700 dark:text-blue-300 font-medium">{userInitials}</span>
+              <span
+                className="text-blue-700 dark:text-blue-300 font-medium"
+                aria-label={`User avatar for ${userInitials}`}
+              >
+                {userInitials}
+              </span>
             </div>
           </div>
         </div>
