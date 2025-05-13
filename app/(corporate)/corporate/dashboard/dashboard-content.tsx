@@ -1,9 +1,8 @@
 'use client'
 
-import { DashboardLayout } from "@/components/corporate/dashboard-layout"
+// Analytics tracking for tab changes
 import { DashboardOverview } from "@/components/corporate/dashboard-overview"
 import { DashboardPerformance } from "@/components/corporate/dashboard-performance"
-import { DashboardSummary } from "@/components/corporate/dashboard-summary"
 import { ModelResults } from "@/components/corporate/model-results"
 import { DashboardVoting } from "@/components/corporate/voting"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -11,24 +10,7 @@ import { DashboardProvider, useDashboard } from "@/contexts/dashboard-context-im
 import { useDashboardRealtime } from "@/lib/services/dashboard-realtime-manager"
 import { BarChart3, Calculator, TrendingUp, Vote } from "lucide-react"
 import { useEffect } from "react"
-
-function DashboardContentInner() {
-  // Get dashboard state from context
-  const { 
-    activeTab, 
-    setActiveTab, 
-    refreshData
-  } = useDashboard()
-  
-  // Initialize all real-time connections through the centralized manager
-  useDashboardRealtime()
-
-  // Analytics tracking for tab changes
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { DashboardProvider, useDashboard } from "@/contexts/dashboard-context-improved"
-import { useDashboardRealtime } from "@/lib/services/dashboard-realtime-manager"
-import { BarChart3, Calculator, TrendingUp, Vote } from "lucide-react"
-import { useEffect } from "react"
+import DashboardLayout from "./layout"
 
 function DashboardContentInner() {
   // Get dashboard state from context
@@ -108,13 +90,7 @@ function DashboardContentInner() {
         <TabsContent value="overview">
           <DashboardOverview />
         </TabsContent>
-        <TabsContent value="overview">
-          <DashboardOverview />
-        </TabsContent>
 
-        <TabsContent value="performance">
-          <DashboardPerformance />
-        </TabsContent>
         <TabsContent value="performance">
           <DashboardPerformance />
         </TabsContent>

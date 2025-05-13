@@ -25,9 +25,21 @@ export type ThemeContextType = {
   isCorporateExperience: () => boolean;
 };
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+// Default values to use while context is initializing
+const defaultContextValues: ThemeContextType = {
+  experience: 'standard',
+  themeVariant: STANDARD_VARIANTS[0],
+  colorMode: 'light',
+  setExperience: () => {},
+  setThemeVariant: () => {},
+  setColorMode: () => {},
+  toggleColorMode: () => {},
+  isStandardExperience: () => true,
+  isCorporateExperience: () => false,
+};
 
-// Outer: next-themes wrapper
+const ThemeContext = createContext<ThemeContextType>(defaultContextValues);
+
 // Outer: next-themes wrapper
 export function ThemeProvider({
   children,
@@ -40,13 +52,22 @@ export function ThemeProvider({
 }) {
   return (
     <NextThemesProvider attribute="class" enableSystem defaultTheme={defaultColorMode} themes={['light','dark']}>
-      <InnerProvider children={children} defaultExperience={defaultExperience} />
+      <InnerProvider defaultExperience={defaultExperience}>
+        {children}
+      </InnerProvider>
     </NextThemesProvider>
   );
 }
 
-function InnerProvider({ children, defaultExperience }: { children: ReactNode; defaultExperience: ExperienceType; }) {
+function InnerProvider({ 
+  children, 
+  defaultExperience 
+}: { 
+  children: ReactNode; 
+  defaultExperience: ExperienceType; 
+}) {
   const { resolvedTheme, setTheme: setNextTheme } = useNextTheme();
+  const [isReady, setIsReady] = useState(false);
 
   const [experience, setExperience] = useState<ExperienceType>(defaultExperience);
   
@@ -69,15 +90,24 @@ function InnerProvider({ children, defaultExperience }: { children: ReactNode; d
     }
   }, [experience, themeVariant]);
 
+  // Mark as ready when resolvedTheme is available
+  useEffect(() => {
+    if (resolvedTheme) {
+      setIsReady(true);
+    }
+  }, [resolvedTheme]);
+
   // update html classes
   useEffect(() => {
+    if (!isReady) return;
+    
     const root = document.documentElement;
     root.classList.remove('experience-corporate', ...STANDARD_VARIANTS.map(v => `theme-${v}`), ...CORPORATE_VARIANTS.map(v => `theme-${v}`));
     if (experience === 'corporate') root.classList.add('experience-corporate');
     root.classList.add(`theme-${themeVariant}`);
     if (resolvedTheme === 'dark') root.classList.add('dark');
     else root.classList.remove('dark');
-  }, [experience, themeVariant, resolvedTheme]);
+  }, [experience, themeVariant, resolvedTheme, isReady]);
 
   const colorMode = (resolvedTheme ?? 'light') as ColorMode;
   const setColorMode = (mode: ColorMode) => setNextTheme(mode);
@@ -86,20 +116,22 @@ function InnerProvider({ children, defaultExperience }: { children: ReactNode; d
   const isStandardExperience = () => experience === 'standard';
   const isCorporateExperience = () => experience === 'corporate';
 
-  if (!resolvedTheme) return <>{children}</>;
+  // Create context value
+  const contextValue: ThemeContextType = {
+    experience,
+    themeVariant,
+    colorMode,
+    setExperience,
+    setThemeVariant,
+    setColorMode,
+    toggleColorMode,
+    isStandardExperience,
+    isCorporateExperience,
+  };
 
+  // Always provide the context, but use default values until ready
   return (
-    <ThemeContext.Provider value={{
-      experience,
-      themeVariant,
-      colorMode,
-      setExperience,
-      setThemeVariant,
-      setColorMode,
-      toggleColorMode,
-      isStandardExperience,
-      isCorporateExperience,
-    }}>
+    <ThemeContext.Provider value={isReady ? contextValue : defaultContextValues}>
       {children}
     </ThemeContext.Provider>
   );
@@ -107,7 +139,6 @@ function InnerProvider({ children, defaultExperience }: { children: ReactNode; d
 
 export function useTheme() {
   const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error('useTheme must be within ThemeProvider');
   return ctx;
 }
 

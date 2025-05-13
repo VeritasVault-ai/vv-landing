@@ -1,27 +1,12 @@
 "use client"
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react"
-import { DashboardOverview, DashboardPerformance } from "@/lib/repositories/dashboard-repository"
-import { dashboardService } from "@/lib/services/dashboard-service"
-import { dashboardEvents } from "@/lib/events/dashboard-events"
-
-// Define types for user preferences
-export interface DashboardSettings {
-  visibleMetrics: {
-    portfolioValue: boolean
-    activeStrategies: boolean
-    riskScore: boolean
-  }
-  refreshRates: {
-    portfolioValue: number // in seconds
-    riskScore: number // in seconds
-    performance: number // in seconds
-    modelResults: number // in seconds
-    voting: number // in seconds
-  }
-  theme: "light" | "dark" | "system"
-  compactView: boolean
-}
+import { dashboardService } from "@/lib/services/dashboard-service";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import type {
+  DashboardOverview,
+  DashboardPerformance,
+  DashboardSettings,
+} from "./dashboard/types";
 
 // Define the context state type
 interface DashboardContextType {
