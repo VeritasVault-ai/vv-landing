@@ -92,7 +92,7 @@ export abstract class BaseService {
    * Base fetch method with error handling, response parsing, and security enhancements
    */
   protected async fetchApi<T>(
-    url: string, 
+    url: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     // Create a sanitized version of options for logging
@@ -113,14 +113,17 @@ export abstract class BaseService {
     }
 
     try {
-      const response = await fetch(url, {
+      const fullUrl = url.startsWith('http')
+        ? url
+        : `${this.apiBaseUrl.replace(/\/$/, '')}/${url.replace(/^\//, '')}`;
+
+      const response = await fetch(fullUrl, {
         headers: {
           'Content-Type': 'application/json',
           ...options.headers,
         },
         ...options,
       });
-
       if (!response.ok) {
         throw new ApiError(
           `API request failed: ${response.statusText}`,

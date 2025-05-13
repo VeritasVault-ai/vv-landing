@@ -75,8 +75,7 @@ class VotingService extends BaseService {
       address: string;
       votingPower: number;
       percentage: number;
-    }>(`/api/voting/power?address=${address}`);
-    
+    }>(`/api/voting/power?address=${encodeURIComponent(address)}`);
     return response.data;
   }
 }

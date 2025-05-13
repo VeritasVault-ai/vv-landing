@@ -11,6 +11,7 @@ import {
   ExperienceType,
   getTheme,
 } from '@/styles/theme';
+import { standardVariants, corporateVariants, getDefaultVariant, ThemeVariant } from '@/context/theme-variants';
 
 // Context shape
 export type ThemeContextType = {

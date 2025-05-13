@@ -197,7 +197,10 @@ export abstract class BaseService {
       const response = await fetch(url, {
         ...options,
         signal,
-        headers: mergedHeaders,
+        headers: {
+          'Content-Type': 'application/json',
+          ...optHeaders,
+        },
       });
       
       // Clean up the AbortController reference
