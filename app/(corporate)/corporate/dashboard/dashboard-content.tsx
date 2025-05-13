@@ -11,6 +11,13 @@ import { useDashboardRealtime } from "@/lib/services/dashboard-realtime-manager"
 import { BarChart3, Calculator, TrendingUp, Vote } from "lucide-react"
 import { useEffect } from "react"
 
+/**
+ * Renders the main content of the corporate dashboard, including summary cards, tabbed navigation, and real-time data updates.
+ *
+ * Synchronizes the active tab with the URL hash for direct linking and updates, and provides manual data refresh for the selected tab.
+ *
+ * @remark Initializes real-time data connections and ensures tab state remains consistent with the URL hash.
+ */
 function DashboardContentInner() {
   // Get dashboard state from context
   const { 
@@ -111,7 +118,11 @@ function DashboardContentInner() {
   )
 }
 
-// Wrap the dashboard content with the provider
+/**
+ * Provides dashboard context and renders the main dashboard content.
+ *
+ * Wraps {@link DashboardContentInner} with {@link DashboardProvider} to supply state and real-time data to the dashboard UI.
+ */
 export function DashboardContent() {
   return (
     <DashboardProvider>

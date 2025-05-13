@@ -96,3 +96,40 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children
   }
 }
+
+/**
+ * Displays a minimal error message and a retry button for use as a fallback UI in error boundaries.
+ *
+ * @param error - The error object to display.
+ * @param resetErrorBoundary - Callback to reset the error boundary and attempt to re-render children.
+ */
+export function ErrorFallback({ 
+  error, 
+  resetErrorBoundary 
+}: { 
+  error: Error
+  resetErrorBoundary: () => void
+}) {
+  return (
+    <div className="p-6 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg">
+      <div className="flex items-center gap-3 mb-4">
+        <AlertCircle className="h-5 w-5 text-red-500" />
+        <h3 className="text-lg font-medium text-red-700 dark:text-red-400">
+          Something went wrong
+        </h3>
+      </div>
+      <p className="text-slate-600 dark:text-slate-300 mb-4">
+        {error.message || "An unexpected error occurred"}
+      </p>
+      <Button 
+        variant="outline" 
+        size="sm"
+        onClick={resetErrorBoundary}
+        className="flex items-center gap-2"
+      >
+        <RefreshCw className="h-4 w-4" />
+        <span>Try Again</span>
+      </Button>
+    </div>
+  )
+}

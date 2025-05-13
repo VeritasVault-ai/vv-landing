@@ -46,10 +46,12 @@ export function ThemeProvider({
   children,
   defaultExperience = 'standard',
   defaultColorMode = 'light',
+  fallback = <div style={{ visibility: 'hidden' }} />,
 }: {
   children: ReactNode;
   defaultExperience?: ExperienceType;
   defaultColorMode?: ColorMode;
+  fallback?: ReactNode;
 }) {
   return (
     <NextThemesProvider attribute="class" enableSystem defaultTheme={defaultColorMode} themes={['light','dark']}>
@@ -138,16 +140,33 @@ function InnerProvider({
   );
 }
 
+/**
+ * Retrieves the current theme context.
+ *
+ * @returns The current {@link ThemeContextType} containing theme state and setters.
+ *
+ * @throws {Error} If called outside of a {@link ThemeProvider}.
+ */
 export function useTheme() {
   const ctx = useContext(ThemeContext);
   return ctx;
 }
 
+/**
+ * Returns the current theme object based on the active experience, theme variant, and color mode.
+ *
+ * @returns The theme configuration for the current experience, variant, and color mode.
+ */
 export function useCurrentTheme() {
   const { experience, themeVariant, colorMode } = useTheme();
   return getTheme(experience, themeVariant, colorMode);
 }
 
+/**
+ * Returns the list of valid theme variants for the current experience type.
+ *
+ * @returns An array of theme variant strings corresponding to the current experience.
+ */
 export function useAvailableThemeVariants() {
   const { experience } = useTheme();
   return experience === 'standard' ? STANDARD_VARIANTS : CORPORATE_VARIANTS;
