@@ -25,7 +25,10 @@ export class ApiError extends Error {
 }
 
 /**
- * Sanitize error messages to prevent leaking sensitive information
+ * Redacts sensitive information such as API keys, tokens, secrets, and passwords from error messages.
+ *
+ * @param message - The error message to sanitize.
+ * @returns The sanitized error message with sensitive values replaced by [REDACTED].
  */
 function sanitizeErrorMessage(message: string): string {
   // Remove potential API keys, tokens, or credentials from error messages
@@ -36,7 +39,12 @@ function sanitizeErrorMessage(message: string): string {
 }
 
 /**
- * Sanitize request/response data to prevent logging sensitive information
+ * Recursively redacts sensitive fields in data structures to prevent exposure of confidential information.
+ *
+ * Sensitive fields such as passwords, tokens, secrets, and API keys are replaced with '[REDACTED]'.
+ *
+ * @param data - The input data to sanitize.
+ * @returns The sanitized data with sensitive fields redacted.
  */
 function sanitizeData(data: any): any {
   if (!data) return data;

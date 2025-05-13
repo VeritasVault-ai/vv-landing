@@ -8,7 +8,9 @@ import { useAISettings } from "./ai-settings-provider"
 import { BarChart, Highlighter, MessageSquare } from "lucide-react"
 
 /**
- * Component for controlling AI display settings
+ * Renders a settings card for toggling AI-related display options in the dashboard.
+ *
+ * Provides switches to control the visibility of confidence scores, highlighting of AI-generated content, and feedback prompts. All controls are disabled if AI features are not enabled.
  */
 export function AISettingsDisplay() {
   const { settings, updateDisplay } = useAISettings()

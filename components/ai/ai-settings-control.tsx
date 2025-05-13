@@ -31,7 +31,16 @@ interface AISettingsControlProps {
 }
 
 /**
- * Component that provides a dialog for controlling AI settings
+ * Renders a dialog interface for viewing and editing AI-related settings with tabbed navigation.
+ *
+ * The dialog allows users to modify AI settings across multiple categories, reset to default values, or cancel changes. Changes are staged in a temporary state and only applied when saved. The interface supports both compact and standard trigger button modes and ensures accessibility with focus trapping and error boundaries.
+ *
+ * @param defaultEnabled - Whether the AI settings dialog is enabled by default.
+ * @param className - Optional CSS class for custom styling of the trigger button.
+ * @param compact - If true, renders a compact icon-only trigger button.
+ * @param buttonVariant - Visual style of the trigger button.
+ *
+ * @returns A React element that provides a modal dialog for managing AI settings.
  */
 export function AISettingsControl({
   defaultEnabled = true,

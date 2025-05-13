@@ -25,8 +25,16 @@ interface AIFeedbackProps {
 }
 
 /**
- * A component that allows users to provide feedback on AI-generated content
- * for improving AI systems and maintaining transparency
+ * Renders a user interface for submitting feedback on AI-generated content, supporting both quick thumbs up/down and a detailed feedback form.
+ *
+ * In compact mode, displays thumbs up and thumbs down buttons for immediate feedback. In full mode, provides a popover form where users can rate helpfulness and accuracy, add optional comments, and submit their feedback. After submission, a thank-you message is shown and the form resets for future use.
+ *
+ * @param contentId - The identifier of the AI-generated content being reviewed.
+ * @param compact - If true, renders a minimal UI with only thumbs up/down buttons.
+ * @param className - Optional CSS class names for custom styling.
+ * @param onFeedbackSubmitted - Optional callback invoked with feedback data after submission.
+ *
+ * @remark Feedback is recorded using an internal AI history tracker and the component manages its own submission and reset flow.
  */
 export function AIFeedback({
   contentId,

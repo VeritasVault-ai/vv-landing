@@ -6,8 +6,12 @@ import { useModelWebSocketSimulation } from "./model-websocket-simulation"
 import { useDashboardWebSocketSimulation } from "./dashboard-websocket-simulation"
 
 /**
- * This hook centralizes all WebSocket simulations for the dashboard.
- * It initializes all the real-time data connections in one place.
+ * Initializes and manages all real-time WebSocket simulations for the dashboard.
+ *
+ * This hook consolidates the setup of multiple WebSocket simulation hooks, ensuring that all real-time data connections required by the dashboard are established and cleaned up together.
+ *
+ * @remark
+ * Intended to be used once at the top level of the dashboard to centralize real-time connection management.
  */
 export function useDashboardRealtime() {
   // Initialize all WebSocket simulations

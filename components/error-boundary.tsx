@@ -107,7 +107,10 @@ export class ErrorBoundary extends Component<Props, State> {
 }
 
 /**
- * A simpler error fallback component for use with the ErrorBoundary
+ * Displays a minimal error message and a retry button for use as a fallback UI in error boundaries.
+ *
+ * @param error - The error object to display.
+ * @param resetErrorBoundary - Callback to reset the error boundary and attempt to re-render children.
  */
 export function ErrorFallback({ 
   error, 

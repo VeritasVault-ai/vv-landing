@@ -8,6 +8,13 @@ import type { Metadata } from "next"
 import { ThemeProvider } from "@/src/lib/context/ThemeProvider"
 export const metadata: Metadata = standardMetadata
 
+/**
+ * Provides a debug-themed page layout with theming, SEO structured data, and development tools.
+ *
+ * Wraps the content in a standard theme context and includes a header, footer, structured data, and a theme debugger for inspection.
+ *
+ * @param children - The main content to display within the layout.
+ */
 export default function DebugLayout({
   children,
 }: {

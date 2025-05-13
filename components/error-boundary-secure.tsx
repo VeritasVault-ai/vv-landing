@@ -17,7 +17,10 @@ interface State {
 }
 
 /**
- * Sanitize error messages to prevent leaking sensitive information
+ * Removes sensitive information such as API keys, tokens, passwords, and credentials from an error message.
+ *
+ * @param message - The error message to sanitize.
+ * @returns The sanitized error message with sensitive data redacted.
  */
 function sanitizeErrorMessage(message: string): string {
   if (!message) return message;
@@ -30,7 +33,10 @@ function sanitizeErrorMessage(message: string): string {
 }
 
 /**
- * Sanitize stack traces to prevent leaking sensitive information
+ * Removes sensitive information such as API keys, tokens, passwords, and credentials from a stack trace string.
+ *
+ * @param stack - The stack trace to sanitize.
+ * @returns The sanitized stack trace with sensitive data redacted, or the original value if undefined.
  */
 function sanitizeStackTrace(stack: string | undefined): string | undefined {
   if (!stack) return stack;
@@ -168,8 +174,12 @@ export class ErrorBoundary extends Component<Props, State> {
 }
 
 /**
- * A simpler error fallback component for use with the ErrorBoundary
- * with security enhancements
+ * Displays a minimal, sanitized error message UI with a retry button.
+ *
+ * Renders a security-enhanced fallback interface for use with an error boundary, redacting sensitive information from the error message and providing a way to reset the error state.
+ *
+ * @param error - The error object to display.
+ * @param resetErrorBoundary - Callback to reset the error boundary and retry rendering.
  */
 export function ErrorFallback({ 
   error, 

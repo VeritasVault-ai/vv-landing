@@ -6,8 +6,11 @@ import { dashboardService } from "./dashboard-service"
 import { DashboardOverview, DashboardPerformance } from "@/lib/repositories/dashboard-repository"
 
 /**
- * This service simulates WebSocket events for dashboard data.
- * In a real application, this would be replaced with an actual WebSocket connection.
+ * Simulates real-time WebSocket events for dashboard data updates in a React application.
+ *
+ * Sets up periodic intervals to emit simulated updates for portfolio value, risk score, performance history, and asset performance using local state and random fluctuations. Intended for development or demo environments to mimic live dashboard data streams.
+ *
+ * @remark This hook fetches initial dashboard data on mount and emits events via {@link dashboardEvents}. All intervals and updates are stopped and cleaned up on unmount.
  */
 export function useDashboardWebSocketSimulation() {
   useEffect(() => {
@@ -15,7 +18,12 @@ export function useDashboardWebSocketSimulation() {
     let overviewData: DashboardOverview | null = null
     let performanceData: DashboardPerformance | null = null
 
-    // Fetch initial data
+    /**
+     * Asynchronously fetches and caches the initial dashboard overview and performance data for simulation.
+     *
+     * @remark
+     * Logs an error to the console if data retrieval fails.
+     */
     async function fetchInitialData() {
       try {
         overviewData = await dashboardService.getDashboardOverview()

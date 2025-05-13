@@ -13,6 +13,11 @@ interface ThemeSettingsProps {
   onChange: (settings: Partial<DashboardSettings>) => void
 }
 
+/**
+ * Renders a settings card for selecting dashboard color mode and theme variant.
+ *
+ * Provides radio buttons for choosing between light, dark, or system color modes, and a dropdown to select from available theme variants. Updates are applied immediately via theme context.
+ */
 export function ThemeSettings({ settings }: ThemeSettingsProps) {
   // Use the app's theme context
   const { colorMode, setColorMode, themeVariant, setThemeVariant } = useTheme()

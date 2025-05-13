@@ -22,7 +22,12 @@ const AISettingsContext = createContext<AISettingsContextType | undefined>(undef
 const STORAGE_KEY = "ai_settings"
 
 /**
- * Provider component for AI settings
+ * Provides AI settings context to child components, enabling access to current settings and functions for updating, resetting, and querying AI-related preferences.
+ *
+ * @remark
+ * Initializes settings from localStorage if available, falling back to defaults. Persists changes and synchronizes AI history tracking with the current settings.
+ *
+ * @param children - React nodes that will have access to the AI settings context.
  */
 export function AISettingsProvider({ children }: { children: ReactNode }) {
   // Initialize settings from localStorage or defaults
@@ -146,7 +151,11 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
 }
 
 /**
- * Hook for accessing AI settings
+ * Provides access to the current AI settings context.
+ *
+ * @returns The current {@link AISettingsContextType} value.
+ *
+ * @throws {Error} If called outside of an {@link AISettingsProvider}.
  */
 export function useAISettings() {
   const context = useContext(AISettingsContext)

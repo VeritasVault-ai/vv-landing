@@ -10,6 +10,14 @@ interface VisibleMetricsSettingsProps {
   onChange: (settings: Partial<DashboardSettings>) => void
 }
 
+/**
+ * Renders a settings card that allows users to toggle the visibility of specific dashboard metrics.
+ *
+ * Displays checkboxes for "Portfolio Value," "Active Strategies," and "Risk Score," reflecting and updating their visibility state in the dashboard settings.
+ *
+ * @param settings - The current dashboard settings, including visible metrics.
+ * @param onChange - Callback invoked with updated settings when a metric's visibility is toggled.
+ */
 export function VisibleMetricsSettings({ settings, onChange }: VisibleMetricsSettingsProps) {
   const handleMetricToggle = (metric: keyof DashboardSettings["visibleMetrics"], checked: boolean) => {
     onChange({

@@ -19,6 +19,11 @@ import { RefreshRateSettings } from "./refresh-rate-settings"
 import { ThemeSettings } from "./theme-settings"
 import { ViewSettings } from "./view-settings"
 
+/**
+ * Displays a modal dialog for configuring dashboard settings with tabbed sections for metrics, refresh rates, theme, and view preferences.
+ *
+ * Opens a settings dialog where users can adjust dashboard preferences locally before saving changes to the global dashboard context. Changes are only applied when the user saves; canceling or closing the dialog discards unsaved edits.
+ */
 export function DashboardSettings() {
   const { settings, updateSettings } = useDashboard()
   const [localSettings, setLocalSettings] = useState(settings)
