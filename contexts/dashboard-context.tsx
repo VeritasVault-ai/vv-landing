@@ -161,10 +161,23 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   }
   
   // Initial data fetch
+  // Initial data fetch
   useEffect(() => {
-    fetchOverviewData()
-    fetchPerformanceData()
-  }, [])
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const fetchInitialData = async () => {
+      await Promise.all([
+        fetchOverviewData({ signal }),
+        fetchPerformanceData({ signal })
+      ]);
+    };
+
+    fetchInitialData();
+
+    // Cleanup function to abort any pending requests when unmounting
+    return () => controller.abort();
+  }, []);
   
   // Subscribe to dashboard events
   useEffect(() => {
