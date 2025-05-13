@@ -35,20 +35,22 @@ interface VirtualizedTableProps<T> {
  * @param columns - The column definitions, used to determine which fields are sensitive.
  * @returns A shallow copy of {@link item} with sensitive fields redacted, or the original value if null or undefined.
  */
+import { cloneDeep, set } from "lodash-es"
+
 function sanitizeData<T>(item: T, columns: VirtualizedTableProps<T>["columns"]): T {
-  if (!item) return item;
-  
-  // Create a copy to avoid modifying the original
-  const sanitized = { ...item };
-  
+  if (item == null) return item
+
+  // Deep-clone to prevent nested leakage
+  const sanitized: any = cloneDeep(item)
+
   // Redact sensitive columns
   columns.forEach(column => {
     if (column.isSensitive && column.key in sanitized) {
-      (sanitized as any)[column.key] = '[REDACTED]';
+      set(sanitized, column.key, "[REDACTED]")
     }
-  });
-  
-  return sanitized;
+  })
+
+  return sanitized
 }
 
 /**
