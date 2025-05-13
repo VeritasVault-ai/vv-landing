@@ -4,6 +4,24 @@
 
 This document outlines the guidelines and best practices for AI integration within the VeritasVault.ai platform. These guidelines ensure consistent, ethical, and effective use of AI technologies across our enterprise liquidity management solutions.
 
+## Project Structure
+
+1. **Directory Organization**:
+   - `app/`: Contains Next.js App Router routes and page components
+   - `src/`: Houses shared components, utilities, and reusable code
+   - Components that are determined to be kept long-term should be moved to the `src/` directory
+   - New components should be created directly in the `src/` directory
+
+2. **Component Placement**:
+   - Route-specific components: Place in `app/[route]/components/`
+   - Shared UI components: Place in `src/components/ui/`
+   - Feature-specific components: Place in `src/components/[feature]/`
+   - Layout components: Place in `src/components/layout/`
+
+3. **Version-Specific Components**:
+   - Standard version components: `src/components/standard/`
+   - Corporate version components: `src/components/corporate/`
+
 ## Core Principles
 
 1. **Transparency**: All AI-driven decisions and recommendations should be explainable and transparent to users.
@@ -126,4 +144,4 @@ These guidelines will be reviewed and updated quarterly to reflect new AI capabi
 
 ---
 
-Last Updated: May 11, 2025
+Last Updated: May 13, 2025
