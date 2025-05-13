@@ -59,7 +59,7 @@ function DashboardContentInner() {
 
   // Handle manual refresh based on active tab
   const handleRefresh = async () => {
-    await refreshData(activeTab as any)
+    await refreshData(activeTab as DashboardTab)
   }
 
   return (
