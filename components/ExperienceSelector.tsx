@@ -2,10 +2,14 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useTheme } from '@/src/lib/context/ThemeProvider';
 import { ArrowRight, Brain, Briefcase, Shield, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { 
+  CORPORATE_PRODUCT_NAME, 
+  STANDARD_PRODUCT_NAME,
+  BASE_APP_NAME
+} from '@/lib/config/product-info';
 
 /**
  * Guides the user through selecting an experience type and theme style before navigating to the dashboard.
@@ -14,9 +18,22 @@ import { useState } from 'react';
  */
 export function ExperienceSelector() {
   const router = useRouter();
-  const { setExperience, setThemeVariant } = useTheme();
   const [selectedExperience, setSelectedExperience] = useState<'standard' | 'corporate' | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
+  const [themeContext, setThemeContext] = useState<any>(null);
+
+  // Dynamically import the theme context to avoid SSR issues
+  useEffect(() => {
+    // Only import the theme context on the client side
+    import('@/src/lib/context/ThemeProvider').then((module) => {
+      setThemeContext({
+        setExperience: module.useTheme().setExperience,
+        setThemeVariant: module.useTheme().setThemeVariant
+      });
+    }).catch(err => {
+      console.error("Failed to load theme provider:", err);
+    });
+  }, []);
 
   const handleExperienceSelect = (experience: 'standard' | 'corporate') => {
     setSelectedExperience(experience);
@@ -28,9 +45,9 @@ export function ExperienceSelector() {
   };
 
   const handleContinue = () => {
-    if (selectedExperience && selectedTheme) {
-      setExperience(selectedExperience);
-      setThemeVariant(selectedTheme as any);
+    if (selectedExperience && selectedTheme && themeContext) {
+      themeContext.setExperience(selectedExperience);
+      themeContext.setThemeVariant(selectedTheme as any);
       router.push('/dashboard'); // Navigate to main dashboard or homepage
     }
   };
@@ -39,7 +56,7 @@ export function ExperienceSelector() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-background to-background/90">
       <div className="max-w-4xl w-full">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">Welcome to Veritas Vault</h1>
+          <h1 className="text-4xl font-bold mb-2">Welcome to {BASE_APP_NAME}</h1>
           <p className="text-xl text-muted-foreground">Choose your experience to get started</p>
         </div>
 
@@ -121,7 +138,7 @@ export function ExperienceSelector() {
               >
                 <CardHeader>
                   <Brain className="h-12 w-12 mb-2 text-primary" />
-                  <CardTitle>NeuralLiquid</CardTitle>
+                  <CardTitle>{STANDARD_PRODUCT_NAME}</CardTitle>
                   <CardDescription>Modern design for crypto enthusiasts</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -129,7 +146,7 @@ export function ExperienceSelector() {
                 </CardContent>
                 <CardFooter>
                   <Button variant={selectedTheme === 'neuralliquid' ? 'default' : 'outline'} className="w-full">
-                    {selectedTheme === 'neuralliquid' ? 'Selected' : 'Select NeuralLiquid'}
+                    {selectedTheme === 'neuralliquid' ? 'Selected' : `Select ${STANDARD_PRODUCT_NAME}`}
                   </Button>
                 </CardFooter>
               </Card>
@@ -172,7 +189,7 @@ export function ExperienceSelector() {
               >
                 <CardHeader>
                   <Shield className="h-12 w-12 mb-2 text-primary" />
-                  <CardTitle>VeritasVault</CardTitle>
+                  <CardTitle>{CORPORATE_PRODUCT_NAME}</CardTitle>
                   <CardDescription>Premium security-focused design</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -180,7 +197,7 @@ export function ExperienceSelector() {
                 </CardContent>
                 <CardFooter>
                   <Button variant={selectedTheme === 'veritasvault' ? 'default' : 'outline'} className="w-full">
-                    {selectedTheme === 'veritasvault' ? 'Selected' : 'Select VeritasVault'}
+                    {selectedTheme === 'veritasvault' ? 'Selected' : `Select ${CORPORATE_PRODUCT_NAME}`}
                   </Button>
                 </CardFooter>
               </Card>

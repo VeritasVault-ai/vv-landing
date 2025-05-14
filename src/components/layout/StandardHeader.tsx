@@ -18,6 +18,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { StandardMobileHeader } from './StandardMobileHeader'
 import { CommonHeaderProps } from './VersionAwareHeader'
+import { STANDARD_PRODUCT_NAME } from '@/lib/config/product-info'
 
 /**
  * Renders a responsive website header with navigation, authentication controls, and theme toggling.
@@ -80,13 +81,13 @@ export function StandardHeader({
             <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/logo.svg"
-                alt="NeuralLiquid"
+                alt={STANDARD_PRODUCT_NAME}
                 width={32}
                 height={32}
                 className="dark:invert"
               />
               <span className="hidden font-bold sm:inline-block bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
-                NeuralLiquid
+                {STANDARD_PRODUCT_NAME}
               </span>
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm">

@@ -1,14 +1,18 @@
 "use client"
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowRight, BarChart3, CheckCircle, Lock, Shield, TrendingUp, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { trackNavigationEvent } from "@/lib/analytics/track-events"
 import { useCurrentVersion } from "@/hooks/use-current-version"
+import { trackNavigationEvent } from "@/lib/analytics/track-events"
+import {
+  CORPORATE_PRODUCT_NAME,
+  CORPORATE_PRODUCT_TAGLINE
+} from "@/lib/config/product-info"
+import { ArrowRight, BarChart3, CheckCircle, Lock, Shield, TrendingUp, Users } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useState } from "react"
 
 export function EnhancedCorporateLanding() {
   const { version } = useCurrentVersion()
@@ -32,12 +36,11 @@ export function EnhancedCorporateLanding() {
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white">
-                  <span className="text-blue-300">VeritasVault</span>
+                  <span className="text-blue-300">{CORPORATE_PRODUCT_NAME}</span>
                   <span className="text-blue-200">.ai</span>
                 </h1>
                 <p className="max-w-[600px] text-slate-200 md:text-xl">
-                  Enterprise-grade liquidity management platform for institutional investors and financial
-                  organizations.
+                  {CORPORATE_PRODUCT_TAGLINE}
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -55,7 +58,7 @@ export function EnhancedCorporateLanding() {
               <div className="relative w-full max-w-[500px] aspect-video rounded-lg overflow-hidden shadow-2xl border border-blue-700/30">
                 <Image
                   src="/advanced-analytics-predictive-dashboard.png"
-                  alt="VeritasVault.ai Dashboard"
+                  alt={`${CORPORATE_PRODUCT_NAME} Dashboard`}
                   fill
                   className="object-cover"
                   priority
@@ -108,7 +111,7 @@ export function EnhancedCorporateLanding() {
               Institutional-Grade Solutions
             </h2>
             <p className="max-w-[700px] text-slate-600 md:text-xl/relaxed">
-              VeritasVault.ai provides comprehensive tools designed specifically for institutional investors and
+              {CORPORATE_PRODUCT_NAME} provides comprehensive tools designed specifically for institutional investors and
               financial organizations.
             </p>
           </div>
@@ -293,7 +296,7 @@ export function EnhancedCorporateLanding() {
               Trusted by Leading Financial Institutions
             </h2>
             <p className="max-w-[700px] text-slate-600 md:text-xl/relaxed">
-              See how top financial organizations are leveraging VeritasVault.ai to optimize their liquidity management.
+              See how top financial organizations are leveraging {CORPORATE_PRODUCT_NAME} to optimize their liquidity management.
             </p>
           </div>
 
@@ -307,7 +310,7 @@ export function EnhancedCorporateLanding() {
               </CardHeader>
               <CardContent>
                 <p className="text-slate-600 mb-4">
-                  "VeritasVault.ai has transformed our approach to liquidity management, resulting in a 30% increase in
+                  "{CORPORATE_PRODUCT_NAME} has transformed our approach to liquidity management, resulting in a 30% increase in
                   yield while maintaining our risk parameters."
                 </p>
                 <p className="text-sm text-slate-500">- Chief Investment Officer, Major Commercial Bank</p>
@@ -337,7 +340,7 @@ export function EnhancedCorporateLanding() {
               </CardHeader>
               <CardContent>
                 <p className="text-slate-600 mb-4">
-                  "VeritasVault.ai's predictive analytics have helped us identify and mitigate potential risks before
+                  "{CORPORATE_PRODUCT_NAME}'s predictive analytics have helped us identify and mitigate potential risks before
                   they impact our portfolio performance."
                 </p>
                 <p className="text-sm text-slate-500">- Risk Director, Global Asset Management</p>

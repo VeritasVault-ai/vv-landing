@@ -3,6 +3,16 @@ import { Mail, MapPin, Github, Twitter, Linkedin, Send } from 'lucide-react'
 import { Logo } from "@/components/ui/logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { 
+  STANDARD_PRODUCT_NAME, 
+  STANDARD_PRODUCT_DESCRIPTION,
+  COMPANY_EMAIL,
+  COMPANY_TWITTER,
+  COMPANY_GITHUB,
+  COMPANY_LINKEDIN,
+  COMPANY_ADDRESS
+} from "@/lib/config/product-info"
+import React from "react"
 
 export function UnifiedFooter() {
   const currentYear = new Date().getFullYear()
@@ -17,15 +27,15 @@ export function UnifiedFooter() {
             <Link href="/" className="flex items-center mb-4">
               <Logo className="h-6 w-auto" />
               <span className="ml-2 text-lg font-bold bg-gradient-to-r from-[#3A86FF] to-[#4ECDC4] bg-clip-text text-transparent">
-                NeuralLiquid
+                {STANDARD_PRODUCT_NAME}
               </span>
             </Link>
             <p className="text-muted-foreground mb-4 max-w-md text-sm">
-              Advanced AI-powered liquidity management for DeFi protocols and liquidity providers.
+              {STANDARD_PRODUCT_DESCRIPTION}
             </p>
             <div className="flex space-x-4">
               <a
-                href="https://twitter.com/neuralliquid"
+                href={COMPANY_TWITTER}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-primary transition-colors"
@@ -34,7 +44,7 @@ export function UnifiedFooter() {
                 <Twitter className="h-5 w-5" />
               </a>
               <a
-                href="https://github.com/neuralliquid"
+                href={COMPANY_GITHUB}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-primary transition-colors"
@@ -43,7 +53,7 @@ export function UnifiedFooter() {
                 <Github className="h-5 w-5" />
               </a>
               <a
-                href="https://linkedin.com/company/neuralliquid"
+                href={COMPANY_LINKEDIN}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-primary transition-colors"
@@ -70,9 +80,9 @@ export function UnifiedFooter() {
         {/* Main footer links section */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4 mb-8">
           <div>
-            <h3 className="mb-4 text-lg font-semibold">NeuralLiquid</h3>
+            <h3 className="mb-4 text-lg font-semibold">{STANDARD_PRODUCT_NAME}</h3>
             <p className="text-sm text-muted-foreground">
-              Advanced AI-powered liquidity management for DeFi protocols and liquidity providers.
+              {STANDARD_PRODUCT_DESCRIPTION}
             </p>
           </div>
           <div>
@@ -136,19 +146,20 @@ export function UnifiedFooter() {
               <li className="flex items-start gap-2">
                 <Mail className="mt-0.5 h-4 w-4 text-muted-foreground" />
                 <div>
-                  <a href="mailto:info@phoenixvc.tech" className="text-muted-foreground hover:text-foreground">
-                    info@phoenixvc.tech
+                  <a href={`mailto:${COMPANY_EMAIL}`} className="text-muted-foreground hover:text-foreground">
+                    {COMPANY_EMAIL}
                   </a>
                 </div>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
                 <div className="text-muted-foreground">
-                  Phoenix Venture Capital
-                  <br />
-                  Innovation Hub
-                  <br />
-                  Cape Town, South Africa
+                  {COMPANY_ADDRESS.split('\n').map((line, i) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      <br />
+                    </React.Fragment>
+                  ))}
                 </div>
               </li>
             </ul>
@@ -157,7 +168,7 @@ export function UnifiedFooter() {
 
         {/* Bottom section with copyright */}
         <div className="border-t pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {currentYear} NeuralLiquid. All rights reserved.</p>
+          <p>&copy; {currentYear} {STANDARD_PRODUCT_NAME}. All rights reserved.</p>
         </div>
       </div>
     </footer>

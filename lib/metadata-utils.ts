@@ -1,4 +1,22 @@
 import type { Metadata, Viewport } from "next"
+import {
+  BASE_APP_NAME,
+  BASE_CREATOR,
+  BASE_PUBLISHER,
+  COMPANY_NAME,
+  COMPANY_TEAM_NAME,
+  COMPANY_URL,
+  CORPORATE_OG_IMAGE,
+  CORPORATE_PRODUCT_DESCRIPTION,
+  CORPORATE_PRODUCT_KEYWORDS,
+  CORPORATE_PRODUCT_NAME,
+  CORPORATE_PRODUCT_TITLE,
+  CORPORATE_PRODUCT_TITLE_TEMPLATE,
+  CORPORATE_TWITTER_HANDLE,
+  STANDARD_PRODUCT_DESCRIPTION,
+  STANDARD_PRODUCT_KEYWORDS,
+  STANDARD_PRODUCT_TITLE
+} from "./config/product-info"
 
 // Base viewport configuration that applies to all pages
 export const baseViewport: Viewport = {
@@ -12,14 +30,14 @@ export const baseViewport: Viewport = {
 
 // Base metadata that applies to both versions
 export const baseMetadata: Metadata = {
-  applicationName: "NeuralLiquid",
-  authors: [{ name: "NeuralLiquid Team" }],
-  creator: "NeuralLiquid",
-  publisher: "NeuralLiquid",
+  applicationName: BASE_APP_NAME,
+  authors: [{ name: COMPANY_TEAM_NAME }],
+  creator: BASE_CREATOR,
+  publisher: BASE_PUBLISHER,
   formatDetection: {
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://neuralliquid.ai"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || COMPANY_URL),
   // Removed viewport from here
   robots: {
     index: true,
@@ -29,9 +47,9 @@ export const baseMetadata: Metadata = {
 
 // Standard version-specific metadata
 export const standardMetadata = {
-  title: "Tezos LM | Standard",
-  description: "Optimize your Tezos liquidity management with AI-powered tools.",
-  keywords: ["tezos", "liquidity management", "defi", "standard", "ai", "optimization"],
+  title: STANDARD_PRODUCT_TITLE,
+  description: STANDARD_PRODUCT_DESCRIPTION,
+  keywords: STANDARD_PRODUCT_KEYWORDS,
   // Add other metadata as needed
 }
 
@@ -39,40 +57,31 @@ export const standardMetadata = {
 export const corporateMetadata: Metadata = {
   ...baseMetadata,
   title: {
-    template: "%s | VeritasVault.ai by NeuralLiquid",
-    default: "VeritasVault.ai - Institutional-Grade Liquidity Management",
+    template: CORPORATE_PRODUCT_TITLE_TEMPLATE,
+    default: CORPORATE_PRODUCT_TITLE,
   },
-  description: "Enterprise-grade liquidity management solutions for institutional clients and treasury operations.",
-  keywords: [
-    "institutional liquidity",
-    "treasury management",
-    "enterprise defi",
-    "institutional cryptocurrency",
-    "corporate treasury",
-    "risk management",
-    "institutional trading",
-    "black-litterman model",
-  ],
+  description: CORPORATE_PRODUCT_DESCRIPTION,
+  keywords: CORPORATE_PRODUCT_KEYWORDS,
   openGraph: {
     type: "website",
-    siteName: "VeritasVault.ai by NeuralLiquid",
-    title: "VeritasVault.ai - Institutional-Grade Liquidity Management",
-    description: "Enterprise-grade liquidity management solutions for institutional clients and treasury operations.",
+    siteName: `${CORPORATE_PRODUCT_NAME} by ${COMPANY_NAME}`,
+    title: CORPORATE_PRODUCT_TITLE,
+    description: CORPORATE_PRODUCT_DESCRIPTION,
     images: [
       {
-        url: "/og-image-corporate.png",
+        url: CORPORATE_OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "VeritasVault.ai - Institutional-Grade Liquidity Management",
+        alt: CORPORATE_PRODUCT_TITLE,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "VeritasVault.ai - Institutional-Grade Liquidity Management",
-    description: "Enterprise-grade liquidity management solutions for institutional clients and treasury operations.",
-    images: ["/og-image-corporate.png"],
-    creator: "@veritasvault",
+    title: CORPORATE_PRODUCT_TITLE,
+    description: CORPORATE_PRODUCT_DESCRIPTION,
+    images: [CORPORATE_OG_IMAGE],
+    creator: CORPORATE_TWITTER_HANDLE,
   },
   alternates: {
     canonical: "/corporate",

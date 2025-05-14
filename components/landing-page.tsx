@@ -3,12 +3,16 @@
 import type React from "react"
 
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { HelpCircle } from "lucide-react"
-import { useState, useEffect } from "react"
-import Image from "next/image"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { ArrowRight } from "lucide-react"
+import {
+  STANDARD_PRODUCT_DESCRIPTION,
+  STANDARD_PRODUCT_NAME,
+  STANDARD_PRODUCT_TAGLINE
+} from "@/lib/config/product-info"
+import { ArrowRight, HelpCircle } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useEffect, useState } from "react"
 
 export function LandingPage() {
   const [email, setEmail] = useState("")
@@ -90,10 +94,10 @@ export function LandingPage() {
                   id="hero-heading"
                   className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600 text-transparent bg-clip-text"
                 >
-                  AI-Powered Tezos Liquidity Management
+                  {STANDARD_PRODUCT_TAGLINE}
                 </h1>
                 <p className="text-xl text-white mb-8 max-w-2xl mx-auto lg:mx-0">
-                  Optimize your Tezos liquidity with advanced AI insights and real-time data
+                  {STANDARD_PRODUCT_DESCRIPTION}
                 </p>
 
                 {/* SINGLE PRIMARY CTA */}
@@ -113,7 +117,7 @@ export function LandingPage() {
                 <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-2xl border border-white/10">
                   <Image
                     src="/dashboard-preview.png"
-                    alt="NeuralLiquid Dashboard showing liquidity pool analytics and optimization recommendations"
+                    alt={`${STANDARD_PRODUCT_NAME} Dashboard showing liquidity pool analytics and optimization recommendations`}
                     fill
                     className="object-cover"
                     priority
@@ -326,7 +330,7 @@ export function LandingPage() {
                   </svg>
                   <h3 className="text-2xl font-semibold mb-2 text-white">You're In!</h3>
                   <p className="text-white/90 mb-4">
-                    You've secured your spot in the Neural Alpha. We'll be in touch within 48 hours with your exclusive
+                    You've secured your spot in the Alpha. We'll be in touch within 48 hours with your exclusive
                     access details.
                   </p>
                 </div>
@@ -397,7 +401,7 @@ export function LandingPage() {
                   </div>
 
                   <p className="text-white/50 text-xs text-center mt-4">
-                    We respect your privacy. Your information will only be used to notify you about NeuralLiquid's
+                    We respect your privacy. Your information will only be used to notify you about {STANDARD_PRODUCT_NAME}'s
                     launch and early access opportunities.
                   </p>
                 </form>
@@ -411,8 +415,8 @@ export function LandingPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="mb-6 md:mb-0">
-                <p className="text-white/90 font-semibold text-lg">NeuralLiquid</p>
-                <p className="text-white/50 text-sm">AI-Powered Tezos Liquidity Management</p>
+                <p className="text-white/90 font-semibold text-lg">{STANDARD_PRODUCT_NAME}</p>
+                <p className="text-white/50 text-sm">{STANDARD_PRODUCT_TAGLINE}</p>
               </div>
 
               <div className="flex flex-wrap gap-4 justify-center">
@@ -429,7 +433,7 @@ export function LandingPage() {
             </div>
 
             <div className="mt-8 pt-8 border-t border-white/10 text-center">
-              <p className="text-white/50 text-sm">© {new Date().getFullYear()} NeuralLiquid. All rights reserved.</p>
+              <p className="text-white/50 text-sm">© {new Date().getFullYear()} {STANDARD_PRODUCT_NAME}. All rights reserved.</p>
             </div>
           </div>
         </footer>
