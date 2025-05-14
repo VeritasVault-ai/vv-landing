@@ -35,6 +35,15 @@ interface CustomThemeValues {
   colorMode: ColorMode;
 }
 
+/**
+ * Provides a unified interface for accessing and managing theme state by combining values from both the `next-themes` library and a custom theme context.
+ *
+ * Returns theme-related properties and setters from both sources, including the current theme, theme variant, available themes, experience type, color mode, and a computed `isDark` flag.
+ *
+ * @returns An object containing consolidated theme state and setters from both `next-themes` and the custom theme context, along with a boolean indicating if the current theme is dark.
+ *
+ * @remark If either the `next-themes` or custom theme provider is missing, fallback default values are used and a warning is logged.
+ */
 export function useUnifiedTheme() {
   // Default values in case hooks fail
   let nextThemeValues: NextThemeValues = {

@@ -28,7 +28,21 @@ interface SidebarNavGroupProps {
 }
 
 /**
- * Collapsible navigation group component for the sidebar
+ * Renders a collapsible navigation group in the sidebar with a label, icon, optional badge, and a list of sub-items.
+ *
+ * Expands automatically if any sub-item matches the current route. When the sidebar is collapsed, the group is not rendered.
+ *
+ * @param label - The group label displayed in the sidebar.
+ * @param icon - The icon shown next to the label.
+ * @param items - Array of navigation sub-items, each with a label, href, and optional badge.
+ * @param defaultOpen - Whether the group is expanded by default.
+ * @param badge - Optional badge content displayed next to the group label.
+ * @param badgeVariant - Visual style for the badge.
+ * @param className - Additional CSS classes for the group container.
+ *
+ * @returns A sidebar navigation group with collapsible sub-items.
+ *
+ * @remark The group is not displayed when the sidebar is collapsed.
  */
 export function SidebarNavGroup({
   label,

@@ -11,6 +11,13 @@ interface ThemeAwareComponentProps {
   // Preserve any other props from the original component
 }
 
+/**
+ * Renders its children within a div that applies theme-specific CSS classes based on the current theme.
+ *
+ * @param children - The React elements to display inside the themed container.
+ * @param lightClassName - Optional CSS class for light theme; defaults to "bg-white text-slate-900".
+ * @param darkClassName - Optional CSS class for dark theme; defaults to "bg-slate-900 text-white".
+ */
 export function ThemeAwareComponent({
   children,
   lightClassName = "bg-white text-slate-900",

@@ -17,9 +17,11 @@ import { useEffect, useState } from 'react'
 import { ThemeVariant } from '../types'
 
 /**
- * Renders a theme toggle button with a dropdown menu for selecting color modes and theme variants.
+ * Displays a theme toggle button with a dropdown menu for switching between color modes and theme variants.
  *
- * Provides a smart toggle between light and dark modes, automatically selecting a corresponding theme variant based on the current experience. Users can also explicitly choose from available light and dark theme variants via the dropdown menu. The component ensures correct rendering during hydration by delaying UI display until mounted.
+ * Users can quickly toggle between light and dark modes, with the component automatically selecting an appropriate theme variant based on the current experience. The dropdown menu allows explicit selection of available light and dark theme variants. Rendering is delayed until after mount to prevent hydration mismatches.
+ *
+ * @remark If an error occurs while accessing theme data, the component logs the error and falls back to default theme values.
  */
 export function ThemeToggle() {
   // Add try-catch to handle potential errors from useUnifiedTheme

@@ -7,6 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { setCookie } from "@/lib/cookies"
 
+/**
+ * Renders the client-facing landing page for NeuralLiquid, allowing users to choose between the Standard and Corporate product versions.
+ *
+ * Displays two selectable cards with descriptions and feature lists for each version. When a version is selected, the user's choice is saved in a cookie and the app navigates to the corresponding dashboard.
+ */
 export default function ClientPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)

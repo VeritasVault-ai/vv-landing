@@ -10,6 +10,17 @@ interface VersionCardHeaderProps {
   iconBgColor: string
 }
 
+/**
+ * Renders a styled header section with a customizable icon, title, and description for a version card.
+ *
+ * Displays a circular icon container with configurable background and icon color, followed by a centered title and description.
+ *
+ * @param icon - The icon component to display.
+ * @param title - The header title text.
+ * @param description - The descriptive text below the title.
+ * @param iconColor - CSS class for the icon's color.
+ * @param iconBgColor - CSS class for the icon's background color.
+ */
 export function VersionCardHeader({
   icon: Icon,
   title,

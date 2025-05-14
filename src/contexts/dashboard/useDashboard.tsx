@@ -4,10 +4,10 @@ import { useContext } from 'react';
 import { DashboardContext } from './DashboardContext';
 
 /**
- * Hook to access dashboard context
- * 
- * @returns Dashboard context value
- * @throws Error if used outside of DashboardProvider
+ * Provides access to the current dashboard context.
+ *
+ * @returns The current value of the dashboard context.
+ * @throws {Error} If called outside of a {@link DashboardProvider}.
  */
 export function useDashboard() {
   const context = useContext(DashboardContext);

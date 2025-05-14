@@ -127,7 +127,17 @@ export function generateStandardMetadata(
   }
 }
 
-// Helper function to generate page-specific metadata for corporate version
+/**
+ * Generates page-specific metadata for the corporate version of the application.
+ *
+ * Merges corporate-level metadata with overrides for title, description, canonical path, Open Graph, and Twitter metadata based on the provided page details.
+ *
+ * @param pageTitle - The title of the page.
+ * @param pageDescription - Optional description for the page. Defaults to the corporate description if not provided.
+ * @param pageImage - Optional image URL for social previews. Defaults to the corporate image if not provided.
+ * @param pagePath - Optional path segment for the page, appended to the `/corporate` base path.
+ * @returns Metadata object customized for the specified corporate page.
+ */
 export function generateCorporateMetadata(
   pageTitle: string,
   pageDescription?: string,

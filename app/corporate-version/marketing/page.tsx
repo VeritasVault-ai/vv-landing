@@ -10,6 +10,11 @@ export const metadata: Metadata = generateCorporateMetadata(
   "/api/og/corporate-marketing",
 )
 
+/**
+ * Renders the corporate marketing page with a notice that the content is being updated.
+ *
+ * Displays a heading, informational message, and a link to return to the home page.
+ */
 export default function CorporateMarketingPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-slate-900 p-4">

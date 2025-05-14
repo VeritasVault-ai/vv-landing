@@ -33,6 +33,20 @@ export interface CommonHeaderProps {
   onLogout: () => void
 }
 
+/**
+ * Renders the corporate site header with navigation, authentication controls, theme toggle, and responsive mobile support.
+ *
+ * Displays navigation links, dropdown menus, and authentication actions based on the provided props. Includes a sticky layout, logo, and adapts to mobile screens with a collapsible menu. Login and registration dialogs are managed locally and shown as needed.
+ *
+ * @param headerNav - Array of navigation items to display in the header.
+ * @param pathname - The current URL path, used to highlight the active navigation item.
+ * @param isAuthenticated - Indicates whether the user is currently authenticated.
+ * @param status - The current authentication status: 'loading', 'authenticated', or 'unauthenticated'.
+ * @param onClose - Callback invoked to close menus or dialogs.
+ * @param onLoginClick - Callback triggered when the login button is clicked.
+ * @param onRegisterClick - Callback triggered when the register button is clicked.
+ * @param onLogout - Callback triggered when the user selects "Sign out".
+ */
 export function CorporateHeader({
   headerNav,
   pathname,

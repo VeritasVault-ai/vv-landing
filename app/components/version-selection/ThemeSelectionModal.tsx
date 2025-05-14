@@ -17,6 +17,18 @@ interface ThemeSelectionModalProps {
   onThemeSelect: (version: ExperienceType, theme: string) => void
 }
 
+/**
+ * Displays a modal dialog for selecting a UI theme based on the chosen experience type.
+ *
+ * Renders a grid of available themes tailored to the selected experience version. When a theme is selected, the modal immediately invokes the provided callback with the selected version and theme ID. The modal only appears when {@link isOpen} is true and can be dismissed with the cancel button.
+ *
+ * @param isOpen - Whether the modal is visible.
+ * @param onClose - Callback to close the modal.
+ * @param selectedVersion - The current experience type for which to select a theme.
+ * @param onThemeSelect - Callback invoked with the selected version and theme ID when a theme is chosen.
+ *
+ * @returns The modal component, or null if not open.
+ */
 export function ThemeSelectionModal({
   isOpen,
   onClose,

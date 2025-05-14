@@ -4,6 +4,11 @@ import { ThemeToggleClient } from "@/components/theme-toggle-client"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
+/**
+ * Renders the application header with the "Veritas Vault" title, a theme toggle, and a sign-in button.
+ *
+ * Displays a styled header containing the app name on the left and interactive controls on the right.
+ */
 export function VersionHeader() {
   return (
     <header className="relative z-10 border-b border-white/10 bg-black/20 backdrop-blur-sm">

@@ -22,7 +22,9 @@ import {
 import { NavItemOrGroup } from '@/src/components/layout/sidebar'
 
 /**
- * Main corporate dashboard component that brings together all dashboard modules
+ * Renders the main corporate dashboard interface with navigation, sidebar, and integrated dashboard modules.
+ *
+ * Displays a collapsible sidebar with primary and secondary navigation, a header, welcome section, and dashboard content including metrics and tabbed views. The layout adapts responsively based on the sidebar's state.
  */
 export function CorporateDashboard() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)

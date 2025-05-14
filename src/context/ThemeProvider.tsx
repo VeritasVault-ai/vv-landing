@@ -54,13 +54,13 @@ export function ThemeProvider({
 }
 
 /**
- * Provides theme context state and logic for experience type, theme variant, and color mode, synchronizing preferences with cookies, URL parameters, and HTML classes.
+ * Provides theme context for experience type, theme variant, and color mode, managing state and synchronizing preferences with cookies, URL parameters, and HTML classes.
  *
  * @param children - The React nodes to render within the provider.
  * @param defaultExperience - The initial experience type to use.
  *
  * @remark
- * Waits for the theme to be resolved before providing context to avoid UI flicker. Updates the root HTML element's classes and persists preferences in cookies. Supports overriding color mode via the `theme` URL parameter.
+ * Waits for the theme to be resolved before providing context to prevent UI flicker. Updates the root HTML element's classes and persists preferences in cookies. Supports overriding color mode via the `theme` URL parameter.
  */
 function InnerProvider({ children, defaultExperience }: { children: ReactNode; defaultExperience: ExperienceType; }) {
   const { resolvedTheme, setTheme: setNextTheme } = useNextTheme();
@@ -158,9 +158,9 @@ export function useCurrentTheme() {
 }
 
 /**
- * Returns the list of theme variants available for the current experience.
+ * Retrieves the available theme variants for the current experience type.
  *
- * @returns An array of theme variants corresponding to the current experience type.
+ * @returns An array of theme variants for either the standard or corporate experience.
  */
 export function useAvailableThemeVariants() {
   const { experience } = useTheme();

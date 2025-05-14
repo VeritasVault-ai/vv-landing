@@ -9,6 +9,17 @@ interface SidebarNavBadgeProps {
   className?: string
 }
 
+/**
+ * Renders a styled badge element for sidebar navigation, displaying the provided content with variant-based styling.
+ *
+ * If the content is the string "new" (case-insensitive) and the variant is not explicitly set, the badge uses the "new" variant style.
+ *
+ * @param content - The text or number to display inside the badge.
+ * @param variant - Optional style variant for the badge; defaults to "default".
+ * @param className - Optional additional CSS classes to apply.
+ *
+ * @returns A React element representing the styled badge.
+ */
 export function SidebarNavBadge({ 
   content, 
   variant = 'default',

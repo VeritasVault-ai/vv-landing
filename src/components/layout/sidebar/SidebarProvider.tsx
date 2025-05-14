@@ -18,6 +18,17 @@ interface SidebarProviderProps {
   onToggle?: (collapsed: boolean) => void
 }
 
+/**
+ * Provides sidebar state and control functions to descendant components via context.
+ *
+ * Manages collapsed and mobile open states for the sidebar, automatically collapsing and closing the sidebar on small screens. Invokes an optional callback when the collapsed state changes. Supports children as either React nodes or a render function receiving the sidebar context.
+ *
+ * @param children - React nodes or a function that receives the sidebar context and returns React nodes.
+ * @param defaultCollapsed - Optional initial collapsed state for the sidebar.
+ * @param onToggle - Optional callback invoked when the collapsed state changes.
+ *
+ * @remark The sidebar will automatically collapse and close the mobile menu when the window width is less than 768 pixels.
+ */
 export function SidebarProvider({ 
   children, 
   defaultCollapsed = false,

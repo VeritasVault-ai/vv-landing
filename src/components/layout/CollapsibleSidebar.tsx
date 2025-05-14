@@ -32,7 +32,11 @@ interface CollapsibleSidebarProps {
 }
 
 /**
- * Main CollapsibleSidebar component that uses the modular implementation
+ * Renders a collapsible sidebar with customizable navigation, appearance, and feature toggles.
+ *
+ * Forwards all props to the modular sidebar implementation to provide navigation, theme toggling, upgrade, and logout functionality.
+ *
+ * @returns The rendered sidebar component.
  */
 export function CollapsibleSidebar(props: CollapsibleSidebarProps) {
   return <ModularSidebar {...props} />

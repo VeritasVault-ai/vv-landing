@@ -3,6 +3,11 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle } from "lucide-react"
 
+/**
+ * Renders a section highlighting three institutional-grade benefits of the platform: regulatory compliance, enterprise security, and advanced analytics.
+ *
+ * Displays each benefit in a styled card with a heading, description, and a list of key features, supporting responsive layout and dark mode.
+ */
 export function KeyBenefits() {
   return (
     <section className="py-20 bg-slate-50 dark:bg-slate-950">

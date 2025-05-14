@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 }
 
 /**
- * Displays the corporate dashboard page, rendering its content asynchronously with a loading fallback.
+ * Renders the corporate dashboard page with asynchronous loading and a fallback UI.
  *
- * Uses a client-side bridge component to avoid server-side rendering errors related to context providers.
+ * Wraps the dashboard content in a client-side bridge to prevent server-side rendering errors caused by context providers.
  */
 export default function CorporateDashboardPage() {
   return (

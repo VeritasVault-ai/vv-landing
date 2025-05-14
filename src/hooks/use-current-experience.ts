@@ -10,6 +10,15 @@
 import { useEffect, useState } from "react"
 import { EXPERIENCE_TYPES } from "@/src/constants/theme"
 
+/**
+ * React hook that returns the current user experience type based on the browser's URL path.
+ *
+ * Determines the experience type by inspecting the pathname and updates automatically when the route changes via browser navigation.
+ *
+ * @returns The current experience type, as defined in {@link EXPERIENCE_TYPES}.
+ *
+ * @remark Returns the default experience type if used in a non-browser environment.
+ */
 export function useCurrentExperience() {
   const [currentExperience, setCurrentExperience] = useState(EXPERIENCE_TYPES.STANDARD)
   

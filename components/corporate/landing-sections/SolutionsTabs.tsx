@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button"
 import { BarChart2, Shield, Briefcase, CheckCircle, ChevronRight } from "lucide-react"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
 
+/**
+ * Renders a tabbed interface showcasing enterprise liquidity management solutions for institutions.
+ *
+ * Displays three tabs—Treasury Management, Portfolio Optimization, and Risk Management—each with descriptive content, feature lists, and illustrative images. Tracks tab selection events for analytics.
+ */
 export function SolutionsTabs() {
   const [activeTab, setActiveTab] = useState("treasury")
 

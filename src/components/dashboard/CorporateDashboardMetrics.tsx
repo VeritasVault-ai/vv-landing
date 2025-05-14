@@ -5,7 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowUpRight, AlertTriangle } from "lucide-react"
 
 /**
- * Component for displaying key metrics at the top of the corporate dashboard
+ * Renders a responsive grid of key corporate dashboard metrics, including total assets under management, current yield, and risk assessment.
+ *
+ * @remarks
+ * All metric values and labels are static and do not reflect dynamic or real-time data.
  */
 export function CorporateDashboardMetrics() {
   return (

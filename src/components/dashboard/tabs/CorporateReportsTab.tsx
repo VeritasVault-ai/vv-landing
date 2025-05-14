@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button"
 import { FileText, Download } from "lucide-react"
 
 /**
- * Content for the Reports tab in the corporate dashboard
+ * Renders the Reports tab content for the corporate dashboard, displaying a list of available reports with download options.
+ *
+ * @returns A React element containing a styled card with report entries and download buttons.
+ *
+ * @remark This component is purely presentational and does not include download logic or dynamic data.
  */
 export function CorporateReportsTab() {
   return (

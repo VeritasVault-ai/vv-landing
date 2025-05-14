@@ -8,7 +8,9 @@ import { PerformanceChart } from "@/components/performance-chart"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 /**
- * Content for the Overview tab in the corporate dashboard
+ * Renders the Overview tab content for the corporate dashboard, including portfolio performance, asset allocation, summary, recent activity, and upcoming events.
+ *
+ * @returns The JSX layout for the Overview tab in the corporate dashboard.
  */
 export function CorporateOverviewTab() {
   // Replace useTheme with useUnifiedTheme and map properties

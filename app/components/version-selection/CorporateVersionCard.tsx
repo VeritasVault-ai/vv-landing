@@ -13,6 +13,15 @@ interface CorporateVersionCardProps {
   onContinue: () => void
 }
 
+/**
+ * Renders a card presenting the Corporate version option with institutional features and selection controls.
+ *
+ * Displays a header, a list of corporate-level features, and a footer with a continue button. The card's appearance and selection state are determined by the {@link isSelected} prop.
+ *
+ * @param isSelected - Whether the card is currently selected.
+ * @param onSelect - Callback invoked when the card is clicked.
+ * @param onContinue - Callback invoked when the continue button is pressed.
+ */
 export function CorporateVersionCard({ isSelected, onSelect, onContinue }: CorporateVersionCardProps) {
   const corporateFeatures = [
     "Institutional-grade security",

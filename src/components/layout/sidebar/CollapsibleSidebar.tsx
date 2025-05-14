@@ -28,6 +28,11 @@ interface CollapsibleSidebarProps {
   defaultCollapsed?: boolean
 }
 
+/**
+ * Renders a collapsible sidebar with customizable navigation, appearance, and footer actions.
+ *
+ * Wraps the sidebar content in a context provider to manage collapse state and toggle events.
+ */
 export function CollapsibleSidebar(props: CollapsibleSidebarProps) {
   return (
     <SidebarProvider
@@ -39,6 +44,23 @@ export function CollapsibleSidebar(props: CollapsibleSidebarProps) {
   )
 }
 
+/**
+ * Renders the main content of the collapsible sidebar, including header, navigation, and footer sections.
+ *
+ * @param className - Additional CSS classes for the sidebar container.
+ * @param style - Visual style variant of the sidebar; defaults to 'default'.
+ * @param homeHref - URL for the home link in the sidebar header; defaults to '/'.
+ * @param navigationItems - Primary navigation items to display.
+ * @param secondaryNavigationItems - Secondary navigation items to display below the primary list.
+ * @param showThemeToggle - Whether to display the theme toggle button in the footer; defaults to true.
+ * @param showUpgradeButton - Whether to display the upgrade button in the footer; defaults to true.
+ * @param showLogoutButton - Whether to display the logout button in the footer; defaults to true.
+ * @param upgradeButtonText - Text for the upgrade button; defaults to 'Upgrade to Pro'.
+ * @param upgradeButtonIcon - Optional icon for the upgrade button.
+ * @param onLogout - Optional callback invoked when the logout button is clicked.
+ *
+ * @returns The sidebar UI, including a backdrop overlay for mobile devices when open.
+ */
 function SidebarContent({
   className,
   style = 'default',

@@ -5,7 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { PerformanceChart } from "@/components/performance-chart"
 
 /**
- * Content for the Performance tab in the corporate dashboard
+ * Renders the Performance tab content for the corporate dashboard, including historical portfolio performance and lists of top and underperforming assets.
+ *
+ * Displays a historical performance chart and two cards summarizing the best and worst performing assets with their respective return percentages.
  */
 export function CorporatePerformanceTab() {
   return (

@@ -3,6 +3,11 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Lock, TrendingUp, Globe } from "lucide-react"
 
+/**
+ * Renders a landing page section highlighting the value proposition of an institutional-grade digital asset management service.
+ *
+ * Displays a headline, descriptive introduction, and a responsive grid of feature cards emphasizing security, optimized returns, and global compliance.
+ */
 export function ValueProposition() {
   return (
     <section className="py-16 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">

@@ -10,7 +10,9 @@ import { CorporateRiskTab } from './tabs/CorporateRiskTab'
 import { CorporateReportsTab } from './tabs/CorporateReportsTab'
 
 /**
- * Component for the tabbed interface in the corporate dashboard
+ * Renders a tabbed interface for the corporate dashboard, allowing users to switch between Overview, Performance, Risk, and Reports sections.
+ *
+ * @returns The tabbed dashboard component with corresponding content for each tab.
  */
 export function CorporateDashboardTabs() {
   const [activeTab, setActiveTab] = useState("overview")

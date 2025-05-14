@@ -13,6 +13,15 @@ interface StandardVersionCardProps {
   onContinue: () => void
 }
 
+/**
+ * Renders a selectable card presenting the "Standard Experience" version with its features and a continue action.
+ *
+ * Displays a header with an icon and description, a list of standard features, and a button to proceed with this version.
+ *
+ * @param isSelected - Indicates whether the card is currently selected.
+ * @param onSelect - Callback invoked when the card is clicked.
+ * @param onContinue - Callback invoked when the continue button is clicked.
+ */
 export function StandardVersionCard({ isSelected, onSelect, onContinue }: StandardVersionCardProps) {
   const standardFeatures = [
     "Personalized dashboard",
