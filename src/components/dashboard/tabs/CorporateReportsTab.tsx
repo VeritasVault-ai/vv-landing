@@ -55,8 +55,57 @@ export function CorporateReportsTab() {
                 Download
               </Button>
             </div>
-
-            {/* Repeat onClick handlers for the other buttons similarly */}
+  
+            {/* Additional report entries */}
+            <div className="flex justify-between items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+              <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <div>
+                  <div className="font-medium text-slate-900 dark:text-slate-100">
+                    Risk Assessment Report
+                  </div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">
+                    Q2 2025
+                  </div>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+                onClick={() =>
+                  handleDownloadReport("Risk Assessment Report", "Q2 2025")
+                }
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download
+              </Button>
+            </div>
+  
+            <div className="flex justify-between items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+              <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <div>
+                  <div className="font-medium text-slate-900 dark:text-slate-100">
+                    Regulatory Compliance Report
+                  </div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">
+                    Q2 2025
+                  </div>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+                onClick={() =>
+                  handleDownloadReport("Regulatory Compliance Report", "Q2 2025")
+                }
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
