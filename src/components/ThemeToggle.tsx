@@ -1,6 +1,5 @@
-// src/components/ThemeToggle.tsx
+// src/components/ThemeToggle.tsx - Updated to use useUnifiedTheme
 'use client'
-
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -13,7 +12,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Moon, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useAvailableThemeVariants, useTheme } from '../lib/hooks/context/ThemeProvider'
+import { useUnifiedTheme } from '@/src/hooks/use-unified-theme'
 import { ColorMode } from '@/styles/theme'
 import { ThemeVariant } from '../types'
 
@@ -24,20 +23,25 @@ import { ThemeVariant } from '../types'
  */
 export function ThemeToggle() {
   const {
-    colorMode,
+    theme: colorMode,
+    setTheme: setColorMode,
     themeVariant,
-    setColorMode,
     setThemeVariant,
-    experience,
-  } = useTheme()
-  const availableThemeVariants = useAvailableThemeVariants()
+    availableThemeVariants,
+  } = useUnifiedTheme()
+  
+  // Extract experience from themeVariant - this needs to be adjusted based on your actual implementation
+  const experience = themeVariant?.includes('corporate') || themeVariant?.includes('veritasvault') 
+    ? 'corporate' 
+    : 'standard'
+  
   const [mounted, setMounted] = useState(false)
-
+  
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true)
   }, [])
-
+  
   // Smart toggle between corresponding light/dark variants
   const handleSmartToggle = () => {
     const nextMode: ColorMode = colorMode === 'light' ? 'dark' : 'light'
@@ -47,19 +51,18 @@ export function ThemeToggle() {
           ? 'neuralliquid'
           : 'veritasvault'
         : experience === 'standard'
-        ? 'standard'
-        : 'corporate'
-
+          ? 'standard'
+          : 'corporate'
     setColorMode(nextMode)
     setThemeVariant(nextVariant)
   }
-
+  
   // Typed theme selection
   const handleThemeSelect = (variant: ThemeVariant, mode: ColorMode) => {
     setThemeVariant(variant)
     setColorMode(mode)
   }
-
+  
   if (!mounted) {
     return (
       <Button variant="ghost" size="icon" className="opacity-0">
@@ -68,7 +71,7 @@ export function ThemeToggle() {
       </Button>
     )
   }
-
+  
   return (
     <TooltipProvider>
       <DropdownMenu>
@@ -93,7 +96,6 @@ export function ThemeToggle() {
             <p>Switch to {colorMode === 'dark' ? 'light' : 'dark'} mode</p>
           </TooltipContent>
         </Tooltip>
-
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>Toggle Theme</DropdownMenuLabel>
           <DropdownMenuItem onClick={handleSmartToggle}>
@@ -103,10 +105,8 @@ export function ThemeToggle() {
               <><Moon className="mr-2 h-4 w-4"/><span>Dark Mode</span></>
             )}
           </DropdownMenuItem>
-
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Light Mode Themes</DropdownMenuLabel>
-
           {availableThemeVariants
             .filter(v => v === 'standard' || v === 'corporate')
             .map(variant => (
@@ -125,10 +125,8 @@ export function ThemeToggle() {
                 )}
               </DropdownMenuItem>
             ))}
-
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Dark Mode Themes</DropdownMenuLabel>
-
           {availableThemeVariants
             .filter(v => v === 'neuralliquid' || v === 'veritasvault')
             .map(variant => (

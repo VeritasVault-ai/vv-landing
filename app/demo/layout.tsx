@@ -1,9 +1,15 @@
-"use client"
+// app/demo/layout.tsx
+import { UnifiedThemeProvider } from "@/src/providers/unified-theme-provider"
+import { EXPERIENCE_TYPES } from "@/src/constants/theme"
 
-import type React from "react"
-
-import { TourProvider } from "@/components/tour/tour-context"
-
-export default function DemoLayout({ children }: { children: React.ReactNode }) {
-  return <TourProvider>{children}</TourProvider>
+export default function DemoLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <UnifiedThemeProvider defaultExperience={EXPERIENCE_TYPES.STANDARD}>
+      {children}
+    </UnifiedThemeProvider>
+  )
 }

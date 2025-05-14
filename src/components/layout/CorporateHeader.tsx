@@ -1,63 +1,60 @@
+// src/components/layout/CorporateHeader.tsx
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import { HeaderNavigationItem, NavigationSubItem, getHeaderNavigationByExperience } from '@/lib/navigation'
-import { useAnalytics } from '@/hooks/use-analytics'
-import { useAuth } from '@/hooks/use-auth'
-import { useSession } from 'next-auth/react'
-import { usePathname, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import Image from 'next/image'
-import { ChevronDown, Menu, User, X } from 'lucide-react'
-import { ThemeToggle } from '@/src/components/ThemeToggle'
 import { LoginDialog } from '@/components/auth/login-dialog'
 import { RegisterDialog } from '@/components/auth/register-dialog'
-import { CorporateMobileHeader } from './CorporateMobileHeader'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { HeaderNavigationItem } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
-import { EventCategory } from '@/lib/analytics/event-taxonomy'
+import { ThemeToggle } from '@/src/components/ThemeToggle'
+import { ChevronDown, Menu, User, X } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { CorporateMobileHeader } from './CorporateMobileHeader'
 
 /**
- * Renders the responsive corporate website header with navigation, authentication controls, and theme toggling.
- *
- * Displays navigation items based on authentication status and user experience, including featured links, regular links, and dropdown menus. Provides login, registration, and logout functionality, as well as a theme toggle and mobile menu support. Authentication dialogs and analytics tracking are integrated.
+ * Props shared by both header variants
  */
-export function CorporateHeader() {
-  const pathname = usePathname()
-  const router = useRouter()
+export interface CommonHeaderProps {
+  headerNav: HeaderNavigationItem[]
+  pathname: string
+  isAuthenticated: boolean
+  status: 'loading' | 'authenticated' | 'unauthenticated'
+  onClose: () => void
+  onLoginClick: () => void
+  onRegisterClick: () => void
+  onLogout: () => void
+}
+
+export function CorporateHeader({
+  headerNav,
+  pathname,
+  isAuthenticated,
+  status,
+  onClose,
+  onLoginClick,
+  onRegisterClick,
+  onLogout,
+}: CommonHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [loginDialogOpen, setLoginDialogOpen] = useState(false)
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false)
-  const { trackEvent } = useAnalytics()
-  const { logout } = useAuth()
 
-  // session + auth
+  // Ensure client-only session logic runs
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
-  const { data: session, status } = useSession()
-  const isAuthenticated = mounted && status === 'authenticated'
 
-  // nav items
-  const headerNav = mounted
-    ? getHeaderNavigationByExperience('corporate', isAuthenticated)
-    : []
-
+  // Split nav items
   const featuredItems = headerNav.filter(i => i.featured)
   const linkItems     = headerNav.filter(i => i.type === 'link' && !i.featured)
   const dropdownItems = headerNav.filter(i => i.type === 'dropdown' && i.items)
-
-  const handleLoginClick = () => {
-    trackEvent('login_click', EventCategory.NAVIGATION, { label: 'corporate' })
-    setLoginDialogOpen(true)
-  }
-
-  const handleRegisterClick = () => {
-    trackEvent('register_click', EventCategory.NAVIGATION, { label: 'corporate' })
-    setRegisterDialogOpen(true)
-  }
-  
-  const handleLogout = async () => { await logout() }
 
   return (
     <>
@@ -66,7 +63,13 @@ export function CorporateHeader() {
           {/* logo + desktop nav */}
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <Image src="/logo-corporate.svg" alt="VV.ai" width={32} height={32} className="dark:invert" />
+              <Image
+                src="/logo-corporate.svg"
+                alt="VeritasVault"
+                width={32}
+                height={32}
+                className="dark:invert"
+              />
               <span className="hidden font-bold sm:inline">VeritasVault</span>
             </Link>
 
@@ -74,10 +77,10 @@ export function CorporateHeader() {
               {featuredItems.map(item => (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={item.href!}
                   className={cn(
                     'font-medium group relative',
-                    pathname === item.href 
+                    pathname === item.href
                       ? 'text-slate-900 dark:text-white after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-1/2 after:h-0.5 after:bg-blue-600'
                       : 'text-slate-800 dark:text-slate-200 hover:text-slate-900'
                   )}
@@ -89,10 +92,10 @@ export function CorporateHeader() {
               {linkItems.map(item => (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={item.href!}
                   className={cn(
                     'transition-colors',
-                    pathname === item.href 
+                    pathname === item.href
                       ? 'text-slate-900 dark:text-white'
                       : 'text-slate-700 dark:text-slate-300 hover:text-slate-900'
                   )}
@@ -104,7 +107,8 @@ export function CorporateHeader() {
               {dropdownItems.map(item => (
                 <DropdownMenu key={item.href}>
                   <DropdownMenuTrigger className="flex items-center gap-1 text-slate-700 dark:text-slate-300 hover:text-slate-900">
-                    {item.title} <ChevronDown className="h-4 w-4" />
+                    {item.title}
+                    <ChevronDown className="h-4 w-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     {item.items!.map(sub => (
@@ -131,33 +135,47 @@ export function CorporateHeader() {
           <div className="flex items-center gap-2">
             <ThemeToggle />
 
-            {status === 'loading'
-              ? <div className="w-12 h-9" />
-              : !isAuthenticated
-                ? (
-                  <div className="hidden md:flex gap-2">
-                    <Button variant="outline" size="sm" onClick={handleLoginClick}>Log In</Button>
-                    <Button size="sm" onClick={handleRegisterClick}>Sign Up</Button>
-                  </div>
-                )
-                : (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <User className="h-5 w-5" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem asChild><Link href="/dashboard">Dashboard</Link></DropdownMenuItem>
-                      <DropdownMenuItem asChild><Link href="/profile">Profile</Link></DropdownMenuItem>
-                      <DropdownMenuItem asChild><Link href="/settings">Settings</Link></DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                        Sign out
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )
-            }
+            {status === 'loading' ? (
+              <div className="w-12 h-9" />
+            ) : !isAuthenticated ? (
+              <div className="hidden md:flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => { onLoginClick(); setLoginDialogOpen(true) }}
+                >
+                  Log In
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => { onRegisterClick(); setRegisterDialogOpen(true) }}
+                >
+                  Sign Up
+                </Button>
+              </div>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings">Settings</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={onLogout} className="text-red-600">
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
             <Button
               variant="ghost"
@@ -175,17 +193,27 @@ export function CorporateHeader() {
             headerNav={headerNav}
             pathname={pathname}
             isAuthenticated={isAuthenticated}
-            status={status as any}
+            status={status}
             onClose={() => setMobileMenuOpen(false)}
-            onLoginClick={handleLoginClick}
-            onRegisterClick={handleRegisterClick}
-            onLogout={() => { handleLogout(); setMobileMenuOpen(false) }}
+            onLoginClick={onLoginClick}
+            onRegisterClick={onRegisterClick}
+            onLogout={() => { onLogout(); setMobileMenuOpen(false) }}
           />
         )}
       </header>
 
-      <LoginDialog isOpen={loginDialogOpen} onClose={() => setLoginDialogOpen(false)} version="corporate" redirectTo="/corporate/dashboard"/>
-      <RegisterDialog isOpen={registerDialogOpen} onClose={() => setRegisterDialogOpen(false)} version="corporate" redirectTo="/corporate/dashboard"/>
+      <LoginDialog
+        isOpen={loginDialogOpen}
+        onClose={() => setLoginDialogOpen(false)}
+        version="corporate"
+        redirectTo="/corporate/dashboard"
+      />
+      <RegisterDialog
+        isOpen={registerDialogOpen}
+        onClose={() => setRegisterDialogOpen(false)}
+        version="corporate"
+        redirectTo="/corporate/dashboard"
+      />
     </>
   )
 }
