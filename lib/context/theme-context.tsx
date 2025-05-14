@@ -5,12 +5,9 @@
  * It redirects imports from the old location to the new location.
  * 
  * TODO: Once all imports have been updated to use the new path directly,
- * this file should be deleted and imports should point to the new location.
+ * this file should be deleted and imports should point to:
+ * '@/src/lib/context/ThemeProvider'
  */
 
-import { getServerSession } from "next-auth/next";
-
-// Create a getSession function for backward compatibility
-export const getSession = async () => {
-  return await getServerSession();
-};
+export { ThemeProvider } from '@/src/lib/context/ThemeProvider'
+export * from '@/src/lib/context/ThemeProvider'

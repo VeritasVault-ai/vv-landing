@@ -50,9 +50,6 @@ export function getDefaultVariant(experience: ExperienceType): ThemeVariant {
 export const defaultTheme = standardLightTheme;
 
 // Export all themes
-// Export all themes
-// Export all themes
-// Export all themes
 export {
   standardLightTheme,
   standardDarkTheme,
@@ -61,5 +58,8 @@ export {
   neuralliquidLightTheme,
   neuralliquidDarkTheme,
   veritasVaultLightTheme,
-  veritasVaultDarkTheme, ExperienceType, ColorMode
+  veritasVaultDarkTheme
 };
+
+// Re-export types for backward compatibility
+export type { ExperienceType, ThemeVariant, ColorMode };

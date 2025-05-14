@@ -5,13 +5,12 @@ import { ThemeProvider as NextThemesProvider, useTheme as useNextTheme } from 'n
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 import { CORPORATE_VARIANTS, STANDARD_VARIANTS } from '@/src/constants';
-import { ThemeVariant } from '@/src/types';
 import {
   ColorMode,
   ExperienceType,
   getTheme,
+  ThemeVariant,
 } from '@/styles/theme';
-import { standardVariants, corporateVariants, getDefaultVariant, ThemeVariant } from '@/context/theme-variants';
 
 // Context shape
 export type ThemeContextType = {

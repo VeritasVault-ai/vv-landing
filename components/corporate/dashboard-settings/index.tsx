@@ -16,7 +16,7 @@ import { Settings } from "lucide-react"
 import { useDashboard } from "@/contexts/dashboard-context"
 import { VisibleMetricsSettings } from "./visible-metrics-settings"
 import { RefreshRateSettings } from "./refresh-rate-settings"
-import { ThemeSettings } from "./theme-settings"
+import { ThemeSettings } from "./theme-settings-bridge"
 import { ViewSettings } from "./view-settings"
 
 /**

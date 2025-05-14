@@ -1,17 +1,28 @@
-// src/config/theme-variants.ts
-
+import { CORPORATE_VARIANTS, STANDARD_VARIANTS } from "@/src/constants/theme";
 import { ExperienceType } from "@/src/types";
 
-// Centralized lists of valid theme variants per experience
-export const standardVariants = ['standard', 'neuralliquid'] as const;
-export const corporateVariants = ['corporate', 'veritasvault'] as const;
+// Experience types as constants
+export const EXPERIENCE_TYPES = {
+  STANDARD: 'standard',
+  CORPORATE: 'corporate',
+  BOTH: 'both',
+} as const;
 
-export type StandardThemeVariant = typeof standardVariants[number];
-export type CorporateThemeVariant = typeof corporateVariants[number];
+// Color modes as constants
+export const COLOR_MODES = {
+  LIGHT: 'light',
+  DARK: 'dark',
+  SYSTEM: 'system',
+} as const;
+
+// Define types based on the imported constants
+export type StandardThemeVariant = typeof STANDARD_VARIANTS[keyof typeof STANDARD_VARIANTS];
+export type CorporateThemeVariant = typeof CORPORATE_VARIANTS[keyof typeof CORPORATE_VARIANTS];
 export type ThemeVariant = StandardThemeVariant | CorporateThemeVariant;
 
 // Define a type that includes all possible experience types for the function
 export type GetDefaultVariantExperience = ExperienceType | 'both';
+
 // Helper to get the default variant based on experience
 export function getDefaultVariant(exp: 'standard'): StandardThemeVariant;
 export function getDefaultVariant(exp: 'corporate'): CorporateThemeVariant;
@@ -26,15 +37,14 @@ export function getDefaultVariant(exp: 'both'): CorporateThemeVariant;
 export function getDefaultVariant(exp: GetDefaultVariantExperience): ThemeVariant {
   switch (exp) {
     case 'standard':
-      return standardVariants[0];
+      return STANDARD_VARIANTS.STANDARD;
     case 'corporate':
+      return CORPORATE_VARIANTS.CORPORATE;
     case 'both':
-      return corporateVariants[0];
+      return CORPORATE_VARIANTS.CORPORATE;
     default:
       // This ensures type safety by exhaustively checking all cases
-      {
-        const _exhaustiveCheck: never = exp;
-        return _exhaustiveCheck;
-      }
+      const _exhaustiveCheck: never = exp;
+      return _exhaustiveCheck; // This line will never execute if all cases are handled
   }
 }

@@ -9,4 +9,4 @@
  * '@/src/lib/context/theme-variants'
  */
 
-export * from '../src/lib/context/theme-variants'
+export * from '../src/types/theme-variants'
