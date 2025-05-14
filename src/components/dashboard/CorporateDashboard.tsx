@@ -126,7 +126,13 @@ export function CorporateDashboard() {
                   className="flex items-center gap-2 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
                 >
                   <Calendar className="h-4 w-4" />
-                  <span>May 1, 2025</span>
+                  <span>
+                    {new Date().toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </span>
                 </Button>
                 <Button
                   variant="outline"
