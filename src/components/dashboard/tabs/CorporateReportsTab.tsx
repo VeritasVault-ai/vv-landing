@@ -16,6 +16,27 @@ export function CorporateReportsTab() {
     // window.open(
     //   `/api/reports/download?title=${encodeURIComponent(reportTitle)}&period=${encodeURIComponent(period)}`
     // );
+
+    // When implementing the actual API call:
+    // try {
+    //   const response = await fetch(
+    //     `/api/reports/download?title=${encodeURIComponent(reportTitle)}&period=${encodeURIComponent(period)}`
+    //   );
+    //   if (!response.ok) {
+    //     throw new Error(`Error downloading report: ${response.statusText}`);
+    //   }
+    //   const blob = await response.blob();
+    //   const url = URL.createObjectURL(blob);
+    //   const a = document.createElement('a');
+    //   a.href = url;
+    //   a.download = `${reportTitle} - ${period}.pdf`;
+    //   document.body.appendChild(a);
+    //   a.click();
+    //   document.body.removeChild(a);
+    // } catch (error) {
+    //   console.error('Download failed:', error);
+    //   // Show error notification to user
+    // }
   };
 
   return (
