@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart3, TrendingUp, Shield, FileText } from "lucide-react"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
@@ -19,12 +19,32 @@ export function CorporateDashboardTabs() {
 
   const handleTabChange = (value: string) => {
     setActiveTab(value)
+    window.location.hash = value
     trackNavigationEvent({
       feature_name: "corporate_dashboard_tab",
       tab_destination: value,
     })
   }
 
+  // Effect to handle URL hash for direct linking to tabs
+  useEffect(() => {
+    // Check if there's a hash in the URL
+    const hash = window.location.hash.replace('#', '')
+    if (hash && ['overview', 'performance', 'risk', 'reports'].includes(hash)) {
+      setActiveTab(hash)
+    }
+
+    // Update tab when hash changes
+    const handleHashChange = () => {
+      const newHash = window.location.hash.replace('#', '')
+      if (newHash && ['overview', 'performance', 'risk', 'reports'].includes(newHash)) {
+        setActiveTab(newHash)
+      }
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
   return (
     <Tabs defaultValue="overview" className="space-y-6" onValueChange={handleTabChange}>
       <TabsList className="bg-slate-100 dark:bg-slate-800 p-1">
