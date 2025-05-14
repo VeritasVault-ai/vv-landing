@@ -28,7 +28,11 @@ const results = {
 };
 
 /**
- * Recursively search directories for files
+ * Recursively collects JavaScript and TypeScript source file paths from a directory and its subdirectories, excluding `node_modules` and `.next` folders.
+ *
+ * @param {string} dir - The root directory to search.
+ * @param {string[]} [fileList=[]] - Accumulator for found file paths.
+ * @returns {string[]} Array of file paths with `.js`, `.jsx`, `.ts`, or `.tsx` extensions.
  */
 function findFiles(dir, fileList = []) {
   const files = fs.readdirSync(dir);
@@ -56,7 +60,15 @@ function findFiles(dir, fileList = []) {
 }
 
 /**
- * Search for patterns in a file
+ * Searches a file for specified string patterns and returns details of each match.
+ *
+ * For each pattern found, records the pattern, line number, and trimmed line content.
+ *
+ * @param {string} filePath - Path to the file to search.
+ * @param {string[]} patterns - Array of string patterns to search for.
+ * @returns {Array<{pattern: string, line: number, context: string}>} Array of match objects with pattern, line number, and context.
+ *
+ * @remark Returns an empty array if the file cannot be read.
  */
 function searchInFile(filePath, patterns) {
   try {
@@ -87,7 +99,9 @@ function searchInFile(filePath, patterns) {
 }
 
 /**
- * Check if a file might have theme-related issues
+ * Analyzes a file for usage of theme-related hooks, components, and providers, recording findings and flagging potential missing `ThemeProvider` issues.
+ *
+ * If theme hooks or theme-aware components are detected without a corresponding `ThemeProvider` in the same file, the file is flagged as a potential issue, with additional context on whether it is likely a page component.
  */
 function analyzeFile(filePath) {
   // Find hook usage

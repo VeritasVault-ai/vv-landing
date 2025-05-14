@@ -5,10 +5,12 @@ import { CORPORATE_VARIANTS, EXPERIENCE_TYPES, STANDARD_VARIANTS } from "@/src/c
 import { ExperienceType, ThemeVariant, StandardThemeVariant, CorporateThemeVariant } from "@/src/types/theme";
 
 /**
- * Returns the default theme variant for the specified experience type.
+ * Retrieves the default theme variant associated with a given experience type.
  *
- * @param exp - The experience type, either 'standard', 'corporate', or 'both'.
- * @returns The default theme variant string for the given experience type.
+ * If the experience type is unrecognized, the standard default variant is returned.
+ *
+ * @param exp - The experience type to determine the default variant for.
+ * @returns The default theme variant corresponding to {@link exp}.
  */
 export function getDefaultVariant(exp: ExperienceType): ThemeVariant {
   switch (exp) {
@@ -23,10 +25,12 @@ export function getDefaultVariant(exp: ExperienceType): ThemeVariant {
 }
 
 /**
- * Returns all available theme variants for the specified experience type.
+ * Retrieves all theme variants available for a given experience type.
  *
- * @param exp - The experience type, either 'standard', 'corporate', or 'both'.
- * @returns An array of theme variants available for the given experience type.
+ * Returns standard variants, corporate variants, or both, depending on the specified experience type.
+ * If the experience type is unrecognized, standard variants are returned by default.
+ *
+ * @returns An array of theme variants corresponding to the specified experience type.
  */
 export function getAvailableVariants(exp: ExperienceType): ThemeVariant[] {
   switch (exp) {
@@ -42,20 +46,18 @@ export function getAvailableVariants(exp: ExperienceType): ThemeVariant[] {
 }
 
 /**
- * Checks if a theme variant belongs to the standard experience.
+ * Determines whether the given theme variant is part of the standard experience variants.
  *
- * @param variant - The theme variant to check.
- * @returns True if the variant is a standard variant, false otherwise.
+ * @returns True if {@link variant} is a standard theme variant; otherwise, false.
  */
 export function isStandardVariant(variant: ThemeVariant): variant is StandardThemeVariant {
   return Object.values(STANDARD_VARIANTS).includes(variant as any);
 }
 
 /**
- * Checks if a theme variant belongs to the corporate experience.
+ * Determines whether the given theme variant is a corporate variant.
  *
- * @param variant - The theme variant to check.
- * @returns True if the variant is a corporate variant, false otherwise.
+ * @returns True if {@link variant} is part of the corporate theme variants; otherwise, false.
  */
 export function isCorporateVariant(variant: ThemeVariant): variant is CorporateThemeVariant {
   return Object.values(CORPORATE_VARIANTS).includes(variant as any);

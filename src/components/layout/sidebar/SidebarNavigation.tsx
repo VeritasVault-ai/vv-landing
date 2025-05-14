@@ -14,7 +14,14 @@ interface SidebarNavigationProps {
 }
 
 /**
- * Navigation component for the sidebar that renders items and groups
+ * Renders a sidebar navigation menu with primary and optional secondary navigation items or groups.
+ *
+ * Displays navigation links and grouped items in a vertical layout, supporting custom styling for both primary and secondary sections.
+ *
+ * @param items - Array of navigation items or groups to display in the main section.
+ * @param className - Optional CSS class for the main navigation container.
+ * @param secondaryItems - Optional array of navigation items or groups for the secondary section.
+ * @param secondaryClassName - Optional CSS class for the secondary navigation container.
  */
 export function SidebarNavigation({
   items,

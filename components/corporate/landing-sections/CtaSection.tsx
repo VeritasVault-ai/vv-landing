@@ -3,6 +3,11 @@
 import { Button } from "@/components/ui/button"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
 
+/**
+ * Renders a call-to-action section with a gradient background, headline, description, and two interactive buttons for scheduling a demo or contacting sales.
+ *
+ * The section is styled for visual prominence and responsive layout. Clicking either button logs an analytics event indicating user interaction.
+ */
 export function CtaSection() {
   return (
     <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-800 dark:to-blue-950">

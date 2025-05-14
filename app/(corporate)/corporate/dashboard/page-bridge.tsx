@@ -4,9 +4,9 @@ import { useState, useEffect } from "react"
 import { DashboardContent } from "./dashboard-content"
 
 /**
- * Client-side only bridge component for the dashboard page.
- * This ensures that the dashboard content only renders on the client,
- * preventing server-side rendering errors related to context providers.
+ * Defers rendering of the dashboard content until the component is mounted on the client.
+ *
+ * Displays a loading UI until client-side rendering is confirmed, then renders the dashboard to avoid server-side rendering issues with context providers.
  */
 export function DashboardPageBridge() {
   const [mounted, setMounted] = useState(false)

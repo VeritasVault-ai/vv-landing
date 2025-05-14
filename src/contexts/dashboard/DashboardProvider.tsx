@@ -104,10 +104,12 @@ interface DashboardProviderProps {
   children: ReactNode;
 }
 
-/**
- * Provider component for dashboard context
- * 
- * Manages dashboard state and provides it to children components
+/****
+ * Provides dashboard state, data, and control functions to descendant components via context.
+ *
+ * Initializes and manages dashboard overview and performance data, loading and error states, user settings with localStorage persistence, and the active dashboard tab. Exposes functions for updating settings and refreshing data.
+ *
+ * @param children - React nodes to be rendered within the dashboard context provider.
  */
 export function DashboardProvider({ children }: DashboardProviderProps) {
   // Dashboard data

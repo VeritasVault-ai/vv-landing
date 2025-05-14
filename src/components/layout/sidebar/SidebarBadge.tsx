@@ -10,7 +10,15 @@ interface SidebarBadgeProps {
 }
 
 /**
- * Badge component for displaying counts or status labels in the sidebar
+ * Renders a styled badge for displaying counts or status labels in a sidebar.
+ *
+ * The badge automatically uses the "new" variant if the {@link content} is the string "new" (case-insensitive) and no variant is specified.
+ *
+ * @param content - The value to display inside the badge.
+ * @param variant - Controls the badge's color scheme; defaults to "default".
+ * @param className - Additional CSS classes for custom styling.
+ *
+ * @returns A React element representing the badge.
  */
 export function SidebarBadge({ 
   content, 

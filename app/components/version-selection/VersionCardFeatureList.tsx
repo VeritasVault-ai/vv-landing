@@ -7,6 +7,12 @@ interface VersionCardFeatureListProps {
   checkColor: string
 }
 
+/**
+ * Displays a list of features with a colored check icon for each item.
+ *
+ * @param features - The list of feature descriptions to display.
+ * @param checkColor - The CSS class specifying the color of the check icon.
+ */
 export function VersionCardFeatureList({ features, checkColor }: VersionCardFeatureListProps) {
   return (
     <ul className="space-y-3 mb-6 flex-grow">

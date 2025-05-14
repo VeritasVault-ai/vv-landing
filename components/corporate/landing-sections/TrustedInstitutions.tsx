@@ -2,6 +2,11 @@
 
 import { ThemeAwareImage } from "@/components/ui/theme-aware-image-bridge"
 
+/**
+ * Renders a themed section highlighting trust by leading financial institutions.
+ *
+ * Displays a responsive image that adapts to light and dark themes, centered within a styled section.
+ */
 export function TrustedInstitutions() {
   return (
     <section className="py-10 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">

@@ -19,7 +19,20 @@ interface SidebarFooterProps {
 }
 
 /**
- * Footer component for the sidebar with theme toggle, upgrade button, and logout
+ * Renders a customizable footer section for a sidebar, optionally including a theme toggle, upgrade button, and logout button.
+ *
+ * @param showThemeToggle - Whether to display the theme toggle switch. Defaults to true.
+ * @param showUpgradeButton - Whether to display the upgrade button. Defaults to true.
+ * @param showLogoutButton - Whether to display the logout button. Defaults to true.
+ * @param upgradeButtonText - Text to display on the upgrade button. Defaults to 'Upgrade to Pro'.
+ * @param upgradeButtonIcon - Icon to display on the upgrade button.
+ * @param onLogout - Callback invoked when the logout button is clicked.
+ * @param className - Additional CSS classes for the footer container.
+ *
+ * @returns The sidebar footer React element.
+ *
+ * @remark
+ * The layout and content of the footer adapt based on the sidebar's collapsed state. If no {@link onLogout} handler is provided, clicking the logout button logs a message to the console.
  */
 export function SidebarFooter({
   showThemeToggle = true,

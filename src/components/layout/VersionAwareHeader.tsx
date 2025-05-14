@@ -28,7 +28,9 @@ export interface CommonHeaderProps {
 }
 
 /**
- * Renders a header component variant based on the current user experience context.
+ * Displays either the corporate or standard header component depending on the current user experience context.
+ *
+ * Selects the appropriate header variant and configures navigation and authentication-related event handlers based on the user's session and experience.
  */
 export function VersionAwareHeader() {
   const { experience } = useTheme()

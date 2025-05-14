@@ -19,6 +19,20 @@ import { useEffect, useState } from 'react'
 import { StandardMobileHeader } from './StandardMobileHeader'
 import { CommonHeaderProps } from './VersionAwareHeader'
 
+/**
+ * Renders a responsive website header with navigation, authentication controls, and theme toggling.
+ *
+ * Displays navigation links, dropdown menus, and featured items based on the provided navigation data. Shows authentication buttons or a user menu depending on authentication state, and adapts layout for mobile devices with a collapsible menu. Includes login and registration dialogs that redirect to the dashboard on success.
+ *
+ * @param headerNav - Array of navigation items to display in the header.
+ * @param pathname - Current URL path for active link highlighting.
+ * @param isAuthenticated - Indicates if the user is authenticated.
+ * @param status - Current authentication or loading status.
+ * @param onClose - Callback invoked when the mobile menu is closed.
+ * @param onLoginClick - Callback invoked when the login button is clicked.
+ * @param onRegisterClick - Callback invoked when the register button is clicked.
+ * @param onLogout - Callback invoked when the user logs out.
+ */
 export function StandardHeader({
   headerNav,
   pathname,

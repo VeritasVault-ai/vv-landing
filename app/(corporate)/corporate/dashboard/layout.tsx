@@ -82,6 +82,13 @@ const secondaryNavigationItems: NavItemOrGroup[] = [
   }
 ];
 
+/**
+ * Renders the corporate dashboard layout with a themed sidebar and main content area.
+ *
+ * Wraps the provided {@link children} in a full-height layout featuring a collapsible sidebar with navigation and upgrade options, styled for enterprise use.
+ *
+ * @param children - The content to display within the dashboard's main area.
+ */
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider defaultExperience={EXPERIENCE_TYPES.CORPORATE}>

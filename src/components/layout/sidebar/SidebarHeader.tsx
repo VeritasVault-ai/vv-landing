@@ -15,7 +15,10 @@ interface SidebarHeaderProps {
 }
 
 /**
- * Header component for the sidebar with logo and collapse controls
+ * Renders the header section of the sidebar with a logo and controls for collapsing, expanding, and opening the sidebar on mobile devices.
+ *
+ * @param homeHref - Optional URL for the logo link. Defaults to "/".
+ * @param className - Optional additional CSS classes for the header container.
  */
 export function SidebarHeader({ 
   homeHref = '/',

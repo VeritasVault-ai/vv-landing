@@ -6,10 +6,9 @@ import { ThemeProvider } from "@/src/context/ThemeProvider"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 
 /**
- * Provides the corporate-themed layout for pages, wrapping content with theme providers and version-aware headers.
+ * Wraps page content in a corporate-themed layout with nested theme providers and version-aware header and footer.
  *
- * Renders the given {@link children} between header and footer components inside theme providers
- * configured for the corporate experience.
+ * The layout applies both system and custom corporate theming, rendering the provided {@link children} between a header and footer.
  *
  * @param children - The content to display within the layout.
  */

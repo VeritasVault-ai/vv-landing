@@ -19,6 +19,14 @@ interface ThemeSettingsProps {
   onChange: (settings: Partial<DashboardSettings>) => void
 }
 
+/**
+ * Wraps the original ThemeSettings component with a GlobalThemeProvider using the CORPORATE experience type.
+ *
+ * @param props - The settings and change handler to be passed to the original ThemeSettings component.
+ *
+ * @remark
+ * This is a temporary bridge component to resolve theme context issues during migration. Remove once the theme provider hierarchy is refactored.
+ */
 export function ThemeSettings(props: ThemeSettingsProps) {
   return (
     <GlobalThemeProvider defaultExperience={EXPERIENCE_TYPES.CORPORATE}>

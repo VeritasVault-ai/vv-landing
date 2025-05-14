@@ -9,6 +9,11 @@ export const metadata: Metadata = generateStandardMetadata(
   "/api/og/standard-dashboard",
 )
 
+/**
+ * Renders the standard dashboard page for liquidity management, including the unified header and dashboard overview.
+ *
+ * @returns The JSX structure for the dashboard page.
+ */
 export default function StandardDashboardPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">

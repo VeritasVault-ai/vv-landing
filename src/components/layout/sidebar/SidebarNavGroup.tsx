@@ -7,6 +7,7 @@ import { ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
++import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { SidebarBadge } from './SidebarBadge'
 import { useSidebar } from './SidebarContext'
 
@@ -28,7 +29,21 @@ interface SidebarNavGroupProps {
 }
 
 /**
- * Collapsible navigation group component for the sidebar
+ * Renders a collapsible navigation group in the sidebar with a label, icon, optional badge, and a list of sub-items.
+ *
+ * Expands automatically if any sub-item matches the current route. When the sidebar is collapsed, the group is not rendered.
+ *
+ * @param label - The group label displayed in the sidebar.
+ * @param icon - The icon shown next to the label.
+ * @param items - Array of navigation sub-items, each with a label, href, and optional badge.
+ * @param defaultOpen - Whether the group is expanded by default.
+ * @param badge - Optional badge content displayed next to the group label.
+ * @param badgeVariant - Visual style for the badge.
+ * @param className - Additional CSS classes for the group container.
+ *
+ * @returns A sidebar navigation group with collapsible sub-items.
+ *
+ * @remark The group is not displayed when the sidebar is collapsed.
  */
 export function SidebarNavGroup({
   label,
@@ -57,7 +72,58 @@ export function SidebarNavGroup({
   if (collapsed) {
     // In collapsed mode, we show the group as a tooltip trigger
     // This could be enhanced to show a flyout menu instead
-    return null
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              className={cn(
+                "w-full justify-center p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800",
+                hasActiveChild && "text-primary bg-primary/10",
+              )}
+            >
+              <span
+                className={cn(
+                  "h-5 w-5",
+                  hasActiveChild ? "text-primary" : "text-gray-500 dark:text-gray-400"
+                )}
+              >
+                {icon}
+              </span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" className="p-0 w-48">
+            <div className="flex flex-col gap-1 p-2">
+              {items.map((item, index) => {
+                const isActive =
+                  pathname === item.href || pathname.startsWith(`${item.href}/`);
+                return (
+                  <Link
+                    key={`${item.href}-${index}`}
+                    href={item.href}
+                    className={cn(
+                      "rounded-md px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors",
+                      isActive && "text-primary bg-primary/10 font-medium"
+                    )}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>{item.label}</span>
+                      {item.badge && (
+                        <SidebarBadge
+                          content={item.badge}
+                          variant={item.badgeVariant}
+                        />
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
   }
 
   return (
