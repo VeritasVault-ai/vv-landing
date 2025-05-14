@@ -18,12 +18,14 @@ export default function CorporateVersionLayout({
 }: {
   children: ReactNode
 }) {
-  return (    
-    <Providers experience={EXPERIENCE_TYPES.CORPORATE}>
-          <VersionAwareHeader/>
-          <main>{children}</main>
-          <VersionAwareFooter/>
+  return (
+    <>
           <Analytics />
+      <Providers experience={EXPERIENCE_TYPES.CORPORATE}>
+        <VersionAwareHeader/>
+        <main>{children}</main>
+        <VersionAwareFooter/>
     </Providers>
+    </>
   )
 }
