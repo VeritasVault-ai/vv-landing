@@ -1,30 +1,15 @@
-import { baseViewport, generateCorporateMetadata } from "@/lib/metadata-utils"
-import type { Metadata, Viewport } from "next"
-import Link from "next/link"
+import { CorporateLandingPage } from "@/components/corporate/corporate-landing-page"
+import { Metadata } from "next"
 
-export const viewport: Viewport = baseViewport
-
-export const metadata: Metadata = generateCorporateMetadata(
-  "Corporate Marketing | Liquidity Management",
-  "Marketing resources for institutional liquidity management solutions.",
-  "/api/og/corporate-marketing",
-)
+export const metadata: Metadata = {
+  title: "VeritasVault.ai | Enterprise Treasury Solutions",
+  description: "Institutional-grade liquidity management for digital assets with advanced security and compliance features.",
+}
 
 /**
- * Renders the corporate marketing page with a notice that the content is being updated.
- *
- * Displays a heading, informational message, and a link to return to the home page.
+ * Marketing page for the corporate version of the application
+ * Renders the corporate landing page
  */
 export default function CorporateMarketingPage() {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-slate-900 p-4">
-      <h1 className="text-3xl font-bold mb-6 text-slate-900 dark:text-white">Corporate Marketing</h1>
-      <p className="text-lg mb-8 text-slate-700 dark:text-slate-300 max-w-md text-center">
-        This page is currently being updated. Please check back later.
-      </p>
-      <Link href="/" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-        Return to Home
-      </Link>
-    </div>
-  )
+  return <CorporateLandingPage />
 }

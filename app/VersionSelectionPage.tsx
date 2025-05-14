@@ -8,6 +8,7 @@ import {
   ExperienceType,
   ThemeVariant
 } from "@/src/types"
+import { Analytics } from "@vercel/analytics/next"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { CorporateVersionCard } from "./components/version-selection/CorporateVersionCard"
@@ -148,6 +149,8 @@ export function EnhancedVersionSelectionPage() {
           </div>
         </div>
       </main>
+      
+      <Analytics />
       
       {/* Footer */}
       <VersionFooter />
