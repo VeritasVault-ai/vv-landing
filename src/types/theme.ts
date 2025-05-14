@@ -1,18 +1,24 @@
 /**
  * Theme-related types
  */
-import { STANDARD_VARIANTS, CORPORATE_VARIANTS, SYSTEM_VARIANTS, EXPERIENCE_TYPES, COLOR_MODES } from '../constants/theme';
+import { COLOR_MODES, CORPORATE_VARIANTS, EXPERIENCE_TYPES, STANDARD_VARIANTS } from '../constants/theme';
 
-export type StandardThemeVariant = typeof STANDARD_VARIANTS[number];
-export type CorporateThemeVariant = typeof CORPORATE_VARIANTS[number];
-export type SystemThemeVariant = typeof SYSTEM_VARIANTS[number];
-export type ThemeVariant = StandardThemeVariant | CorporateThemeVariant | SystemThemeVariant;
+// Theme variant types
+export type StandardThemeVariant = typeof STANDARD_VARIANTS[keyof typeof STANDARD_VARIANTS];
+export type CorporateThemeVariant = typeof CORPORATE_VARIANTS[keyof typeof CORPORATE_VARIANTS];
+export type ThemeVariant = StandardThemeVariant | CorporateThemeVariant;
 
 export type ExperienceType = typeof EXPERIENCE_TYPES[keyof typeof EXPERIENCE_TYPES];
 export type ColorMode = typeof COLOR_MODES[keyof typeof COLOR_MODES];
 
-export type ThemeConfig = {
+export interface ThemeOption {
+  id: string;
+  name: string;
+  description: string;
+}
+export interface ThemeConfig {
   experience: ExperienceType;
   variant: ThemeVariant;
   colorMode: ColorMode;
-};
+  themeOption?: ThemeOption;
+}

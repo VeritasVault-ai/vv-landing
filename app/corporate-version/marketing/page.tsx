@@ -1,6 +1,8 @@
-import { generateCorporateMetadata } from "@/lib/metadata-utils"
-import type { Metadata } from "next"
+import { baseViewport, generateCorporateMetadata } from "@/lib/metadata-utils"
+import type { Metadata, Viewport } from "next"
 import Link from "next/link"
+
+export const viewport: Viewport = baseViewport
 
 export const metadata: Metadata = generateCorporateMetadata(
   "Corporate Marketing | Liquidity Management",
@@ -8,6 +10,11 @@ export const metadata: Metadata = generateCorporateMetadata(
   "/api/og/corporate-marketing",
 )
 
+/**
+ * Renders the corporate marketing page with a notice that the content is being updated.
+ *
+ * Displays a heading, informational message, and a link to return to the home page.
+ */
 export default function CorporateMarketingPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-slate-900 p-4">

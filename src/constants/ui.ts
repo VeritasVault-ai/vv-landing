@@ -1,19 +1,28 @@
 /**
  * UI-related constants
  */
+
+// Navigation item types
 export const NAVIGATION_ITEM_TYPES = {
   LINK: 'link',
   DROPDOWN: 'dropdown',
   BUTTON: 'button',
   SEPARATOR: 'separator',
+  GROUP: 'group',
 } as const;
 
+// Position types
 export const POSITION_TYPES = {
   HEADER: 'header',
   FOOTER: 'footer',
   BOTH: 'both',
+  TOP: 'top',
+  RIGHT: 'right',
+  BOTTOM: 'bottom',
+  LEFT: 'left',
 } as const;
 
+// Icon positions
 export const ICON_POSITIONS = {
   LEFT: 'left',
   RIGHT: 'right',
@@ -23,6 +32,7 @@ export const ICON_POSITIONS = {
   BOTH: 'both',
 } as const;
 
+// Icon sizes
 export const ICON_SIZES = {
   XS: 'xs',
   SM: 'sm',
@@ -35,3 +45,4 @@ export const ICON_SIZES = {
   '5XL': '5xl',
   CUSTOM: 'custom',
 } as const;
+

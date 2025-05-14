@@ -6,8 +6,12 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { setCookie } from "@/lib/cookies"
-import { ThemeToggleEnhanced } from "@/components/theme-toggle-enhanced"
 
+/**
+ * Renders the client-facing landing page for NeuralLiquid, allowing users to choose between the Standard and Corporate product versions.
+ *
+ * Displays two selectable cards with descriptions and feature lists for each version. When a version is selected, the user's choice is saved in a cookie and the app navigates to the corresponding dashboard.
+ */
 export default function ClientPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -27,7 +31,7 @@ export default function ClientPage() {
         <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
           Neural<span className="text-blue-600 dark:text-blue-400">Liquid</span>
         </div>
-        <ThemeToggleEnhanced />
+        {/* <ThemeToggleEnhanced /> */}
       </header>
 
       <main className="flex-1 container mx-auto px-4 py-12 flex flex-col items-center justify-center">

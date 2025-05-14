@@ -10,13 +10,24 @@ import { DashboardProvider, useDashboard } from "@/contexts/dashboard-context-im
 import { useDashboardRealtime } from "@/lib/services/dashboard-realtime-manager"
 import { BarChart3, Calculator, TrendingUp, Vote } from "lucide-react"
 import { useEffect } from "react"
+import { DashboardLayout } from "@/components/corporate/dashboard-layout-bridge"
 
 /**
- * Renders the main content of the corporate dashboard, including summary cards, tabbed navigation, and real-time data updates.
+ * Determines whether a given string is a valid dashboard tab identifier.
  *
- * Synchronizes the active tab with the URL hash for direct linking and updates, and provides manual data refresh for the selected tab.
+ * @param tab - The tab identifier to validate.
+ * @returns True if {@link tab} is one of 'overview', 'performance', 'models', or 'voting'; otherwise, false.
+ */
+function isValidTab(tab: string): tab is 'overview' | 'performance' | 'models' | 'voting' {
+  return ['overview', 'performance', 'models', 'voting'].includes(tab)
+}
+
+/**
+ * Displays the main content area of the corporate dashboard with tabbed navigation, real-time data updates, and manual refresh capability.
  *
- * @remark Initializes real-time data connections and ensures tab state remains consistent with the URL hash.
+ * Synchronizes the active tab with the URL hash to support direct linking and updates the dashboard state accordingly.
+ *
+ * @remark Establishes real-time data connections and ensures the tab state remains consistent with the URL hash for seamless navigation.
  */
 function DashboardContentInner() {
   // Get dashboard state from context
@@ -71,8 +82,8 @@ function DashboardContentInner() {
       description="Portfolio overview and performance metrics"
       onRefresh={handleRefresh}
     >
-      {/* Dashboard Summary Cards */}
-      <DashboardSummary />
+      {/* Dashboard Summary Cards - Temporarily removed for simplicity */}
+      {/* <DashboardSummary /> */}
 
       <Tabs 
         value={activeTab} 

@@ -1,0 +1,107 @@
+'use client'
+
+import React from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { FileText, Download } from "lucide-react"
+
+/**
+ * Renders the Reports tab content for the corporate dashboard, displaying a list of available reports with download options.
+ *
+ * @returns A React element containing a styled card with report entries and download buttons.
+ *
+ * @remark This component is purely presentational and does not include download logic or dynamic data.
+ */
+export function CorporateReportsTab() {
+  return (
+    <div className="space-y-6">
+      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+        <CardHeader>
+          <CardTitle className="text-slate-900 dark:text-slate-100">Available Reports</CardTitle>
+          <CardDescription className="text-slate-500 dark:text-slate-400">
+            Download or schedule reports for your portfolio
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+              <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <div>
+                  <div className="font-medium text-slate-900 dark:text-slate-100">
+                    Monthly Performance Report
+                  </div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">April 2025</div>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download
+              </Button>
+            </div>
+
+            <div className="flex justify-between items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+              <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <div>
+                  <div className="font-medium text-slate-900 dark:text-slate-100">Risk Assessment Report</div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">Q2 2025</div>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download
+              </Button>
+            </div>
+
+            <div className="flex justify-between items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+              <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <div>
+                  <div className="font-medium text-slate-900 dark:text-slate-100">
+                    Regulatory Compliance Report
+                  </div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">Q2 2025</div>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download
+              </Button>
+            </div>
+
+            <div className="flex justify-between items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg">
+              <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <div>
+                  <div className="font-medium text-slate-900 dark:text-slate-100">Tax Documentation</div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">2024 Fiscal Year</div>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}

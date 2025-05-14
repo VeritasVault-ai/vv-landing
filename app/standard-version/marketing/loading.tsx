@@ -1,5 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
+/**
+ * Displays a skeleton placeholder for the marketing page while content is loading.
+ *
+ * Renders a static layout of skeleton elements that mimic the structure of the marketing page, providing a visual loading state with no dynamic or conditional logic.
+ */
 export default function StandardMarketingLoading() {
   return (
     <div className="container mx-auto px-4 py-12">
@@ -40,3 +45,4 @@ export default function StandardMarketingLoading() {
     </div>
   )
 }
+

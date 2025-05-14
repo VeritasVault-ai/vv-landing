@@ -1,9 +1,11 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { User, CheckCircle } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { User } from "lucide-react"
+import styles from "./VersionCard.module.css"
+import { VersionCardFeatureList } from "./VersionCardFeatureList"
+import { VersionCardFooter } from "./VersionCardFooter"
+import { VersionCardHeader } from "./VersionCardHeader"
 
 interface StandardVersionCardProps {
   isSelected: boolean
@@ -11,47 +13,50 @@ interface StandardVersionCardProps {
   onContinue: () => void
 }
 
+/**
+ * Renders a selectable card presenting the "Standard Experience" version with its features and a continue action.
+ *
+ * Displays a header with an icon and description, a list of standard features, and a button to proceed with this version.
+ *
+ * @param isSelected - Indicates whether the card is currently selected.
+ * @param onSelect - Callback invoked when the card is clicked.
+ * @param onContinue - Callback invoked when the continue button is clicked.
+ */
 export function StandardVersionCard({ isSelected, onSelect, onContinue }: StandardVersionCardProps) {
+  const standardFeatures = [
+    "Personalized dashboard",
+    "AI-powered strategy recommendations",
+    "Real-time analytics",
+    "Multi-chain support"
+  ]
+
   return (
     <Card
-      className={cn(
-        "p-6 bg-gradient-to-br from-blue-900/30 to-blue-800/10 border",
-        isSelected
-          ? "border-blue-500 ring-2 ring-blue-500/50"
-          : "border-blue-500/20 hover:border-blue-500/50",
-        "rounded-lg transition-all duration-300 cursor-pointer h-full",
-      )}
+      className={`${styles.versionCard} ${styles.standardCard} ${
+        isSelected ? styles.standardCardSelected : styles.standardCardUnselected
+      }`}
       onClick={onSelect}
     >
-      <div className="flex items-center justify-center h-16 w-16 rounded-full bg-blue-500/20 mx-auto mb-6">
-        <User className="h-8 w-8 text-blue-400" />
+      <div className={styles.cardContent}>
+        <VersionCardHeader
+          icon={User}
+          title="Standard Experience"
+          description="Perfect for individual traders and DeFi enthusiasts looking for a streamlined interface with powerful AI insights"
+          iconColor="text-blue-400"
+          iconBgColor="bg-blue-500/20"
+        />
+        
+        <VersionCardFeatureList 
+          features={standardFeatures}
+          checkColor="text-blue-500"
+        />
+        
+        <VersionCardFooter
+          onContinue={onContinue}
+          buttonText="Select Standard Version"
+          buttonClassName="bg-blue-600 hover:bg-blue-700"
+        />
       </div>
-      <h2 className="text-2xl font-semibold text-center text-white mb-4">Standard Experience</h2>
-      <p className="text-white/70 text-center mb-6">
-        Perfect for individual traders and DeFi enthusiasts looking for a streamlined interface with powerful AI
-        insights
-      </p>
-      <ul className="space-y-3 mb-6">
-        <li className="flex items-center text-white/80">
-          <CheckCircle className="h-4 w-4 text-blue-500 mr-2" />
-          Personalized dashboard
-        </li>
-        <li className="flex items-center text-white/80">
-          <CheckCircle className="h-4 w-4 text-blue-500 mr-2" />
-          AI-powered strategy recommendations
-        </li>
-        <li className="flex items-center text-white/80">
-          <CheckCircle className="h-4 w-4 text-blue-500 mr-2" />
-          Real-time analytics
-        </li>
-        <li className="flex items-center text-white/80">
-          <CheckCircle className="h-4 w-4 text-blue-500 mr-2" />
-          Multi-chain support
-        </li>
-      </ul>
-      <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={onContinue}>
-        Select Standard Version
-      </Button>
     </Card>
   )
 }
