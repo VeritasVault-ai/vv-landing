@@ -2,7 +2,7 @@ import { CorporateLandingPage } from "@/components/corporate/corporate-landing-p
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "VeritasVault.ai | Enterprise Treasury Solutions",
+  title: "VeritasVault | Enterprise Treasury Solutions",
   description: "Institutional-grade liquidity management for digital assets with advanced security and compliance features.",
 }
 

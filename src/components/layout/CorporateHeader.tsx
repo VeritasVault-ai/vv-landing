@@ -18,6 +18,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { CorporateMobileHeader } from './CorporateMobileHeader'
+import { CORPORATE_PRODUCT_NAME } from '@/lib/config/product-info'
 
 /**
  * Props shared by both header variants
@@ -79,12 +80,12 @@ export function CorporateHeader({
             <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/logo-corporate.svg"
-                alt="VeritasVault"
+                alt={CORPORATE_PRODUCT_NAME}
                 width={32}
                 height={32}
                 className="dark:invert"
               />
-              <span className="hidden font-bold sm:inline">VeritasVault</span>
+              <span className="hidden font-bold sm:inline">{CORPORATE_PRODUCT_NAME}</span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-6 text-sm">

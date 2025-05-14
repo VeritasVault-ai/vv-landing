@@ -1,10 +1,11 @@
 import { UnifiedThemeProvider } from "@/src/providers/unified-theme-provider"
 import type { Metadata } from "next"
+import { ROOT_PRODUCT_DESCRIPTION, ROOT_PRODUCT_TITLE } from "@/lib/config/product-info"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "VeritasVault.ai - AI-Powered Tezos Liquidity Management",
-  description: "Manage Tezos liquidity with our AI-powered platform offering standard and corporate experiences",
+  title: ROOT_PRODUCT_TITLE,
+  description: ROOT_PRODUCT_DESCRIPTION,
 }
 
 /**

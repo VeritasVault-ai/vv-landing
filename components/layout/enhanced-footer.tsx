@@ -3,6 +3,13 @@ import { Logo } from "@/components/ui/logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Github, Twitter, Linkedin, Send } from "lucide-react"
+import { 
+  STANDARD_PRODUCT_NAME, 
+  STANDARD_PRODUCT_DESCRIPTION,
+  COMPANY_TWITTER,
+  COMPANY_GITHUB,
+  COMPANY_LINKEDIN
+} from "@/lib/config/product-info"
 
 export function EnhancedFooter() {
   const currentYear = new Date().getFullYear()
@@ -17,15 +24,15 @@ export function EnhancedFooter() {
             <Link href="/" className="flex items-center mb-4">
               <Logo className="h-6 w-auto" />
               <span className="ml-2 text-lg font-bold bg-gradient-to-r from-[#3A86FF] to-[#4ECDC4] bg-clip-text text-transparent">
-                NeuralLiquid
+                {STANDARD_PRODUCT_NAME}
               </span>
             </Link>
             <p className="text-muted-foreground mb-4 max-w-md text-sm">
-              Advanced AI-powered liquidity management platform for DeFi protocols and liquidity providers.
+              {STANDARD_PRODUCT_DESCRIPTION}
             </p>
             <div className="flex space-x-4">
               <a
-                href="https://twitter.com/neuralliquid"
+                href={COMPANY_TWITTER}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-primary transition-colors"
@@ -34,7 +41,7 @@ export function EnhancedFooter() {
                 <Twitter className="h-5 w-5" />
               </a>
               <a
-                href="https://github.com/neuralliquid"
+                href={COMPANY_GITHUB}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-primary transition-colors"
@@ -43,7 +50,7 @@ export function EnhancedFooter() {
                 <Github className="h-5 w-5" />
               </a>
               <a
-                href="https://linkedin.com/company/neuralliquid"
+                href={COMPANY_LINKEDIN}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-primary transition-colors"
@@ -83,7 +90,7 @@ export function EnhancedFooter() {
               Terms
             </Link>
           </div>
-          <p className="text-xs text-muted-foreground">&copy; {currentYear} NeuralLiquid. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground">&copy; {currentYear} {STANDARD_PRODUCT_NAME}. All rights reserved.</p>
         </div>
       </div>
     </footer>

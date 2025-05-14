@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Shield, FileText, HelpCircle } from "lucide-react"
+import { CORPORATE_PRODUCT_NAME } from "@/lib/config/product-info"
 
 export function CorporateDemoFooter() {
   return (
@@ -9,7 +10,7 @@ export function CorporateDemoFooter() {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-slate-900">Demo Information</h3>
             <p className="text-sm text-slate-600 mb-4">
-              This is a demonstration environment of VeritasVault.ai. No real assets are at risk, and all data is
+              This is a demonstration environment of {CORPORATE_PRODUCT_NAME}. No real assets are at risk, and all data is
               simulated.
             </p>
             <div className="flex items-center text-sm text-blue-600">
@@ -60,7 +61,7 @@ export function CorporateDemoFooter() {
         </div>
 
         <div className="mt-8 pt-6 border-t border-slate-200 text-center text-sm text-slate-500">
-          <p>© {new Date().getFullYear()} VeritasVault.ai. All rights reserved. Demo Version.</p>
+          <p>© {new Date().getFullYear()} {CORPORATE_PRODUCT_NAME}. All rights reserved. Demo Version.</p>
         </div>
       </div>
     </footer>

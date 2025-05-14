@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { STANDARD_PRODUCT_NAME } from "@/lib/config/product-info"
 
-interface NeuralLiquidLogoProps {
+interface ProductLogoProps {
   width?: number
   height?: number
   primaryColor?: string
@@ -22,13 +23,17 @@ export function LogoTextOnly({
   glowIntensity = 1,
   backgroundColor = "transparent",
   className = "",
-}: NeuralLiquidLogoProps) {
+}: ProductLogoProps) {
+  // Split the product name into two parts (assuming format like "NeuralLiquid")
+  const productNameParts = STANDARD_PRODUCT_NAME.match(/^([A-Z][a-z]*)(.*)$/) || [STANDARD_PRODUCT_NAME, "", ""];
+  const firstPart = productNameParts[1] || ""; // First word with capital letter
+  const secondPart = productNameParts[2] || ""; // Rest of the name
   const [dotPosition, setDotPosition] = useState({ x: 110, y: -7 }) // Default position
   const textRef = useRef<SVGTextElement>(null)
   const containerRef = useRef<SVGGElement>(null)
 
   useEffect(() => {
-    // Calculate the position of the dot over the 'i' in 'Liquid'
+    // Calculate the position of the dot over the 'i' in second part (if it contains an 'i')
     const calculateDotPosition = () => {
       if (!textRef.current || !containerRef.current) return
 
@@ -45,21 +50,26 @@ export function LogoTextOnly({
         const fontSize = 20 // From the SVG
         ctx.font = `300 ${fontSize}px Montserrat, sans-serif`
 
-        // Measure the width of "Neural" (bold part)
-        const neuralWidth = ctx.measureText("Neural").width
+        // Measure the width of first part (bold part)
+        const firstPartWidth = ctx.measureText(firstPart).width
 
-        // Measure the width of space and "Li" in "Liquid"
-        const spaceWidth = ctx.measureText(" ").width
-        const lWidth = ctx.measureText("L").width
-        const iWidth = ctx.measureText("i").width
+        // Find the position of 'i' in the second part (if exists)
+        const iIndex = secondPart.indexOf('i')
+        
+        if (iIndex >= 0) {
+          // Measure the width of space and characters before 'i' in second part
+          const spaceWidth = ctx.measureText(" ").width
+          const beforeIWidth = ctx.measureText(secondPart.substring(0, iIndex)).width
+          const iWidth = ctx.measureText("i").width
 
-        // Calculate the position of the dot over the "i"
-        const x = neuralWidth + spaceWidth + lWidth + iWidth / 2
+          // Calculate the position of the dot over the "i"
+          const x = firstPartWidth + spaceWidth + beforeIWidth + iWidth / 2
 
-        // Position the dot above the text
-        const y = -12
+          // Position the dot above the text
+          const y = -12
 
-        setDotPosition({ x, y })
+          setDotPosition({ x, y })
+        }
       } catch (error) {
         console.error("Error calculating dot position:", error)
       }
@@ -72,8 +82,10 @@ export function LogoTextOnly({
     return () => {
       window.removeEventListener("resize", calculateDotPosition)
     }
-  }, [])
+  }, [firstPart, secondPart])
 
+  // Only show the dot if there's an 'i' in the second part of the name
+  const showDot = secondPart.includes('i');
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 280 60" className={className}>
       <defs>
@@ -103,19 +115,21 @@ export function LogoTextOnly({
           letterSpacing="-0.02em"
           dominantBaseline="middle"
         >
-          <tspan fontWeight="700">Neural</tspan>
-          <tspan fontWeight="300">Liquid</tspan>
+          <tspan fontWeight="700">{firstPart}</tspan>
+          <tspan fontWeight="300">{secondPart}</tspan>
         </text>
 
-        {/* Animated dot over the 'i' */}
-        <circle
-          cx={dotPosition.x}
-          cy={dotPosition.y}
-          r="3"
-          fill="url(#dropGradient)"
-          filter="url(#textGlow)"
-          className="animate-pulse"
-        />
+        {/* Animated dot over the 'i' (if present) */}
+        {showDot && (
+          <circle
+            cx={dotPosition.x}
+            cy={dotPosition.y}
+            r="3"
+            fill="url(#dropGradient)"
+            filter="url(#textGlow)"
+            className="animate-pulse"
+          />
+        )}
         <path
           d="M0,25 C40,28 120,28 180,25"
           stroke="url(#textGradient)"

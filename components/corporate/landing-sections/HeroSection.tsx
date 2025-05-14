@@ -4,6 +4,11 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { CheckCircle } from "lucide-react"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
+import { 
+  CORPORATE_PRODUCT_NAME,
+  CORPORATE_PRODUCT_DESCRIPTION,
+  CORPORATE_PRODUCT_TAGLINE
+} from "@/lib/config/product-info"
 
 /**
  * Renders the hero section of the corporate landing page, featuring branding, descriptive text, compliance badges, call-to-action buttons, and a dashboard image.
@@ -24,14 +29,13 @@ export function HeroSection() {
               Institutional-Grade Liquidity Management
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-slate-900 dark:text-white">
-              <span className="text-blue-700 dark:text-blue-400">VeritasVault</span>.ai
+              <span className="text-blue-700 dark:text-blue-400">{CORPORATE_PRODUCT_NAME}</span>.ai
             </h1>
             <p className="text-xl md:text-2xl font-light text-slate-700 dark:text-slate-300 max-w-xl">
-              Enterprise Treasury Solutions for Digital Assets
+              {CORPORATE_PRODUCT_TAGLINE}
             </p>
             <p className="text-lg text-slate-700 dark:text-slate-300 max-w-xl">
-              Optimize your institution's digital asset strategy with advanced portfolio theory and formal
-              verification. Built for enterprise treasuries and financial institutions.
+              {CORPORATE_PRODUCT_DESCRIPTION}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button

@@ -1,8 +1,8 @@
-import Script from "next/script"
+import { COMPANY_URL, CORPORATE_PRODUCT_NAME, CORPORATE_PRODUCT_DESCRIPTION, STANDARD_PRODUCT_NAME, STANDARD_PRODUCT_DESCRIPTION } from "@/lib/config/product-info"
 
 interface StructuredDataProps {
   version: "standard" | "corporate"
-  pageType?: "website" | "article" | "product" | "service"
+  pageType?: "website" | "article" | "product"
   name?: string
   description?: string
   image?: string
@@ -10,53 +10,32 @@ interface StructuredDataProps {
 }
 
 export function StructuredData({ version, pageType = "website", name, description, image, url }: StructuredDataProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://neuralliquid.ai"
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || COMPANY_URL
 
   const standardData = {
     "@context": "https://schema.org",
     "@type": pageType === "website" ? "WebSite" : pageType === "article" ? "Article" : "Product",
-    name: name || "NeuralLiquid - AI-Powered Liquidity Management",
-    description: description || "Optimize your liquidity with AI-powered tools and strategies for DeFi users.",
+    name: name || `${STANDARD_PRODUCT_NAME} - AI-Powered Liquidity Management`,
+    description: description || STANDARD_PRODUCT_DESCRIPTION,
     url: url || `${baseUrl}/standard`,
-    logo: `${baseUrl}/logo.png`,
-    image: image || `${baseUrl}/og-image-standard.png`,
-    ...(pageType === "service" && {
-      offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
-      },
-    }),
+    image: image ? `${baseUrl}${image}` : `${baseUrl}/og-image-standard.png`,
   }
 
   const corporateData = {
     "@context": "https://schema.org",
     "@type": pageType === "website" ? "WebSite" : pageType === "article" ? "Article" : "Product",
-    name: name || "VeritasVault.ai - Institutional-Grade Liquidity Management",
-    description:
-      description ||
-      "Enterprise-grade liquidity management solutions for institutional clients and treasury operations.",
+    name: name || `${CORPORATE_PRODUCT_NAME} - Institutional-Grade Liquidity Management`,
+    description: description || CORPORATE_PRODUCT_DESCRIPTION,
     url: url || `${baseUrl}/corporate`,
-    logo: `${baseUrl}/logo-corporate.png`,
-    image: image || `${baseUrl}/og-image-corporate.png`,
-    ...(pageType === "service" && {
-      offers: {
-        "@type": "Offer",
-        price: "Contact for pricing",
-        priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
-      },
-    }),
+    image: image ? `${baseUrl}${image}` : `${baseUrl}/og-image-corporate.png`,
   }
 
-  const structuredData = version === "standard" ? standardData : corporateData
+  const jsonLd = version === "corporate" ? corporateData : standardData
 
   return (
-    <Script
-      id="structured-data"
+    <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
     />
   )
 }

@@ -1,9 +1,9 @@
 'use client'
 
+import { Providers } from "@/app/providers"
 import { VersionAwareFooter } from "@/components/layout/footer"
 import VersionAwareHeader from "@/components/layout/header"
 import { EXPERIENCE_TYPES } from "@/src/constants/theme"
-import { Providers } from "@/app/providers"
 import { Analytics } from "@vercel/analytics/next"
 import type { ReactNode } from "react"
 
@@ -20,12 +20,12 @@ export default function CorporateVersionLayout({
 }) {
   return (
     <>
-          <Analytics />
+      <Analytics />
       <Providers experience={EXPERIENCE_TYPES.CORPORATE}>
         <VersionAwareHeader/>
-        <main>{children}</main>
+          <main>{children}</main>
         <VersionAwareFooter/>
-    </Providers>
+      </Providers>
     </>
   )
 }
