@@ -1,83 +1,131 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { ExperienceType, ThemeVariant } from "@/src/types"
-import { useState } from "react"
+import { useUnifiedTheme } from "@/src/hooks/use-unified-theme"
+import {
+  COLOR_MODES,
+  CORPORATE_VARIANTS,
+  ExperienceType,
+  STANDARD_VARIANTS,
+  ThemeOption
+} from "@/src/types"
+import styles from "./ThemeSelectionModal.module.css"
 
 interface ThemeSelectionModalProps {
   isOpen: boolean
   onClose: () => void
   selectedVersion: ExperienceType
-  onThemeSelect: (version: ExperienceType, theme: ThemeVariant) => void
+  onThemeSelect: (version: ExperienceType, theme: string) => void
 }
 
-/**
- * Displays a modal dialog for selecting and applying a UI theme for the specified experience version.
- *
- * Presents a list of available themes as selectable cards. When a theme is selected and "Apply Theme" is clicked, invokes the provided callback with the selected version and theme. The modal can be closed with the "Cancel" button or by triggering the close callback.
- *
- * @param isOpen - Whether the modal is visible.
- * @param onClose - Callback to close the modal.
- * @param selectedVersion - The current experience version for which the theme is being selected.
- * @param onThemeSelect - Callback invoked with the selected version and theme when a theme is applied.
- */
-export function ThemeSelectionModal({ isOpen, onClose, selectedVersion, onThemeSelect }: ThemeSelectionModalProps) {
-  const [selectedTheme, setSelectedTheme] = useState<ThemeVariant | null>(null)
+export function ThemeSelectionModal({
+  isOpen,
+  onClose,
+  selectedVersion,
+  onThemeSelect,
+}: ThemeSelectionModalProps) {
+  const { theme: currentTheme } = useUnifiedTheme()
   
-  // Define all available themes
-  const availableThemes = [
-    { id: "light", name: "Light", description: "Clean, bright interface for daytime use" },
-    { id: "dark", name: "Dark", description: "Reduced eye strain for nighttime viewing" },
-        { id: "standard", name: "Standard", description: "Clean, modern interface with a focus on usability" },
-    { id: "neuralliquid", name: "NeuralLiquid", description: "Futuristic design with AI-inspired visuals" },
-        { id: "corporate", name: "Corporate", description: "Professional interface designed for institutional use" },
-    { id: "veritasvault", name: "VeritasVault", description: "Security-focused theme with enterprise aesthetics" },
-    { id: "cosmic", name: "Cosmic", description: "Space-inspired theme with stellar visuals" }
+  // Don't render if modal is not open
+  if (!isOpen) return null
+  
+  // Get available themes based on selected version
+  const availableThemes: ThemeOption[] = selectedVersion === "standard" 
+    ? [
+        { 
+          id: `${STANDARD_VARIANTS.STANDARD}-${COLOR_MODES.LIGHT}`, 
+          name: "Standard Light", 
+          description: "Clean, bright interface with blue accents" 
+        },
+        { 
+          id: `${STANDARD_VARIANTS.STANDARD}-${COLOR_MODES.DARK}`, 
+          name: "Standard Dark", 
+          description: "Dark mode with reduced eye strain" 
+        },
+        { 
+          id: `${STANDARD_VARIANTS.NEURALLIQUID}-${COLOR_MODES.LIGHT}`, 
+          name: "Neural Light", 
+          description: "Modern light theme with neural network visuals" 
+        },
+        { 
+          id: `${STANDARD_VARIANTS.NEURALLIQUID}-${COLOR_MODES.DARK}`, 
+          name: "Neural Dark", 
+          description: "Immersive dark theme with neural network patterns" 
+        },
       ]
+    : [
+        { 
+          id: `${CORPORATE_VARIANTS.CORPORATE}-${COLOR_MODES.LIGHT}`, 
+          name: "Corporate Light", 
+          description: "Professional light interface for enterprise users" 
+        },
+        { 
+          id: `${CORPORATE_VARIANTS.CORPORATE}-${COLOR_MODES.DARK}`, 
+          name: "Corporate Dark", 
+          description: "Sophisticated dark mode for enterprise users" 
+        },
+        { 
+          id: `${CORPORATE_VARIANTS.VERITASVAULT}-${COLOR_MODES.LIGHT}`, 
+          name: "Veritas Light", 
+          description: "Premium light theme with vault security visuals" 
+        },
+        { 
+          id: `${CORPORATE_VARIANTS.VERITASVAULT}-${COLOR_MODES.DARK}`, 
+          name: "Veritas Dark", 
+          description: "Premium dark theme with vault security visuals" 
+        },
+      ];
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-gray-900 text-white border border-gray-800">
-        <DialogHeader>
-          <DialogTitle className="text-xl text-white">Select Your Theme</DialogTitle>
-          <DialogDescription className="text-gray-400">
-            Choose a theme for your {selectedVersion} experience
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto">
-          {availableThemes.map((theme) => (
-            <div 
-              key={theme.id} 
-              className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
-                selectedTheme === theme.id 
-                  ? "bg-blue-900/50 border border-blue-500" 
-                  : "bg-gray-800 border border-gray-700 hover:border-gray-600"
-              }`}
-              onClick={() => setSelectedTheme(theme.id as ThemeVariant)}
-            >
-              <h3 className="font-medium text-white">{theme.name}</h3>
-              <p className="text-sm text-gray-400 mt-1">{theme.description}</p>
-            </div>
-          ))}
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContainer}>
+        <div className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>
+            Customize Your Experience
+          </h2>
+          <p className={styles.modalDescription}>
+            Select a theme that suits your preferences for the {selectedVersion} experience
+          </p>
+          
+          <div className={styles.themeGrid}>
+            {availableThemes.map((theme) => {
+              const [variant, colorMode] = theme.id.split('-');
+              const isCurrentTheme = 
+                variant === currentTheme || 
+                colorMode === currentTheme;
+              const isDarkTheme = theme.id.includes("dark");
+                
+              return (
+                <div
+                  key={theme.id}
+                  onClick={() => onThemeSelect(selectedVersion, theme.id)}
+                  className={`
+                    ${styles.themeCard}
+                    ${isDarkTheme ? styles.darkThemeCard : styles.lightThemeCard}
+                    ${isCurrentTheme ? styles.selectedThemeCard : ''}
+                  `}
+                >
+                  <div className={styles.themeCardHeader}>
+                    <h3 className={styles.themeName}>{theme.name}</h3>
+                    {isCurrentTheme && (
+                      <span className={styles.currentBadge}>Current</span>
+                    )}
+                  </div>
+                  <p className={styles.themeDescription}>{theme.description}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
         
-        <div className="flex justify-end gap-3 mt-4">
-          <Button variant="outline" onClick={onClose} className="border-gray-700 text-gray-300 hover:bg-gray-800">
-            Cancel
-          </Button>
-          <Button 
-            onClick={() => selectedTheme && onThemeSelect(selectedVersion, selectedTheme)}
-            disabled={!selectedTheme}
-            className={`${
-              selectedVersion === "standard" ? "bg-blue-600 hover:bg-blue-700" : "bg-purple-600 hover:bg-purple-700"
-            }`}
+        <div className={styles.modalFooter}>
+          <button
+            onClick={onClose}
+            className={styles.cancelButton}
           >
-            Apply Theme
-          </Button>
+            Cancel
+          </button>
         </div>
-      </DialogContent>
-    </Dialog>
-  )
+      </div>
+    </div>
+  );
 }

@@ -1,9 +1,11 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Building2, CheckCircle } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Building2 } from "lucide-react"
+import styles from "./VersionCard.module.css"
+import { VersionCardFeatureList } from "./VersionCardFeatureList"
+import { VersionCardFooter } from "./VersionCardFooter"
+import { VersionCardHeader } from "./VersionCardHeader"
 
 interface CorporateVersionCardProps {
   isSelected: boolean
@@ -12,48 +14,40 @@ interface CorporateVersionCardProps {
 }
 
 export function CorporateVersionCard({ isSelected, onSelect, onContinue }: CorporateVersionCardProps) {
+  const corporateFeatures = [
+    "Institutional-grade security",
+    "Advanced portfolio optimization",
+    "Compliance and audit features",
+    "Enterprise API access"
+  ]
+
   return (
     <Card
-      className={cn(
-        "p-6 bg-gradient-to-br from-purple-900/30 to-purple-800/10 border",
-        isSelected
-          ? "border-purple-500 ring-2 ring-purple-500/50"
-          : "border-purple-500/20 hover:border-purple-500/50",
-        "rounded-lg transition-all duration-300 cursor-pointer h-full",
-      )}
+      className={`${styles.versionCard} ${styles.corporateCard} ${
+        isSelected ? styles.corporateCardSelected : styles.corporateCardUnselected
+      }`}
       onClick={onSelect}
     >
-      <div className="flex items-center justify-center h-16 w-16 rounded-full bg-purple-500/20 mx-auto mb-6">
-        <Building2 className="h-8 w-8 text-purple-400" />
+      <div className={styles.cardContent}>
+        <VersionCardHeader
+          icon={Building2}
+          title="Corporate Experience"
+          description="Designed for institutional investors and teams with advanced features and comprehensive reporting tools"
+          iconColor="text-purple-400"
+          iconBgColor="bg-purple-500/20"
+        />
+        
+        <VersionCardFeatureList 
+          features={corporateFeatures}
+          checkColor="text-purple-500"
+        />
+        
+        <VersionCardFooter
+          onContinue={onContinue}
+          buttonText="Select Corporate Version"
+          buttonClassName="bg-purple-600 hover:bg-purple-700"
+        />
       </div>
-      <h2 className="text-2xl font-semibold text-center text-white mb-4">Corporate Experience</h2>
-      <p className="text-white/70 text-center mb-6">
-        Designed for institutional investors and teams with advanced features and comprehensive reporting tools
-      </p>
-      <ul className="space-y-3 mb-6">
-        <li className="flex items-center text-white/80">
-          <CheckCircle className="h-4 w-4 text-purple-500 mr-2" />
-          Institutional-grade security
-        </li>
-        <li className="flex items-center text-white/80">
-          <CheckCircle className="h-4 w-4 text-purple-500 mr-2" />
-          Advanced portfolio optimization
-        </li>
-        <li className="flex items-center text-white/80">
-          <CheckCircle className="h-4 w-4 text-purple-500 mr-2" />
-          Compliance and audit features
-        </li>
-        <li className="flex items-center text-white/80">
-          <CheckCircle className="h-4 w-4 text-purple-500 mr-2" />
-          Enterprise API access
-        </li>
-      </ul>
-      <Button
-        className="w-full bg-purple-600 hover:bg-purple-700"
-        onClick={onContinue}
-      >
-        Select Corporate Version
-      </Button>
     </Card>
   )
 }

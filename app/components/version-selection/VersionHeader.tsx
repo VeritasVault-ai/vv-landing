@@ -2,7 +2,6 @@
 
 import { ThemeToggleClient } from "@/components/theme-toggle-client"
 import { Button } from "@/components/ui/button"
-import Image from "next/image"
 import Link from "next/link"
 
 export function VersionHeader() {
@@ -10,8 +9,7 @@ export function VersionHeader() {
     <header className="relative z-10 border-b border-white/10 bg-black/20 backdrop-blur-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Image src="/logo.png" alt="NeuralLiquid Logo" width={36} height={36} className="rounded-full" />
-          <span className="text-blue-400 font-semibold text-xl">NeuralLiquid</span>
+          <span className="text-blue-400 font-semibold text-xl">Veritas Vault</span>
         </div>
 
         <div className="flex items-center gap-3">
