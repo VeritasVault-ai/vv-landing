@@ -1,9 +1,10 @@
+'use client'
+
 import { VersionAwareFooter } from "@/components/layout/footer"
 import VersionAwareHeader from "@/components/layout/header"
 import { EXPERIENCE_TYPES } from "@/src/constants/theme"
-import { UnifiedThemeProvider } from "@/src/providers/unified-theme-provider"
+import { Providers } from "@/app/providers"
 import { Analytics } from "@vercel/analytics/next"
-import { SessionProvider } from "next-auth/react"
 import type { ReactNode } from "react"
 
 /**
@@ -17,15 +18,12 @@ export default function CorporateVersionLayout({
 }: {
   children: ReactNode
 }) {
-  // Use UnifiedThemeProvider with corporate experience
   return (    
-    <SessionProvider>
-      <UnifiedThemeProvider defaultExperience={EXPERIENCE_TYPES.CORPORATE}>
+    <Providers experience={EXPERIENCE_TYPES.CORPORATE}>
           <VersionAwareHeader/>
           <main>{children}</main>
           <VersionAwareFooter/>
           <Analytics />
-      </UnifiedThemeProvider>
-    </SessionProvider>
+    </Providers>
   )
 }
