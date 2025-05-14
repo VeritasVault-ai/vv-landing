@@ -1,0 +1,63 @@
+.modalOverlay {
+  @apply fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+}
+
+.modalContainer {
+  @apply bg-slate-900 border border-slate-700 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto;
+}
+
+.modalHeader {
+  @apply p-6;
+}
+
+.modalTitle {
+  @apply text-2xl font-bold mb-1 text-white;
+}
+
+.modalDescription {
+  @apply text-slate-400 mb-6;
+}
+
+.themeGrid {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
+}
+
+.themeCard {
+  @apply p-4 rounded-lg border cursor-pointer transition-all;
+}
+
+.lightThemeCard {
+  @apply bg-white/10 border-white/20 hover:bg-white/20;
+}
+
+.darkThemeCard {
+  @apply bg-slate-800 border-slate-700 hover:bg-slate-700;
+}
+
+.selectedThemeCard {
+  @apply ring-2 ring-blue-500;
+}
+
+.themeCardHeader {
+  @apply flex items-center justify-between mb-2;
+}
+
+.themeName {
+  @apply font-medium text-white;
+}
+
+.currentBadge {
+  @apply text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded;
+}
+
+.themeDescription {
+  @apply text-sm text-slate-400;
+}
+
+.modalFooter {
+  @apply border-t border-slate-700 p-4 flex justify-end;
+}
+
+.cancelButton {
+  @apply px-4 py-2 text-white bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors;
+}

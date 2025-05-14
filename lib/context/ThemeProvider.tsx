@@ -8,7 +8,7 @@
  * 
  * TODO: Once all imports have been updated to use the new path directly,
  * this file should be deleted and imports should point to:
- * '@/src/lib/context/ThemeProvider'
+ * '@/src/context/ThemeProvider'
  */
 
-export * from '../../src/lib/context/ThemeProvider'
+export * from '../../src/context/ThemeProvider'

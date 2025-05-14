@@ -1,4 +1,14 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
+
+// Base viewport configuration that applies to all pages
+export const baseViewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" }
+  ]
+}
 
 // Base metadata that applies to both versions
 export const baseMetadata: Metadata = {
@@ -10,7 +20,7 @@ export const baseMetadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://neuralliquid.ai"),
-  viewport: "width=device-width, initial-scale=1",
+  // Removed viewport from here
   robots: {
     index: true,
     follow: true,
@@ -117,7 +127,17 @@ export function generateStandardMetadata(
   }
 }
 
-// Helper function to generate page-specific metadata for corporate version
+/**
+ * Generates page-specific metadata for the corporate version of the application.
+ *
+ * Merges corporate-level metadata with overrides for title, description, canonical path, Open Graph, and Twitter metadata based on the provided page details.
+ *
+ * @param pageTitle - The title of the page.
+ * @param pageDescription - Optional description for the page. Defaults to the corporate description if not provided.
+ * @param pageImage - Optional image URL for social previews. Defaults to the corporate image if not provided.
+ * @param pagePath - Optional path segment for the page, appended to the `/corporate` base path.
+ * @returns Metadata object customized for the specified corporate page.
+ */
 export function generateCorporateMetadata(
   pageTitle: string,
   pageDescription?: string,

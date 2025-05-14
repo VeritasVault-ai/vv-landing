@@ -1,28 +1,52 @@
 "use client"
 
-import { useState } from "react"
+import { getCookie, setCookie } from "@/lib/cookies"
+import { useUnifiedTheme } from "@/src/hooks/use-unified-theme"
+import {
+  COLOR_MODES,
+  EXPERIENCE_TYPES,
+  ExperienceType,
+  ThemeVariant
+} from "@/src/types"
 import { useRouter } from "next/navigation"
-import { setCookie } from "@/lib/cookies"
-import { VersionHeader } from "./components/version-selection/VersionHeader"
-import { VersionFooter } from "./components/version-selection/VersionFooter"
-import { StandardVersionCard } from "./components/version-selection/StandardVersionCard"
+import { useEffect, useState } from "react"
 import { CorporateVersionCard } from "./components/version-selection/CorporateVersionCard"
+import { StandardVersionCard } from "./components/version-selection/StandardVersionCard"
 import { ThemeSelectionModal } from "./components/version-selection/ThemeSelectionModal"
 import { VersionBackground } from "./components/version-selection/VersionBackground"
-import { ExperienceType, ThemeVariant } from "@/src/types"
-
+import { VersionFooter } from "./components/version-selection/VersionFooter"
+import { VersionHeader } from "./components/version-selection/VersionHeader"
+import styles from "./VersionSelectionPage.module.css"
 
 /**
- * Renders the enhanced version selection page for choosing between standard and corporate experiences, with optional theme customization.
+ * Displays a version selection interface allowing users to choose between standard and corporate experiences, with optional theme customization and persistent preferences.
  *
- * Displays selectable cards for each experience type, allows users to customize the theme via a modal, and persists preferences in cookies before navigating to the selected interface.
+ * Presents selectable cards for each experience type, enables theme customization through a modal, and saves user choices in cookies. Integrates with the unified theme system to apply selected theme variants and color modes globally, and navigates to the chosen experience.
  *
- * @returns The version selection page React element.
+ * @returns The React element for the enhanced version selection page.
  */
 export function EnhancedVersionSelectionPage() {
   const router = useRouter()
+  const { setThemeVariant, setTheme } = useUnifiedTheme()
   const [selectedVersion, setSelectedVersion] = useState<ExperienceType | null>(null)
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false)
+  
+  // Initialize theme based on stored preferences when component loads
+  useEffect(() => {
+    const preferredVersion = getCookie("preferred-version") as ExperienceType | undefined
+    const preferredTheme = getCookie("preferred-theme") as string | undefined
+    
+    if (preferredVersion) {
+      setSelectedVersion(preferredVersion)
+      setThemeVariant(preferredVersion as ThemeVariant)
+    }
+    
+    if (preferredTheme) {
+      // Extract color mode from theme string (e.g., "standard-dark" -> "dark")
+      const colorMode = preferredTheme.split('-')[1]
+      setTheme(colorMode || (preferredTheme.includes("dark") ? COLOR_MODES.DARK : COLOR_MODES.LIGHT))
+    }
+  }, [setTheme, setThemeVariant])
   
   // Handle version selection
   const handleVersionSelect = (version: ExperienceType) => {
@@ -30,13 +54,16 @@ export function EnhancedVersionSelectionPage() {
   }
 
   // Navigate to selected version with default theme
-const navigateToVersion = (version: ExperienceType) => {
-  // Save user preference
-  setCookie("preferred-version", version, 30)
-  
-  // Navigate to the selected version's main page
-  router.push(`/${version}`)
-}
+  const navigateToVersion = (version: ExperienceType) => {
+    // Save user preference
+    setCookie("preferred-version", version, 30)
+    
+    // Update theme variant in the unified theme system
+    setThemeVariant(version as ThemeVariant)
+    
+    // Navigate to the selected version's main page
+    router.push(`/${version}-version`)
+  }
   
   // Open theme selection modal
   const openThemeModal = () => {
@@ -44,19 +71,27 @@ const navigateToVersion = (version: ExperienceType) => {
   }
   
   // Handle theme selection and navigation
-  const handleThemeSelect = (version: ExperienceType, theme: ThemeVariant) => {
+  const handleThemeSelect = (version: ExperienceType, themeId: string) => {
     // Save user preferences
     setCookie("preferred-version", version, 30)
-    setCookie("preferred-theme", theme, 30)
+    setCookie("preferred-theme", themeId, 30)
+    
+    // Extract variant and color mode from theme ID (e.g., "standard-dark")
+    const [variant, colorMode] = themeId.split('-') as [ThemeVariant, string]
+    
+    // Update theme settings in the unified theme system
+    setThemeVariant(variant)
+    setTheme(colorMode || (themeId.includes("dark") ? COLOR_MODES.DARK : COLOR_MODES.LIGHT))
     
     // Close modal
     setIsThemeModalOpen(false)
     
     // Navigate to the selected version with theme parameter
-    router.push(`/${version}?theme=${theme}`)
+    router.push(`/${version}-version?theme=${themeId}`)
   }
-    return (
-    <div className="relative min-h-screen flex flex-col bg-[#0a1025] text-white">
+
+  return (
+    <div className={styles.contentWrapper}>
       {/* Background */}
       <VersionBackground />
       
@@ -64,49 +99,49 @@ const navigateToVersion = (version: ExperienceType) => {
       <VersionHeader />
       
       {/* Main Content */}
-      <main className="flex-1 relative z-10">
-        <div className="container mx-auto px-4 py-16 max-w-5xl">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600 text-transparent bg-clip-text">
+      <main className={styles.mainContent}>
+        <div className={styles.versionContainer}>
+          <div className={styles.headerSection}>
+            <h1 className={styles.pageTitle}>
               Choose Your Experience
             </h1>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
+            <p className={styles.pageDescription}>
               Select the interface that best suits your needs for managing Tezos liquidity with our AI-powered platform
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className={styles.cardsGrid}>
             {/* Standard Version Card */}
             <StandardVersionCard 
-              isSelected={selectedVersion === "standard"}
-              onSelect={() => handleVersionSelect("standard")}
-              onContinue={() => navigateToVersion("standard")}
+              isSelected={selectedVersion === EXPERIENCE_TYPES.STANDARD}
+              onSelect={() => handleVersionSelect(EXPERIENCE_TYPES.STANDARD)}
+              onContinue={() => navigateToVersion(EXPERIENCE_TYPES.STANDARD)}
             />
 
             {/* Corporate Version Card */}
             <CorporateVersionCard 
-              isSelected={selectedVersion === "corporate"}
-              onSelect={() => handleVersionSelect("corporate")}
-              onContinue={() => navigateToVersion("corporate")}
+              isSelected={selectedVersion === EXPERIENCE_TYPES.CORPORATE}
+              onSelect={() => handleVersionSelect(EXPERIENCE_TYPES.CORPORATE)}
+              onContinue={() => navigateToVersion(EXPERIENCE_TYPES.CORPORATE)}
             />
           </div>
 
           {/* Continue Button */}
-          <div className="mt-12 text-center">
+          <div className={styles.actionsSection}>
             {selectedVersion && (
-              <div className="flex flex-col items-center gap-4">
+              <div className={styles.actionsContainer}>
                 <button
                   onClick={openThemeModal}
-                  className="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-lg transition-all duration-300"
+                  className={styles.customizeButton}
                 >
                   Customize Theme Options
                 </button>
                 
                 <button
                   onClick={() => navigateToVersion(selectedVersion)}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-6 text-lg rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+                  className={styles.continueButton}
                 >
-                  Continue to {selectedVersion === "standard" ? "Standard" : "Corporate"} Experience
+                  Continue to {selectedVersion === EXPERIENCE_TYPES.STANDARD ? "Standard" : "Corporate"} Experience
                 </button>
               </div>
             )}

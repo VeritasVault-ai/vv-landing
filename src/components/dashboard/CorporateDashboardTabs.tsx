@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart3, TrendingUp, Shield, FileText } from "lucide-react"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
@@ -10,10 +10,16 @@ import { CorporateRiskTab } from './tabs/CorporateRiskTab'
 import { CorporateReportsTab } from './tabs/CorporateReportsTab'
 
 /**
- * Component for the tabbed interface in the corporate dashboard
+ * Renders a tabbed interface for the corporate dashboard, allowing users to switch between Overview, Performance, Risk, and Reports sections.
+ *
+ * @returns The tabbed dashboard component with corresponding content for each tab.
  */
 export function CorporateDashboardTabs() {
   const handleTabChange = (value: string) => {
+
+    setActiveTab(value)
+    window.location.hash = value
+
     trackNavigationEvent({
       feature_name: "corporate_dashboard_tab",
       tab_destination: value,
@@ -23,6 +29,25 @@ export function CorporateDashboardTabs() {
   // …rest of your component (e.g. <Tabs onValueChange={handleTabChange} defaultValue="overview">…)
 }
 
+  // Effect to handle URL hash for direct linking to tabs
+  useEffect(() => {
+    // Check if there's a hash in the URL
+    const hash = window.location.hash.replace('#', '')
+    if (hash && ['overview', 'performance', 'risk', 'reports'].includes(hash)) {
+      setActiveTab(hash)
+    }
+
+    // Update tab when hash changes
+    const handleHashChange = () => {
+      const newHash = window.location.hash.replace('#', '')
+      if (newHash && ['overview', 'performance', 'risk', 'reports'].includes(newHash)) {
+        setActiveTab(newHash)
+      }
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
   return (
 -export function CorporateDashboardTabs() {
 +export function CorporateDashboardTabs({

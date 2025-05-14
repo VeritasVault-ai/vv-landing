@@ -1,13 +1,14 @@
 "use client"
 
+import { ThemeProvider } from "@/src/context/ThemeProvider"
 import { useTheme } from "next-themes"
 import { useEffect } from "react"
 import { EnhancedVersionSelectionPage } from "./VersionSelectionPage"
 
 /**
- * React component that sets the theme to "cosmic" on mount and renders the version selection page.
+ * React component that applies the "cosmic" theme on mount and renders the version selection page within a theme context.
  *
- * @returns The version selection page component with the "cosmic" theme applied.
+ * @returns The version selection page wrapped in a theme provider with the "cosmic" theme active.
  */
 export default function Home() {
   const { setTheme } = useTheme()
@@ -17,5 +18,9 @@ export default function Home() {
     setTheme("cosmic")
   }, [setTheme])
 
-  return <EnhancedVersionSelectionPage />
+  return ( 
+    <ThemeProvider>
+      <EnhancedVersionSelectionPage />
+    </ThemeProvider>
+    ) 
 }

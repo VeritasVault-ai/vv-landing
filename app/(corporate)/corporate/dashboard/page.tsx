@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
-import { DashboardContent } from "./dashboard-content"
+import { DashboardPageBridge } from "./page-bridge"
 
 export const metadata: Metadata = {
   title: "Dashboard | VeritasVault.ai",
@@ -8,14 +8,14 @@ export const metadata: Metadata = {
 }
 
 /**
- * Displays the corporate dashboard page, rendering its content asynchronously with a loading fallback.
+ * Renders the corporate dashboard page with asynchronous loading and a fallback UI.
  *
- * Wraps the main dashboard content in a React Suspense boundary to handle asynchronous loading states.
+ * Wraps the dashboard content in a client-side bridge to prevent server-side rendering errors caused by context providers.
  */
 export default function CorporateDashboardPage() {
   return (
     <Suspense fallback={<div className="p-8 text-center">Loading dashboard...</div>}>
-      <DashboardContent />
+      <DashboardPageBridge />
     </Suspense>
   );
 }

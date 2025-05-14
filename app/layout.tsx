@@ -1,18 +1,19 @@
-import type React from "react"
-import "./globals.css"
-import "./globals-standard.css"
-import "./globals-corporate.css"
-import "./theme-variables.css"
-import "./enhanced-dark-theme.css"
-import { ThemeProvider } from "@/components/theme-provider"
+import { UnifiedThemeProvider } from "@/src/providers/unified-theme-provider"
 import type { Metadata } from "next"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Tezos Liquidity Management",
-  description: "AI-powered Tezos liquidity management platform",
-    generator: 'v0.dev'
+  title: "VeritasVault.ai - AI-Powered Tezos Liquidity Management",
+  description: "Manage Tezos liquidity with our AI-powered platform offering standard and corporate experiences",
 }
 
+/**
+ * Defines the root layout for the application, applying global theming and structure to all pages.
+ *
+ * Wraps the provided content with the {@link UnifiedThemeProvider} and sets the HTML language to English.
+ *
+ * @param children - The page content to be rendered within the layout.
+ */
 export default function RootLayout({
   children,
 }: {
@@ -20,11 +21,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
       <body>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+        <UnifiedThemeProvider>
           {children}
-        </ThemeProvider>
+        </UnifiedThemeProvider>
       </body>
     </html>
   )

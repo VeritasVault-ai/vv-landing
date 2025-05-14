@@ -1,0 +1,55 @@
+.versionCard {
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 300ms;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.standardCard {
+  background-image: linear-gradient(to bottom right, rgba(30, 64, 175, 0.3), rgba(30, 58, 138, 0.1));
+  border: 1px solid;
+}
+
+.standardCardSelected {
+  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+.standardCardUnselected {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.standardCardUnselected:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.corporateCard {
+  background-image: linear-gradient(to bottom right, rgba(126, 34, 206, 0.3), rgba(107, 33, 168, 0.1));
+  border: 1px solid;
+}
+
+.corporateCardSelected {
+  border-color: rgb(168, 85, 247);
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.5);
+}
+
+.corporateCardUnselected {
+  border-color: rgba(168, 85, 247, 0.2);
+}
+
+.corporateCardUnselected:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.footerWrapper {
+  margin-top: auto;
+}
