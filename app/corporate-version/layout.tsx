@@ -4,6 +4,7 @@ import { Providers } from "@/app/providers"
 import { VersionAwareFooter } from "@/components/layout/footer"
 import VersionAwareHeader from "@/components/layout/header"
 import { EXPERIENCE_TYPES } from "@/src/constants/theme"
+import { ThemeProvider } from '@/src/lib/context/ThemeProvider'
 import { Analytics } from "@vercel/analytics/next"
 import type { ReactNode } from "react"
 
@@ -22,9 +23,11 @@ export default function CorporateVersionLayout({
     <>
       <Analytics />
       <Providers experience={EXPERIENCE_TYPES.CORPORATE}>
-        <VersionAwareHeader/>
-          <main>{children}</main>
-        <VersionAwareFooter/>
+        <ThemeProvider defaultExperience={EXPERIENCE_TYPES.CORPORATE}>
+          <VersionAwareHeader/>
+            <main>{children}</main>
+          <VersionAwareFooter/>
+        </ThemeProvider>
       </Providers>
     </>
   )
