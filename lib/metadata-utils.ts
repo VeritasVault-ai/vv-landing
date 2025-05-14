@@ -1,4 +1,14 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
+
+// Base viewport configuration that applies to all pages
+export const baseViewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" }
+  ]
+}
 
 // Base metadata that applies to both versions
 export const baseMetadata: Metadata = {
@@ -10,7 +20,7 @@ export const baseMetadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://neuralliquid.ai"),
-  viewport: "width=device-width, initial-scale=1",
+  // Removed viewport from here
   robots: {
     index: true,
     follow: true,

@@ -1,15 +1,15 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { ThemeProvider as NextThemesProvider, useTheme as useNextTheme } from 'next-themes';
 import { setCookie } from '@/lib/cookies';
+import { ThemeProvider as NextThemesProvider, useTheme as useNextTheme } from 'next-themes';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 import {
-  ExperienceType,
   ColorMode,
+  ExperienceType,
   getTheme,
 } from '@/styles/theme';
-import { standardVariants, corporateVariants, getDefaultVariant, ThemeVariant } from '@/context/theme-variants';
+import { CORPORATE_THEME_VARIANTS, getDefaultVariant, STANDARD_THEME_VARIANTS, ThemeVariant } from './theme-variants';
 
 // Context shape
 type ThemeContextValue = {
@@ -70,9 +70,9 @@ function InnerProvider({ children, defaultExperience }: { children: ReactNode; d
 
   // enforce valid variant list on experience change
   useEffect(() => {
-    if (experience === 'standard' && !standardVariants.includes(themeVariant as any)) {
+    if (experience === 'standard' && !STANDARD_THEME_VARIANTS.includes(themeVariant as any)) {
       setThemeVariant(getDefaultVariant('standard'));
-    } else if (experience === 'corporate' && !corporateVariants.includes(themeVariant as any)) {
+    } else if (experience === 'corporate' && !CORPORATE_THEME_VARIANTS.includes(themeVariant as any)) {
       setThemeVariant(getDefaultVariant('corporate'));
     }
   }, [experience, themeVariant]);
@@ -97,8 +97,8 @@ function InnerProvider({ children, defaultExperience }: { children: ReactNode; d
     const root = document.documentElement;
     root.classList.remove(
       'experience-corporate',
-      ...standardVariants.map(v => `theme-${v}`),
-      ...corporateVariants.map(v => `theme-${v}`)
+      ...STANDARD_THEME_VARIANTS.map(v => `theme-${v}`),
+      ...CORPORATE_THEME_VARIANTS.map(v => `theme-${v}`)
     );
     if (experience === 'corporate') root.classList.add('experience-corporate');
     root.classList.add(`theme-${themeVariant}`);
@@ -164,5 +164,5 @@ export function useCurrentTheme() {
  */
 export function useAvailableThemeVariants() {
   const { experience } = useTheme();
-  return experience === 'standard' ? standardVariants : corporateVariants;
+  return experience === 'standard' ? STANDARD_THEME_VARIANTS : CORPORATE_THEME_VARIANTS;
 }

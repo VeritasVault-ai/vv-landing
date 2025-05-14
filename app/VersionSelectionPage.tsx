@@ -101,7 +101,7 @@ export function EnhancedVersionSelectionPage() {
       
       {/* Main Content */}
       <main className={styles.mainContent}>
-        <div className={styles.container}>
+        <div className={styles.versionContainer}>
           <div className={styles.headerSection}>
             <h1 className={styles.pageTitle}>
               Choose Your Experience

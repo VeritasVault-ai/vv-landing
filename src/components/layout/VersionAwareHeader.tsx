@@ -4,10 +4,10 @@
 import { useAnalytics } from '@/hooks/use-analytics'
 import { useAuth } from '@/hooks/use-auth'
 import {
-  getHeaderNavigationByExperience,
-  HeaderNavigationItem,
+    getHeaderNavigationByExperience,
+    HeaderNavigationItem,
 } from '@/lib/navigation'
-import { useTheme } from '@/src/lib/hooks/context/ThemeProvider'
+import { useTheme } from '@/src/context/ThemeProvider'
 import { useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { CorporateHeader } from './CorporateHeader'

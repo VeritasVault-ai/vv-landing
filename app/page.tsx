@@ -1,6 +1,6 @@
 "use client"
 
-import { ThemeProvider } from "@/src/lib/hooks/context/ThemeProvider"
+import { ThemeProvider } from "@/src/context/ThemeProvider"
 import { useTheme } from "next-themes"
 import { useEffect } from "react"
 import { EnhancedVersionSelectionPage } from "./VersionSelectionPage"

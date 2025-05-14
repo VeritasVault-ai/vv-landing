@@ -1,6 +1,8 @@
-import { generateCorporateMetadata } from "@/lib/metadata-utils"
-import type { Metadata } from "next"
+import { baseViewport, generateCorporateMetadata } from "@/lib/metadata-utils"
+import type { Metadata, Viewport } from "next"
 import Link from "next/link"
+
+export const viewport: Viewport = baseViewport
 
 export const metadata: Metadata = generateCorporateMetadata(
   "Corporate Marketing | Liquidity Management",

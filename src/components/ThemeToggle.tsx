@@ -10,10 +10,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Moon, Sun } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { useUnifiedTheme } from '@/src/hooks/use-unified-theme'
 import { ColorMode } from '@/styles/theme'
+import { Moon, Sun } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { ThemeVariant } from '../types'
 
 /**
@@ -22,13 +22,29 @@ import { ThemeVariant } from '../types'
  * Provides a smart toggle between light and dark modes, automatically selecting a corresponding theme variant based on the current experience. Users can also explicitly choose from available light and dark theme variants via the dropdown menu. The component ensures correct rendering during hydration by delaying UI display until mounted.
  */
 export function ThemeToggle() {
+  // Add try-catch to handle potential errors from useUnifiedTheme
+  let themeData = {
+    theme: 'light' as ColorMode,
+    setTheme: (theme: ColorMode) => {},
+    themeVariant: 'standard' as ThemeVariant,
+    setThemeVariant: (variant: ThemeVariant) => {},
+    availableThemeVariants: [] as ThemeVariant[]
+  };
+  
+  try {
+    themeData = useUnifiedTheme();
+  } catch (error) {
+    console.error("Error using unified theme:", error);
+    // Continue with default values
+  }
+  
   const {
     theme: colorMode,
     setTheme: setColorMode,
     themeVariant,
     setThemeVariant,
-    availableThemeVariants,
-  } = useUnifiedTheme()
+    availableThemeVariants = [],
+  } = themeData;
   
   // Extract experience from themeVariant - this needs to be adjusted based on your actual implementation
   const experience = themeVariant?.includes('corporate') || themeVariant?.includes('veritasvault') 
@@ -62,6 +78,15 @@ export function ThemeToggle() {
     setThemeVariant(variant)
     setColorMode(mode)
   }
+  
+  // Define default theme variants if availableThemeVariants is empty
+  const lightThemeVariants = ['standard', 'corporate'].filter(v => 
+    !availableThemeVariants.length || availableThemeVariants.includes(v as ThemeVariant)
+  ) as ThemeVariant[];
+    
+  const darkThemeVariants = ['neuralliquid', 'veritasvault'].filter(v => 
+    !availableThemeVariants.length || availableThemeVariants.includes(v as ThemeVariant)
+  ) as ThemeVariant[];
   
   if (!mounted) {
     return (
@@ -107,44 +132,40 @@ export function ThemeToggle() {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Light Mode Themes</DropdownMenuLabel>
-          {availableThemeVariants
-            .filter(v => v === 'standard' || v === 'corporate')
-            .map(variant => (
-              <DropdownMenuItem
-                key={variant}
-                onClick={() => handleThemeSelect(variant, 'light')}
-                className={
-                  colorMode === 'light' && themeVariant === variant
-                    ? 'bg-slate-100 dark:bg-slate-800'
-                    : ''
-                }
-              >
-                <span className="capitalize mr-auto">{variant}</span>
-                {colorMode === 'light' && themeVariant === variant && (
-                  <span className="ml-auto">✓</span>
-                )}
-              </DropdownMenuItem>
-            ))}
+          {lightThemeVariants.map(variant => (
+            <DropdownMenuItem
+              key={variant}
+              onClick={() => handleThemeSelect(variant, 'light')}
+              className={
+                colorMode === 'light' && themeVariant === variant
+                  ? 'bg-slate-100 dark:bg-slate-800'
+                  : ''
+              }
+            >
+              <span className="capitalize mr-auto">{variant}</span>
+              {colorMode === 'light' && themeVariant === variant && (
+                <span className="ml-auto">✓</span>
+              )}
+            </DropdownMenuItem>
+          ))}
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Dark Mode Themes</DropdownMenuLabel>
-          {availableThemeVariants
-            .filter(v => v === 'neuralliquid' || v === 'veritasvault')
-            .map(variant => (
-              <DropdownMenuItem
-                key={variant}
-                onClick={() => handleThemeSelect(variant, 'dark')}
-                className={
-                  colorMode === 'dark' && themeVariant === variant
-                    ? 'bg-slate-100 dark:bg-slate-800'
-                    : ''
-                }
-              >
-                <span className="capitalize mr-auto">{variant}</span>
-                {colorMode === 'dark' && themeVariant === variant && (
-                  <span className="ml-auto">✓</span>
-                )}
-              </DropdownMenuItem>
-            ))}
+          {darkThemeVariants.map(variant => (
+            <DropdownMenuItem
+              key={variant}
+              onClick={() => handleThemeSelect(variant, 'dark')}
+              className={
+                colorMode === 'dark' && themeVariant === variant
+                  ? 'bg-slate-100 dark:bg-slate-800'
+                  : ''
+              }
+            >
+              <span className="capitalize mr-auto">{variant}</span>
+              {colorMode === 'dark' && themeVariant === variant && (
+                <span className="ml-auto">✓</span>
+              )}
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
     </TooltipProvider>

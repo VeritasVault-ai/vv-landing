@@ -1,22 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { LogoFull } from "@/components/ui/logo-full"
+import { cn } from "@/lib/utils"
+import { ChevronDown, Menu, X } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import dynamic from "next/dynamic"
-
-// Import the theme toggle with no SSR to prevent hydration mismatch
-const ThemeToggleClientSide = dynamic(() => import("@/components/theme-toggle-client-side"), {
-  ssr: false,
-})
+import { useEffect, useState } from "react"
+import { ThemeToggle } from "../theme-toggle"
 import { NotificationsPopover } from "./notifications-popover"
 import { SettingsPopover } from "./settings-popover"
 import { UserPopover } from "./user-popover"
-import { LogoFull } from "@/components/ui/logo-full"
-import { Button } from "@/components/ui/button"
-import { ChevronDown, Menu, X } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 interface NavGroup {
   name: string
@@ -161,7 +156,7 @@ export function UnifiedHeader() {
         </div>
 
         <div className="flex items-center gap-3">
-          <ThemeToggleClientSide variant="icon-only" />
+          <ThemeToggle variant="icon-only" />
 
           {/* Show these components only on dashboard pages */}
           {pathname?.includes("/dashboard") ||

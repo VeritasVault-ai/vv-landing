@@ -1,50 +1,34 @@
-import { CORPORATE_VARIANTS, STANDARD_VARIANTS } from "@/src/constants/theme";
-import { ExperienceType } from "@/src/types";
+/**
+ * Theme variants types
+ * 
+ * This file re-exports theme-related types from the central type definition
+ * to maintain backward compatibility with existing imports.
+ */
+import { EXPERIENCE_TYPES, COLOR_MODES } from "@/src/constants/theme";
+import { 
+  ThemeVariant, 
+  StandardThemeVariant, 
+  CorporateThemeVariant,
+  ExperienceType,
+  ColorMode
+} from "@/src/types/theme";
+import { getDefaultVariant } from "@/src/utils/theme-utils";
 
-// Experience types as constants
-export const EXPERIENCE_TYPES = {
-  STANDARD: 'standard',
-  CORPORATE: 'corporate',
-  BOTH: 'both',
-} as const;
+// Re-export types from the central type definition
+export type {
+  ThemeVariant,
+  StandardThemeVariant,
+  CorporateThemeVariant,
+  ExperienceType,
+  ColorMode
+};
 
-// Color modes as constants
-export const COLOR_MODES = {
-  LIGHT: 'light',
-  DARK: 'dark',
-  SYSTEM: 'system',
-} as const;
+// Re-export constants for backward compatibility
+export { EXPERIENCE_TYPES, COLOR_MODES };
 
-// Define types based on the imported constants
-export type StandardThemeVariant = typeof STANDARD_VARIANTS[keyof typeof STANDARD_VARIANTS];
-export type CorporateThemeVariant = typeof CORPORATE_VARIANTS[keyof typeof CORPORATE_VARIANTS];
-export type ThemeVariant = StandardThemeVariant | CorporateThemeVariant;
+// Re-export the getDefaultVariant function
+export { getDefaultVariant };
 
 // Define a type that includes all possible experience types for the function
+// (kept for backward compatibility)
 export type GetDefaultVariantExperience = ExperienceType | 'both';
-
-// Helper to get the default variant based on experience
-export function getDefaultVariant(exp: 'standard'): StandardThemeVariant;
-export function getDefaultVariant(exp: 'corporate'): CorporateThemeVariant;
-export function getDefaultVariant(exp: 'both'): CorporateThemeVariant;
-
-/**
- * Returns the default theme variant for the specified experience type.
- *
- * @param exp - The experience type, either 'standard', 'corporate', or 'both'.
- * @returns The default theme variant string for the given experience type.
- */
-export function getDefaultVariant(exp: GetDefaultVariantExperience): ThemeVariant {
-  switch (exp) {
-    case 'standard':
-      return STANDARD_VARIANTS.STANDARD;
-    case 'corporate':
-      return CORPORATE_VARIANTS.CORPORATE;
-    case 'both':
-      return CORPORATE_VARIANTS.CORPORATE;
-    default:
-      // This ensures type safety by exhaustively checking all cases
-      const _exhaustiveCheck: never = exp;
-      return _exhaustiveCheck; // This line will never execute if all cases are handled
-  }
-}

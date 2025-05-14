@@ -1,12 +1,7 @@
 "use client"
 
-import { ReactNode, useEffect, Suspense } from "react"
-import { SimpleFooter } from "@/components/ui/simple-footer"
-import { useTheme } from "next-themes"
-import { useSearchParams } from "next/navigation"
-import { getCookie, setCookie } from "@/lib/cookies"
 import { VersionAwareHeader } from "@/src/components/layout/VersionAwareHeader"
-import { ThemeProvider } from "@/src/lib/hooks/context/ThemeProvider"
+import { ThemeProvider } from "@/src/context/ThemeProvider"
 
 /**
  * Provides a corporate-themed layout with a consistent header and theming context.
