@@ -7,6 +7,13 @@ export const metadata: Metadata = {
   description: "Manage Tezos liquidity with our AI-powered platform offering standard and corporate experiences",
 }
 
+/**
+ * Defines the root layout for the application, applying global theming and structure to all pages.
+ *
+ * Wraps the provided content with the {@link UnifiedThemeProvider} and sets the HTML language to English.
+ *
+ * @param children - The page content to be rendered within the layout.
+ */
 export default function RootLayout({
   children,
 }: {

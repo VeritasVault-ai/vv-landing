@@ -24,6 +24,11 @@ interface NavItem {
   featured?: boolean
 }
 
+/**
+ * Renders a responsive navigation header with dynamic styling, grouped navigation links, dropdown menus, theme toggle, and user controls.
+ *
+ * The header adapts its appearance based on scroll position and the current route, displaying featured navigation items, dropdowns for grouped links, and a mobile menu for smaller screens. User-related controls and popovers are conditionally shown on dashboard-related pages.
+ */
 export function UnifiedHeader() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)

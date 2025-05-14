@@ -5,7 +5,11 @@ import type { Metadata } from "next"
 //   "Standard Dashboard | Liquidity Management",
 //   "AI-powered dashboard for DeFi liquidity management.",
 //   "/api/og/standard-dashboard",
-// )
+/**
+ * Renders the Standard Dashboard page container with adaptive background for light and dark modes.
+ *
+ * @returns A React element representing the dashboard page layout.
+ */
 
 export default function StandardDashboardPage() {
   return (

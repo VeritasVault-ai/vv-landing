@@ -10,6 +10,14 @@ import { ThemeProvider } from "@/src/context/ThemeProvider"
 import { useState, useEffect } from "react"
 import { VersionAwareHeader as OriginalVersionAwareHeader } from "./VersionAwareHeader"
 
+/**
+ * Renders a version-aware header with graceful fallback for theme provider errors.
+ *
+ * Displays a minimal "Loading..." header until client-side hydration completes. If an error occurs during rendering of the original header (such as a missing theme provider), a fallback header with branding and authentication links is shown instead.
+ *
+ * @remark
+ * This component catches runtime errors from the original header and provides a branded fallback UI to ensure the header remains functional even if the theme provider is unavailable.
+ */
 export function VersionAwareHeader() {
   const [mounted, setMounted] = useState(false)
   const [hasError, setHasError] = useState(false)

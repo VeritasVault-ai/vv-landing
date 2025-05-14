@@ -22,7 +22,12 @@ interface UnifiedThemeProviderProps {
 }
 
 /**
- * Root-level component that provides theme context to the entire application
+ * Provides a unified theme context to the application using both custom and system-based theming.
+ *
+ * Wraps its children with both the `next-themes` provider and a custom theme provider, selecting the theme experience based on the current route or an optional default.
+ *
+ * @param children - The components to receive the theme context.
+ * @param defaultExperience - Optional default theme experience to use if no route-based experience is available.
  */
 export function UnifiedThemeProvider({ 
   children, 
@@ -42,7 +47,11 @@ export function UnifiedThemeProvider({
 }
 
 /**
- * Simplified provider for use in specific sections that need a fixed experience
+ * Provides a fixed theme experience to its child components.
+ *
+ * Wraps children with {@link CustomThemeProvider} using the specified experience as the default.
+ *
+ * @param experience - The experience identifier to apply as the default theme.
  */
 export function ExperienceProvider({ 
   children, 

@@ -9,6 +9,13 @@ interface VersionCardFooterProps {
   buttonClassName?: string
 }
 
+/**
+ * Renders a footer section with a full-width button for version selection cards.
+ *
+ * @param onContinue - Callback invoked when the button is clicked.
+ * @param buttonText - Text displayed on the button.
+ * @param buttonClassName - Optional additional CSS classes for the button; defaults to a blue background with hover effect.
+ */
 export function VersionCardFooter({
   onContinue,
   buttonText,

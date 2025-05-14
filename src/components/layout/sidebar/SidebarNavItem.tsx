@@ -20,7 +20,9 @@ interface SidebarNavItemProps {
 }
 
 /**
- * Navigation item component for the sidebar
+ * Renders a sidebar navigation item with icon, label, and optional badge, supporting active state styling and tooltip display when collapsed.
+ *
+ * When the sidebar is collapsed, the label and badge are shown in a tooltip on hover.
  */
 export function SidebarNavItem({
   href,

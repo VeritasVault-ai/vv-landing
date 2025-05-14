@@ -9,6 +9,15 @@
 import { useState, useEffect } from "react"
 import { VersionAwareFooter as OriginalVersionAwareFooter } from "./VersionAwareFooter"
 
+/**
+ * Renders a version-aware footer with graceful fallback if the original footer fails to render.
+ *
+ * Displays the original themed footer when possible. If the component is not yet mounted on the client or an error occurs (such as a missing theme provider), a minimal static footer is shown instead.
+ *
+ * @returns The themed footer or a static fallback footer if rendering fails.
+ *
+ * @remark If an error occurs during rendering (e.g., due to a missing theme provider), the component automatically falls back to a static footer to prevent UI breakage.
+ */
 export function VersionAwareFooter() {
   const [mounted, setMounted] = useState(false)
   const [hasError, setHasError] = useState(false)

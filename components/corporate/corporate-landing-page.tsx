@@ -17,6 +17,13 @@ import {
   TrustedInstitutions
 } from "./landing-sections"
 
+/**
+ * Renders the corporate landing page by composing multiple section components.
+ *
+ * This component assembles the main sections of the corporate landing page, including hero, value proposition, solutions, benefits, call to action, and trusted institutions, within a styled container that supports light and dark modes.
+ *
+ * @returns The complete corporate landing page as a React element.
+ */
 export function CorporateLandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">

@@ -5,6 +5,11 @@ import { Button } from "@/components/ui/button"
 import { CheckCircle } from "lucide-react"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
 
+/**
+ * Renders the hero section of the corporate landing page, featuring branding, descriptive text, compliance badges, call-to-action buttons, and a dashboard image.
+ *
+ * The section is styled with gradients, decorative backgrounds, and responsive layout. Button clicks trigger analytics tracking events.
+ */
 export function HeroSection() {
   return (
     <section className="relative py-20 md:py-28 bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950 border-b border-slate-200 dark:border-slate-800">

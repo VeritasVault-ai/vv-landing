@@ -61,7 +61,13 @@ const importPatterns = [
   }
 ];
 
-// Function to process a file
+/**
+ * Updates theme-related import statements in a file to use consolidated module paths.
+ *
+ * Skips files in `node_modules` and `.next` directories, and processes only `.ts`, `.tsx`, `.js`, and `.jsx` files. Applies a series of regex-based transformations to update legacy theme import statements. If changes are detected, either logs the file path (in dry-run mode) or writes the updated content back to the file.
+ *
+ * @param {string} filePath - The path to the file to process.
+ */
 function processFile(filePath) {
   // Skip node_modules and .next directories
   if (filePath.includes('node_modules') || filePath.includes('.next')) {
@@ -115,7 +121,14 @@ function processFile(filePath) {
   }
 }
 
-// Function to recursively process a directory
+/**
+ * Recursively processes all files in a directory and its subdirectories.
+ *
+ * For each file found, calls {@link processFile} to apply import statement updates.
+ * Skips no files or directories except as handled by {@link processFile}.
+ *
+ * @param {string} dirPath - The path to the directory to process.
+ */
 function processDirectory(dirPath) {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true });
   

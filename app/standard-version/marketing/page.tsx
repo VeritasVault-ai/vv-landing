@@ -8,7 +8,11 @@ import { ArrowRight, Share2, Twitter, Youtube } from "lucide-react"
 //   "Marketing Resources | Liquidity Management",
 //   "Marketing resources and community tools for DeFi liquidity management.",
 //   "/api/og/standard-marketing",
-// )
+/**
+ * Renders the Standard Marketing page container with background styling.
+ *
+ * @returns A styled div element serving as the page layout.
+ */
 
 export default function StandardMarketingPage() {
   return (

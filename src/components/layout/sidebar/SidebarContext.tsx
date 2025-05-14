@@ -22,7 +22,16 @@ interface SidebarProviderProps {
 }
 
 /**
- * Provider component for sidebar state management
+ * Provides sidebar state and control methods to descendant components.
+ *
+ * Manages sidebar collapsed and mobile open states, automatically updating them based on window size and invoking an optional callback when the collapsed state changes.
+ *
+ * @param children - React nodes to render within the provider.
+ * @param defaultCollapsed - Optional initial collapsed state; defaults to `false`.
+ * @param onToggle - Optional callback invoked when the collapsed state changes.
+ *
+ * @remark
+ * Automatically collapses the sidebar and closes the mobile sidebar when the window width is less than 768 pixels.
  */
 export function SidebarProvider({ 
   children, 
@@ -78,7 +87,11 @@ export function SidebarProvider({
 }
 
 /**
- * Hook for accessing sidebar context
+ * Provides access to the sidebar context, including state and control methods.
+ *
+ * @returns The current sidebar context object.
+ *
+ * @throws {Error} If called outside of a {@link SidebarProvider}.
  */
 export function useSidebar() {
   const context = useContext(SidebarContext)

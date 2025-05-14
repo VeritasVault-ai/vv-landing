@@ -18,6 +18,18 @@ interface DashboardLayoutProps {
 // Move the year calculation outside the component
 const currentYear = new Date().getFullYear()
 
+/**
+ * Provides a responsive layout wrapper for a corporate or themed dashboard, including header navigation, user avatar, action buttons, and footer.
+ *
+ * Renders a sticky header with branding and navigation links, a main section with title, description, and action buttons (refresh, export, settings), and a footer. Supports theme-based branding and customizable user avatar initials. The refresh button triggers either a provided refresh callback or a context-based refresh, with built-in loading state management.
+ *
+ * @param children - Content to display within the dashboard layout.
+ * @param title - Main heading for the dashboard section.
+ * @param description - Optional subtitle or description under the title.
+ * @param onRefresh - Optional async callback for refreshing dashboard data.
+ * @param userInitials - Optional initials to display in the user avatar.
+ * @param themeVariant - Optional theme identifier to control branding.
+ */
 export function DashboardLayout({ 
   children, 
   title, 

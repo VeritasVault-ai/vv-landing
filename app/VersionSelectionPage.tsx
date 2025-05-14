@@ -19,12 +19,11 @@ import { VersionHeader } from "./components/version-selection/VersionHeader"
 import styles from "./VersionSelectionPage.module.css"
 
 /**
- * Renders the enhanced version selection page for choosing between standard and corporate experiences, with optional theme customization.
+ * Displays a version selection interface allowing users to choose between standard and corporate experiences, with optional theme customization and persistent preferences.
  *
- * Displays selectable cards for each experience type, allows users to customize the theme via a modal, and persists preferences in cookies before navigating to the selected interface.
- * Uses the unified theme system to handle theme preferences consistently across the application.
+ * Presents selectable cards for each experience type, enables theme customization through a modal, and saves user choices in cookies. Integrates with the unified theme system to apply selected theme variants and color modes globally, and navigates to the chosen experience.
  *
- * @returns The version selection page React element.
+ * @returns The React element for the enhanced version selection page.
  */
 export function EnhancedVersionSelectionPage() {
   const router = useRouter()

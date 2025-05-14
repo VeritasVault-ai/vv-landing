@@ -4,9 +4,11 @@ import { useTheme } from '@/src/lib/context/ThemeProvider';
 import { useDashboard } from './useDashboard';
 
 /**
- * Hook that combines dashboard context with theme context
- * 
- * @returns Combined dashboard and theme context values
+ * Returns a combined object containing both dashboard and theme context values.
+ *
+ * Use this hook to access dashboard-related state and actions along with the current theme context in a single object.
+ *
+ * @returns An object with all properties from the dashboard context and a {@link theme} property containing the theme context.
  */
 export function useDashboardWithTheme() {
   const dashboardContext = useDashboard();
