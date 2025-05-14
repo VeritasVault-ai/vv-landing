@@ -13,18 +13,30 @@ import { CorporateReportsTab } from './tabs/CorporateReportsTab'
  * Component for the tabbed interface in the corporate dashboard
  */
 export function CorporateDashboardTabs() {
-  const [activeTab, setActiveTab] = useState("overview")
-
   const handleTabChange = (value: string) => {
-    setActiveTab(value)
     trackNavigationEvent({
       feature_name: "corporate_dashboard_tab",
       tab_destination: value,
     })
   }
+  
+  // …rest of your component (e.g. <Tabs onValueChange={handleTabChange} defaultValue="overview">…)
+}
 
   return (
-    <Tabs defaultValue="overview" className="space-y-6" onValueChange={handleTabChange}>
+-export function CorporateDashboardTabs() {
++export function CorporateDashboardTabs({
++  defaultTab = "overview"
++}: {
++  defaultTab?: "overview" | "performance" | "risk" | "reports"
++}) {
+  // ...
+
+-    <Tabs defaultValue="overview" className="space-y-6" onValueChange={handleTabChange}>
++    <Tabs defaultValue={defaultTab} className="space-y-6" onValueChange={handleTabChange}>
+     {/* ...other tab content */}
+  }
+}
       <TabsList className="bg-slate-100 dark:bg-slate-800 p-1">
         <TabsTrigger
           value="overview"
