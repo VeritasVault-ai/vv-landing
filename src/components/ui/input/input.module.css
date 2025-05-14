@@ -1,0 +1,208 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--input-label-color, #374151);
+  margin-bottom: 0.25rem;
+}
+
+.label.disabled {
+  color: var(--input-disabled-color, #9ca3af);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+/* Variants */
+.variant-default {
+  background-color: var(--input-bg, #ffffff);
+  border: 1px solid var(--input-border-color, #d1d5db);
+  border-radius: var(--border-radius-md, 0.375rem);
+}
+
+.variant-default:focus-within {
+  /* Using outline shorthand property: width style color */
+  outline: 2px solid var(--color-primary-100, rgba(59, 130, 246, 0.2));
+  border-color: var(--color-primary, #3b82f6);
+}
+
+.variant-filled {
+  background-color: var(--input-filled-bg, #f3f4f6);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-md, 0.375rem);
+}
+
+.variant-filled:focus-within {
+  background-color: var(--input-filled-focus-bg, #e5e7eb);
+  /* Using outline shorthand property: width style color */
+  outline: 2px solid var(--color-primary-100, rgba(59, 130, 246, 0.2));
+  border-color: var(--color-primary, #3b82f6);
+}
+
+.variant-outlined {
+  background-color: transparent;
+  border: 1px solid var(--input-border-color, #d1d5db);
+  border-radius: var(--border-radius-md, 0.375rem);
+}
+
+.variant-outlined:focus-within {
+  /* Using outline shorthand property: width style color */
+  outline: 2px solid var(--color-primary-100, rgba(59, 130, 246, 0.2));
+  border-color: var(--color-primary, #3b82f6);
+}
+
+.variant-unstyled {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* Sizes */
+.size-small {
+  height: 32px;
+}
+
+.size-medium {
+  height: 40px;
+}
+
+.size-large {
+  height: 48px;
+}
+
+/* States */
+.error {
+  border-color: var(--color-error, #ef4444) !important;
+}
+
+.error:focus-within {
+  /* Using outline shorthand property: width style color */
+  outline: 2px solid var(--color-error-100, rgba(239, 68, 68, 0.2)) !important;
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--input-disabled-bg, #f3f4f6);
+}
+
+.readOnly {
+  background-color: var(--input-readonly-bg, #f9fafb);
+  cursor: default;
+}
+
+/* Input element */
+.input {
+  width: 100%;
+  height: 100%;
+  padding: 0 0.75rem;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  color: var(--input-text-color, #1f2937);
+}
+
+.input::placeholder {
+  color: var(--input-placeholder-color, #9ca3af);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+/* Icons */
+.hasLeftIcon .input {
+  padding-left: 2.25rem;
+}
+
+.hasRightIcon .input {
+  padding-right: 2.25rem;
+}
+
+.leftIcon, .rightIcon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  color: var(--input-icon-color, #6b7280);
+}
+
+.leftIcon {
+  left: 0;
+}
+
+.rightIcon {
+  right: 0;
+}
+
+/* Helper text */
+.helperText {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--input-helper-color, #6b7280);
+}
+
+.errorText {
+  color: var(--color-error, #ef4444);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .label {
+    --input-label-color: #e5e7eb;
+  }
+
+  .variant-default {
+    --input-bg: #1f2937;
+    --input-border-color: #4b5563;
+  }
+
+  .variant-filled {
+    --input-filled-bg: #374151;
+    --input-filled-focus-bg: #4b5563;
+  }
+
+  .variant-outlined {
+    --input-border-color: #4b5563;
+  }
+
+  .input {
+    --input-text-color: #f9fafb;
+    --input-placeholder-color: #9ca3af;
+  }
+
+  .disabled {
+    --input-disabled-bg: #374151;
+    --input-disabled-color: #9ca3af;
+  }
+
+  .readOnly {
+    --input-readonly-bg: #374151;
+  }
+
+  .leftIcon, .rightIcon {
+    --input-icon-color: #9ca3af;
+  }
+
+  .helperText {
+    --input-helper-color: #9ca3af;
+  }
+}

@@ -1,0 +1,139 @@
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--border-radius-md);
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+/* Variants */
+.table--default {
+  background-color: var(--color-background-paper);
+}
+
+.table--compact {
+  font-size: 12px;
+}
+
+/* Sizes */
+.table--small .tableCell,
+.table--small .tableHeaderCell {
+  padding: 6px 12px;
+}
+
+.table--medium .tableCell,
+.table--medium .tableHeaderCell {
+  padding: 10px 16px;
+}
+
+.table--large .tableCell,
+.table--large .tableHeaderCell {
+  padding: 14px 20px;
+}
+
+/* Header */
+.tableHeader {
+  background-color: var(--color-background-paper);
+}
+
+.tableHeaderCell {
+  font-weight: 600;
+  text-align: left;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.tableHeaderCell--sortable {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.tableHeaderCell--sortable:hover {
+  background-color: var(--color-gray-50);
+}
+
+.tableHeaderCellContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sortIcon {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* Body */
+.tableBody {
+  background-color: var(--color-background-paper);
+}
+
+.tableRow {
+  transition: background-color 0.2s;
+}
+
+.tableRow--selected {
+  background-color: var(--color-primary-50);
+}
+
+.table--hoverable .tableRow:hover {
+  background-color: var(--color-gray-50);
+}
+
+.table--striped .tableRow:nth-child(even) {
+  background-color: var(--color-gray-50);
+}
+
+.tableCell {
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Alignment */
+.tableCell--left,
+.tableHeaderCell--left {
+  text-align: left;
+}
+
+.tableCell--center,
+.tableHeaderCell--center {
+  text-align: center;
+}
+
+.tableCell--right,
+.tableHeaderCell--right {
+  text-align: right;
+}
+
+/* Bordered variant */
+.table--bordered .tableCell,
+.table--bordered .tableHeaderCell {
+  border: 1px solid var(--color-border);
+}
+
+/* Sticky header */
+.table--sticky-header .tableHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tableContainer {
+    border-radius: 0;
+  }
+  .table--responsive .tableCell,
+  .table--responsive .tableHeaderCell {
+    padding: 8px 12px;
+  }
+}
