@@ -62,5 +62,5 @@ export function CorporateReportsTab() {
       </Card>
     </div>
   );
-}
+  );
 }
