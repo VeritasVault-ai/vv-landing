@@ -1,5 +1,3 @@
-"use client"
-
 import { CorporateLandingPageWithTheme } from "@/components/corporate/corporate-landing-page-with-theme"
 import { Metadata } from "next"
 
