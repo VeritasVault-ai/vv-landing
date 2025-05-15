@@ -1,0 +1,77 @@
+.container {
+  width: 100%;
+}
+
+.tabs {
+  width: 100%;
+}
+
+.tabsList {
+  display: flex;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.tabsTrigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.tabIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.tabContent {
+  width: 100%;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.switchGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.fieldDescription {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin: 0.25rem 0 0 0;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.buttonIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+@media (max-width: 768px) {
+  .switchGroup {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
