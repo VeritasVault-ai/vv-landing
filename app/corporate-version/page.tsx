@@ -1,4 +1,6 @@
-import { CorporateLandingPage } from "@/components/corporate/corporate-landing-page"
+"use client"
+
+import { CorporateLandingPageWithTheme } from "@/components/corporate/corporate-landing-page-with-theme"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -8,8 +10,8 @@ export const metadata: Metadata = {
 
 /**
  * Main page for the corporate version of the application
- * Renders the corporate landing page
+ * Renders the corporate landing page with theme provider
  */
 export default function CorporateVersionPage() {
-  return <CorporateLandingPage />
+  return <CorporateLandingPageWithTheme />
 }

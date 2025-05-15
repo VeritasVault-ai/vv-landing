@@ -15,6 +15,7 @@ import { useCurrentExperience } from "@/src/hooks/use-current-experience"
 import { ThemeProvider as CustomThemeProvider } from "@/src/lib/context/ThemeProvider"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { ReactNode } from "react"
+import { ExperienceType } from "@/src/types/theme"
 
 interface UnifiedThemeProviderProps {
   children: ReactNode
@@ -58,7 +59,7 @@ export function ExperienceProvider({
   experience 
 }: { 
   children: ReactNode, 
-  experience: [keyof typeof EXPERIENCE_TYPES] | undefined
+  experience: ExperienceType | undefined
 }) {
   return (
     <NextThemesProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
