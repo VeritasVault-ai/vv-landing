@@ -10,11 +10,11 @@
  * have access to theme context.
  */
 
-import { ReactNode, useEffect, useState } from "react"
-import { ThemeProvider as NextThemesProvider } from "next-themes"
-import { ThemeProvider as CustomThemeProvider } from "@/src/lib/context/ThemeProvider"
 import { EXPERIENCE_TYPES } from "@/src/constants/theme"
 import { useCurrentExperience } from "@/src/hooks/use-current-experience"
+import { ThemeProvider as CustomThemeProvider } from "@/src/lib/context/ThemeProvider"
+import { ThemeProvider as NextThemesProvider } from "next-themes"
+import { ReactNode } from "react"
 
 interface UnifiedThemeProviderProps {
   children: ReactNode
@@ -31,11 +31,11 @@ interface UnifiedThemeProviderProps {
  */
 export function UnifiedThemeProvider({ 
   children, 
-  defaultExperience
+  defaultExperience = EXPERIENCE_TYPES.STANDARD
 }: UnifiedThemeProviderProps) {
   // Use the current experience based on route if no default is provided
   const routeBasedExperience = useCurrentExperience()
-  const experienceToUse = defaultExperience || routeBasedExperience
+  const experienceToUse = routeBasedExperience || defaultExperience
   
   return (
     <NextThemesProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
@@ -61,8 +61,10 @@ export function ExperienceProvider({
   experience: string 
 }) {
   return (
-    <CustomThemeProvider defaultExperience={experience}>
-      {children}
-    </CustomThemeProvider>
+    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <CustomThemeProvider defaultExperience={experience}>
+        {children}
+      </CustomThemeProvider>
+    </NextThemesProvider>
   )
 }
