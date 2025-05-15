@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * Middleware function that runs before requests are processed
- * This can be used to handle authentication, logging, and other cross-cutting concerns
+ * Handles authentication, login flags, and analytics tracking
  */
 export async function middleware(request: NextRequest) {
   // Get the request URL and path
@@ -17,23 +17,27 @@ export async function middleware(request: NextRequest) {
   // Get user agent
   const userAgent = request.headers.get('user-agent') || 'unknown'
   
-  // Log request information (in production, you would send this to a logging service)
-  console.log(`[${new Date().toISOString()}] ${request.method} ${path} - IP: ${ip} - UA: ${userAgent.substring(0, 100)}...`)
+  // Check for login flag in query parameters
+  const loginFlag = url.searchParams.get('flag') || 'default'
+  
+  // Log request information with login flag
+  console.log(`[${new Date().toISOString()}] ${request.method} ${path} - Flag: ${loginFlag} - IP: ${ip}`)
   
   // List of public routes that don't require authentication
   const publicRoutes = [
     '/',
+    '/login',
+    '/signup',
+    '/forgot-password',
+    '/reset-password',
     '/standard-version',
     '/corporate-version',
     '/api/analytics',
+    '/api/auth',
     '/api/theme',
     '/favicon.ico',
     '/logo.svg',
-    '/logo-white.svg',
-    '/advanced-analytics-predictive-dashboard.png',
-    '/liquidity-management-dashboard.png',
-    '/strategy-builder-flowchart.png',
-    '/abstract-neural-network.png'
+    '/logo-white.svg'
   ]
   
   // Check if current path starts with any public route
@@ -47,6 +51,12 @@ export async function middleware(request: NextRequest) {
   
   // Skip authentication for public routes
   if (isPublicRoute) {
+    // For login page, preserve the flag parameter
+    if (path === '/login' && loginFlag !== 'default') {
+      // Flag is already in the URL, no need to modify
+      return NextResponse.next()
+    }
+    
     return NextResponse.next()
   }
   
@@ -59,13 +69,22 @@ export async function middleware(request: NextRequest) {
     const authToken = request.cookies.get('auth_token')?.value
     const authHeader = request.headers.get('authorization')
     
-    // If no authentication is present, redirect to login
+    // If no authentication is present, redirect to login with flag and return URL
     if (!authToken && !authHeader) {
       console.log(`[AUTH] Unauthorized access attempt to ${path} - IP: ${ip}`)
       
-      // Redirect to your custom login page instead of Vercel's login
+      // Determine appropriate login flag based on the accessed route
+      let routeFlag = 'dashboard'
+      if (path.includes('/admin')) routeFlag = 'admin'
+      if (path.includes('/account')) routeFlag = 'account'
+      
+      // Use provided flag or route-based flag
+      const finalFlag = loginFlag !== 'default' ? loginFlag : routeFlag
+      
+      // Redirect to login page with flag and return URL
       url.pathname = '/login'
       url.searchParams.set('returnUrl', path)
+      url.searchParams.set('flag', finalFlag)
       
       return NextResponse.redirect(url)
     }
