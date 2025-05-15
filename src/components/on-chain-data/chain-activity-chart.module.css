@@ -1,0 +1,31 @@
+.chartWrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.tooltipContent {
+  padding: 0.5rem;
+}
+
+.tooltipDate {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+}
+
+.tooltipMetrics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tooltipMetric {
+  font-size: 0.875rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tooltipLabel {
+  font-weight: 500;
+}
