@@ -4,9 +4,10 @@ import { ExternalLink } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useTokenTransfers } from "@/hooks/use-subgraph-data"
-import { formatCurrency, formatAddress } from "@/lib/formatters"
+import { useTokenTransfers } from "@/src/hooks/use-subgraph-data"
+import { formatCurrency, formatAddress } from "@/src/lib/formatters"
 import styles from "./token-transfers-list.module.css"
+import { Key } from "react"
 
 export interface TokenTransfersListProps {
   chain: string
@@ -47,7 +48,7 @@ export const TokenTransfersList = ({ chain, tokenAddress, limit = 10 }: TokenTra
         <div className={styles.transfersList}>
           {isLoading
             ? Array.from({ length: limit }).map((_, index) => (
-                <div key={index} className={styles.transferItemSkeleton}>
+                <div key={`skeleton-${index}`} className={styles.transferItemSkeleton}>
                   <div className={styles.transferHeader}>
                     <Skeleton className="h-4 w-24" />
                     <Skeleton className="h-4 w-20" />
@@ -60,7 +61,7 @@ export const TokenTransfersList = ({ chain, tokenAddress, limit = 10 }: TokenTra
                   </div>
                 </div>
               ))
-            : data?.transfers.map((transfer, index) => {
+            : data?.transfers.map((transfer: { timestamp: string | number | Date; transactionHash: Key | null | undefined; from: string; to: string; amountUSD: number }) => {
                 const date = new Date(transfer.timestamp)
                 const formattedDate = date.toLocaleDateString(undefined, {
                   year: "numeric",
@@ -72,7 +73,7 @@ export const TokenTransfersList = ({ chain, tokenAddress, limit = 10 }: TokenTra
                   minute: "2-digit",
                 })
                 return (
-                  <div key={index} className={styles.transferItem}>
+                  <div key={transfer.transactionHash} className={styles.transferItem}>
                     <div className={styles.transferHeader}>
                       <span className={styles.transferDate}>{formattedDate}</span>
                       <span className={styles.transferTime}>{formattedTime}</span>

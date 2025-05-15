@@ -1,12 +1,12 @@
 "use client"
-import { useState, useEffect } from "react"
-import { ArrowDown, ArrowUp, Plus, Search, Star, StarOff, Trash } from "lucide-react"
-import Image from "next/image"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatCurrency, formatPercentage } from "@/src/lib/formatters"
+import { ArrowDown, ArrowUp, Plus, Search, Star, StarOff, Trash } from "lucide-react"
+import Image from "next/image"
+import { useEffect, useState } from "react"
 import styles from "./watchlist-panel.module.css"
 
 interface WatchlistItem {
@@ -117,6 +117,11 @@ export const WatchlistPanel = ({ selectedChain = "all" }: WatchlistPanelProps) =
     setWatchlist(watchlist.filter((item) => item.id !== id))
   }
 
+  // Generate stable skeleton item IDs
+  const skeletonItems = Array.from({ length: 6 }).map((_, i) => ({
+    id: `watchlist-skeleton-${i}`
+  }));
+
   return (
     <div className={styles.container}>
       <Card className={styles.watchlistCard}>
@@ -145,8 +150,8 @@ export const WatchlistPanel = ({ selectedChain = "all" }: WatchlistPanelProps) =
           </div>
           <div className={styles.watchlistItems}>
             {isLoading ? (
-              Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className={styles.watchlistItemSkeleton}>
+              skeletonItems.map((item) => (
+                <div key={item.id} className={styles.watchlistItemSkeleton}>
                   <div className={styles.itemInfoSkeleton}>
                     <Skeleton className="h-8 w-8 rounded-full" />
                     <div>

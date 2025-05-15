@@ -1,14 +1,14 @@
 "use client"
-import { useState } from "react"
-import { Activity, BarChart3, Bell, Layers, Settings, Shield, Users } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
-import { EventFeed } from "@/components/features/event-grid/event-feed"
-import { SystemMetricsPanel } from "@/components/features/admin/system-metrics-panel"
-import { UserManagementPanel } from "@/components/features/admin/user-management-panel"
-import { AdminAlertsList } from "@/components/features/admin/admin-alerts-list"
-import { ConfigurationPanel } from "@/components/features/admin/configuration-panel"
+import { AdminAlertsList } from "@/src/components/features/admin/admin-alerts-list"
+import { ConfigurationPanel } from "@/src/components/features/admin/configuration-panel"
+import { SystemMetricsPanel } from "@/src/components/features/admin/system-metrics-panel"
+import { UserManagementPanel } from "@/src/components/features/admin/user-management-panel"
+import { EventFeed } from "@/src/components/features/event-grid/event-feed"
+import { Activity, BarChart3, Bell, Layers, Settings, Shield, Users } from "lucide-react"
+import { useState } from "react"
 import styles from "./admin-dashboard.module.css"
 
 export interface AdminDashboardProps {
@@ -23,7 +23,7 @@ export const AdminDashboard = ({ defaultTab = "overview" }: AdminDashboardProps)
       <div className={styles.dashboardHeader}>
         <div>
           <h1 className={styles.dashboardTitle}>Admin Dashboard</h1>
-          <p className={styles.dashboardDescription}>Monitor system events and manage VeritasVault.ai services</p>
+          <p className={styles.dashboardDescription}>Monitor system events and manage VeritasVault.net services</p>
         </div>
         <div className={styles.headerActions}>
           <Button variant="outline" size="sm" className={styles.actionButton}>

@@ -1,14 +1,15 @@
 "use client"
-import { useState } from "react"
+import type { DateRange } from "@/src/types/analytics"
 import { Download } from "lucide-react"
-import type { DateRange } from "@/types/analytics"
+import { useState } from "react"
 import styles from "./report-generator.module.css"
 
 interface ReportGeneratorProps {
   dateRange: DateRange
+  onCancel?: () => void
 }
 
-export function ReportGenerator({ dateRange }: ReportGeneratorProps) {
+export function ReportGenerator({ dateRange, onCancel }: ReportGeneratorProps) {
   const [reportType, setReportType] = useState("summary")
   const [format, setFormat] = useState("pdf")
   const [sections, setSections] = useState({
@@ -37,6 +38,24 @@ export function ReportGenerator({ dateRange }: ReportGeneratorProps) {
     
     // Mock download behavior
     alert("Report generation started. The download will begin shortly.")
+  }
+  
+  const handleCancel = () => {
+    // Reset form to default values
+    setReportType("summary")
+    setFormat("pdf")
+    setSections({
+      userActivity: true,
+      transactions: true,
+      chainComparison: true,
+      assets: true,
+      demographics: true,
+    })
+    
+    // If an onCancel callback was provided, call it
+    if (onCancel && typeof onCancel === 'function') {
+      onCancel()
+    }
   }
 
   return (
@@ -156,8 +175,18 @@ export function ReportGenerator({ dateRange }: ReportGeneratorProps) {
         </div>
         
         <div className={styles.actions}>
-          <button className={`${styles.button} ${styles.buttonSecondary}`}>Cancel</button>
-          <button className={`${styles.button} ${styles.buttonPrimary}`} onClick={handleGenerateReport}>
+          <button 
+            className={`${styles.button} ${styles.buttonSecondary}`}
+            onClick={handleCancel}
+            type="button"
+          >
+            Cancel
+          </button>
+          <button 
+            className={`${styles.button} ${styles.buttonPrimary}`} 
+            onClick={handleGenerateReport}
+            type="button"
+          >
             <Download className={styles.buttonIcon} />
             Generate Report
           </button>

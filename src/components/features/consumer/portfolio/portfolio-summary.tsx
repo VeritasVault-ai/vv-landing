@@ -1,9 +1,8 @@
 "use client"
-import { useState } from "react"
-import { ArrowDown, ArrowUp, DollarSign } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatCurrency, formatPercentage } from "@/src/lib/formatters"
+import { ArrowDown, ArrowUp, DollarSign } from "lucide-react"
 import { PortfolioChart } from "./portfolio-chart"
 import styles from "./portfolio-summary.module.css"
 
@@ -47,17 +46,22 @@ export const PortfolioSummary = ({
       ) : (
         <div
           className={`${styles.change} ${change24h >= 0 ? styles.positive : styles.negative}`}
+          aria-live="polite"
         >
           {change24h >= 0 ? (
-            <ArrowUp className={styles.changeIcon} />
+            <ArrowUp className={styles.changeIcon} aria-hidden="true" />
           ) : (
-            <ArrowDown className={styles.changeIcon} />
+            <ArrowDown className={styles.changeIcon} aria-hidden="true" />
           )}
           <span>{formatCurrency(Math.abs(change24h))}</span>
           <span className={styles.changePercent}>
             ({formatPercentage(Math.abs(changePercentage24h))})
           </span>
           <span className={styles.changePeriod}>24h</span>
+          <span className="sr-only">
+            {change24h >= 0 ? "Increased by" : "Decreased by"} {formatCurrency(Math.abs(change24h))}
+            or {formatPercentage(Math.abs(changePercentage24h))} in the last 24 hours
+          </span>
         </div>
       )}
       

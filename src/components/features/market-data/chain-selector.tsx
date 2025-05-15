@@ -1,10 +1,10 @@
 "use client"
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation"
-import { Check, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { SUPPORTED_CHAINS } from "@/lib/constants"
+import { SUPPORTED_CHAINS } from "@/src/lib/constants"
+import { Check, ChevronDown } from "lucide-react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import styles from "./chain-selector.module.css"
 
 export interface ChainSelectorProps {
@@ -24,7 +24,22 @@ export const ChainSelector = ({ defaultChain = "ethereum" }: ChainSelectorProps)
     router.push(`${pathname}?${params.toString()}`)
   }
   
-  const currentChainData = SUPPORTED_CHAINS.find((chain) => chain.id === currentChain) || SUPPORTED_CHAINS[0]
+  // Create a safe fallback for when SUPPORTED_CHAINS is empty
+  const defaultChainData = { id: defaultChain, name: defaultChain, color: "#cccccc" }
+  
+  // Find the current chain data with a safe fallback
+  const currentChainData = SUPPORTED_CHAINS.find((chain) => chain.id === currentChain) || 
+    (SUPPORTED_CHAINS.length > 0 ? SUPPORTED_CHAINS[0] : defaultChainData)
+  
+  // If there are no supported chains, render a disabled button
+  if (SUPPORTED_CHAINS.length === 0) {
+    return (
+      <Button variant="outline" className={styles.chainButton} disabled>
+        <div className={styles.chainIcon} style={{ backgroundColor: defaultChainData.color }} />
+        {defaultChainData.name}
+      </Button>
+    )
+  }
   
   return (
     <DropdownMenu>

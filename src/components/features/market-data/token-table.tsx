@@ -1,8 +1,8 @@
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { formatCurrency, formatPercentage } from "@/src/lib/formatters"
+import type { TokenData } from "@/src/types/market-data"
 import { ArrowDown, ArrowUp } from "lucide-react"
 import Image from "next/image"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { formatCurrency, formatPercentage } from "@/lib/formatters"
-import type { TokenData } from "@/types/market-data"
 import styles from "./token-table.module.css"
 
 export interface TokenTableProps {
@@ -30,9 +30,11 @@ export const TokenTable = ({ tokens }: TokenTableProps) => {
                 <div className={styles.tokenCell}>
                   <div className={styles.tokenIcon}>
                     {token.image ? (
-                      <Image src={token.image || "/placeholder.svg"} alt={token.name} width={24} height={24} />
+                      <Image src={token.image} alt={token.name} width={24} height={24} />
                     ) : (
-                      <div className={styles.placeholderIcon} />
+                      <div className={styles.placeholderIcon} aria-label={`${token.name} icon placeholder`}>
+                        {token.symbol.substring(0, 2).toUpperCase()}
+                      </div>
                     )}
                   </div>
                   <div className={styles.tokenInfo}>

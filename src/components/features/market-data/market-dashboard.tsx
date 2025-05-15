@@ -1,17 +1,17 @@
 "use client"
-import { useEffect } from "react"
-import { AlertCircle, ArrowUpDown, Layers, TrendingUp } from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { useCoinGeckoData } from "@/hooks/use-coingecko-data"
-import { useDefiLlamaData } from "@/hooks/use-defillama-data"
-import { ChainSelector } from "@/components/features/market-data/chain-selector"
-import { TokenTable } from "@/components/features/market-data/token-table"
-import { ProtocolTable } from "@/components/features/market-data/protocol-table"
-import { MarketMetricsGrid } from "@/components/features/market-data/market-metrics-grid"
-import { TvlChart } from "@/components/features/market-data/tvl-chart"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ChainSelector } from "@/src/components/features/market-data/chain-selector"
+import { MarketMetricsGrid } from "@/src/components/features/market-data/market-metrics-grid"
+import { ProtocolTable } from "@/src/components/features/market-data/protocol-table"
+import { TokenTable } from "@/src/components/features/market-data/token-table"
+import { TvlChart } from "@/src/components/features/market-data/tvl-chart"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
+import { useCoinGeckoData } from "@/src/hooks/use-coingecko-data"
+import { useDefiLlamaData } from "@/src/hooks/use-defillama-data"
+import { AlertCircle, ArrowUpDown, Layers, TrendingUp } from "lucide-react"
+import { useEffect } from "react"
 import styles from "./market-dashboard.module.css"
 
 export interface MarketDashboardProps {
@@ -144,35 +144,61 @@ export const MarketDashboard = ({ defaultChain = "ethereum" }: MarketDashboardPr
   )
 }
 
-const MarketMetricsSkeleton = () => (
-  <div className={styles.metricsGrid}>
-    {[1, 2, 3, 4].map((i) => (
-      <Card key={i}>
-        <CardHeader className="pb-2">
-          <Skeleton className="h-4 w-1/2" />
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-8 w-3/4 mb-2" />
-          <Skeleton className="h-4 w-1/4" />
-        </CardContent>
-      </Card>
-    ))}
-  </div>
-)
+const MarketMetricsSkeleton = () => {
+  // Define metrics with unique identifiers
+  const metrics = [
+    { id: "market-cap-skeleton", label: "Market Cap" },
+    { id: "volume-skeleton", label: "24h Volume" },
+    { id: "dominance-skeleton", label: "BTC Dominance" },
+    { id: "tvl-skeleton", label: "Total TVL" },
+  ];
 
-const TableSkeleton = ({ rows = 5 }: { rows?: number }) => (
-  <div className={styles.tableSkeleton}>
-    <div className={styles.tableHeader}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Skeleton key={i} className="h-4 w-full" />
+  return (
+    <div className={styles.metricsGrid}>
+      {metrics.map((metric) => (
+        <Card key={metric.id}>
+          <CardHeader className="pb-2">
+            <Skeleton className="h-4 w-1/2" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-8 w-3/4 mb-2" />
+            <Skeleton className="h-4 w-1/4" />
+          </CardContent>
+        </Card>
       ))}
     </div>
-    {Array.from({ length: rows }).map((_, i) => (
-      <div key={i} className={styles.tableRow}>
-        {[1, 2, 3, 4, 5].map((j) => (
-          <Skeleton key={j} className="h-4 w-full" />
+  );
+};
+
+const TableSkeleton = ({ rows = 5 }: { rows?: number }) => {
+  // Define columns with unique identifiers
+  const columns = [
+    { id: "rank-col", label: "Rank" },
+    { id: "name-col", label: "Name" },
+    { id: "price-col", label: "Price" },
+    { id: "change-col", label: "Change" },
+    { id: "market-cap-col", label: "Market Cap" },
+  ];
+
+  // Generate unique row identifiers
+  const rowData = Array.from({ length: rows }).map((_, index) => ({
+    id: `table-row-${index}`,
+  }));
+
+  return (
+    <div className={styles.tableSkeleton}>
+      <div className={styles.tableHeader}>
+        {columns.map((column) => (
+          <Skeleton key={column.id} className="h-4 w-full" />
         ))}
       </div>
-    ))}
-  </div>
-)
+      {rowData.map((row) => (
+        <div key={row.id} className={styles.tableRow}>
+          {columns.map((column) => (
+            <Skeleton key={`${row.id}-${column.id}`} className="h-4 w-full" />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};

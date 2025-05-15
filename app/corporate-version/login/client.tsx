@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
-import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
 import { LoginForm } from "@/components/corporate/auth/login-form"
+import { COLOR_MODES, CORPORATE_VARIANTS, EXPERIENCE_TYPES } from "@/src/constants/theme"
+import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 interface LoginClientProps {
   returnUrl: string
@@ -73,7 +73,7 @@ export function LoginClient({ returnUrl, error }: LoginClientProps) {
                 className="hidden dark:block"
               />
               <span className="font-semibold text-xl text-slate-900 dark:text-white">
-                VeritasVault<span className="text-blue-600">.ai</span>
+                VeritasVault<span className="text-blue-600">.net</span>
               </span>
             </Link>
           </div>

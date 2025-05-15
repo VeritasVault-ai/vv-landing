@@ -1,10 +1,10 @@
 "use client"
-import { Save, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { RefreshCw, Save } from "lucide-react"
 import styles from "../configuration-panel.module.css"
 
 export const DatabaseConfigSection = () => {
@@ -20,7 +20,8 @@ export const DatabaseConfigSection = () => {
           <Input
             id="db-connection-string"
             type="password"
-            defaultValue="postgresql://username:password@localhost:5432/database"
+            defaultValue=""
+            placeholder="postgresql://username:password@hostname:port/database"
           />
         </div>
         

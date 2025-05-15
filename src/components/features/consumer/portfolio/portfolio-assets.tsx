@@ -1,7 +1,7 @@
 "use client"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AssetsList } from "./assets-list"
 import styles from "./portfolio-assets.module.css"
 
@@ -64,7 +64,7 @@ export const PortfolioAssets = ({ isLoading, assets }: PortfolioAssetsProps) => 
 const AssetsSkeleton = () => (
   <div className={styles.assetsSkeleton}>
     {Array.from({ length: 5 }).map((_, index) => (
-      <div key={index} className={styles.assetRowSkeleton}>
+      <div key={`asset-skeleton-${index}`} className={styles.assetRowSkeleton}>
         <div className={styles.assetInfoSkeleton}>
           <Skeleton className="h-8 w-8 rounded-full" />
           <div>

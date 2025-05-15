@@ -1,9 +1,9 @@
 "use client"
 
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
+import { formatCurrency, formatDate, formatNumber } from "@/src/lib/formatters"
 import { useMemo } from "react"
 import { Bar, BarChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
-import { formatNumber, formatCurrency, formatDate } from "@/lib/formatters"
 import styles from "./chain-activity-chart.module.css"
 
 interface DailyMetric {

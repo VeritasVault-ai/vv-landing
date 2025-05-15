@@ -1,8 +1,7 @@
 "use client"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ExternalLink } from "lucide-react"
-import { formatCurrency, formatPercentage } from "@/lib/formatters"
 import Image from "next/image"
 import styles from "./top-assets-table.module.css"
 
@@ -81,7 +80,11 @@ export function TopAssetsTable({ data, isLoading }: TopAssetsTableProps) {
                 {asset.marketCap ? formatCurrency(asset.marketCap) : "-"}
               </TableCell>
               <TableCell className={styles.actionColumn}>
-                <button className={styles.viewButton}>
+                <button 
+                  className={styles.viewButton}
+                  aria-label={`View details for ${asset.name}`}
+                  onClick={() => window.open(`/asset/${asset.id}`, '_blank', 'noopener,noreferrer')}
+                >
                   <ExternalLink className={styles.viewIcon} />
                 </button>
               </TableCell>
@@ -148,4 +151,19 @@ function TopAssetsTableSkeleton() {
       </Table>
     </div>
   )
+}
+
+// Helper functions for formatting values
+function formatCurrency(value: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value);
+}
+
+function formatPercentage(value: number): string {
+  const sign = value >= 0 ? '+' : '';
+  return `${sign}${value.toFixed(2)}%`;
 }

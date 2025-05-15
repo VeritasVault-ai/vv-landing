@@ -132,7 +132,7 @@ export function CareersOpenings() {
             Don't see a position that matches your skills? We're always looking for talented individuals.
           </p>
           <a 
-            href="mailto:careers@veritasvault.com" 
+            href="mailto:careers@veritasvault.net" 
             className="bg-blue-600 text-white px-8 py-3 rounded-md font-medium hover:bg-blue-700 transition-colors inline-block"
           >
             Send Us Your Resume

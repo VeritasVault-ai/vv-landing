@@ -1,7 +1,8 @@
 "use client"
-import { useState } from "react"
-import { AlertCircle, AlertTriangle, Info, CheckCircle, Clock, ChevronRight } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { AlertCircle, AlertTriangle, CheckCircle, ChevronRight, Clock, Info } from "lucide-react"
+import { useState } from "react"
 import styles from "./admin-alerts-list.module.css"
 
 type AlertSeverity = "critical" | "warning" | "info" | "success"
@@ -66,18 +67,45 @@ export const AdminAlertsList = ({ limit }: AdminAlertsListProps) => {
   const [alerts, setAlerts] = useState<Alert[]>(mockAlerts)
   const displayedAlerts = limit ? alerts.slice(0, limit) : alerts
 
-  const getSeverityIcon = (severity: AlertSeverity) => {
+  const getSeverityInfo = (severity: AlertSeverity) => {
     switch (severity) {
       case "critical":
-        return <AlertCircle className={`${styles.alertIcon} ${styles.iconCritical}`} />
+        return {
+          icon: <AlertCircle className={`${styles.alertIcon} ${styles.iconCritical}`} aria-hidden="true" />,
+          label: "Critical",
+          badgeVariant: "destructive" as const,
+          // Additional pattern for critical alerts - double outline
+          pattern: styles.patternCritical
+        }
       case "warning":
-        return <AlertTriangle className={`${styles.alertIcon} ${styles.iconWarning}`} />
+        return {
+          icon: <AlertTriangle className={`${styles.alertIcon} ${styles.iconWarning}`} aria-hidden="true" />,
+          label: "Warning",
+          badgeVariant: "warning" as const,
+          // Additional pattern for warning alerts - diagonal stripes
+          pattern: styles.patternWarning
+        }
       case "info":
-        return <Info className={`${styles.alertIcon} ${styles.iconInfo}`} />
+        return {
+          icon: <Info className={`${styles.alertIcon} ${styles.iconInfo}`} aria-hidden="true" />,
+          label: "Info",
+          badgeVariant: "secondary" as const,
+          pattern: styles.patternInfo
+        }
       case "success":
-        return <CheckCircle className={`${styles.alertIcon} ${styles.iconSuccess}`} />
+        return {
+          icon: <CheckCircle className={`${styles.alertIcon} ${styles.iconSuccess}`} aria-hidden="true" />,
+          label: "Success",
+          badgeVariant: "success" as const,
+          pattern: styles.patternSuccess
+        }
       default:
-        return <Info className={styles.alertIcon} />
+        return {
+          icon: <Info className={styles.alertIcon} aria-hidden="true" />,
+          label: "Info",
+          badgeVariant: "secondary" as const,
+          pattern: ""
+        }
     }
   }
 
@@ -89,33 +117,52 @@ export const AdminAlertsList = ({ limit }: AdminAlertsListProps) => {
     <div className={styles.alertsContainer}>
       {displayedAlerts.length === 0 ? (
         <div className={styles.noAlerts}>
-          <Info className={styles.noAlertsIcon} />
+          <Info className={styles.noAlertsIcon} aria-hidden="true" />
           <p>No alerts to display</p>
         </div>
       ) : (
-        <ul className={styles.alertsList}>
-          {displayedAlerts.map((alert) => (
-            <li
-              key={alert.id}
-              className={`${styles.alertItem} ${!alert.isRead ? styles.unread : ""}`}
-              onClick={() => markAsRead(alert.id)}
-            >
-              <div className={styles.alertIconContainer}>{getSeverityIcon(alert.severity)}</div>
-              <div className={styles.alertContent}>
-                <div className={styles.alertHeader}>
-                  <h4 className={styles.alertTitle}>{alert.title}</h4>
-                  <div className={styles.alertTimestamp}>
-                    <Clock className={styles.timestampIcon} />
-                    <span>{alert.timestamp}</span>
-                  </div>
+        <ul className={styles.alertsList} role="list" aria-label="System alerts">
+          {displayedAlerts.map((alert) => {
+            const severityInfo = getSeverityInfo(alert.severity)
+            
+            return (
+              <li
+                key={alert.id}
+                className={`${styles.alertItem} ${!alert.isRead ? styles.unread : ""}`}
+                onClick={() => markAsRead(alert.id)}
+              >
+                <div className={`${styles.alertIconContainer} ${severityInfo.pattern}`} aria-hidden="true">
+                  {severityInfo.icon}
                 </div>
-                <p className={styles.alertMessage}>{alert.message}</p>
-              </div>
-              <Button variant="ghost" size="icon" className={styles.alertAction}>
-                <ChevronRight className={styles.actionIcon} />
-              </Button>
-            </li>
-          ))}
+                <div className={styles.alertContent}>
+                  <div className={styles.alertHeader}>
+                    <h4 className={styles.alertTitle}>
+                      {alert.title}
+                      <Badge variant={severityInfo.badgeVariant} className={styles.severityBadge}>
+                        {severityInfo.label}
+                      </Badge>
+                      {!alert.isRead && (
+                        <span className={styles.unreadIndicator} aria-label="Unread alert">•</span>
+                      )}
+                    </h4>
+                    <div className={styles.alertTimestamp}>
+                      <Clock className={styles.timestampIcon} aria-hidden="true" />
+                      <span>{alert.timestamp}</span>
+                    </div>
+                  </div>
+                  <p className={styles.alertMessage}>{alert.message}</p>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className={styles.alertAction}
+                  aria-label={`View details of ${alert.title}`}
+                >
+                  <ChevronRight className={styles.actionIcon} />
+                </Button>
+              </li>
+            )
+          })}
         </ul>
       )}
       

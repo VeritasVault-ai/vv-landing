@@ -154,7 +154,7 @@ export function ComplianceSolutionClient() {
             <div className="container mx-auto px-4 text-center">
               <h2 className="text-3xl font-bold mb-6">Ready to streamline your compliance processes?</h2>
               <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                Schedule a demo to see how VeritasVault Enterprise can help your institution meet regulatory requirements 
+                Schedule a demo to see how VeritasVault.net Enterprise can help your institution meet regulatory requirements 
                 while efficiently managing digital assets.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">

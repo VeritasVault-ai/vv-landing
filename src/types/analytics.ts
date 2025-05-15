@@ -4,6 +4,13 @@ export interface DateRange {
   end: Date
 }
 
+export type KpiData = {
+  title: string;
+  value: number;
+  change: number;
+  type: "number" | "currency" | "percentage";
+};
+
 // Key Performance Indicators
 export interface KPIs {
   totalUsers: number
@@ -48,31 +55,66 @@ export interface ChainMetric {
 }
 
 // Asset performance data
-export interface AssetPerformance {
-  symbol: string
-  name: string
-  price: number
-  volume24h: number
-  marketCap: number
-  change24h: number
+export type AssetPerformance = {
+  name?: string;
+  symbol?: string;
+  price?: number;
+  marketCap?: number;
+  change?: number;
+  volume?: number;
+  rank?: number;
+  chain?: string;
+  volumeChange?: number;
 }
+
+export type AssetData = {
+  id: string;
+  name: string;
+  symbol: string;
+  price: number;
+  marketCap: number;
+  change: number;
+  volume: number;
+  rank: number;
+  chain: string;
+  priceChange24h: number;
+  volumeChange24h: number;
+};
+
+export type AgeGroup = {
+  group: string;
+  value: number;
+};
+
+export type Region = {
+  region: string;
+  value: number;
+};
+
+export type Platform = {
+  platform: string;
+  value: number;
+};
 
 // User demographics data
-export interface UserDemographics {
-  byRegion: { region: string; percentage: number }[]
-  byExperience: { level: string; percentage: number }[]
-  byPlatform: { platform: string; percentage: number }[]
-}
+export type UserDemographicsData = {
+  totalUsers: number;
+  activeUsers: number;
+  newUsers: number;
+  ageGroups: AgeGroup[];
+  regions: Region[];
+  platforms: Platform[];
+};
 
 // Complete analytics data structure
-export interface AnalyticsData {
-  kpis: KPIs
-  userActivity: UserActivity
-  transactionMetrics: TransactionMetrics
-  chainComparison: ChainMetric[]
-  topAssets: AssetPerformance[]
-  userDemographics: UserDemographics
-}
+export type AnalyticsData = {
+  kpis?: KpiData[];
+  userActivity?: ActivityData[];
+  transactionMetrics?: TransactionMetrics[];
+  chainComparison?: ChainData[];
+  topAssets?: AssetPerformance[];
+  userDemographics?: UserDemographicsData;
+};
 
 // Report configuration
 export interface ReportConfig {
@@ -89,3 +131,17 @@ export interface ReportSection {
   includeChart: boolean
   includeTable: boolean
 }
+
+export type ActivityData = {
+  date: string;
+  activeUsers: number;
+  newUsers: number;
+};
+
+// Chain comparison data types
+export type ChainData = {
+  name: string;
+  volume: number;
+  transactions: number;
+  users: number;
+};

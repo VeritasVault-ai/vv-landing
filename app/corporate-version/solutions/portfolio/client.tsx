@@ -153,7 +153,7 @@ export function PortfolioSolutionClient() {
             <div className="container mx-auto px-4 text-center">
               <h2 className="text-3xl font-bold mb-6">Ready to optimize your investment portfolio?</h2>
               <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                Schedule a demo to see how VeritasVault Enterprise can transform your portfolio management for digital assets.
+                Schedule a demo to see how VeritasVault.net can transform your portfolio management for digital assets.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50">

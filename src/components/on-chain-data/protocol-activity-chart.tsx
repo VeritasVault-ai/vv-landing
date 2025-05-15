@@ -3,7 +3,7 @@
 import { useMemo } from "react"
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
-import { formatCurrency, formatNumber, formatDate } from "@/lib/formatters"
+import { formatCurrency, formatNumber, formatDate } from "@/src/lib/formatters"
 import styles from "./protocol-activity-chart.module.css"
 
 interface DailyMetric {

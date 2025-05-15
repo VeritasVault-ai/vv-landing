@@ -1,11 +1,11 @@
 "use client"
-import { useState, useEffect } from "react"
-import { PieChart } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { PortfolioSummary } from "./portfolio-summary"
+import { PieChart } from "lucide-react"
+import { useEffect, useState } from "react"
 import { AllocationChart } from "./allocation-chart"
 import { PortfolioAssets } from "./portfolio-assets"
 import styles from "./portfolio-overview.module.css"
+import { PortfolioSummary } from "./portfolio-summary"
 
 interface Asset {
   name: string
@@ -222,19 +222,26 @@ function generateMockHistoryData(timeframe: string): { date: string; value: numb
 }
 
 // Skeleton component for allocation chart
-const AllocationSkeleton = () => (
-  <div className="flex flex-col gap-6">
-    <div className="flex justify-center">
-      <div className="h-[200px] w-[200px] rounded-full bg-muted animate-pulse" />
+const AllocationSkeleton = () => {
+  // Generate stable IDs for skeleton items
+  const skeletonItems = Array.from({ length: 5 }).map((_, i) => ({
+    id: `allocation-skeleton-item-${i}`,
+  }));
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex justify-center">
+        <div className="h-[200px] w-[200px] rounded-full bg-muted animate-pulse" />
+      </div>
+      <div className="w-full space-y-2">
+        {skeletonItems.map((item) => (
+          <div key={item.id} className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-muted animate-pulse" />
+            <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+            <div className="ml-auto h-4 w-16 bg-muted animate-pulse rounded" />
+          </div>
+        ))}
+      </div>
     </div>
-    <div className="w-full space-y-2">
-      {Array.from({ length: 5 }).map((_, index) => (
-        <div key={index} className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-full bg-muted animate-pulse" />
-          <div className="h-4 w-24 bg-muted animate-pulse rounded" />
-          <div className="ml-auto h-4 w-16 bg-muted animate-pulse rounded" />
-        </div>
-      ))}
-    </div>
-  </div>
-)
+  );
+};

@@ -1,32 +1,144 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
-import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { useSearchParams } from "next/navigation"
+import { toast } from "@/components/ui/use-toast"
+import { COLOR_MODES, CORPORATE_VARIANTS, EXPERIENCE_TYPES } from "@/src/constants/theme"
+import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useState } from "react"
 
 /**
  * Client component for the Signup page
  */
 export function SignupClient() {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const searchParams = useSearchParams()
-  const returnUrl = searchParams.get("returnUrl") || "/corporate-version/dashboard"
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    company: "",
+    password: "",
+    confirmPassword: "",
+    terms: false,
+    marketing: false
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  
+  // Validate returnUrl to prevent open redirect vulnerabilities
+  const rawReturnUrl = searchParams.get("returnUrl") || "/corporate-version/dashboard"
+  const returnUrl = rawReturnUrl.startsWith("/") && !rawReturnUrl.startsWith("//") 
+    ? rawReturnUrl 
+    : "/corporate-version/dashboard"
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value, type, checked } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [id]: type === "checkbox" ? checked : value
+    }))
+    
+    // Clear error when field is edited
+    if (errors[id]) {
+      setErrors(prev => ({ ...prev, [id]: "" }))
+    }
+  }
+  
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+    
+    // Basic validation
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required"
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required"
+    
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required"
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address"
+    }
+    
+    if (!formData.company.trim()) newErrors.company = "Company name is required"
+    
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required"
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters"
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])/.test(formData.password)) {
+      newErrors.password = "Password must include uppercase, lowercase, number, and special character"
+    }
+    
+    // Confirm password
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match"
+    }
+    
+    // Terms agreement
+    if (!formData.terms) {
+      newErrors.terms = "You must agree to the Terms of Service"
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!validateForm()) {
+      return
+    }
+    
     setIsSubmitting(true)
     
-    // Simulate API call
-    setTimeout(() => {
-      window.location.href = returnUrl
-    }, 1500)
+    try {
+      // Actual API call implementation
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          company: formData.company,
+          password: formData.password,
+          marketingConsent: formData.marketing
+        }),
+      })
+      
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create account')
+      }
+      
+      // Success - redirect to returnUrl
+      toast({
+        title: "Account created",
+        description: "Your account has been successfully created.",
+        variant: "success",
+      })
+      
+      router.push(returnUrl)
+    } catch (error) {
+      console.error('Signup error:', error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to create account. Please try again.",
+        variant: "destructive",
+      })
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -67,7 +179,13 @@ export function SignupClient() {
                   id="firstName" 
                   placeholder="Enter your first name" 
                   required 
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className={errors.firstName ? "border-red-500" : ""}
                 />
+                {errors.firstName && (
+                  <p className="text-xs text-red-500">{errors.firstName}</p>
+                )}
               </div>
               
               <div className="space-y-2">
@@ -76,7 +194,13 @@ export function SignupClient() {
                   id="lastName" 
                   placeholder="Enter your last name" 
                   required 
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className={errors.lastName ? "border-red-500" : ""}
                 />
+                {errors.lastName && (
+                  <p className="text-xs text-red-500">{errors.lastName}</p>
+                )}
               </div>
             </div>
             
@@ -87,7 +211,13 @@ export function SignupClient() {
                 type="email" 
                 placeholder="Enter your email address" 
                 required 
+                value={formData.email}
+                onChange={handleChange}
+                className={errors.email ? "border-red-500" : ""}
               />
+              {errors.email && (
+                <p className="text-xs text-red-500">{errors.email}</p>
+              )}
             </div>
             
             <div className="space-y-2">
@@ -96,7 +226,13 @@ export function SignupClient() {
                 id="company" 
                 placeholder="Enter your company name" 
                 required 
+                value={formData.company}
+                onChange={handleChange}
+                className={errors.company ? "border-red-500" : ""}
               />
+              {errors.company && (
+                <p className="text-xs text-red-500">{errors.company}</p>
+              )}
             </div>
             
             <div className="space-y-2">
@@ -106,10 +242,17 @@ export function SignupClient() {
                 type="password" 
                 placeholder="Create a secure password" 
                 required 
+                value={formData.password}
+                onChange={handleChange}
+                className={errors.password ? "border-red-500" : ""}
               />
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Password must be at least 8 characters with uppercase, lowercase, number, and special character.
-              </p>
+              {errors.password ? (
+                <p className="text-xs text-red-500">{errors.password}</p>
+              ) : (
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Password must be at least 8 characters with uppercase, lowercase, number, and special character.
+                </p>
+              )}
             </div>
             
             <div className="space-y-2">
@@ -119,21 +262,45 @@ export function SignupClient() {
                 type="password" 
                 placeholder="Confirm your password" 
                 required 
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={errors.confirmPassword ? "border-red-500" : ""}
               />
+              {errors.confirmPassword && (
+                <p className="text-xs text-red-500">{errors.confirmPassword}</p>
+              )}
             </div>
             
             <div className="flex items-start space-x-2">
-              <Checkbox id="terms" required />
-              <Label 
-                htmlFor="terms" 
-                className="text-sm text-slate-700 dark:text-slate-300"
-              >
-                I agree to the <Link href="/corporate-version/terms" className="text-blue-600 dark:text-blue-400 hover:underline">Terms of Service</Link> and <Link href="/corporate-version/privacy" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</Link>.
-              </Label>
+              <Checkbox 
+                id="terms" 
+                required 
+                checked={formData.terms}
+                onCheckedChange={(checked) => 
+                  setFormData(prev => ({ ...prev, terms: checked === true }))
+                }
+              />
+              <div>
+                <Label 
+                  htmlFor="terms" 
+                  className="text-sm text-slate-700 dark:text-slate-300"
+                >
+                  I agree to the <Link href="/corporate-version/terms" className="text-blue-600 dark:text-blue-400 hover:underline">Terms of Service</Link> and <Link href="/corporate-version/privacy" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</Link>.
+                </Label>
+                {errors.terms && (
+                  <p className="text-xs text-red-500">{errors.terms}</p>
+                )}
+              </div>
             </div>
             
             <div className="flex items-start space-x-2">
-              <Checkbox id="marketing" />
+              <Checkbox 
+                id="marketing" 
+                checked={formData.marketing}
+                onCheckedChange={(checked) => 
+                  setFormData(prev => ({ ...prev, marketing: checked === true }))
+                }
+              />
               <Label 
                 htmlFor="marketing" 
                 className="text-sm text-slate-700 dark:text-slate-300"

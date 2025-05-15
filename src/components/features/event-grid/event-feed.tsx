@@ -1,11 +1,11 @@
 "use client"
-import { useState, useEffect } from "react"
-import { Search, Filter, RefreshCw, Clock, Tag, Server } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { EventItem } from "@/components/features/event-grid/event-item"
+import { Clock, Filter, RefreshCw, Search, Server, Tag } from "lucide-react"
+import { useEffect, useState } from "react"
 import styles from "./event-feed.module.css"
+import { EventItem } from "./event-item"
 
 type EventType =
   | "system.status"
@@ -135,6 +135,7 @@ export const EventFeed = ({
   const [filter, setFilter] = useState<EventFilter>(initialFilter)
   const [searchQuery, setSearchQuery] = useState("")
   const [loading, setLoading] = useState(true)
+  const [showFilterDialog, setShowFilterDialog] = useState(false)
   
   // Simulate fetching events
   useEffect(() => {
@@ -189,6 +190,13 @@ export const EventFeed = ({
       setLoading(false)
     }, 1000)
   }
+
+  const handleFilterClick = () => {
+    setShowFilterDialog(true);
+    // In a real implementation, you would show a dialog or dropdown
+    // For now, we'll just toggle the state to demonstrate the functionality
+    console.log("Filter dialog should open");
+  }
   
   return (
     <div className={styles.container}>
@@ -205,16 +213,29 @@ export const EventFeed = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className={styles.searchInput}
+            aria-label="Search events"
           />
         </div>
         
         <div className={styles.actions}>
-          <Button variant="outline" size="sm" className={styles.actionButton} onClick={() => {}}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className={styles.actionButton} 
+            onClick={handleFilterClick}
+            aria-label="Open filter options"
+          >
             <Filter className={styles.actionIcon} />
             <span>Filter</span>
           </Button>
           
-          <Button variant="outline" size="sm" className={styles.actionButton} onClick={refreshEvents}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className={styles.actionButton} 
+            onClick={refreshEvents}
+            aria-label="Refresh events"
+          >
             <RefreshCw className={`${styles.actionIcon} ${loading ? styles.spinning : ""}`} />
             <span>Refresh</span>
           </Button>
@@ -246,16 +267,112 @@ export const EventFeed = ({
             )}
           </div>
           
-          <Button variant="ghost" size="sm" className={styles.clearFiltersButton} onClick={() => setFilter({})}>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className={styles.clearFiltersButton} 
+            onClick={() => setFilter({})}
+            aria-label="Clear all filters"
+          >
             Clear filters
           </Button>
+        </div>
+      )}
+      
+      {/* Filter Dialog would be rendered here in a real implementation */}
+      {showFilterDialog && (
+        <div 
+          className={styles.filterDialogOverlay} 
+          onClick={() => setShowFilterDialog(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="filter-dialog-title"
+        >
+          <div className={styles.filterDialog} onClick={(e) => e.stopPropagation()}>
+            {/* Filter Dialog Content */}
+            <h4 id="filter-dialog-title">Filter Events</h4>
+            <div className={styles.filterOptions}>
+              {/* Event Type Filter */}
+              <div className={styles.filterOption}>
+                <label htmlFor="event-type-select">Event Type</label>
+                <select
+                  id="event-type-select"
+                  value={filter.eventType || ""}
+                  onChange={(e) => setFilter({ ...filter, eventType: e.target.value as EventType || undefined })}
+                  aria-label="Filter by event type"
+                >
+                  <option value="">All Types</option>
+                  <option value="system.status">System Status</option>
+                  <option value="system.error">System Error</option>
+                  <option value="user.login">User Login</option>
+                  <option value="user.logout">User Logout</option>
+                  <option value="user.created">User Created</option>
+                  <option value="data.updated">Data Updated</option>
+                  <option value="security.alert">Security Alert</option>
+                  <option value="security.access">Security Access</option>
+                </select>
+              </div>
+              
+              {/* Source Filter */}
+              <div className={styles.filterOption}>
+                <label htmlFor="source-select">Source</label>
+                <select
+                  id="source-select"
+                  value={filter.source || ""}
+                  onChange={(e) => setFilter({ ...filter, source: e.target.value || undefined })}
+                  aria-label="Filter by source"
+                >
+                  <option value="">All Sources</option>
+                  <option value="api">API</option>
+                  <option value="database">Database</option>
+                  <option value="auth-service">Auth Service</option>
+                  <option value="data-processor">Data Processor</option>
+                  <option value="scheduler">Scheduler</option>
+                  <option value="monitoring">Monitoring</option>
+                </select>
+              </div>
+              
+              {/* Severity Filter */}
+              <div className={styles.filterOption}>
+                <label htmlFor="severity-select">Severity</label>
+                <select
+                  id="severity-select"
+                  value={filter.severity || ""}
+                  onChange={(e) => setFilter({ ...filter, severity: e.target.value || undefined })}
+                  aria-label="Filter by severity"
+                >
+                  <option value="">All Severities</option>
+                  <option value="critical">Critical</option>
+                  <option value="warning">Warning</option>
+                  <option value="info">Info</option>
+                  <option value="success">Success</option>
+                </select>
+              </div>
+            </div>
+            
+            <div className={styles.filterActions}>
+              <Button 
+                variant="outline" 
+                onClick={() => setFilter({})}
+                aria-label="Reset all filters"
+              >
+                Reset
+              </Button>
+              <Button 
+                onClick={() => setShowFilterDialog(false)}
+                aria-label="Apply filters and close dialog"
+              >
+                Apply
+              </Button>
+            </div>
+          </div>
         </div>
       )}
       
       <div className={styles.eventsList}>
         {loading ? (
           <div className={styles.loadingState}>
-            <RefreshCw className={`${styles.loadingIcon} ${styles.spinning}`} />
+            <RefreshCw className={`${styles.loadingIcon} ${styles.spinning}`} aria-hidden="true" />
             <p>Loading events...</p>
           </div>
         ) : filteredEvents.length === 0 ? (
