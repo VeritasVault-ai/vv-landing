@@ -22,7 +22,6 @@ export function TreasurySolutionClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
-        <ComingSoonBanner />
         
         <main className="flex-grow">
           <TreasuryHero />

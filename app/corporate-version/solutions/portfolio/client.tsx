@@ -17,7 +17,6 @@ export function PortfolioSolutionClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
-        <ComingSoonBanner />
         
         <main className="flex-grow">
           {/* Hero Section */}

@@ -1,3 +1,4 @@
+import { ComingSoonBanner } from "@/components/corporate/coming-soon-banner"
 import { CorporateLayoutClient } from "./layout-client"
 import { Metadata } from "next"
 
@@ -20,6 +21,7 @@ export default function CorporateLayout({
 }) {
   return (
     <CorporateLayoutClient>
+    <ComingSoonBanner />
       {children}
     </CorporateLayoutClient>
   )
