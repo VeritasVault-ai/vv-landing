@@ -49,7 +49,7 @@ export async function middleware(request: NextRequest) {
     '/standard-version/dashboard/',
     '/standard-version/admin/',
     '/standard-version/account/',
-    '/standard-version/analytics/',
+    '/standard-version/analytics/'
   ]
   
   // Check if current path starts with any public route
