@@ -1,12 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { InitialThemeModal } from "@/components/version-selection/InitialThemeModal"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
+import { useTheme } from "next-themes"
+import Image from "next/image"
+import { useEffect, useState } from "react"
 
 /**
  * Home page that serves as the entry point to the application
@@ -42,7 +41,7 @@ export default function Home() {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-b from-blue-900 to-black text-white">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Loading VeritasVault.ai</h1>
+          <h1 className="text-4xl font-bold mb-4">Loading VeritasVault.net</h1>
           <div className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>
@@ -56,12 +55,12 @@ export default function Home() {
       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <Image 
-            src="/logo-white.svg" 
+            src="/logo-white.png" 
             alt="VeritasVault Logo" 
             width={40} 
             height={40} 
           />
-          <span className="font-bold text-2xl">VeritasVault<span className="text-blue-400">.ai</span></span>
+          <span className="font-bold text-2xl">VeritasVault<span className="text-blue-400">.net</span></span>
         </div>
         
         <nav className="hidden md:flex items-center gap-6">
@@ -74,7 +73,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Welcome to VeritasVault.ai</h1>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">Welcome to VeritasVault.net</h1>
           <p className="text-xl max-w-2xl mx-auto">Choose the experience that best suits your needs for managing digital assets with our AI-powered platform</p>
         </div>
         
@@ -137,7 +136,7 @@ export default function Home() {
       <footer className="container mx-auto px-4 py-8 mt-16 border-t border-blue-800/50">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <p className="text-sm text-blue-300">© {new Date().getFullYear()} VeritasVault.ai. All rights reserved.</p>
+            <p className="text-sm text-blue-300">© {new Date().getFullYear()} VeritasVault.net. All rights reserved.</p>
           </div>
           <div className="flex gap-6">
             <a href="#" className="text-sm text-blue-300 hover:text-white">Terms</a>

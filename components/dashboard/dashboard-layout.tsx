@@ -64,13 +64,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800">
           <Link href="/corporate-version" className="flex items-center gap-2">
             <Image 
-              src={isDark ? "/logo-white.svg" : "/logo.png"} 
+              src={isDark ? "/logo-white.png" : "/logo.png"} 
               alt="VeritasVault Logo" 
               width={32} 
               height={32} 
             />
             <span className="font-semibold text-lg text-slate-900 dark:text-white">
-              VeritasVault<span className="text-blue-600">.ai</span>
+              VeritasVault<span className="text-blue-600">.net</span>
             </span>
           </Link>
           <button 

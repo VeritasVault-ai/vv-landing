@@ -193,7 +193,7 @@ export function ContactClient() {
                     Sales Inquiries
                   </h3>
                   <p className="text-slate-600 dark:text-slate-400 mb-1">
-                    sales@veritasvault.ai
+                    sales@veritasvault.net
                   </p>
                   <p className="text-slate-600 dark:text-slate-400">
                     +1 (555) 123-4567
@@ -205,7 +205,7 @@ export function ContactClient() {
                     Support
                   </h3>
                   <p className="text-slate-600 dark:text-slate-400 mb-1">
-                    support@veritasvault.ai
+                    support@veritasvault.net
                   </p>
                   <p className="text-slate-600 dark:text-slate-400">
                     +1 (555) 987-6543

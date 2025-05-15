@@ -44,7 +44,7 @@ export function LoginForm({ onLogin, onSSOLogin, isLoading, error, loginFlag }: 
             className="dark:hidden"
           />
           <Image 
-            src="/logo-white.svg" 
+            src="/logo-white.png" 
             alt="VeritasVault Logo" 
             width={48} 
             height={48} 
