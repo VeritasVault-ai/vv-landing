@@ -4,10 +4,10 @@ import { EXPERIENCE_TYPES } from "@/src/constants/theme"
 import { ThemeProvider } from "@/src/context/ThemeProvider"
 
 /**
- * Layout for all corporate version pages
+ * Client component layout for all corporate version pages
  * Provides theme context for all child pages
  */
-export default function CorporateLayout({
+export function CorporateLayoutClient({
   children,
 }: {
   children: React.ReactNode

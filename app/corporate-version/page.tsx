@@ -1,15 +1,18 @@
-import { CorporateLandingPageWithTheme } from "@/components/corporate/corporate-landing-page-with-theme"
 import { Metadata } from "next"
+import { CorporateVersionClient } from "./client"
+
+// Force dynamic rendering to prevent static generation issues
+export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
-  title: "VeritasVault.ai | Enterprise Treasury Solutions",
+  title: "VeritasVault | Enterprise Treasury Solutions",
   description: "Institutional-grade liquidity management for digital assets with advanced security and compliance features.",
 }
 
 /**
  * Main page for the corporate version of the application
- * Renders the corporate landing page with theme provider
+ * Uses a client-only approach to prevent SSR issues with theme hooks
  */
 export default function CorporateVersionPage() {
-  return <CorporateLandingPageWithTheme />
+  return <CorporateVersionClient />
 }
