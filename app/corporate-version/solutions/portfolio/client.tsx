@@ -1,11 +1,10 @@
 "use client"
 
-import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
-import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
-import { CorporateHeader } from "@/components/corporate/corporate-header"
-import { CorporateFooter } from "@/components/corporate/corporate-footer"
-import { BarChart3, PieChart, LineChart, Layers, ArrowUpDown, BarChart4 } from "lucide-react"
+import { ComingSoonBanner } from "@/components/corporate/coming-soon-banner"
 import { Button } from "@/components/ui/button"
+import { COLOR_MODES, CORPORATE_VARIANTS, EXPERIENCE_TYPES } from "@/src/constants/theme"
+import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
+import { ArrowUpDown, BarChart3, BarChart4, Layers, LineChart, PieChart } from "lucide-react"
 
 /**
  * Client component for the Portfolio Management solution page
@@ -18,6 +17,7 @@ export function PortfolioSolutionClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
+        <ComingSoonBanner />
         
         <main className="flex-grow">
           {/* Hero Section */}

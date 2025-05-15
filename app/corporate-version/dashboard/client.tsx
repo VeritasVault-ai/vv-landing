@@ -1,35 +1,39 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
 import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { DashboardOverview } from "@/components/dashboard/dashboard-overview"
+import { CorporateHeader } from "@/components/corporate/corporate-header"
+import { CorporateFooter } from "@/components/corporate/corporate-footer"
+import { ComingSoonBanner } from "@/components/corporate/coming-soon-banner"
 
 /**
- * Client component for the dashboard page
+ * Client component for the Dashboard page
  */
 export function DashboardClient() {
-  const [isLoading, setIsLoading] = useState(true)
-  
-  useEffect(() => {
-    // Simulate loading dashboard data
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
-    
-    return () => clearTimeout(timer)
-  }, [])
-  
   return (
-    <RobustThemeProvider
+    <RobustThemeProvider 
       defaultExperience={EXPERIENCE_TYPES.CORPORATE}
-      defaultVariant={CORPORATE_VARIANTS.VERITASVAULT}
-      defaultColorMode={COLOR_MODES.DARK}
+      defaultVariant={CORPORATE_VARIANTS.CORPORATE}
+      defaultColorMode={COLOR_MODES.LIGHT}
     >
-      <DashboardLayout>
-        <DashboardOverview isLoading={isLoading} />
-      </DashboardLayout>
+      <div className="min-h-screen flex flex-col">
+        <ComingSoonBanner />
+        
+        <main className="flex-grow">
+          {/* Dashboard content */}
+          <div className="container mx-auto px-4 py-8">
+            <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+            
+            {/* Dashboard content would go here */}
+            <div className="bg-gray-100 dark:bg-slate-800 p-12 rounded-lg text-center">
+              <p className="text-xl text-gray-600 dark:text-gray-300">
+                Dashboard content is under development
+              </p>
+            </div>
+          </div>
+        </main>
+        
+      </div>
     </RobustThemeProvider>
   )
 }

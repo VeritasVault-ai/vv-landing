@@ -1,11 +1,11 @@
 "use client"
 
-import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
-import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
+import { ComingSoonBanner } from "@/components/corporate/coming-soon-banner"
 import { CorporateHeader } from "@/components/corporate/corporate-header"
-import { CorporateFooter } from "@/components/corporate/corporate-footer"
-import { Shield, FileText, CheckCircle, AlertCircle, BookOpen, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { COLOR_MODES, CORPORATE_VARIANTS, EXPERIENCE_TYPES } from "@/src/constants/theme"
+import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
+import { AlertCircle, BookOpen, CheckCircle, FileText, Search, Shield } from "lucide-react"
 
 /**
  * Client component for the Compliance solution page
@@ -18,6 +18,8 @@ export function ComplianceSolutionClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
+        <ComingSoonBanner />
+        <CorporateHeader />
         
         <main className="flex-grow">
           {/* Hero Section */}

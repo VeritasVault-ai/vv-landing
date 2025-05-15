@@ -6,6 +6,7 @@ import { CorporateHeader } from "@/components/corporate/corporate-header"
 import { CorporateFooter } from "@/components/corporate/corporate-footer"
 import { AlertTriangle, BarChart3, LineChart, Eye, Bell, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ComingSoonBanner } from "@/components/corporate/coming-soon-banner"
 
 /**
  * Client component for the Risk Management solution page
@@ -18,6 +19,8 @@ export function RiskSolutionClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
+        <ComingSoonBanner />
+        <CorporateHeader />
         
         <main className="flex-grow">
           {/* Hero Section */}
@@ -80,7 +83,6 @@ export function RiskSolutionClient() {
             </div>
           </section>
           
-          {/* Features Section */}
           <section className="py-16 bg-white">
             <div className="container mx-auto px-4">
               <h2 className="text-3xl font-bold text-center mb-12">Risk Management Features</h2>

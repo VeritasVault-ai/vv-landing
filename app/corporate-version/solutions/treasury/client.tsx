@@ -9,6 +9,7 @@ import { TreasuryFeatures } from "./components/treasury-features"
 import { TreasuryDashboard } from "./components/treasury-dashboard"
 import { TreasuryCaseStudy } from "./components/treasury-case-study"
 import { TreasuryCTA } from "./components/treasury-cta"
+import { ComingSoonBanner } from "@/components/corporate/coming-soon-banner"
 
 /**
  * Client component for the Treasury Management solution page
@@ -21,6 +22,7 @@ export function TreasurySolutionClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
+        <ComingSoonBanner />
         
         <main className="flex-grow">
           <TreasuryHero />
