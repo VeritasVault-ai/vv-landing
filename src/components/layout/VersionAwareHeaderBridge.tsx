@@ -6,8 +6,7 @@
  * is not available.
  */
 
-import { ThemeProvider } from "@/src/context/ThemeProvider"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { VersionAwareHeader as OriginalVersionAwareHeader } from "./VersionAwareHeader"
 
 /**
@@ -51,7 +50,7 @@ export function VersionAwareHeader() {
               <span className="text-xl font-bold text-blue-900 dark:text-blue-300">
                 <span>Veritas</span>
                 <span className="text-blue-700 dark:text-blue-400">Vault</span>
-                <span className="text-blue-500">.ai</span>
+                <span className="text-blue-500">.net</span>
               </span>
             </a>
           </div>
@@ -89,7 +88,7 @@ export function VersionAwareHeader() {
               <span className="text-xl font-bold text-blue-900 dark:text-blue-300">
                 <span>Veritas</span>
                 <span className="text-blue-700 dark:text-blue-400">Vault</span>
-                <span className="text-blue-500">.ai</span>
+                <span className="text-blue-500">.net</span>
               </span>
             </a>
           </div>

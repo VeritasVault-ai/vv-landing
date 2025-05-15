@@ -1,0 +1,87 @@
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.themeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.themeCard {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.themeCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.lightCard {
+  background-color: #f8fafc;
+  color: #1e293b;
+  border-color: #e2e8f0;
+}
+
+.darkCard {
+  background-color: #1e293b;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+.selectedCard {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.lightCard.selectedCard {
+  background-color: #f0f9ff;
+}
+
+.darkCard.selectedCard {
+  background-color: #0f172a;
+}
+
+.themeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.themeName {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.themeDescription {
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+.currentBadge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 9999px;
+}
+
+@media (max-width: 640px) {
+  .themeGrid {
+    grid-template-columns: 1fr;
+  }
+}

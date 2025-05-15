@@ -68,7 +68,7 @@ export function DashboardLayout({
                   <>
                     <span>Veritas</span>
                     <span className="text-blue-700 dark:text-blue-400">Vault</span>
-                    <span className="text-blue-500">.ai</span>
+                    <span className="text-blue-500">.net</span>
                   </>
                 ) : (
                   <>Corporate Dashboard</>
@@ -148,7 +148,7 @@ export function DashboardLayout({
       <footer className="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-6">
         <div className="container mx-auto px-4">
           <p className="text-center text-slate-600 dark:text-slate-400">
-            &copy; {currentYear} {isVeritasVault ? 'VeritasVault.ai' : 'Corporate Dashboard'}. All rights reserved.
+            &copy; {currentYear} {isVeritasVault ? 'VeritasVault.net' : 'Corporate Dashboard'}. All rights reserved.
           </p>
         </div>
       </footer>

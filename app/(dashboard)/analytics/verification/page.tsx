@@ -1,7 +1,7 @@
 import { AnalyticsVerification } from "@/components/analytics/analytics-verification"
 
 export const metadata = {
-  title: "Analytics Verification - VeritasVault.ai",
+  title: "Analytics Verification - VeritasVault.net",
   description: "Verify that Google Analytics is properly configured",
 }
 

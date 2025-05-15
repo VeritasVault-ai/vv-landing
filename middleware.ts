@@ -1,65 +1,68 @@
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
-import { SITE_VERSION_COOKIE, DEFAULT_VERSION } from "@/lib/version-utils"
-import { checkAuthStatus, isProtectedRoute, getLoginRedirect } from "@/lib/auth/auth-middleware"
+import { NextRequest, NextResponse } from 'next/server'
 
+/**
+ * Middleware function that runs before requests are processed
+ * This can be used to handle authentication, logging, and other cross-cutting concerns
+ */
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // Skip middleware for static assets, API routes, and other special paths
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/static") ||
-    pathname.includes(".") ||
-    pathname === "/favicon.ico"
-  ) {
-    return NextResponse.next()
-  }
-
-  // Get the stored preference from cookies
-  const siteVersion = request.cookies.get(SITE_VERSION_COOKIE)?.value || DEFAULT_VERSION
-
-  // Allow direct access to the root path without redirection
-  if (pathname === "/") {
-    return NextResponse.next()
-  }
-
-  // Handle auth routes - redirect to version-specific auth pages
-  if (pathname === "/auth/login" || pathname === "/auth/register") {
-    const url = request.nextUrl.clone()
-    url.pathname = `/${siteVersion}${pathname.replace("/auth", "")}`
-    return NextResponse.redirect(url)
-  }
-
-  // Check if this is a protected route
-  if (isProtectedRoute(pathname)) {
-    // Check authentication status
-    const { isAuthenticated } = await checkAuthStatus(request)
-
-    // If not authenticated, redirect to login
-    if (!isAuthenticated) {
-      const loginUrl = getLoginRedirect(request)
-      const url = request.nextUrl.clone()
-      url.pathname = loginUrl.split("?")[0]
-      url.search = loginUrl.includes("?") ? loginUrl.split("?")[1] : ""
+  // Get the request URL and path
+  const url = request.nextUrl.clone()
+  const path = url.pathname
+  
+  // Get client IP address
+  const ip = request.headers.get('x-forwarded-for') || 
+             request.headers.get('x-real-ip') || 
+             'unknown'
+  
+  // Get user agent
+  const userAgent = request.headers.get('user-agent') || 'unknown'
+  
+  // Log request information (in production, you would send this to a logging service)
+  console.log(`[${new Date().toISOString()}] ${request.method} ${path} - IP: ${ip} - UA: ${userAgent.substring(0, 100)}...`)
+  
+  // Check for authentication if accessing protected routes
+  if (path.startsWith('/corporate-version/dashboard') || 
+      path.startsWith('/corporate-version/admin') || 
+      path.startsWith('/corporate-version/account')) {
+    
+    // Check for authentication token in cookies or headers
+    const authToken = request.cookies.get('auth_token')?.value
+    const authHeader = request.headers.get('authorization')
+    
+    // If no authentication is present, redirect to login
+    if (!authToken && !authHeader) {
+      console.log(`[AUTH] Unauthorized access attempt to ${path} - IP: ${ip}`)
+      
+      // Redirect to login page with return URL
+      url.pathname = '/corporate-version/login'
+      url.searchParams.set('returnUrl', path)
+      
       return NextResponse.redirect(url)
     }
+    
+    // In a real implementation, you would validate the token here
+    // For now, we'll just log the authentication attempt
+    console.log(`[AUTH] Authenticated access to ${path} - IP: ${ip}`)
   }
-
-  // For all other cases, continue with the request
-  return NextResponse.next()
+  
+  // Add custom headers to the response
+  const response = NextResponse.next()
+  
+  // Add security headers
+  response.headers.set('X-Frame-Options', 'DENY')
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  
+  return response
 }
 
-// Configure which paths the middleware runs on
+/**
+ * Configure which paths this middleware will run on
+ */
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!_next/static|_next/image|favicon.ico).*)",
-  ],
+  // Match all request paths except for:
+  // - API routes (/api/*)
+  // - Static files (_next/static/*, favicon.ico, etc.)
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }

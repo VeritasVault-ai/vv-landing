@@ -6,8 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useCurrentVersion } from "@/hooks/use-current-version"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
 import {
-  CORPORATE_PRODUCT_NAME,
-  CORPORATE_PRODUCT_TAGLINE
+    CORPORATE_PRODUCT_NAME,
+    CORPORATE_PRODUCT_TAGLINE
 } from "@/lib/config/product-info"
 import { ArrowRight, BarChart3, CheckCircle, Lock, Shield, TrendingUp, Users } from "lucide-react"
 import Image from "next/image"
@@ -37,7 +37,7 @@ export function EnhancedCorporateLanding() {
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white">
                   <span className="text-blue-300">{CORPORATE_PRODUCT_NAME}</span>
-                  <span className="text-blue-200">.ai</span>
+                  <span className="text-blue-200">.net</span>
                 </h1>
                 <p className="max-w-[600px] text-slate-200 md:text-xl">
                   {CORPORATE_PRODUCT_TAGLINE}

@@ -15,7 +15,7 @@ export function CtaSection() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6 text-white">Ready to optimize your institutional liquidity?</h2>
           <p className="text-xl text-blue-100 mb-8">
-            Schedule a consultation with our team to learn how VeritasVault.ai can transform your treasury management.
+            Schedule a consultation with our team to learn how VeritasVault.net can transform your treasury management.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button

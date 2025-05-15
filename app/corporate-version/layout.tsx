@@ -1,11 +1,17 @@
-"use client"
+import { CorporateLayoutClient } from "./layout-client"
+import { Metadata } from "next"
 
-import { EXPERIENCE_TYPES } from "@/src/constants/theme"
-import { ThemeProvider } from "@/src/context/ThemeProvider"
+export const metadata: Metadata = {
+  title: {
+    template: "%s | VeritasVault Enterprise",
+    default: "VeritasVault Enterprise",
+  },
+  description: "Enterprise-grade digital asset management and treasury solutions",
+}
 
 /**
  * Layout for all corporate version pages
- * Provides theme context for all child pages
+ * Wraps all corporate pages with the appropriate theme provider
  */
 export default function CorporateLayout({
   children,
@@ -13,8 +19,8 @@ export default function CorporateLayout({
   children: React.ReactNode
 }) {
   return (
-    <ThemeProvider defaultExperience={EXPERIENCE_TYPES.CORPORATE}>
+    <CorporateLayoutClient>
       {children}
-    </ThemeProvider>
+    </CorporateLayoutClient>
   )
 }

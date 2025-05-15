@@ -1,21 +1,21 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import { Bell, Search, Menu, X, User, Settings, LogOut, HelpCircle, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { ThemeToggleEnhanced } from "@/components/theme-toggle-enhanced"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import { useCurrentVersion } from "@/hooks/use-current-version"
+import { Bell, ChevronDown, HelpCircle, LogOut, Menu, Search, Settings, User, X } from "lucide-react"
+import Link from "next/link"
+import { useState } from "react"
 
 export function CorporateDashboardHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -29,7 +29,7 @@ export function CorporateDashboardHeader() {
             <span className="text-xl font-bold text-blue-900 dark:text-blue-300">
               <span>Veritas</span>
               <span className="text-blue-700 dark:text-blue-400">Vault</span>
-              <span className="text-blue-500">.ai</span>
+              <span className="text-blue-500">.net</span>
             </span>
           </Link>
 

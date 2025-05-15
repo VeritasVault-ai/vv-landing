@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://neuralliquid.ai"
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://neuralliquid.net"
 
   // Common pages that exist in both versions
   const commonPages = [

@@ -6,9 +6,9 @@
  * is not available.
  */
 
-import { useState, useEffect } from "react"
-import { EnhancedVersionSelectionPage } from "./VersionSelectionPage"
 import { useUnifiedTheme } from "@/src/hooks/use-unified-theme"
+import { useEffect, useState } from "react"
+import { EnhancedVersionSelectionPage } from "./VersionSelectionPage"
 
 export function VersionSelectionPageBridge() {
   const [mounted, setMounted] = useState(false)
@@ -37,7 +37,7 @@ export function VersionSelectionPageBridge() {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-b from-blue-900 to-black text-white">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Loading VeritasVault.ai</h1>
+          <h1 className="text-4xl font-bold mb-4">Loading VeritasVault.net</h1>
           <div className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>
@@ -50,7 +50,7 @@ export function VersionSelectionPageBridge() {
       <div className="min-h-screen bg-gradient-to-b from-blue-900 to-black text-white">
         <div className="container mx-auto px-4 py-16">
           <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold mb-4">Welcome to VeritasVault.ai</h1>
+            <h1 className="text-5xl font-bold mb-4">Welcome to VeritasVault.net</h1>
             <p className="text-xl">Choose your experience</p>
           </div>
           
@@ -89,7 +89,7 @@ export function VersionSelectionPageBridge() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-900 to-black text-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Welcome to VeritasVault.ai</h1>
+          <h1 className="text-4xl font-bold mb-4">Welcome to VeritasVault.net</h1>
           <div className="flex gap-4 justify-center mt-8">
             <a href="/standard" className="px-6 py-3 bg-blue-600 rounded-lg hover:bg-blue-700">
               Standard Version

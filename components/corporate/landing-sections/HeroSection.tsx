@@ -1,14 +1,14 @@
 "use client"
 
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { CheckCircle } from "lucide-react"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
-import { 
-  CORPORATE_PRODUCT_NAME,
+import {
   CORPORATE_PRODUCT_DESCRIPTION,
+  CORPORATE_PRODUCT_NAME,
   CORPORATE_PRODUCT_TAGLINE
 } from "@/lib/config/product-info"
+import { CheckCircle, Shield } from "lucide-react"
+import Image from "next/image"
 
 /**
  * Renders the hero section of the corporate landing page, featuring branding, descriptive text, compliance badges, call-to-action buttons, and a dashboard image.
@@ -29,7 +29,7 @@ export function HeroSection() {
               Institutional-Grade Liquidity Management
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-slate-900 dark:text-white">
-              <span className="text-blue-700 dark:text-blue-400">{CORPORATE_PRODUCT_NAME}</span>.ai
+              <span className="text-blue-700 dark:text-blue-400">{CORPORATE_PRODUCT_NAME}</span>.net
             </h1>
             <p className="text-xl md:text-2xl font-light text-slate-700 dark:text-slate-300 max-w-xl">
               {CORPORATE_PRODUCT_TAGLINE}
@@ -61,15 +61,15 @@ export function HeroSection() {
             <div className="flex flex-wrap items-center gap-6 pt-6">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-blue-700 dark:text-blue-400" />
-                <span className="text-sm text-slate-700 dark:text-slate-300">SOC 2 Type II Certified</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-blue-700 dark:text-blue-400" />
                 <span className="text-sm text-slate-700 dark:text-slate-300">ISO 27001 Compliant</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-blue-700 dark:text-blue-400" />
                 <span className="text-sm text-slate-700 dark:text-slate-300">GDPR Compliant</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-blue-700 dark:text-blue-400" />
+                <span className="text-sm text-slate-700 dark:text-slate-300">Enterprise-Grade Security</span>
               </div>
             </div>
           </div>
@@ -84,7 +84,9 @@ export function HeroSection() {
                 className="relative rounded-lg shadow-xl border border-slate-200 dark:border-slate-700"
               />
               <div className="absolute -bottom-4 -right-4 bg-blue-700 dark:bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg">
-                <p className="font-semibold">Trusted by leading institutions</p>
+                <p className="font-semibold flex items-center">
+                  <span className="mr-1">Demo:</span> Trusted by institutions
+                </p>
               </div>
             </div>
           </div>

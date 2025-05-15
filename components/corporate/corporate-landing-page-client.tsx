@@ -1,17 +1,21 @@
 "use client"
 
 import { CorporateLandingPage } from "./corporate-landing-page"
-import { EXPERIENCE_TYPES } from "@/src/constants/theme"
-import { ThemeProvider } from "@/src/context/ThemeProvider"
+import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
+import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
 
 /**
- * Client-only wrapper for CorporateLandingPage with ThemeProvider
+ * Client-only wrapper for CorporateLandingPage with RobustThemeProvider
  * This component will only be rendered on the client side
  */
 export default function CorporateLandingPageClient() {
   return (
-    <ThemeProvider defaultExperience={EXPERIENCE_TYPES.CORPORATE}>
+    <RobustThemeProvider 
+      defaultExperience={EXPERIENCE_TYPES.CORPORATE}
+      defaultVariant={CORPORATE_VARIANTS.CORPORATE}
+      defaultColorMode={COLOR_MODES.LIGHT}
+    >
       <CorporateLandingPage />
-    </ThemeProvider>
+    </RobustThemeProvider>
   )
 }

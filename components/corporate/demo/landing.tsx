@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { DemoModeEntryModal } from "@/components/demo-mode/entry-modal"
+import { Button } from "@/components/ui/button"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
-import { BarChart3, Shield, TrendingUp, Building2 } from "lucide-react"
+import { BarChart3, Building2, Shield, TrendingUp } from "lucide-react"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export function CorporateDemoLanding() {
   const [isEntryModalOpen, setIsEntryModalOpen] = useState(false)
@@ -27,7 +27,7 @@ export function CorporateDemoLanding() {
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Experience Institutional-Grade Liquidity Management</h1>
             <p className="text-xl text-slate-300 mb-10 max-w-3xl mx-auto">
-              Explore our enterprise platform with $100M in simulated assets. See how VeritasVault.ai optimizes treasury
+              Explore our enterprise platform with $100M in simulated assets. See how VeritasVault.net optimizes treasury
               operations for institutional clients.
             </p>
             <Button

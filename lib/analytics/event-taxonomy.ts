@@ -65,7 +65,7 @@ export const AnalyticsEvents = {
 export type EventName =
   | (typeof AnalyticsEvents.AUTH)[keyof typeof AnalyticsEvents.AUTH]
   | (typeof AnalyticsEvents.STRATEGY)[keyof typeof AnalyticsEvents.STRATEGY]
-  | (typeof AnalyticsEvents.AI)[keyof typeof AnalyticsEvents.AI]
+  | (typeof AnalyticsEvents.net)[keyof typeof AnalyticsEvents.net]
   | (typeof AnalyticsEvents.POOLS)[keyof typeof AnalyticsEvents.POOLS]
   | (typeof AnalyticsEvents.FEATURE)[keyof typeof AnalyticsEvents.FEATURE]
   | (typeof AnalyticsEvents.NAV)[keyof typeof AnalyticsEvents.NAV]

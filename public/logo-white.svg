@@ -1,0 +1,83 @@
+<svg width="500" height="500" viewBox="0 0 500 500"
+     xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0b1521"/>
+      <stop offset="100%" stop-color="#001a36"/>
+    </radialGradient>
+
+    <!-- Outer ring gradient + shadow -->
+    <radialGradient id="ringGrad" cx="50%" cy="50%" r="50%" gradientTransform="rotate(45)">
+      <stop offset="5%"  stop-color="#1e3a5f"/>
+      <stop offset="50%" stop-color="#15407a"/>
+      <stop offset="95%" stop-color="#0f2648"/>
+    </radialGradient>
+    <filter id="ringShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+
+    <!-- Shield gold -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffdd57"/>
+      <stop offset="60%" stop-color="#d4a017"/>
+      <stop offset="100%" stop-color="#b48c11"/>
+    </linearGradient>
+
+    <!-- Node glow -->
+    <filter id="nodeGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Blue line gradient -->
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4da6ff"/>
+      <stop offset="100%" stop-color="#00bfff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="250" cy="250" r="240" fill="url(#bgGrad)" />
+
+  <!-- Beveled outer ring -->
+  <circle cx="250" cy="250" r="200"
+          stroke="url(#ringGrad)" stroke-width="20" fill="none"
+          filter="url(#ringShadow)" />
+
+  <!-- Stylized “V” shield -->
+  <path d="
+    M200,140
+    C200,100 300,100 300,140
+    L300,300
+    L250,260
+    L200,300
+    Z"
+    fill="url(#shieldGrad)"
+    stroke="#b48c11" stroke-width="2" />
+
+  <!-- Dynamic blue network lines -->
+  <g stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round">
+    <path d="M250,250 C310,190 340,160 370,140" />
+    <path d="M250,250 C190,180 160,150 130,130" />
+    <path d="M250,250 C310,310 340,340 370,360" />
+    <path d="M250,250 C190,320 160,350 130,370" />
+    <!-- extra branching -->
+    <path d="M370,140 C350,170 330,140 310,120" />
+    <path d="M130,130 C150,160 140,120 130,100" />
+  </g>
+
+  <!-- Glowing nodes -->
+  <g fill="#00bfff" filter="url(#nodeGlow)">
+    <circle cx="370" cy="140" r="6"/>
+    <circle cx="130" cy="130" r="6"/>
+    <circle cx="370" cy="360" r="6"/>
+    <circle cx="130" cy="370" r="6"/>
+  </g>
+
+  <!-- Central glowing core -->
+  <circle cx="250" cy="250" r="8" fill="#00bfff" filter="url(#nodeGlow)"/>
+</svg>

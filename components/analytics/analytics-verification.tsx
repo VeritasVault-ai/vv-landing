@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { CheckCircle, AlertCircle, Info } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { trackGAEvent } from "@/lib/analytics/track-ga-event"
+import { AlertCircle, CheckCircle, Info } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export function AnalyticsVerification() {
   const [gaLoaded, setGaLoaded] = useState<boolean | null>(null)
@@ -46,7 +46,7 @@ export function AnalyticsVerification() {
     <Card className="w-full max-w-3xl mx-auto">
       <CardHeader>
         <CardTitle>Google Analytics Verification</CardTitle>
-        <CardDescription>Check if Google Analytics is properly configured for VeritasVault.ai</CardDescription>
+        <CardDescription>Check if Google Analytics is properly configured for VeritasVault.net</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Alert variant={gaLoaded === null ? "default" : gaLoaded ? "default" : "destructive"}>
