@@ -1,18 +1,18 @@
 import { Metadata } from "next"
-import { CorporateDashboardClient } from "./client"
+import { DashboardClient } from "./client"
 
 // Force dynamic rendering to prevent static generation issues
 export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
-  title: "VeritasVault | Corporate Dashboard",
-  description: "Enterprise dashboard for digital asset management and treasury operations.",
+  title: "Enterprise Dashboard | VeritasVault",
+  description: "Access your enterprise treasury management dashboard and analytics.",
 }
 
 /**
- * Dashboard page for the corporate version of the application
- * Uses a client-only approach to prevent SSR issues with theme hooks
+ * Dashboard page for the corporate version
+ * This is where users land after clicking the demo button
  */
-export default function CorporateDashboardPage() {
-  return <CorporateDashboardClient />
+export default function DashboardPage() {
+  return <DashboardClient />
 }

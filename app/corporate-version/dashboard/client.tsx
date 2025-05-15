@@ -1,20 +1,35 @@
 "use client"
 
-import Link from "next/link"
+import { useState, useEffect } from "react"
+import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
+import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
+import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
+import { DashboardOverview } from "@/components/dashboard/dashboard-overview"
 
 /**
- * Client component for the corporate dashboard page
+ * Client component for the dashboard page
  */
-export function CorporateDashboardClient() {
+export function DashboardClient() {
+  const [isLoading, setIsLoading] = useState(true)
+  
+  useEffect(() => {
+    // Simulate loading dashboard data
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
+    
+    return () => clearTimeout(timer)
+  }, [])
+  
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-slate-900 p-4">
-      <h1 className="text-3xl font-bold mb-6 text-slate-900 dark:text-white">Corporate Dashboard</h1>
-      <p className="text-lg mb-8 text-slate-700 dark:text-slate-300 max-w-md text-center">
-        This page is currently being updated. Please check back later.
-      </p>
-      <Link href="/" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-        Return to Home
-      </Link>
-    </div>
+    <RobustThemeProvider
+      defaultExperience={EXPERIENCE_TYPES.CORPORATE}
+      defaultVariant={CORPORATE_VARIANTS.VERITASVAULT}
+      defaultColorMode={COLOR_MODES.DARK}
+    >
+      <DashboardLayout>
+        <DashboardOverview isLoading={isLoading} />
+      </DashboardLayout>
+    </RobustThemeProvider>
   )
 }

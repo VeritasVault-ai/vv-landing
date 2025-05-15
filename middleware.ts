@@ -39,18 +39,24 @@ export async function middleware(request: NextRequest) {
     '/logo.svg',
     '/logo-white.svg'
   ]
+
+  const securedRoutes = [
+    '/dashboard/',
+    '/corporate-version/dashboard/',
+    '/corporate-version/admin/',
+    '/corporate-version/account/',
+    '/corporate-version/analytics/',
+    '/standard-version/dashboard/',
+    '/standard-version/admin/',
+    '/standard-version/account/',
+    '/standard-version/analytics/',
+  ]
   
   // Check if current path starts with any public route
-  const isPublicRoute = publicRoutes.some(route => 
-    path === route || 
-    path.startsWith(`${route}/`) ||
-    path.startsWith('/_next/') ||
-    path.startsWith('/fonts/') ||
-    path.startsWith('/images/')
-  )
+  const isSecuredRoute = securedRoutes.some(route => path.startsWith(route))
   
   // Skip authentication for public routes
-  if (isPublicRoute) {
+  if (!isSecuredRoute) {
     // For login page, preserve the flag parameter
     if (path === '/login' && loginFlag !== 'default') {
       // Flag is already in the URL, no need to modify
