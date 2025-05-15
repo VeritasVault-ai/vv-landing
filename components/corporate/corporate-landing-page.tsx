@@ -8,6 +8,7 @@ import {
   SolutionsTabs,
   ValueProposition
 } from "@/components/corporate/landing-sections"
+import { ComingSoonBanner } from "./coming-soon-banner"
 
 /**
  * Corporate landing page component that assembles all section components
@@ -16,6 +17,7 @@ import {
 export function CorporateLandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      <ComingSoonBanner />
       {/* Hero Section */}
       <HeroSection />
 
