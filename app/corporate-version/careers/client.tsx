@@ -20,7 +20,6 @@ export function CareersClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
-        <CorporateHeader />
         
         <main className="flex-grow">
           <CareersHero />
@@ -29,7 +28,6 @@ export function CareersClient() {
           <CareersOpenings />
         </main>
         
-        <CorporateFooter />
       </div>
     </RobustThemeProvider>
   )

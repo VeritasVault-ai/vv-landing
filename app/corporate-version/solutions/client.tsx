@@ -20,7 +20,6 @@ export function SolutionsClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
-        <CorporateHeader />
         
         <main className="flex-grow">
           <SolutionsHero />
@@ -29,7 +28,6 @@ export function SolutionsClient() {
           <SolutionsCTA />
         </main>
         
-        <CorporateFooter />
       </div>
     </RobustThemeProvider>
   )

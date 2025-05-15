@@ -20,7 +20,6 @@ export function PricingClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
-        <CorporateHeader />
         
         <main className="flex-grow">
           <PricingHero />
@@ -29,7 +28,6 @@ export function PricingClient() {
           <PricingCTA />
         </main>
         
-        <CorporateFooter />
       </div>
     </RobustThemeProvider>
   )

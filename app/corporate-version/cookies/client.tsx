@@ -16,7 +16,6 @@ export function CookiesClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
-        <CorporateHeader />
         
         <main className="flex-grow">
           <div className="container mx-auto px-4 py-16">
@@ -134,7 +133,6 @@ export function CookiesClient() {
           </div>
         </main>
         
-        <CorporateFooter />
       </div>
     </RobustThemeProvider>
   )

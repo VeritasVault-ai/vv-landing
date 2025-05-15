@@ -20,7 +20,6 @@ export function AboutClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
-        <CorporateHeader />
         
         <main className="flex-grow">
           <AboutHero />
@@ -29,7 +28,6 @@ export function AboutClient() {
           <AboutTimeline />
         </main>
         
-        <CorporateFooter />
       </div>
     </RobustThemeProvider>
   )

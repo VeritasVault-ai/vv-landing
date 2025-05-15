@@ -17,7 +17,6 @@ export function ComplianceClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
-        <CorporateHeader />
         
         <main className="flex-grow">
           {/* Hero Section */}
@@ -178,7 +177,6 @@ export function ComplianceClient() {
           </section>
         </main>
         
-        <CorporateFooter />
       </div>
     </RobustThemeProvider>
   )

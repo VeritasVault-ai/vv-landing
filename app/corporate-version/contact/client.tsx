@@ -58,7 +58,6 @@ export function ContactClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
-        <CorporateHeader />
         
         <main className="flex-grow">
           <div className="container mx-auto px-4 py-12">
@@ -226,7 +225,6 @@ export function ContactClient() {
           </div>
         </main>
         
-        <CorporateFooter />
       </div>
     </RobustThemeProvider>
   )

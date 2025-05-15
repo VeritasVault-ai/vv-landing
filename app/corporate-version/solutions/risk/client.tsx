@@ -18,7 +18,6 @@ export function RiskSolutionClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
-        <CorporateHeader />
         
         <main className="flex-grow">
           {/* Hero Section */}
@@ -169,7 +168,6 @@ export function RiskSolutionClient() {
           </section>
         </main>
         
-        <CorporateFooter />
       </div>
     </RobustThemeProvider>
   )
