@@ -81,7 +81,7 @@ export function DateRangePicker({ dateRange, onChange }: DateRangePickerProps) {
         onClick={() => setIsOpen(!isOpen)}
         type="button"
         aria-label="Select date range"
-        aria-expanded={isOpen.toString()}
+        aria-expanded={isOpen}
       >
         <Calendar className={styles.icon} />
         <span className={styles.dateText}>
@@ -91,7 +91,7 @@ export function DateRangePicker({ dateRange, onChange }: DateRangePickerProps) {
       </button>
       
       {isOpen && (
-        <div className={styles.dropdown}>
+        <div className={styles.dropdown} role="dialog" aria-label="Date range selector">
           <div className={styles.presets}>
             <h4 className={styles.presetsTitle}>Presets</h4>
             <div className={styles.presetButtons}>
