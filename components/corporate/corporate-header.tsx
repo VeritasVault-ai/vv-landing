@@ -21,7 +21,7 @@ export function CorporateHeader() {
         <div className="flex items-center gap-6">
           <Link href="/corporate-version" className="flex items-center gap-2">
             <Image 
-              src={isDark ? "/logo-white.svg" : "/logo.svg"} 
+              src={isDark ? "/logo-white.svg" : "/logo.png"} 
               alt="VeritasVault Logo" 
               width={36} 
               height={36} 

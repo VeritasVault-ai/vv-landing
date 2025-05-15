@@ -20,7 +20,7 @@ export function CorporateFooter() {
           <div>
             <Link href="/corporate-version" className="flex items-center gap-2 mb-4">
               <Image 
-                src={isDark ? "/logo-white.svg" : "/logo.svg"} 
+                src={isDark ? "/logo-white.svg" : "/logo.png"} 
                 alt="VeritasVault Logo" 
                 width={32} 
                 height={32} 

@@ -1,15 +1,15 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { FaGithub, FaGoogle, FaMicrosoft } from "react-icons/fa"
 import { Loader2 } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useState } from "react"
+import { FaGithub, FaGoogle, FaMicrosoft } from "react-icons/fa"
 
 interface LoginFormProps {
   onLogin: (email: string, password: string) => Promise<void>
@@ -37,7 +37,7 @@ export function LoginForm({ onLogin, onSSOLogin, isLoading, error, loginFlag }: 
       <CardHeader className="space-y-1">
         <div className="flex justify-center mb-4">
           <Image 
-            src="/logo.svg" 
+            src="/logo.png" 
             alt="VeritasVault Logo" 
             width={48} 
             height={48} 

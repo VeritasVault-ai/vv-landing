@@ -78,7 +78,7 @@ export const corporateLightTheme = createTheme({
     },
   },
   brand: {
-    logo: '/logos/corporate-logo.svg',
+    logo: '/logos/corporate-logo.png',
     gradient: {
       from: '#0a3977', // Corporate primary
       to: '#002a69', // Corporate primary 700

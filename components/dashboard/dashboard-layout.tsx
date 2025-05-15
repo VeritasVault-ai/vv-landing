@@ -64,7 +64,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800">
           <Link href="/corporate-version" className="flex items-center gap-2">
             <Image 
-              src={isDark ? "/logo-white.svg" : "/logo.svg"} 
+              src={isDark ? "/logo-white.svg" : "/logo.png"} 
               alt="VeritasVault Logo" 
               width={32} 
               height={32} 

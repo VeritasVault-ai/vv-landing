@@ -97,7 +97,7 @@ export const standardLightTheme = createTheme({
     },
   },
   brand: {
-    logo: '/logos/standard-logo.svg',
+    logo: '/logos/standard-logo.png',
     gradient: {
       from: palette.blue[400],
       to: palette.blue[600],
