@@ -58,7 +58,7 @@ export function ExperienceProvider({
   experience 
 }: { 
   children: ReactNode, 
-  experience: string 
+  experience: [keyof typeof EXPERIENCE_TYPES] | undefined
 }) {
   return (
     <NextThemesProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
