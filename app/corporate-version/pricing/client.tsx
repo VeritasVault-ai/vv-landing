@@ -1,4 +1,4 @@
--white"use client"
+"use client"
 
 import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
 import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
