@@ -67,6 +67,7 @@ export function RobustThemeProvider({
   const [themeVariant, setThemeVariant] = useState<ThemeVariant>(defaultVariant)
   const [experience, setExperience] = useState<ExperienceType>(defaultExperience)
   const [colorMode, setColorMode] = useState<ColorMode>(defaultColorMode)
+  const [mounted, setMounted] = useState(false)
   
   // Try to use next-themes, but don't fail if it's not available
   let nextTheme: any = { theme: defaultColorMode, setTheme: () => {} }
@@ -76,12 +77,48 @@ export function RobustThemeProvider({
     console.warn("next-themes provider not available:", error)
   }
   
+  // Initialize theme from stored preferences or URL parameters
+  useEffect(() => {
+    setMounted(true)
+    
+    try {
+      // Try to get theme from localStorage
+      const storedTheme = localStorage.getItem('theme-preference')
+      if (storedTheme) {
+        const [variant, mode] = storedTheme.split('-')
+        if (variant) setThemeVariant(variant as ThemeVariant)
+        if (mode) setColorMode(mode as ColorMode)
+      }
+      
+      // Check URL parameters for theme
+      const urlParams = new URLSearchParams(window.location.search)
+      const themeParam = urlParams.get('theme')
+      if (themeParam) {
+        const [variant, mode] = themeParam.split('-')
+        if (variant) setThemeVariant(variant as ThemeVariant)
+        if (mode) setColorMode(mode as ColorMode)
+        
+        // Store the preference
+        localStorage.setItem('theme-preference', themeParam)
+      }
+    } catch (error) {
+      console.error('Error initializing theme from storage:', error)
+    }
+  }, [])
+  
   // Sync our colorMode with next-themes
   useEffect(() => {
-    if (nextTheme.setTheme) {
+    if (mounted && nextTheme.setTheme) {
       nextTheme.setTheme(colorMode)
+      
+      // Apply dark mode class directly to document for immediate effect
+      if (colorMode === COLOR_MODES.DARK) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
     }
-  }, [colorMode, nextTheme])
+  }, [colorMode, nextTheme, mounted])
   
   // When experience changes, update the theme variant accordingly
   useEffect(() => {
@@ -91,6 +128,17 @@ export function RobustThemeProvider({
       setThemeVariant(CORPORATE_VARIANTS.CORPORATE)
     }
   }, [experience, themeVariant])
+  
+  // Store theme preferences when they change
+  useEffect(() => {
+    if (mounted) {
+      try {
+        localStorage.setItem('theme-preference', `${themeVariant}-${colorMode}`)
+      } catch (error) {
+        console.error('Error storing theme preference:', error)
+      }
+    }
+  }, [themeVariant, colorMode, mounted])
   
   // Compute isDark based on colorMode
   const isDark = colorMode === COLOR_MODES.DARK
@@ -104,6 +152,15 @@ export function RobustThemeProvider({
     experience,
     setExperience,
     isDark
+  }
+  
+  // Provide a loading state until client-side code is initialized
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    )
   }
   
   return (

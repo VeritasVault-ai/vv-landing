@@ -1,8 +1,11 @@
 "use client"
 
 import { useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import dynamic from "next/dynamic"
 import { trackPageView, trackError } from "@/lib/analytics/enhanced-client-analytics"
+import { useTheme } from "next-themes"
+import { useRobustTheme } from "@/src/context/RobustThemeProvider"
 
 // Dynamically import with no SSR
 const CorporateLandingPageClient = dynamic(
@@ -27,12 +30,47 @@ const CorporateLandingPageClient = dynamic(
 /**
  * Client component that renders the corporate landing page
  * This ensures the landing page is only rendered on the client side
- * Also handles analytics tracking with IP logging
+ * Also handles analytics tracking with IP logging and applies theme from URL
  */
 export function CorporateVersionClient() {
+  const searchParams = useSearchParams()
+  const themeParam = searchParams.get('theme')
+  const { setTheme } = useTheme()
+  const robustTheme = useRobustTheme()
+  
   useEffect(() => {
-    // Track page view with enhanced analytics (includes IP logging on server)
+    // Track page view with enhanced analytics
     trackPageView()
+    
+    // Apply theme from URL parameter if present
+    if (themeParam) {
+      console.log('Applying theme from URL parameter:', themeParam)
+      
+      // Extract color mode and variant from theme parameter (e.g., "corporate-dark")
+      const [variant, colorMode] = themeParam.split('-')
+      
+      // Apply color mode using next-themes
+      if (colorMode) {
+        setTheme(colorMode)
+      }
+      
+      // Apply variant using robust theme provider
+      if (variant && robustTheme.setThemeVariant) {
+        robustTheme.setThemeVariant(variant as any)
+      }
+      
+      // If using the robust theme provider directly
+      if (colorMode && robustTheme.setColorMode) {
+        robustTheme.setColorMode(colorMode as any)
+      }
+      
+      // Store the preference in localStorage for persistence
+      try {
+        localStorage.setItem('theme-preference', themeParam)
+      } catch (error) {
+        console.error('Failed to store theme preference:', error)
+      }
+    }
     
     // Log any authentication errors
     const checkAuth = async () => {
@@ -50,7 +88,7 @@ export function CorporateVersionClient() {
     }
     
     checkAuth()
-  }, [])
+  }, [themeParam, setTheme, robustTheme])
   
   return (
     <div className="corporate-version-container">

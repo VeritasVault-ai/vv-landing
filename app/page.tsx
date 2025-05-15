@@ -1,17 +1,22 @@
 "use client"
 
-import { useTheme } from "next-themes"
-import Image from "next/image"
-import Link from "next/link"
 import { useEffect, useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { useTheme } from "next-themes"
+import { Button } from "@/components/ui/button"
+import { InitialThemeModal } from "@/components/version-selection/InitialThemeModal"
+import { trackNavigationEvent } from "@/lib/analytics/track-events"
 
 /**
  * Home page that serves as the entry point to the application
- * Provides a simple, robust version selection interface that works even if theme providers fail
+ * Provides version selection interface and theme selection modal
  */
 export default function Home() {
   const { setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [showThemeModal, setShowThemeModal] = useState(false)
+  const [selectedExperience, setSelectedExperience] = useState<'standard' | 'corporate' | null>(null)
   
   // Set cosmic theme for the landing page and mark as mounted
   useEffect(() => {
@@ -19,12 +24,25 @@ export default function Home() {
     setMounted(true)
   }, [setTheme])
 
+  // Handle version selection
+  const handleVersionSelect = (version: 'standard' | 'corporate') => {
+    setSelectedExperience(version)
+    setShowThemeModal(true)
+    
+    // Track the selection
+    trackNavigationEvent({ 
+      feature_name: "version_selection", 
+      button_text: `Enter ${version.charAt(0).toUpperCase() + version.slice(1)} Experience`,
+      destination: `/${version}-version`
+    })
+  }
+
   // Simple loading state while client-side code initializes
   if (!mounted) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-b from-blue-900 to-black text-white">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Loading VeritasVault</h1>
+          <h1 className="text-4xl font-bold mb-4">Loading VeritasVault.ai</h1>
           <div className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>
@@ -43,7 +61,7 @@ export default function Home() {
             width={40} 
             height={40} 
           />
-          <span className="font-bold text-2xl">VeritasVault<span className="text-blue-400">.net</span></span>
+          <span className="font-bold text-2xl">VeritasVault<span className="text-blue-400">.ai</span></span>
         </div>
         
         <nav className="hidden md:flex items-center gap-6">
@@ -56,7 +74,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Welcome to VeritasVault.net</h1>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">Welcome to VeritasVault.ai</h1>
           <p className="text-xl max-w-2xl mx-auto">Choose the experience that best suits your needs for managing digital assets with our AI-powered platform</p>
         </div>
         
@@ -79,12 +97,12 @@ export default function Home() {
                 <span>DeFi protocol integration</span>
               </li>
             </ul>
-            <Link 
-              href="/standard-version" 
-              className="inline-block px-6 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
+              onClick={() => handleVersionSelect('standard')}
             >
               Enter Standard Experience
-            </Link>
+            </Button>
           </div>
           
           {/* Corporate Version Card */}
@@ -105,12 +123,12 @@ export default function Home() {
                 <span>Enterprise-grade security</span>
               </li>
             </ul>
-            <Link 
-              href="/corporate-version" 
-              className="inline-block px-6 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+            <Button 
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium"
+              onClick={() => handleVersionSelect('corporate')}
             >
               Enter Corporate Experience
-            </Link>
+            </Button>
           </div>
         </div>
       </main>
@@ -119,7 +137,7 @@ export default function Home() {
       <footer className="container mx-auto px-4 py-8 mt-16 border-t border-blue-800/50">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <p className="text-sm text-blue-300">© {new Date().getFullYear()} VeritasVault.net. All rights reserved.</p>
+            <p className="text-sm text-blue-300">© {new Date().getFullYear()} VeritasVault.ai. All rights reserved.</p>
           </div>
           <div className="flex gap-6">
             <a href="#" className="text-sm text-blue-300 hover:text-white">Terms</a>
@@ -128,6 +146,15 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      
+      {/* Theme Selection Modal */}
+      {showThemeModal && selectedExperience && (
+        <InitialThemeModal 
+          isOpen={showThemeModal}
+          onClose={() => setShowThemeModal(false)}
+          experienceType={selectedExperience}
+        />
+      )}
     </div>
   )
 }
