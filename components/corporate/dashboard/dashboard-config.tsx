@@ -2,6 +2,7 @@ import { JSX, ReactNode } from 'react'
 import {
   Activity,
   BarChart3,
+  BarChartHorizontal,
   Bell,
   Briefcase,
   Calculator,
@@ -9,6 +10,7 @@ import {
   Eye,
   Layers,
   LayoutDashboard,
+  LineChart,
   PieChart,
   ShieldAlert,
   TrendingUp,
@@ -18,7 +20,7 @@ import {
 } from 'lucide-react'
 
 // Define dashboard category types
-export type DashboardCategory = 'main' | 'analytics' | 'portfolio' | 'admin'
+export type DashboardCategory = 'main' | 'analytics' | 'portfolio' | 'admin' | 'tools'
 
 // Define dashboard configuration interface
 export interface DashboardConfig {
@@ -43,6 +45,7 @@ export const dashboardCategories: Record<DashboardCategory, string[]> = {
     'analytics',
     'performance',
     'onchain',
+    'offchain',
     'ai-analytics'
   ],
   portfolio: [
@@ -55,6 +58,11 @@ export const dashboardCategories: Record<DashboardCategory, string[]> = {
     'admin',
     'events',
     'voting'
+  ],
+  tools: [
+    'strategies',
+    'risk-assessment',
+    'flash-loans'
   ]
 }
 
@@ -63,7 +71,8 @@ export const categoryDisplayNames: Record<DashboardCategory, string> = {
   main: 'Main',
   analytics: 'Analytics',
   portfolio: 'Portfolio',
-  admin: 'Administration'
+  admin: 'Administration',
+  tools: 'Tools'
 }
 
 // Get dashboards by category
@@ -91,7 +100,12 @@ export const createDashboardConfig = (
     ModelPortfolioDashboard,
     EventGridDashboard,
     MarketDashboard,
-    TreasuryDashboard
+    TreasuryDashboard,
+    OnChainDashboard,
+    OffChainDashboard,
+    StrategiesDashboard,
+    RiskAssessmentDashboard,
+    FlashLoansDashboard
   } = components
 
   return [
@@ -219,57 +233,18 @@ export const createDashboardConfig = (
       id: 'onchain',
       name: 'On-Chain Analytics',
       icon: <Layers size={18} />,
-      component: () => (
-        <div className={styles.dashboardWrapper}>
-          <div className={styles.onChainDashboardContainer}>
-            <div className={styles.onChainHeader}>
-              <h2 className={styles.sectionTitle}>On-Chain Analytics Dashboard</h2>
-              <p className={styles.sectionDescription}>Real-time blockchain data analytics and insights</p>
-            </div>
-            
-            <div className={styles.onChainGrid}>
-              <div className={styles.onChainCard}>
-                <h3>Chain Activity</h3>
-                <div className={styles.onChainCardContent}>
-                  {/* Import components from src/components/on-chain-data */}
-                  <div className={styles.placeholderChart}>
-                    Chain activity visualization would appear here
-                  </div>
-                </div>
-              </div>
-              
-              <div className={styles.onChainCard}>
-                <h3>Protocol Metrics</h3>
-                <div className={styles.onChainCardContent}>
-                  <div className={styles.placeholderChart}>
-                    Protocol metrics would appear here
-                  </div>
-                </div>
-              </div>
-              
-              <div className={styles.onChainCard}>
-                <h3>Token Transfers</h3>
-                <div className={styles.onChainCardContent}>
-                  <div className={styles.placeholderList}>
-                    Recent token transfers would appear here
-                  </div>
-                </div>
-              </div>
-              
-              <div className={styles.onChainCard}>
-                <h3>Liquidity Pools</h3>
-                <div className={styles.onChainCardContent}>
-                  <div className={styles.placeholderTable}>
-                    Liquidity pools data would appear here
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ),
+      component: () => <OnChainDashboard />,
       description: 'On-chain data analysis and metrics',
       path: '/corporate/dashboard/onchain',
+      category: 'analytics'
+    },
+    {
+      id: 'offchain',
+      name: 'Off-Chain Analytics',
+      icon: <LineChart size={18} />,
+      component: () => <OffChainDashboard />,
+      description: 'Traditional market and off-chain data analysis',
+      path: '/corporate/dashboard/offchain',
       category: 'analytics'
     },
     {
@@ -289,6 +264,33 @@ export const createDashboardConfig = (
       description: 'AI-powered analytics and insights',
       path: '/corporate/dashboard/ai-analytics',
       category: 'analytics'
+    },
+    {
+      id: 'strategies',
+      name: 'Strategies',
+      icon: <BarChartHorizontal size={18} />,
+      component: () => <StrategiesDashboard />,
+      description: 'Investment and trading strategies',
+      path: '/corporate/dashboard/strategies',
+      category: 'tools'
+    },
+    {
+      id: 'risk-assessment',
+      name: 'Risk Assessment',
+      icon: <ShieldAlert size={18} />,
+      component: () => <RiskAssessmentDashboard />,
+      description: 'Portfolio risk analysis and assessment',
+      path: '/corporate/dashboard/risk-assessment',
+      category: 'tools'
+    },
+    {
+      id: 'flash-loans',
+      name: 'Flash Loans',
+      icon: <Coins size={18} />,
+      component: () => <FlashLoansDashboard />,
+      description: 'Flash loan management and execution',
+      path: '/corporate/dashboard/flash-loans',
+      category: 'tools'
     }
   ]
 }
