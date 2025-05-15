@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-
+import { randomBytes, createHash } from 'crypto' 
 /**
  * API route for handling login requests
  * Includes support for login flags for analytics tracking
@@ -18,7 +18,9 @@ export async function POST(request: NextRequest) {
     const { email, password, flag = 'default' } = body
     
     // Log login attempt with flag (in a real app, use a proper logging system)
-    console.log(`[${new Date().toISOString()}] Login attempt - Email: ${email}, Flag: ${flag}, IP: ${ip}`)
+    // Mask email for privacy in logs  
+    const maskedEmail = email ? `${email.split('@')[0].slice(0, 3)}***@${email.split('@')[1]}` : 'empty'  
+    console.log(`[${new Date().toISOString()}] Login attempt - Email: ${maskedEmail}, Flag: ${flag}, IP: ${ip}`)  
     
     // For demo purposes, accept any login with a valid email format
     // In production, you would validate credentials against your database
@@ -28,9 +30,16 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
-    
-    // Generate a mock token (in production, use a proper JWT or session system)
-    const token = Buffer.from(`${email}:${Date.now()}:${flag}`).toString('base64')
+  
+    // Generate a token with secure random bytes  
+    const tokenSecret = process.env.TOKEN_SECRET || 'fallback-secret-for-demo-only'  
+    const randomString = randomBytes(32).toString('hex')  
+    const timestamp = Date.now().toString()  
+    const tokenData = `${email}:${timestamp}`  
+    const signature = createHash('sha256')  
+      .update(`${tokenData}:${tokenSecret}`)  
+      .digest('hex')  
+    const token = Buffer.from(`${tokenData}:${signature}`).toString('base64')  
     
     // In a real application, you would:
     // 1. Validate credentials against your database

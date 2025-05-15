@@ -227,7 +227,7 @@ export function DemoForm() {
               htmlFor="consent"
               className="text-sm text-slate-700 dark:text-slate-300"
             >
-              I agree to receive communications about VeritasVault products, services, and events. I can unsubscribe at any time. View our <a href="/corporate-version/privacy" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</a>.
+             I agree to receive communications about VeritasVault.net products, services, and events. I can unsubscribe at any time. View our <a href="/corporate-version/privacy" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</a>.  
             </label>
           </div>
           

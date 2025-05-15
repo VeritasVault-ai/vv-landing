@@ -14,8 +14,11 @@ export async function middleware(request: NextRequest) {
              request.headers.get('x-real-ip') || 
              'unknown'
   
-  // Log request information
-  console.log(`[${new Date().toISOString()}] ${request.method} ${path} - IP: ${ip}`)
+  if (process.env.NODE_ENV !== 'production') {  
+    console.log(  
+      `[${new Date().toISOString()}] ${request.method} ${path} - IP: ${ip.split(',')[0]?.trim() ?? 'unknown'}`  
+    )  
+  } 
   
   // IMPORTANT: Skip all authentication checks for demo purposes
   // This prevents any redirects to Vercel's login page

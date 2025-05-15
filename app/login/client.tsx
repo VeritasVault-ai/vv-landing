@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { LoginForm } from "@/components/auth/login-form"
 import { trackLoginEvent } from "@/lib/analytics/auth-analytics"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 interface LoginClientProps {
   returnUrl: string
@@ -80,7 +80,7 @@ export function LoginClient({ returnUrl, loginFlag }: LoginClientProps) {
     }
   }
   
-  const handleSSOLogin = (provider: string) => {
+  const handleSSOLogin = (provider: 'github' | 'google' | string) => { 
     // Track SSO login attempt
     trackLoginEvent('login_attempt', {
       flag: loginFlag,
@@ -88,7 +88,7 @@ export function LoginClient({ returnUrl, loginFlag }: LoginClientProps) {
     })
     
     // Redirect to SSO provider
-    window.location.href = `/api/auth/${provider}?returnUrl=${encodeURIComponent(returnUrl)}&flag=${encodeURIComponent(loginFlag)}`
+    window.location.href = `/api/auth/${encodeURIComponent(provider)}?returnUrl=${encodeURIComponent(returnUrl)}&flag=${encodeURIComponent(loginFlag)}`  
   }
   
   return (

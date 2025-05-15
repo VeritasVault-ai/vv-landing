@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * API route for handling GitHub OAuth callback
@@ -27,8 +27,10 @@ export async function GET(request: NextRequest) {
     let flag = 'default'
     
     try {
-      const decodedState = Buffer.from(state, 'base64').toString()
-      const [stateReturnUrl, stateFlag] = decodedState.split(':')
+      const decodedState = Buffer.from(state, 'base64').toString()  
+      const stateParts = decodedState.split(':')  
+      const stateReturnUrl = stateParts[0]  
+      const stateFlag = stateParts[1]  
       
       if (stateReturnUrl) returnUrl = stateReturnUrl
       if (stateFlag) flag = stateFlag

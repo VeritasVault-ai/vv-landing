@@ -22,9 +22,14 @@ export async function POST(request: NextRequest) {
     // Parse the analytics event data
     const eventData = await request.json()
     
+    // Sanitize any potentially sensitive data before logging  
+    const sanitizedData = { ...eventData }  
+    if (sanitizedData.user_email) sanitizedData.user_email = '***@***.com'  
+    if (sanitizedData.ip_address) sanitizedData.ip_address = '***.***.***.**'  
+
     // Log the event data (in production, you'd store this in a database or send to a service)
-    console.log('Analytics event received:', {
-      ...eventData,
+    console.log('Analytics event received:', {  
+      ...sanitizedData, 
       timestamp: eventData.timestamp || new Date().toISOString(),
       received_at: new Date().toISOString()
     })
