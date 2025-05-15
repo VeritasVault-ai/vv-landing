@@ -1,8 +1,8 @@
 "use client"
 
+import { defiLlamaService } from "@/src/services/market-data/defillama.service"
+import type { DefiLlamaData } from "@/src/types/market-data"
 import { useCallback, useEffect, useState } from "react"
-import type { DefiLlamaData } from "@/types/market-data"
-import { defiLlamaService } from "@/services/market-data/defillama.service"
 
 export const useDefiLlamaData = (chain = "ethereum") => {
   const [data, setData] = useState<DefiLlamaData | null>(null)

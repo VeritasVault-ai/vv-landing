@@ -1,8 +1,8 @@
 "use client"
 
+import { coinGeckoService } from "@/src/services/market-data/coingecko.service"
+import type { CoinGeckoData } from "@/src/types/market-data"
 import { useCallback, useEffect, useState } from "react"
-import type { CoinGeckoData } from "@/types/market-data"
-import { coinGeckoService } from "@/services/market-data/coingecko.service"
 
 export const useCoinGeckoData = (chain = "ethereum") => {
   const [data, setData] = useState<CoinGeckoData | null>(null)
@@ -14,8 +14,8 @@ export const useCoinGeckoData = (chain = "ethereum") => {
       setIsLoading(true)
       setError(null)
       
-      // Fetch market data for the specified chain
-      const marketData = await coinGeckoService.getMarketData(chain)
+      // Fetch global market data (no longer chain-specific)
+      const marketData = await coinGeckoService.getGlobalMarketData()
       
       // Fetch top tokens for the specified chain
       const tokens = await coinGeckoService.getTopTokens(chain, 50)

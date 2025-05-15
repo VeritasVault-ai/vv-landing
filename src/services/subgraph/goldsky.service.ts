@@ -1,12 +1,52 @@
-import { API_ENDPOINTS } from "@/lib/constants"
+import { API_ENDPOINTS } from "@/src/lib/constants";
 import type {
+  ChainActivity,
+  LiquidityPoolData,
+  ProtocolMetrics,
   SubgraphQueryOptions,
   SubgraphResponse,
-  ProtocolMetrics,
   TokenTransferData,
-  LiquidityPoolData,
-  ChainActivity,
-} from "@/types/subgraph-data"
+} from "@/src/types/subgraph-data";
+
+// Define interfaces for the response data structures
+interface DailyMetric {
+  timestamp: string;
+  dailyVolumeUSD: string;
+  totalValueLockedUSD: string;
+  activeUsers: string;
+  txCount: string;
+}
+
+interface TokenTransfer {
+  from: { id: string };
+  to: { id: string };
+  amount: string;
+  amountUSD: string;
+  timestamp: string;
+  transaction: { id: string };
+}
+
+interface Pool {
+  id: string;
+  name?: string;
+  token0: { symbol: string; id: string };
+  token1: { symbol: string; id: string };
+  tvlUSD: string;
+  volumeUSD: string;
+  feeTier: string;
+  apr: string;
+  protocol?: { name: string };
+}
+
+interface NetworkMetric {
+  timestamp: string;
+  blockCount: string;
+  transactionCount: string;
+  activeAddresses: string;
+  gasUsed: string;
+  avgGasPrice: string;
+  totalValueTransferredUSD: string;
+}
 
 class GoldskyService {
   private endpoints: Record<string, string>
@@ -95,7 +135,7 @@ class GoldskyService {
       volumeTotal: Number.parseFloat(response.protocol.cumulativeVolumeUSD),
       users: Number.parseInt(response.protocol.userCount),
       transactions: Number.parseInt(response.protocol.txCount),
-      dailyMetrics: response.protocol.dailyMetrics.map((metric) => ({
+      dailyMetrics: response.protocol.dailyMetrics.map((metric: DailyMetric) => ({
         date: new Date(Number.parseInt(metric.timestamp) * 1000).toISOString(),
         volume: Number.parseFloat(metric.dailyVolumeUSD),
         tvl: Number.parseFloat(metric.totalValueLockedUSD),
@@ -142,7 +182,7 @@ class GoldskyService {
       symbol: response.token.symbol,
       name: response.token.name,
       totalSupply: Number.parseFloat(response.token.totalSupply),
-      transfers: response.token.transfers.map((transfer) => ({
+      transfers: response.token.transfers.map((transfer: TokenTransfer) => ({
         from: transfer.from.id,
         to: transfer.to.id,
         amount: Number.parseFloat(transfer.amount),
@@ -185,7 +225,7 @@ class GoldskyService {
       return []
     }
     
-    return response.pools.map((pool) => ({
+    return response.pools.map((pool: Pool) => ({
       id: pool.id,
       name: pool.name || `${pool.token0.symbol}-${pool.token1.symbol}`,
       token0: {
@@ -228,7 +268,7 @@ class GoldskyService {
     
     return {
       chain,
-      dailyMetrics: response.networkMetrics.map((metric) => ({
+      dailyMetrics: response.networkMetrics.map((metric: NetworkMetric) => ({
         date: new Date(Number.parseInt(metric.timestamp) * 1000).toISOString(),
         blocks: Number.parseInt(metric.blockCount),
         transactions: Number.parseInt(metric.transactionCount),

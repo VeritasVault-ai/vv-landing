@@ -1,12 +1,12 @@
 "use client"
 
-import { useMemo } from "react"
+import { useProtocolMetrics } from "@/src//hooks/use-subgraph-data"
+import { Button } from "@/src/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
+import { Skeleton } from "@/src/components/ui/skeleton"
+import { formatCurrency, formatNumber } from "@/src/lib/formatters"
 import { ArrowUpRight, TrendingDown, TrendingUp, Users } from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useProtocolMetrics } from "@/hooks/use-subgraph-data"
-import { formatCurrency, formatNumber } from "@/lib/formatters"
+import { useMemo } from "react"
 import { ProtocolActivityChart } from "./protocol-activity-chart"
 import styles from "./protocol-metrics-card.module.css"
 
@@ -36,7 +36,7 @@ export const ProtocolMetricsCard = ({ chain, protocolName, days = 7 }: ProtocolM
         </CardHeader>
         <CardContent>
           <p className={styles.errorMessage}>{error.message}</p>
-          <Button onClick={() => refetch()} variant="outline" size="sm" className={styles.retryButton}>
+          <Button onClick={() => refetch()} variant="outline" size="small" className={styles.retryButton}>
             Retry
           </Button>
         </CardContent>
@@ -113,12 +113,17 @@ export const ProtocolMetricsCard = ({ chain, protocolName, days = 7 }: ProtocolM
         </div>
       </CardContent>
       <CardFooter className={styles.cardFooter}>
-        <Button variant="ghost" size="sm" className={styles.viewMoreButton} asChild>
-          <a href={`/protocol/${chain}/${protocolName}`} target="_blank" rel="noopener noreferrer">
+        <a 
+          href={`/protocol/${chain}/${protocolName}`} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className={styles.viewMoreLink}
+        >
+          <Button variant="ghost" size="small" className={styles.viewMoreButton}>
             View Details
             <ArrowUpRight className={styles.linkIcon} />
-          </a>
-        </Button>
+          </Button>
+        </a>
       </CardFooter>
     </Card>
   )

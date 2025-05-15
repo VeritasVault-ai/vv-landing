@@ -1,10 +1,10 @@
 import type {
   EventGridEvent,
+  EventGridFilter,
   EventGridSubscription,
   EventGridTopic,
-  EventGridFilter,
   EventHandlerConfig,
-} from "@/types/event-grid"
+} from "@/src/types/event-grid"
 
 class EventGridService {
   private apiKey: string | null

@@ -48,7 +48,7 @@ export const TokenTransfersList = ({ chain, tokenAddress, limit = 10 }: TokenTra
         <div className={styles.transfersList}>
           {isLoading
             ? Array.from({ length: limit }).map((_, index) => (
-                <div key={`skeleton-${index}`} className={styles.transferItemSkeleton}>
+                <div key={`skeleton-transfer-${tokenAddress}-${index}`} className={styles.transferItemSkeleton}>
                   <div className={styles.transferHeader}>
                     <Skeleton className="h-4 w-24" />
                     <Skeleton className="h-4 w-20" />

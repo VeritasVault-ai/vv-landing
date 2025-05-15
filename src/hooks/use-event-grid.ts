@@ -1,8 +1,8 @@
 "use client"
 
+import { eventGridService } from "@/src/services/events/event-grid.service"
+import type { EventGridEvent, EventGridFilter, EventGridSubscription, EventGridTopic } from "@/src/types/event-grid"
 import { useCallback, useEffect, useState } from "react"
-import { eventGridService } from "@/services/events/event-grid.service"
-import type { EventGridEvent, EventGridSubscription, EventGridTopic, EventGridFilter } from "@/types/event-grid"
 
 /**
  * Hook for subscribing to Event Grid topics

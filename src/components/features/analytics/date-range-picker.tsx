@@ -1,8 +1,8 @@
 "use client"
+import type { DateRange } from "@/src/types/analytics"
+import { Calendar, ChevronDown } from "lucide-react"
 import type React from "react"
 import { useState } from "react"
-import type { DateRange } from "@/types/analytics"
-import { Calendar, ChevronDown } from "lucide-react"
 import styles from "./date-range-picker.module.css"
 
 interface DateRangePickerProps {
@@ -76,7 +76,13 @@ export function DateRangePicker({ dateRange, onChange }: DateRangePickerProps) {
   
   return (
     <div className={styles.container}>
-      <button className={styles.trigger} onClick={() => setIsOpen(!isOpen)}>
+      <button 
+        className={styles.trigger} 
+        onClick={() => setIsOpen(!isOpen)}
+        type="button"
+        aria-label="Select date range"
+        aria-expanded={isOpen.toString()}
+      >
         <Calendar className={styles.icon} />
         <span className={styles.dateText}>
           {formatDate(dateRange.start)} - {formatDate(dateRange.end)}
@@ -94,6 +100,7 @@ export function DateRangePicker({ dateRange, onChange }: DateRangePickerProps) {
                   key={preset.label}
                   className={styles.presetButton}
                   onClick={() => handlePresetClick(preset.range)}
+                  type="button"
                 >
                   {preset.label}
                 </button>
@@ -105,34 +112,48 @@ export function DateRangePicker({ dateRange, onChange }: DateRangePickerProps) {
             <h4 className={styles.customRangeTitle}>Custom Range</h4>
             <div className={styles.dateInputs}>
               <div className={styles.dateInputGroup}>
-                <label className={styles.dateLabel}>Start Date</label>
+                <label htmlFor="start-date" className={styles.dateLabel}>Start Date</label>
                 <input
+                  id="start-date"
                   type="date"
                   className={styles.dateInput}
                   value={dateRange.start.toISOString().split("T")[0]}
                   onChange={(e) => handleCustomDateChange(e, "start")}
                   max={dateRange.end.toISOString().split("T")[0]}
+                  aria-label="Start date"
+                  placeholder="Select start date"
                 />
               </div>
               <div className={styles.dateInputGroup}>
-                <label className={styles.dateLabel}>End Date</label>
+                <label htmlFor="end-date" className={styles.dateLabel}>End Date</label>
                 <input
+                  id="end-date"
                   type="date"
                   className={styles.dateInput}
                   value={dateRange.end.toISOString().split("T")[0]}
                   onChange={(e) => handleCustomDateChange(e, "end")}
                   min={dateRange.start.toISOString().split("T")[0]}
                   max={new Date().toISOString().split("T")[0]}
+                  aria-label="End date"
+                  placeholder="Select end date"
                 />
               </div>
             </div>
           </div>
           
           <div className={styles.actions}>
-            <button className={styles.cancelButton} onClick={() => setIsOpen(false)}>
+            <button 
+              className={styles.cancelButton} 
+              onClick={() => setIsOpen(false)}
+              type="button"
+            >
               Cancel
             </button>
-            <button className={styles.applyButton} onClick={() => setIsOpen(false)}>
+            <button 
+              className={styles.applyButton} 
+              onClick={() => setIsOpen(false)}
+              type="button"
+            >
               Apply
             </button>
           </div>

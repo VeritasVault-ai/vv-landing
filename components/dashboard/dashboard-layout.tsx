@@ -160,6 +160,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <button 
+                type="button"
+                aria-label="Toggle sidebar"
                 className="lg:hidden mr-4 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                 onClick={toggleSidebar}
               >
@@ -169,7 +171,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
             
             <div className="flex items-center gap-4">
-              <Button variant="outline" size="icon" className="relative">
+              <Button variant="outline" size="icon" className="relative" aria-label="Notifications" title="Notifications">
                 <Bell size={18} />
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">
                   3

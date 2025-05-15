@@ -1,5 +1,5 @@
-import type { TokenData } from "@/types/market-data"
-import { API_ENDPOINTS } from "@/lib/constants"
+import { API_ENDPOINTS } from "@/src/lib/constants"
+import type { TokenData } from "@/src/types/market-data"
 
 class CoinGeckoService {
   private baseUrl: string
@@ -36,7 +36,7 @@ class CoinGeckoService {
     }
   }
   
-  async getMarketData(chain: string): Promise<{ totalMarketCap: number; total24hVolume: number }> {
+  async getGlobalMarketData(): Promise<{ totalMarketCap: number; total24hVolume: number }> {
     const url = `${this.baseUrl}/global`
     const data = await this.fetchWithRetry<any>(url)
     
@@ -48,6 +48,11 @@ class CoinGeckoService {
   }
   
   async getTopTokens(chain: string, limit = 50): Promise<TokenData[]> {
+    // Validate limit parameter
+    if (limit < 1 || limit > 250) {
+      throw new RangeError("limit must be between 1 and 250")
+    }
+    
     // Map chain to CoinGecko's chain ID format
     const chainId = this.mapChainToCoinGeckoId(chain)
     const url = `${this.baseUrl}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false&price_change_percentage=24h&category=${chainId}`
@@ -63,7 +68,10 @@ class CoinGeckoService {
       currentPrice: item.current_price,
       marketCap: item.market_cap,
       volume24h: item.total_volume,
-      priceChangePercentage24h: item.price_change_percentage_24h || 0,
+      priceChangePercentage24h: 
+        item.price_change_percentage_24h_in_currency ?? 
+        item.price_change_percentage_24h ?? 
+        0,
     }))
   }
   

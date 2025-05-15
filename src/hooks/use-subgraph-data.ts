@@ -1,8 +1,8 @@
 "use client"
 
+import { goldskyService } from "@/src/services/subgraph/goldsky.service"
+import type { ChainActivity, LiquidityPoolData, ProtocolMetrics, TokenTransferData } from "@/src/types/subgraph-data"
 import { useCallback, useEffect, useState } from "react"
-import { goldskyService } from "@/services/subgraph/goldsky.service"
-import type { ProtocolMetrics, TokenTransferData, LiquidityPoolData, ChainActivity } from "@/types/subgraph-data"
 
 // Hook for protocol metrics
 export const useProtocolMetrics = (chain: string, protocolName: string, days = 7) => {
