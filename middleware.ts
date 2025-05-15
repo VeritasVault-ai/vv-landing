@@ -20,6 +20,36 @@ export async function middleware(request: NextRequest) {
   // Log request information (in production, you would send this to a logging service)
   console.log(`[${new Date().toISOString()}] ${request.method} ${path} - IP: ${ip} - UA: ${userAgent.substring(0, 100)}...`)
   
+  // List of public routes that don't require authentication
+  const publicRoutes = [
+    '/',
+    '/standard-version',
+    '/corporate-version',
+    '/api/analytics',
+    '/api/theme',
+    '/favicon.ico',
+    '/logo.svg',
+    '/logo-white.svg',
+    '/advanced-analytics-predictive-dashboard.png',
+    '/liquidity-management-dashboard.png',
+    '/strategy-builder-flowchart.png',
+    '/abstract-neural-network.png'
+  ]
+  
+  // Check if current path starts with any public route
+  const isPublicRoute = publicRoutes.some(route => 
+    path === route || 
+    path.startsWith(`${route}/`) ||
+    path.startsWith('/_next/') ||
+    path.startsWith('/fonts/') ||
+    path.startsWith('/images/')
+  )
+  
+  // Skip authentication for public routes
+  if (isPublicRoute) {
+    return NextResponse.next()
+  }
+  
   // Check for authentication if accessing protected routes
   if (path.startsWith('/corporate-version/dashboard') || 
       path.startsWith('/corporate-version/admin') || 
@@ -33,15 +63,14 @@ export async function middleware(request: NextRequest) {
     if (!authToken && !authHeader) {
       console.log(`[AUTH] Unauthorized access attempt to ${path} - IP: ${ip}`)
       
-      // Redirect to login page with return URL
-      url.pathname = '/corporate-version/login'
+      // Redirect to your custom login page instead of Vercel's login
+      url.pathname = '/login'
       url.searchParams.set('returnUrl', path)
       
       return NextResponse.redirect(url)
     }
     
     // In a real implementation, you would validate the token here
-    // For now, we'll just log the authentication attempt
     console.log(`[AUTH] Authenticated access to ${path} - IP: ${ip}`)
   }
   
@@ -62,7 +91,6 @@ export async function middleware(request: NextRequest) {
  */
 export const config = {
   // Match all request paths except for:
-  // - API routes (/api/*)
   // - Static files (_next/static/*, favicon.ico, etc.)
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }
