@@ -1,0 +1,149 @@
+.insightsCard {
+  height: 100%;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 1rem;
+}
+
+.viewAllButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.buttonIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.insightsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.insightItem {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.insightItem:hover {
+  border-color: var(--border-hover);
+  background-color: var(--muted);
+}
+
+.insightItemSkeleton {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.insightHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.insightHeaderSkeleton {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.insightTitle {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.categoryIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.severityBadge {
+  font-size: 0.75rem;
+  text-transform: capitalize;
+}
+
+.high {
+  color: var(--destructive);
+  border-color: var(--destructive);
+}
+
+.medium {
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+.low {
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.insightDescription {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: 0.5rem 0;
+}
+
+.insightFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 0.75rem;
+}
+
+.insightFooterSkeleton {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.categoryBadge {
+  font-size: 0.75rem;
+  text-transform: capitalize;
+}
+
+.market {
+  background-color: var(--color-blue-light);
+  color: var(--color-blue);
+}
+
+.technical {
+  background-color: var(--color-purple-light);
+  color: var(--color-purple);
+}
+
+.fundamental {
+  background-color: var(--color-green-light);
+  color: var(--color-green);
+}
+
+.sentiment {
+  background-color: var(--color-orange-light);
+  color: var(--color-orange);
+}
+
+.insightMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.relatedAssets {
+  display: flex;
+}

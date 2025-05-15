@@ -1,0 +1,130 @@
+.assetsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.assetItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.assetItem:hover {
+  border-color: var(--border-hover);
+  background-color: var(--muted);
+}
+
+.assetInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  flex: 2;
+}
+
+.assetLogo {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.logoImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.assetDetails {
+  min-width: 0;
+}
+
+.assetName {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.assetSymbol {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.assetHolding {
+  flex: 2;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .assetHolding {
+    display: block;
+  }
+}
+
+.assetAmount {
+  font-weight: 500;
+}
+
+.assetAllocation {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.assetPrice {
+  flex: 1;
+  text-align: right;
+}
+
+.currentPrice {
+  font-weight: 500;
+}
+
+.priceChange {
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.positive {
+  color: var(--success);
+}
+
+.negative {
+  color: var(--destructive);
+}
+
+.changeIcon {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.125rem;
+}
+
+.assetValue {
+  flex: 1;
+  text-align: right;
+}
+
+.totalValue {
+  font-weight: 600;
+}
