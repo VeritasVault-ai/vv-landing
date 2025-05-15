@@ -3,9 +3,18 @@
 import { ThemeSettings } from "@/components/corporate/theme-settings"
 import { RobustThemeToggle } from "@/components/robust-theme-toggle"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 import { useRobustTheme } from "@/src/context/RobustThemeProvider"
+import { ChevronDown, LogOut, User } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
 
 /**
  * Header component for the corporate version of the site
@@ -14,6 +23,12 @@ import Link from "next/link"
  */
 export function CorporateHeader() {
   const { isDark } = useRobustTheme()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  // Toggle login state (for demo purposes)
+  const handleAuthAction = () => {
+    setIsLoggedIn(!isLoggedIn)
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 bg-opacity-90 dark:bg-opacity-90 backdrop-blur-sm">
@@ -30,18 +45,50 @@ export function CorporateHeader() {
           </Link>
           
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/corporate-version/solutions" className="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">
-              Solutions
-            </Link>
+            {/* Solutions Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">
+                Solutions <ChevronDown className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link href="/corporate-version/solutions/treasury">Treasury Management</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/corporate-version/solutions/portfolio">Portfolio Optimization</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/corporate-version/solutions/risk">Risk Management</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/corporate-version/solutions/compliance">Compliance</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Link href="/corporate-version/pricing" className="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">
               Pricing
             </Link>
-            <Link href="/corporate-version/about" className="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">
-              About
-            </Link>
-            <Link href="/corporate-version/contact" className="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">
-              Contact
-            </Link>
+            
+            {/* Company Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">
+                Company <ChevronDown className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link href="/corporate-version/about">About Us</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/corporate-version/careers">Careers</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/corporate-version/blog">Blog</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/corporate-version/contact">Contact</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
         
@@ -49,13 +96,39 @@ export function CorporateHeader() {
           <RobustThemeToggle />
           <ThemeSettings />
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="outline" asChild>
-              <Link href="/corporate-version/login">Log In</Link>
+            {isLoggedIn ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span>My Account</span>
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white" asChild>
-              <Link href="/corporate-version/demo">Request Demo</Link>
-            </Button>
-          </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings">Settings</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleAuthAction} className="text-red-500 dark:text-red-400">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    <span>Log Out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button variant="outline" onClick={handleAuthAction}>
+                  Log In
+                </Button>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white" asChild>
+                  <Link href="/corporate-version/demo">Request Demo</Link>
+                </Button>
+              </>
+            )}
+      </div>
         </div>
       </div>
     </header>

@@ -1,4 +1,4 @@
-"use client"
+("use client"
 
 /**
  * Timeline section for the About page
@@ -6,39 +6,39 @@
 export function AboutTimeline() {
   const timelineEvents = [
     {
-      year: "2022",
-      title: "Company Founded",
-      description: "VeritasVault was founded by a team of financial and blockchain experts with a vision to revolutionize institutional liquidity management."
+      year: "May 2025",
+      title: "MVP Launch",
+      description: "Successfully launched our Minimum Viable Product, marking the beginning of our journey to revolutionize institutional liquidity management."
     },
     {
-      year: "2022",
-      title: "Seed Funding",
-      description: "Secured $8.5 million in seed funding from leading venture capital firms specializing in fintech and blockchain."
+      year: "Q3 2025",
+      title: "Seed Funding (Planned)",
+      description: "Planning to secure initial funding from venture capital firms specializing in fintech and blockchain technology."
     },
     {
-      year: "2023",
-      title: "Beta Launch",
-      description: "Released our beta platform to select institutional partners, gathering valuable feedback and refining our solutions."
+      year: "Q4 2025",
+      title: "Beta Platform (Planned)",
+      description: "Planning to release our beta platform to select institutional partners for feedback and refinement."
     },
     {
-      year: "2023",
-      title: "Series A Funding",
-      description: "Raised $25 million in Series A funding to accelerate product development and expand our team."
+      year: "Q1 2026",
+      title: "Series A Funding (Planned)",
+      description: "Aiming to raise Series A funding to accelerate product development and expand our team."
     },
     {
-      year: "2024",
-      title: "Official Launch",
-      description: "Launched our enterprise platform to the public, offering comprehensive liquidity management solutions for institutional clients."
+      year: "Q2 2026",
+      title: "Official Launch (Planned)",
+      description: "Planning to launch our enterprise platform to the public with comprehensive liquidity management solutions."
     },
     {
-      year: "2024",
-      title: "Strategic Partnerships",
-      description: "Formed strategic partnerships with major financial institutions and blockchain protocols to enhance our service offerings."
+      year: "Q3 2026",
+      title: "Strategic Partnerships (Planned)",
+      description: "Intending to form strategic partnerships with major financial institutions and blockchain protocols."
     },
     {
-      year: "2025",
-      title: "Global Expansion",
-      description: "Expanded operations to Europe and Asia, serving clients across multiple jurisdictions with localized compliance solutions."
+      year: "2027",
+      title: "Global Expansion (Planned)",
+      description: "Planning to expand operations to Europe and Asia, serving clients across multiple jurisdictions."
     }
   ]
 
@@ -50,7 +50,7 @@ export function AboutTimeline() {
             Our Journey
           </h2>
           <p className="text-xl text-slate-600 dark:text-slate-400">
-            From inception to industry leadership, follow our path of innovation and growth.
+            From inception to our vision for the future, follow our path of innovation and growth.
           </p>
         </div>
         
@@ -88,4 +88,4 @@ export function AboutTimeline() {
       </div>
     </section>
   )
-}
+})
