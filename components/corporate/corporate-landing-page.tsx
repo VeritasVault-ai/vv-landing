@@ -6,7 +6,6 @@ import {
   InstitutionalBadges,
   KeyBenefits,
   SolutionsTabs,
-  TrustedInstitutions,
   ValueProposition
 } from "@/components/corporate/landing-sections"
 
@@ -33,8 +32,8 @@ export function CorporateLandingPage() {
 
       {/* CTA Section */}
       <CtaSection />
-      {/* Trusted Institutions Section */}
-      <TrustedInstitutions />
+      {/* Trusted Institutions Section
+      <TrustedInstitutions /> */}
     </div>
   )
 }
