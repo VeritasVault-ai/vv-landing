@@ -1,8 +1,7 @@
-// Server component for dashboard layout
-import { CollapsibleSidebar } from '@/src/components/layout/CollapsibleSidebar';
-import type { NavItemOrGroup } from '@/src/components/layout/sidebar';
-import { EXPERIENCE_TYPES } from '@/src/constants/theme';
-import { ThemeProvider } from '@/src/lib/context/ThemeProvider';
+"use client"
+
+import { CollapsibleSidebar } from '@/components/ui/sidebar'
+import { ThemeProvider } from '@/lib/context/ThemeProvider'
 import {
   BarChart3,
   Droplets,
@@ -11,16 +10,11 @@ import {
   LayoutDashboard,
   Settings,
   ShieldAlert
-} from 'lucide-react';
-import { ReactNode } from 'react';
-
-export const metadata = {
-  title: 'Dashboard | VeritasVault.net',
-  description: 'Enterprise liquidity management dashboard for institutional investors.',
-};
+} from 'lucide-react'
+import { ReactNode } from 'react'
 
 // Define corporate dashboard navigation items
-const navigationItems: NavItemOrGroup[] = [
+const navigationItems = [
   {
     type: 'link',
     name: 'Dashboard',
@@ -62,10 +56,10 @@ const navigationItems: NavItemOrGroup[] = [
     icon: <ShieldAlert className="h-5 w-5" />,
     label: 'Risk Assessment'
   }
-];
+]
 
 // Define secondary navigation items
-const secondaryNavigationItems: NavItemOrGroup[] = [
+const secondaryNavigationItems = [
   {
     type: 'link',
     name: 'Settings',
@@ -80,30 +74,25 @@ const secondaryNavigationItems: NavItemOrGroup[] = [
     icon: <HelpCircle className="h-5 w-5" />,
     label: 'Help & Support'
   }
-];
+]
 
 /**
- * Renders the corporate dashboard layout with a themed sidebar and main content area.
- *
- * Wraps the provided {@link children} in a full-height layout featuring a collapsible sidebar with navigation and upgrade options, styled for enterprise use.
- *
- * @param children - The content to display within the dashboard's main area.
+ * Dashboard layout component that provides a consistent layout for all dashboard pages
+ * with a collapsible sidebar and main content area
  */
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider defaultExperience={EXPERIENCE_TYPES.CORPORATE}>
-      <div className="flex h-screen">
-        <CollapsibleSidebar 
-          style="gradient"
-          homeHref="/corporate"
-          navigationItems={navigationItems}
-          secondaryNavigationItems={secondaryNavigationItems}
-          upgradeButtonText="Enterprise Features"
-        />
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {children}
-        </div>
+    <div className="flex h-screen">
+      <CollapsibleSidebar 
+        style="gradient"
+        homeHref="/corporate"
+        navigationItems={navigationItems}
+        secondaryNavigationItems={secondaryNavigationItems}
+        upgradeButtonText="Enterprise Features"
+      />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {children}
       </div>
-    </ThemeProvider>
-  );
+    </div>
+  )
 }

@@ -1,6 +1,5 @@
 "use client"
 
-import { DashboardHeader } from "@/components/corporate/dashboard-header"
 import { PerformanceMetrics } from "@/components/corporate/dashboard/performance-metrics"
 import { ProposalsList } from "@/components/corporate/dashboard/proposals-list"
 import { StatusCard } from "@/components/corporate/dashboard/status-card"
@@ -8,7 +7,7 @@ import { useDashboardData } from "@/lib/hooks/useDashboardData"
 import { Activity, BarChart3, Clock, Users } from "lucide-react"
 import styles from "./overview.module.css"
 /**
- * Dashboard overview page that demonstrates the use of WebSocket simulations
+ * Dashboard overview component that demonstrates the use of WebSocket simulations
  * and simulation indicators
  */
 export default function DashboardOverview() {
@@ -17,26 +16,12 @@ export default function DashboardOverview() {
     modelData,
     votingData,
     performanceMetrics,
-    connectionStatus,
     isDashboardSimulated,
     isModelSimulated,
-    isVotingSimulated,
-    isAnyDataSimulated
+    isVotingSimulated
   } = useDashboardData();
   return (
-    <div className={styles.container}>
-      <DashboardHeader
-        title="Dashboard Overview"
-        description="Real-time metrics and system status"
-        isSimulated={isAnyDataSimulated}
-        connectionStatus={connectionStatus}
-        lastUpdated={dashboardData?.lastUpdated}
-        onRefresh={async () => {
-          // In a real app, this would trigger a data refresh
-          await new Promise(resolve => setTimeout(resolve, 1000))
-        }}
-      />
-      
+    <div>
       <div className={styles.gridContainer}>
         {/* Active Users Card */}
         <StatusCard
