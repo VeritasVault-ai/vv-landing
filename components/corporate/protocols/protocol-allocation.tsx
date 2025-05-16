@@ -1,12 +1,21 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { createProtocolAllocation } from "./protocol-allocation.factory";
+import styles from "./protocol-allocation.module.css";
 import { ProtocolAllocationSkeleton } from "./protocol-allocation.skeleton";
+import { ChartData } from "./protocol-allocation.types";
+import { ProtocolCard } from "./protocol-card";
+import { ProtocolItem } from "./protocol-item";
+import {
+  formatCurrency,
+  MIN_ANGLE,
+  processChartData,
+  SMALL_PROTOCOL_THRESHOLD
+} from "./utils/chart-utils";
+import { WarningBanner } from "./warning-banner";
 
 /**
  * Renders an overview of protocol allocations, including total value locked,
@@ -33,39 +42,41 @@ export function ProtocolAllocation() {
     return <ProtocolAllocationSkeleton />;
   }
 
-  if (!data) {
-    return null;
+  // Validate data
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return <WarningBanner message="No protocol data available. Please try again later." />;
   }
-
+  
   // Sort protocols by value for consistent display
-  const sortedData = [...data].sort((a, b) => 
-    parseFloat(b.totalValueLockedUSD) - parseFloat(a.totalValueLockedUSD)
-  );
+  const sortedData = [...data].sort((a, b) => {
+    const bValue = parseFloat(b.totalValueLockedUSD) || 0;
+    const aValue = parseFloat(a.totalValueLockedUSD) || 0;
+    return bValue - aValue;
+  });
 
   // Get top 3 protocols for highlight cards
-  const topProtocols = sortedData.slice(0, 3);
+  const topProtocols = sortedData.slice(0, Math.min(3, sortedData.length));
+  
+  // Process data for the chart - group small protocols into "Others"
+  const processedChartData = processChartData(sortedData);
   
   return (
-    <div className="space-y-6">
-      {usedFallback && (
-        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 rounded-md mb-4">
-          <p className="text-amber-800 dark:text-amber-200">
-            {error} This is simulated data for demonstration purposes.
-          </p>
-        </div>
+    <div className={styles.container}>
+      {usedFallback && error && (
+        <WarningBanner message={`${error} This is simulated data for demonstration purposes.`} />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className={styles.summaryGrid}>
         {/* Total Value Locked Card */}
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader className={styles.pb2}>
             <CardDescription>Total Value Locked</CardDescription>
-            <CardTitle className="text-3xl font-bold">
-              ${totalValue.toLocaleString()}
+            <CardTitle className={styles.valueText}>
+              {formatCurrency(totalValue)}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className={styles.smallText}>
               Across {data.length} protocols
             </p>
           </CardContent>
@@ -73,50 +84,44 @@ export function ProtocolAllocation() {
 
         {/* Top Protocol Cards */}
         {topProtocols.map((protocol, index) => (
-          <Card key={index}>
-            <CardHeader className="pb-2">
-              <CardDescription>{protocol.name}</CardDescription>
-              <CardTitle className="text-3xl font-bold">
-                {protocol.percentage}%
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Progress 
-                value={protocol.percentage} 
-                className="h-2" 
-                style={{ backgroundColor: protocol.color + '40' }} // Add transparency
-              />
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-                ${parseFloat(protocol.totalValueLockedUSD).toLocaleString()}
-              </p>
-            </CardContent>
-          </Card>
+          <ProtocolCard
+            key={index}
+            name={protocol.name}
+            percentage={protocol.percentage}
+            value={protocol.totalValueLockedUSD}
+            color={protocol.color}
+          />
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className={styles.detailsGrid}>
         {/* Protocol Distribution Chart */}
         <Card>
           <CardHeader>
             <CardTitle>Protocol Distribution</CardTitle>
             <CardDescription>Allocation of funds across protocols</CardDescription>
           </CardHeader>
-          <CardContent className="h-80">
+          <CardContent className={styles.chartContainer}>
             <ChartContainer config={chartConfig}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={data}
+                    data={processedChartData}
                     cx="50%"
                     cy="50%"
                     labelLine={true}
                     outerRadius={80}
+                    minAngle={MIN_ANGLE}
                     fill="#8884d8"
                     dataKey="totalValueLockedUSD"
                     nameKey="name"
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                    label={({ name, percent }: { name: string; percent: number }) => 
+                      percent < SMALL_PROTOCOL_THRESHOLD 
+                        ? '' 
+                        : `${name}: ${(percent * 100).toFixed(1)}%`
+                    }
                   >
-                    {data.map((entry, index) => (
+                    {processedChartData.map((entry: ChartData, index: number) => (
                       <Cell 
                         key={`cell-${index}`} 
                         fill={entry.color} 
@@ -124,7 +129,7 @@ export function ProtocolAllocation() {
                     ))}
                   </Pie>
                   <Tooltip 
-                    formatter={(value: string) => `$${parseFloat(value).toLocaleString()}`} 
+                    formatter={(value: string) => formatCurrency(value)} 
                   />
                   <Legend />
                 </PieChart>
@@ -140,22 +145,9 @@ export function ProtocolAllocation() {
             <CardDescription>Value locked in each protocol</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className={styles.protocolsList}>
               {sortedData.map((protocol, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <div>
-                    <div className="font-medium">{protocol.name}</div>
-                    <div className="text-sm text-slate-500">
-                      {protocol.percentage}% of portfolio
-                    </div>
-                  </div>
-                  <Badge 
-                    variant="secondary" 
-                    style={{ backgroundColor: protocol.color + '20', color: protocol.color }}
-                  >
-                    ${parseFloat(protocol.totalValueLockedUSD).toLocaleString()}
-                  </Badge>
-                </div>
+                <ProtocolItem key={index} protocol={protocol} />
               ))}
             </div>
           </CardContent>

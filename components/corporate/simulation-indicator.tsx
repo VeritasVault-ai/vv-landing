@@ -4,12 +4,13 @@ import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { ActivitySquare } from "lucide-react"
 import { useState } from "react"
+import styles from "./simulation-indicator.module.css"
 
 interface SimulationIndicatorProps {
   isSimulated?: boolean
   className?: string
   showLabel?: boolean
-  compact?: boolean // Add the compact prop
+  compact?: boolean
 }
 
 /**
@@ -40,17 +41,17 @@ export function SimulationIndicator({
         <TooltipTrigger asChild>
           <div 
             className={cn(
-              "flex items-center gap-1.5 text-xs font-medium rounded-md bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 cursor-help",
-              compact ? "p-1" : "px-2 py-1",
+              styles.container,
+              compact ? styles.compact : styles.standard,
               className
             )}
             onClick={() => setIsTooltipOpen(true)}
           >
-            <ActivitySquare className={compact ? "h-3 w-3" : "h-3.5 w-3.5"} />
+            <ActivitySquare className={compact ? styles.iconCompact : styles.iconStandard} />
             {(showLabel || !compact) && <span>Simulated Data</span>}
           </div>
         </TooltipTrigger>
-        <TooltipContent side="bottom" className="max-w-xs">
+        <TooltipContent side="bottom" className={styles.tooltipContent}>
           <p>This data is being simulated for demonstration purposes. In a production environment, this would be real-time data from the API.</p>
         </TooltipContent>
       </Tooltip>

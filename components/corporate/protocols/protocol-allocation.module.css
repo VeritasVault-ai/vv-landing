@@ -1,0 +1,59 @@
+.container {
+  @apply space-y-6;
+}
+
+.warningBanner {
+  @apply bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 rounded-md mb-4;
+}
+
+.warningText {
+  @apply text-amber-800 dark:text-amber-200;
+}
+
+.summaryGrid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6;
+}
+
+.detailsGrid {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-6;
+}
+
+.chartContainer {
+  @apply h-80;
+}
+
+.protocolItem {
+  @apply flex justify-between items-center;
+}
+
+.protocolName {
+  @apply font-medium;
+}
+
+.protocolPercentage {
+  @apply text-sm text-slate-500;
+}
+
+.protocolsList {
+  @apply space-y-4;
+}
+
+.smallText {
+  @apply text-sm text-slate-500 dark:text-slate-400;
+}
+
+.valueText {
+  @apply text-3xl font-bold;
+}
+
+.progressBar {
+  @apply h-2;
+}
+
+.mt2 {
+  @apply mt-2;
+}
+
+.pb2 {
+  @apply pb-2;
+}

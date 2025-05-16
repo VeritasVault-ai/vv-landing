@@ -2,58 +2,88 @@
 
 import { AllocationChart } from "@/components/allocation-chart"
 import { cn } from "@/lib/utils"
-import { useState } from "react"
-
-interface AssetAllocation {
-  symbol: string;
-  weight: number;
-  color: string;
-}
-
+import styles from "./allocation-section.module.css"
+import { AssetAllocation, DEFAULT_ALLOCATIONS } from "@/mocks/data/allocations"
+import { useAllocationWebSocketSimulation } from "@/lib/services/websocket-simulations/useAllocationWebsocketSimulation"
+import { useEffect, useState } from "react"
 interface AllocationSectionProps {
   className?: string;
-  // We'll make allocations optional and provide default data
   allocations?: AssetAllocation[];
+  enableRealtime?: boolean;
 }
 
-// Default allocation data
-const DEFAULT_ALLOCATIONS: AssetAllocation[] = [
-  { symbol: "stETH", weight: 50.0, color: "#3B82F6" },
-  { symbol: "tzBTC", weight: 20.0, color: "#10B981" },
-  { symbol: "USDC", weight: 30.0, color: "#F59E0B" }
-];
+/**
+ * Transforms asset allocation data for the chart component
+ */
+const transformAllocationsForChart = (allocations: AssetAllocation[]) => {
+  return allocations.map(a => ({
+    name: a.symbol,
+    value: a.weight,
+    color: a.color
+  }));
+};
+
 /**
  * Displays asset allocation data as both a table and a chart.
  *
- * Renders a responsive section showing each asset's symbol and weight in a table, alongside a chart visualizing the same data. If no allocations are provided, a default set is used.
- *
- * @param allocations - Optional array of asset allocations to display. Defaults to a predefined set if not provided.
- * @param className - Optional additional CSS classes for the container.
+ * Renders a responsive section showing each asset's symbol and weight in a table, 
+ * alongside a chart visualizing the same data. Can optionally use real-time updates
+ * via WebSocket simulation.
  */
-export function AllocationSection({ allocations = DEFAULT_ALLOCATIONS, className }: AllocationSectionProps) {
-  // Use state to store the allocations (could be updated later if needed)
-  const [assetAllocations] = useState<AssetAllocation[]>(allocations);
+export function AllocationSection({ 
+  allocations = DEFAULT_ALLOCATIONS, 
+  className,
+  enableRealtime = false
+}: AllocationSectionProps) {
+  const [currentAllocations, setCurrentAllocations] = useState(allocations);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  
+  // Initialize WebSocket simulation if real-time updates are enabled
+  const { data: wsData, isSimulated } = useAllocationWebSocketSimulation(
+    enableRealtime ? (status) => console.log(`Allocation WebSocket status: ${status}`) : undefined
+  );
+  
+  // Update allocations when WebSocket data changes
+  useEffect(() => {
+    if (enableRealtime && wsData) {
+      setCurrentAllocations(wsData.allocations);
+      setLastUpdated(wsData.timestamp);
+    }
+  }, [wsData, enableRealtime]);
+  
+  // Transform the data once
+  const chartData = transformAllocationsForChart(currentAllocations);
   
   return (
-    <div className={cn("bg-slate-800/50 dark:bg-slate-900/50 rounded-lg p-5", className)}>
-      <h2 className="text-lg font-medium text-white mb-4">Allocations</h2>
+    <div className={cn(styles.container, className)}>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className={styles.title}>Allocations</h2>
+        {enableRealtime && isSimulated && (
+          <div className="flex items-center">
+            <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+            <span className="text-xs text-slate-400">
+              {lastUpdated ? `Updated: ${new Date(lastUpdated).toLocaleTimeString()}` : 'Live'}
+            </span>
+          </div>
+        )}
+      </div>
       
-      <div className="flex flex-col md:flex-row">
-        {/* Table section - takes 60% of the width on larger screens */}
-        <div className="w-full md:w-3/5 pr-0 md:pr-4">
-          <div className="overflow-x-auto">
-            <table className="w-full">
+      <div className={styles.flexContainer}>
+        {/* Table section */}
+        <div className={styles.tableSection}>
+          <div className={styles.tableContainer}>
+            <table className={styles.table}>
               <thead>
                 <tr>
-                  <th className="text-left py-2 text-slate-400 font-medium">Asset</th>
-                  <th className="text-right py-2 text-slate-400 font-medium">Weight</th>
+                  <th className={styles.tableHeader}>Asset</th>
+                  <th className={styles.tableHeaderRight}>Weight</th>
                 </tr>
               </thead>
               <tbody>
-                {assetAllocations.map((allocation) => (
+                {currentAllocations.map((allocation) => (
                   <tr key={allocation.symbol}>
-                    <td className="text-left py-2 border-t border-slate-700">{allocation.symbol}</td>
-                    <td className="text-right py-2 border-t border-slate-700">{allocation.weight.toFixed(1)}%</td>
+                    <td className={styles.tableCell}>{allocation.symbol}</td>
+                    <td className={styles.tableCellRight}>{allocation.weight.toFixed(1)}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -61,18 +91,13 @@ export function AllocationSection({ allocations = DEFAULT_ALLOCATIONS, className
           </div>
         </div>
         
-        {/* Chart section - takes 40% of the width on larger screens */}
-        <div className="w-full md:w-2/5 mt-4 md:mt-0 flex items-center justify-center">
-          <div className="h-[220px] w-full max-w-[220px]">
-            {/* Pass the allocations data directly to the chart */}
-            <AllocationChart initialData={assetAllocations.map(a => ({
-              name: a.symbol,
-              value: a.weight,
-              color: a.color
-            }))} />
+        {/* Chart section */}
+        <div className={styles.chartSection}>
+          <div className={styles.chartContainer}>
+            <AllocationChart initialData={chartData} />
+          </div>
         </div>
       </div>
-    </div>
     </div>
   )
 }

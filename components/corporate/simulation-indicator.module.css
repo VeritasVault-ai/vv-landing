@@ -1,0 +1,23 @@
+.container {
+  @apply flex items-center gap-1.5 text-xs font-medium rounded-md bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 cursor-help;
+}
+
+.standard {
+  @apply px-2 py-1;
+}
+
+.compact {
+  @apply p-1;
+}
+
+.iconStandard {
+  @apply h-3.5 w-3.5;
+}
+
+.iconCompact {
+  @apply h-3 w-3;
+}
+
+.tooltipContent {
+  @apply max-w-xs;
+}

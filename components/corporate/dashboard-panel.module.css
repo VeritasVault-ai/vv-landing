@@ -1,0 +1,47 @@
+.panel {
+  @apply bg-slate-800/50 dark:bg-slate-900/50 rounded-lg border border-slate-700/50 p-4;
+}
+
+.panelHeader {
+  @apply mb-4;
+}
+
+.panelTitle {
+  @apply text-lg font-medium text-white;
+}
+
+.panelDescription {
+  @apply text-sm text-slate-400;
+}
+
+.panelContent {
+  @apply w-full;
+}
+
+.dataTable {
+  @apply w-full overflow-x-auto;
+}
+
+.chartContainer {
+  @apply relative flex;
+}
+
+.chartContainerRight {
+  @apply justify-end;
+}
+
+.chartContainerCenter {
+  @apply justify-center;
+}
+
+.tableWithChart {
+  @apply flex flex-col md:flex-row w-full gap-4 items-center;
+}
+
+.tableSection {
+  @apply w-full md:w-auto;
+}
+
+.chartSection {
+  @apply w-full md:w-auto flex items-center justify-center;
+}

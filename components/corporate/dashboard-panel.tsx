@@ -1,10 +1,29 @@
 import { ReactNode } from "react"
+import styles from "./dashboard-panel.module.css"
 
 interface DashboardPanelProps {
   title: string
   description?: string
   children: ReactNode
   className?: string
+}
+
+interface DataTableProps {
+  children: ReactNode
+  className?: string
+}
+
+interface ChartContainerProps {
+  children: ReactNode
+  height?: number
+  alignRight?: boolean
+}
+
+interface TableWithChartProps {
+  table: ReactNode
+  chart: ReactNode
+  tableWidth?: string
+  chartWidth?: string
 }
 
 /**
@@ -24,12 +43,12 @@ export function DashboardPanel({
   className = "" 
 }: DashboardPanelProps) {
   return (
-    <div className={`bg-slate-800/50 dark:bg-slate-900/50 rounded-lg border border-slate-700/50 p-4 ${className}`}>
-      <div className="mb-4">
-        <h2 className="text-lg font-medium text-white">{title}</h2>
-        {description && <p className="text-sm text-slate-400">{description}</p>}
+    <div className={`${styles.panel} ${className}`}>
+      <div className={styles.panelHeader}>
+        <h2 className={styles.panelTitle}>{title}</h2>
+        {description && <p className={styles.panelDescription}>{description}</p>}
       </div>
-      <div className="dashboard-panel-content">
+      <div className={styles.panelContent}>
         {children}
       </div>
     </div>
@@ -42,9 +61,12 @@ export function DashboardPanel({
  * @param children - The table or content to display within the scrollable area.
  * @param className - Additional CSS classes for customizing the container.
  */
-export function DataTable({ children, className = "" }: { children: ReactNode, className?: string }) {
+export function DataTable({ 
+  children, 
+  className = "" 
+}: DataTableProps) {
   return (
-    <div className={`w-full overflow-x-auto ${className}`}>
+    <div className={`${styles.dataTable} ${className}`}>
       {children}
     </div>
   )
@@ -53,6 +75,7 @@ export function DataTable({ children, className = "" }: { children: ReactNode, c
 /**
  * Renders a fixed-height container for charts with optional right or center alignment.
  *
+ * @param children - The React node to display in the chart container.
  * @param height - The height of the container in pixels. Defaults to 200.
  * @param alignRight - If true, aligns the content to the right; otherwise, centers it. Defaults to false.
  */
@@ -60,15 +83,11 @@ export function ChartContainer({
   children, 
   height = 200,
   alignRight = false
-}: { 
-  children: ReactNode, 
-  height?: number,
-  alignRight?: boolean
-}) {
+}: ChartContainerProps) {
   return (
     <div 
       style={{ height: `${height}px` }}
-      className={`relative ${alignRight ? 'flex justify-end' : 'flex justify-center'}`}
+      className={`${styles.chartContainer} ${alignRight ? styles.chartContainerRight : styles.chartContainerCenter}`}
     >
       {children}
     </div>
@@ -90,18 +109,13 @@ export function TableWithChart({
   chart,
   tableWidth = "70%",
   chartWidth = "30%"
-}: { 
-  table: ReactNode, 
-  chart: ReactNode,
-  tableWidth?: string,
-  chartWidth?: string
-}) {
+}: TableWithChartProps) {
   return (
-    <div className="flex flex-col md:flex-row w-full gap-4 items-center">
-      <div style={{ width: tableWidth }} className="w-full md:w-auto">
+    <div className={styles.tableWithChart}>
+      <div className={styles.tableSection} style={{ width: tableWidth }}>
         {table}
       </div>
-      <div style={{ width: chartWidth }} className="w-full md:w-auto flex items-center justify-center">
+      <div className={styles.chartSection} style={{ width: chartWidth }}>
         {chart}
       </div>
     </div>

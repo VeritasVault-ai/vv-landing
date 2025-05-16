@@ -2,7 +2,8 @@ import { VotingOverview as VotingOverviewType } from "@/lib/repositories/voting-
 import { votingService } from "@/lib/services/voting-service"
 import { votingEvents } from "@/lib/events/voting-events"
 import { useState, useEffect } from "react"
-import { mockVotingOverview } from "./voting-overview.mock"
+import { isValidEthereumAddress } from "@/lib/utils/validation"
+import { mockVotingOverview } from "../voting-overview.mock"
 
 // Chart colors
 export const VOTING_CHART_COLORS = ["#0088FE", "#00C49F", "#FFBB28"]
@@ -25,6 +26,7 @@ export function createVotingOverview({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [usedFallback, setUsedFallback] = useState(false)
+  const [delegationLoading, setDelegationLoading] = useState(false)
 
   useEffect(() => {
     let isMounted = true
@@ -93,23 +95,64 @@ export function createVotingOverview({
     usedFallback,
     chartConfig,
     colors: VOTING_CHART_COLORS,
+    delegationLoading,
     // Add methods that interact with the API (which MSW will intercept)
     delegateVotes: async (address: string, amount: number) => {
+      // Validate inputs
+      if (!address || address.trim() === '') {
+        setError('Invalid address provided.');
+        return false;
+      }
+      
+      // Check for valid Ethereum address format
+      if (!isValidEthereumAddress(address)) {
+        setError('Please provide a valid Ethereum address.');
+        return false;
+      }
+      
+      // Validate amount
+      if (isNaN(amount) || amount <= 0) {
+        setError('Amount must be a positive number.');
+        return false;
+      }
+      
+      // Check if amount exceeds available voting power
+      const availableVotes = data?.votingPower?.votes || 0;
+      if (amount > availableVotes) {
+        setError(`Cannot delegate more than your available voting power (${availableVotes}).`);
+        return false;
+      }
+      
+      // Reset error state and set loading
+      setError(null);
+      setDelegationLoading(true);
+      
       try {
         const response = await fetch('/api/voting/delegate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ address, amount })
-        })
-        const result = await response.json()
-        if (result.success && result.overview) {
-          setData(result.overview)
-          return true
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Server responded with status: ${response.status}`);
         }
-        return false
+        const result = await response.json();
+        
+        if (result.success && result.overview) {
+          setData(result.overview);
+          return true;
+        }
+        
+        // Set error message from API response or default message
+        setError(result.message || 'Failed to delegate votes.');
+        return false;
       } catch (err) {
-        console.error('Error delegating votes:', err)
-        return false
+        console.error('Error delegating votes:', err);
+        setError('Failed to delegate votes. Please try again later.');
+        return false;
+      } finally {
+        setDelegationLoading(false);
       }
     }
   }
