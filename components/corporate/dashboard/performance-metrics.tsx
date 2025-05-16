@@ -19,7 +19,7 @@ export function PerformanceMetrics({ metrics }: PerformanceMetricsProps) {
         <CardTitle>Performance Metrics</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className={styles.grid}>
+        <div className={styles.metricsGrid}>
           {metrics.map((metric, index) => (
             <div key={index} className={styles.column}>
               <span className={styles.label}>{metric.label}</span>
@@ -35,7 +35,7 @@ export function PerformanceMetrics({ metrics }: PerformanceMetricsProps) {
                       : Math.min(100, metric.value)}%` 
                   }}
                 >
-                ></div>
+                </div>
               </div>
             </div>
           ))}

@@ -4,7 +4,7 @@ import type { Metadata } from "next"
 import Script from "next/script"
 import "./globals.css"
 import { Providers } from "./providers"
-import { ThemeInitializerScript } from "./theme-script"
+import { ThemeInitializerScript } from "./theme-initializer"
 
 // Import MSW setup in development only
 if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
@@ -30,17 +30,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const themeScript = ThemeInitializerScript();
-  
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Use Next.js Script component with strategy="beforeInteractive" */}
-        <Script
-          id="theme-initializer"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{ __html: themeScript }}
-        />
+        <ThemeInitializerScript />
       </head>
       <body>
         <UnifiedThemeProvider>
