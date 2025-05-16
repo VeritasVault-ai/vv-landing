@@ -22,6 +22,14 @@ const DEFAULT_ALLOCATIONS: AssetAllocation[] = [
   { symbol: "tzBTC", weight: 20.0, color: "#10B981" },
   { symbol: "USDC", weight: 30.0, color: "#F59E0B" }
 ];
+/**
+ * Displays asset allocation data as both a table and a chart.
+ *
+ * Renders a responsive section showing each asset's symbol and weight in a table, alongside a chart visualizing the same data. If no allocations are provided, a default set is used.
+ *
+ * @param allocations - Optional array of asset allocations to display. Defaults to a predefined set if not provided.
+ * @param className - Optional additional CSS classes for the container.
+ */
 export function AllocationSection({ allocations = DEFAULT_ALLOCATIONS, className }: AllocationSectionProps) {
   // Use state to store the allocations (could be updated later if needed)
   const [assetAllocations] = useState<AssetAllocation[]>(allocations);

@@ -22,13 +22,13 @@ interface CorporateHeaderProps {
 }
 
 /**
- * Header component for the corporate version of the site
- * Includes navigation, theme toggle, theme settings, and call-to-action buttons
- * Uses the robust theme provider to ensure theme context is always available
- * 
- * @param isLoggedIn - Whether the user is logged in
- * @param setIsLoggedIn - Function to toggle login state (for demo purposes)
- * @param minimal - Whether to show a minimal version of the header (compact for dashboards)
+ * Renders the corporate site header with navigation, theme controls, and authentication actions.
+ *
+ * Displays either a full-featured or minimal header based on the {@link minimal} prop. The full header includes navigation menus, theme toggles, and user account controls, while the minimal variant shows only the logo and a dashboard link if logged in.
+ *
+ * @param isLoggedIn - Indicates if the user is currently logged in.
+ * @param setIsLoggedIn - Callback to toggle the login state (used for demonstration purposes).
+ * @param minimal - If true, renders a compact header variant with reduced navigation.
  */
 export function CorporateHeader({ isLoggedIn = false, setIsLoggedIn, minimal = false }: CorporateHeaderProps) {
   const { isDark } = useRobustTheme()

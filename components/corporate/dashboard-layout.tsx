@@ -21,7 +21,7 @@ interface DashboardLayoutProps {
 }
 
 /**
- * Loading fallback component for suspense boundaries
+ * Displays a centered spinner as a loading indicator for suspended dashboard sections.
  */
 function DashboardSectionLoading() {
   return (
@@ -32,13 +32,14 @@ function DashboardSectionLoading() {
 }
 
 /**
- * Provides a compact, responsive layout wrapper for a corporate dashboard.
- * Features a minimalist header and footer with maximized content area.
+ * Renders a compact, responsive layout for a corporate dashboard with a minimalist header, footer, and maximized content area.
  *
- * @param children - Content to display within the dashboard layout.
- * @param title - Main heading for the dashboard section.
- * @param description - Optional subtitle or description under the title.
- * @param onRefresh - Optional async callback for refreshing dashboard data.
+ * Wraps dashboard content with a title bar, navigation controls, and simulation indicators. Provides refresh functionality and displays children within error and suspense boundaries.
+ *
+ * @param children - The main content to display within the dashboard layout.
+ * @param title - The primary heading for the dashboard section.
+ * @param description - Optional subtitle displayed below the title.
+ * @param onRefresh - Optional async callback to refresh dashboard data when the refresh button is clicked.
  */
 export function DashboardLayout({ 
   children, 

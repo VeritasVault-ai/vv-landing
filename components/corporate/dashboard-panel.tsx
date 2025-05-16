@@ -8,8 +8,14 @@ interface DashboardPanelProps {
 }
 
 /**
- * A standardized panel component for dashboard content with proper alignment
- * for charts, tables, and other data visualizations.
+ * Renders a styled panel with a title, optional description, and content area for dashboard layouts.
+ *
+ * Use this component to provide a consistent container for charts, tables, or other dashboard elements, with customizable styling via the {@link className} prop.
+ *
+ * @param title - The panel's heading text.
+ * @param description - Optional descriptive text displayed below the title.
+ * @param children - The content to display within the panel.
+ * @param className - Additional CSS classes for custom styling.
  */
 export function DashboardPanel({ 
   title, 
@@ -31,7 +37,10 @@ export function DashboardPanel({
 }
 
 /**
- * A component specifically for displaying data tables with proper styling
+ * Wraps content in a horizontally scrollable container for displaying wide data tables.
+ *
+ * @param children - The table or content to display within the scrollable area.
+ * @param className - Additional CSS classes for customizing the container.
  */
 export function DataTable({ children, className = "" }: { children: ReactNode, className?: string }) {
   return (
@@ -42,7 +51,10 @@ export function DataTable({ children, className = "" }: { children: ReactNode, c
 }
 
 /**
- * A component for displaying charts with proper alignment and sizing
+ * Renders a fixed-height container for charts with optional right or center alignment.
+ *
+ * @param height - The height of the container in pixels. Defaults to 200.
+ * @param alignRight - If true, aligns the content to the right; otherwise, centers it. Defaults to false.
  */
 export function ChartContainer({ 
   children, 
@@ -64,7 +76,14 @@ export function ChartContainer({
 }
 
 /**
- * A component for creating a two-column layout with a table and chart side by side
+ * Renders a responsive two-column layout displaying a table and a chart side by side.
+ *
+ * On medium and larger screens, the table and chart are arranged horizontally with customizable width proportions. On smaller screens, the layout stacks vertically.
+ *
+ * @param table - The React node to display in the table section.
+ * @param chart - The React node to display in the chart section.
+ * @param tableWidth - Optional width for the table section (default: "70%").
+ * @param chartWidth - Optional width for the chart section (default: "30%").
  */
 export function TableWithChart({ 
   table, 

@@ -22,6 +22,15 @@ interface AllocationChartProps {
   initialData?: AllocationData[];
 }
 
+/**
+ * Renders a responsive pie chart displaying allocation data, with support for initial data and fallback handling.
+ *
+ * If `initialData` is provided, the chart uses it directly; otherwise, it fetches allocation data from an API endpoint and falls back to default data on failure.
+ *
+ * @param initialData - Optional pre-fetched allocation data to display instead of fetching from the API.
+ *
+ * @returns A React element containing the allocation pie chart, a loading skeleton, or an error message if data cannot be loaded.
+ */
 export function AllocationChart({ initialData }: AllocationChartProps) {
   const [allocationData, setAllocationData] = useState<AllocationData[]>(initialData || [])
   const [loading, setLoading] = useState(!initialData) // Only set loading to true if no initial data

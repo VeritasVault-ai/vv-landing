@@ -4,7 +4,9 @@ import { Linkedin, Twitter } from "lucide-react"
 import Image from "next/image"
 
 /**
- * Team section for the About page
+ * Renders the leadership team section for the About page, displaying team member profiles, bios, and social media links in a responsive layout.
+ *
+ * @returns A React component section featuring team member cards, descriptive text, and a call-to-action link.
  */
 export function AboutTeam() {
   const teamMembers = [
