@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDashboardWebSocketSimulation } from './websocket-simulations/useDashboardWebSocketSimulation';
 import { useModelWebSocketSimulation } from './websocket-simulations/useModelWebSocketSimulation';
-import { useVotingWebSocketSimulation } from './websocket-simulations/useVotingWebsocketSimulation';
-import { useAllocationWebSocketSimulation } from './websocket-simulations/useAllocationWebsocketSimulation';
+import { useVotingWebSocketSimulation } from './websocket-simulations/useVotingWebSocketSimulation';
+import { useAllocationWebSocketSimulation } from './websocket-simulations/useAllocationWebSocketSimulation';
 import { 
   WebSocketStatus, 
   WebSocketState, 

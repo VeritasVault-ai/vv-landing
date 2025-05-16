@@ -48,7 +48,7 @@ export function isValidPositiveNumber(
 }
   
   // Reject Infinity and -Infinity
-  if (!isFinite(value)) {
+  if (!Number.isFinite(value)) {
     return false;
   }
   
