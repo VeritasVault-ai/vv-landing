@@ -114,8 +114,12 @@ export interface Portfolio {
 }
 
 export interface AssetAllocation {
+  totalValueLockedUSD: string
+  name: string
   asset_id: string
   percentage: number
+  color: string
+  protocol: string
 }
 
 export interface RiskFactor {
@@ -159,7 +163,3 @@ export interface Event {
   metadata?: Record<string, any>
   created_at: string
 }
-
-export type Pool = LiquidityPool
-\
-"

@@ -1,10 +1,10 @@
-import { votingHandlers } from './voting-handlers'
+import { votingHandlers } from './voting-handlers';
+import { protocolHandlers } from './protocol-handlers';
 // Import other handler groups as needed
-// import { userHandlers } from './user-handlers'
 
 // Export all handlers
 export const handlers = [
   ...votingHandlers,
-  // ...userHandlers,
+  ...protocolHandlers,
   // Add other handler groups as needed
-]
+];
