@@ -87,15 +87,13 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
       }
       
       // Always use simulation mode in development
-      setIsSimulated(true);
-      isSimulatedRef.current = true;
-      startSimulation();
-      
-      // Skip actual WebSocket connection attempt in development
+      // In development, fall back to simulation immediately
       if (process.env.NODE_ENV === 'development') {
+        setIsSimulated(true);
+        isSimulatedRef.current = true;
+        startSimulation();
         return;
       }
-      
       try {
         // Try to connect to the actual WebSocket endpoint
         const ws = new WebSocket(endpoint);
