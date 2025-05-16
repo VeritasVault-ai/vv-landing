@@ -9,6 +9,15 @@ const FALLBACK_PROTOCOLS = [
   { name: "USDC", totalValueLockedUSD: "30", color: "#F59E0B" }
 ];
 
+/**
+ * Handles GET requests to retrieve asset allocation data for the current user's portfolio.
+ *
+ * Returns a list of protocol allocation objects, each containing `name`, `totalValueLockedUSD`, and `color`. If the user's portfolio or allocations are missing, or if an error occurs, returns a predefined fallback dataset.
+ *
+ * @returns A JSON response with an array of protocol allocation objects.
+ *
+ * @remark The user ID is currently hardcoded as "current-user" for demonstration purposes.
+ */
 export async function GET() {
   try {
     // Get the current user's ID - in a real app, you'd get this from the session

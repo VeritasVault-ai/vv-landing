@@ -20,9 +20,13 @@ interface SidebarProps {
 }
 
 /**
- * Sidebar component for the corporate version of the site
- * Displays navigation links with icons and supports active state
- * Only visible when the user is logged in
+ * Renders a collapsible sidebar navigation menu for corporate-related pages.
+ *
+ * The sidebar displays navigation links with icons, highlights the active section based on the current path, and includes a toggle to expand or collapse its width. It is only visible on routes containing `/corporate/` or `/corporate-version/`.
+ *
+ * @param className - Optional additional CSS classes for the sidebar container.
+ *
+ * @returns The sidebar element if on a corporate page; otherwise, `null`.
  */
 export function CorporateSidebar({ className }: SidebarProps) {
   const pathname = usePathname()

@@ -19,10 +19,9 @@ interface DashboardSettingsProps {
   compact?: boolean;
 }
 /**
- * Dashboard settings component that allows users to customize their dashboard experience
- * Uses a dialog to present settings options and saves preferences using the dashboard context
- * 
- * @param compact - Whether to show a compact version of the settings button
+ * Renders a dialog for customizing dashboard settings, allowing users to toggle preferences such as compact view, real-time updates, and simulation indicators.
+ *
+ * @param compact - If true, displays a compact icon-only settings button; otherwise, shows a button with icon and label.
  */
 export function DashboardSettings({ compact = false }: DashboardSettingsProps) {
   const { settings, updateSettings } = useDashboard()

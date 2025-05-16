@@ -13,13 +13,16 @@ interface SimulationIndicatorProps {
 }
 
 /**
- * Component that displays an indicator when data is being simulated
- * Can be configured to show a label and provides a tooltip with more information
- * 
- * @param isSimulated - Whether the data is simulated
- * @param className - Additional CSS classes
- * @param showLabel - Whether to show the "Simulated Data" label
- * @param compact - Whether to show a more compact version of the indicator
+ * Renders a visual indicator to show when data is simulated, with optional label and tooltip.
+ *
+ * Displays an icon and, optionally, the "Simulated Data" label. When clicked or hovered, a tooltip explains that the data is for demonstration purposes. The appearance can be compact or standard, and the indicator is only rendered if {@link isSimulated} is true.
+ *
+ * @param isSimulated - If false, the indicator is not rendered.
+ * @param showLabel - If true, always displays the "Simulated Data" label; otherwise, the label is shown unless in compact mode.
+ * @param compact - If true, renders a smaller, label-less indicator unless {@link showLabel} is also true.
+ * @param className - Additional CSS classes for the indicator container.
+ *
+ * @returns The simulation indicator element, or null if not simulated.
  */
 export function SimulationIndicator({ 
   isSimulated = true, 

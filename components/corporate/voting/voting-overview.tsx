@@ -38,12 +38,14 @@ const FALLBACK_DATA: VotingOverviewType = {
 // Colors for the chart
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"]
 
-/****
- * Displays a comprehensive overview of voting data, including voting power, participation statistics, voting power distribution, and delegations.
+/**
+ * Renders an overview of voting statistics, including voting power, participation metrics, voting power distribution, and delegations.
  *
- * Fetches voting overview data on mount and updates in real time when voting power changes. Shows loading placeholders while data is being fetched and displays an error message if loading fails.
+ * Fetches live voting data on mount and updates in real time when voting power changes. If data loading fails, displays simulated fallback data with a warning banner. Shows loading placeholders while fetching.
  *
- * @returns A React element rendering summary cards, a voting power distribution pie chart, and a list of delegations, or appropriate loading/error UI.
+ * @returns A React element displaying summary cards, a voting power distribution pie chart, and a list of delegations, or loading and fallback UI as appropriate.
+ *
+ * @remark If live data cannot be loaded, simulated fallback data is shown with a warning to the user.
  */
 export function VotingOverview() {
   const [data, setData] = useState<VotingOverviewType | null>(null)
@@ -52,6 +54,11 @@ export function VotingOverview() {
   const [usedFallback, setUsedFallback] = useState(false)
 
   useEffect(() => {
+    /**
+     * Fetches voting overview data and updates component state with the result.
+     *
+     * If the fetch fails, sets an error message and uses fallback data to ensure the UI remains populated.
+     */
     async function fetchData() {
       try {
         console.log("Attempting to fetch voting overview data...")
