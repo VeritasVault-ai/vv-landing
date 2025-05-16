@@ -2,10 +2,11 @@ import { useRealTimeManager } from "@/lib/services/realtime-manager";
 import { transformPerformanceMetrics } from "@/mocks/transformers/dashboard-transformers";
 
 /**
- * Custom hook that provides dashboard data from the real-time manager
- * and transforms it for UI consumption
- * 
- * @returns Processed dashboard data and status information
+ * Provides processed dashboard data, connection status, simulation flags, and a refresh method for UI components.
+ *
+ * Retrieves real-time dashboard, model, and voting data, transforms performance metrics for display, and exposes connection and simulation state information along with a refresh action.
+ *
+ * @returns An object containing raw and transformed dashboard data, connection and error status, simulation flags, and a refresh method.
  */
 export function useDashboardData() {
   const { 

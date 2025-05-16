@@ -2,8 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { WebSocketStatus, DashboardData } from '@/types/websocket-data';
 import { useBaseWebSocketSimulation } from './useBaseWebSocketSimulation';
 /**
- * Custom hook for simulating WebSocket connections for dashboard data
- * Provides mock data and connection status management with automatic reconnection
+ * React hook that simulates a WebSocket connection for dashboard data, providing periodic mock updates and connection status management.
+ *
+ * @param onStatusChange - Optional callback invoked when the WebSocket connection status changes.
+ * @returns An object containing the current dashboard data, a function to manually trigger reconnection, and a flag indicating if the data is simulated.
+ *
+ * @remark The hook generates and updates dashboard data locally without establishing a real WebSocket connection.
  */
 export function useDashboardWebSocketSimulation(
   onStatusChange?: (status: WebSocketStatus) => void

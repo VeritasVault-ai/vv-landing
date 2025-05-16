@@ -11,14 +11,19 @@ import { DashboardVoting } from "./voting"
 import { useDashboardData } from "@/lib/hooks/useDashboardData"
 
 /**
- * Determines whether a given string is a valid dashboard tab identifier.
+ * Checks if the provided string matches a valid dashboard tab identifier.
+ *
+ * @param tab - The string to validate as a tab identifier.
+ * @returns True if {@link tab} is one of 'overview', 'performance', 'models', or 'voting'; otherwise, false.
  */
 function isValidTab(tab: string): tab is 'overview' | 'performance' | 'models' | 'voting' {
   return ['overview', 'performance', 'models', 'voting'].includes(tab)
 }
 
 /**
- * Dashboard content component that handles tab-based navigation and real-time data updates
+ * Renders the corporate dashboard interface with tabbed navigation and real-time data updates.
+ *
+ * Displays dashboard metrics and system status across four tabs—Overview, Performance, Model Results, and Governance—while synchronizing the active tab with the URL hash for direct linking and navigation. Supports manual data refresh and reflects connection and simulation status in the UI.
  */
 export function DashboardContent() {
   const [activeTab, setActiveTab] = useState<'overview' | 'performance' | 'models' | 'voting'>('overview')

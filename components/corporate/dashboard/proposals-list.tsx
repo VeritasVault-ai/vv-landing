@@ -8,6 +8,18 @@ interface ProposalsListProps {
   onVote?: (proposalId: string, voteType: 'for' | 'against' | 'abstain') => Promise<boolean>;
 }
 
+/**
+ * Displays a list of active proposals with interactive voting controls and visual vote distribution.
+ *
+ * Renders each proposal with its title, description, vote counts, end date, and a progress bar showing vote percentages. If an `onVote` handler is provided, users can cast votes for each proposal, with voting state managed to prevent concurrent votes on the same proposal. Shows a loading overlay while a vote is being processed.
+ *
+ * @param proposals - Array of proposals to display.
+ * @param onVote - Optional callback invoked when a user casts a vote on a proposal.
+ *
+ * @returns A card containing the proposals list, or `null` if no proposals are provided.
+ *
+ * @remark Prevents concurrent voting on the same proposal by disabling voting controls while a vote is in progress.
+ */
 export function ProposalsList({ proposals, onVote }: ProposalsListProps) {
   // Track proposals that are currently being voted on to prevent concurrent votes
   const [votingInProgress, setVotingInProgress] = useState<Record<string, boolean>>({});

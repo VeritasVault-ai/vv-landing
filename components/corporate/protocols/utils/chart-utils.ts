@@ -5,9 +5,12 @@ export const SMALL_PROTOCOL_THRESHOLD = 0.03; // 3%
 export const MIN_ANGLE = 2; // Minimum angle for pie slices
 
 /**
- * Process chart data to group small protocols into an "Others" category
- * @param data Original protocol data
- * @returns Processed data with small protocols grouped
+ * Groups protocols with a small share of total value into an "Others" category for chart display.
+ *
+ * Protocols whose total value locked is less than 3% of the overall total are aggregated into a single "Others" entry if there are more than 10 protocols. Returns the processed list suitable for charting, including the "Others" group if applicable.
+ *
+ * @param data - Array of protocol data to process.
+ * @returns An array of chart data objects with small protocols grouped under "Others" when appropriate.
  */
 export function processChartData(data: Protocol[]): ChartData[] {
   if (!data || data.length === 0) return [];
@@ -50,9 +53,10 @@ export function processChartData(data: Protocol[]): ChartData[] {
 }
 
 /**
- * Format currency values for display
- * @param value The value to format
- * @returns Formatted currency string
+ * Formats a numeric or string value as a US dollar currency string with localized thousands separators.
+ *
+ * @param value - The currency amount to format.
+ * @returns The formatted currency string prefixed with a dollar sign.
  */
 export function formatCurrency(value: string | number): string {
   const numericValue = typeof value === 'string' ? parseFloat(value) : value;
@@ -60,9 +64,10 @@ export function formatCurrency(value: string | number): string {
 }
 
 /**
- * Format percentage values for display
- * @param value The percentage value
- * @returns Formatted percentage string
+ * Formats a numeric or string value as a percentage with one decimal place.
+ *
+ * @param value - The value to format as a percentage.
+ * @returns The formatted percentage string (e.g., "12.3%").
  */
 export function formatPercentage(value: string | number): string {
   const numericValue = typeof value === 'string' ? parseFloat(value) || 0 : (value || 0);  

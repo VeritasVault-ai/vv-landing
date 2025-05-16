@@ -1,5 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
+/**
+ * Displays a skeleton UI representing the loading state of a dashboard page.
+ *
+ * Renders placeholder elements for the dashboard's title, controls, navigation tabs, summary cards, main content area, and a detailed list to indicate content is loading.
+ */
 export default function DashboardLoading() {
   return (
     <div className="container mx-auto px-4 py-6">

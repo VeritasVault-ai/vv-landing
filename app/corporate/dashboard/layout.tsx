@@ -78,8 +78,11 @@ const secondaryNavigationItems: NavItemOrGroup[] = [
 ]
 
 /**
- * Dashboard layout component that provides a consistent layout for all dashboard pages
- * with a collapsible sidebar and main content area
+ * Renders the corporate dashboard layout with a collapsible sidebar and main content area.
+ *
+ * Wraps all dashboard pages in a consistent structure, displaying navigation links and an upgrade button in the sidebar, and rendering the provided {@link children} as the main content.
+ *
+ * @param children - The content to display in the main area of the dashboard.
  */
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (

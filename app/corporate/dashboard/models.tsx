@@ -3,7 +3,9 @@
 import { useDashboardData } from "@/lib/hooks/useDashboardData"
 
 /**
- * Model results component that shows AI model predictions and analytics
+ * Displays AI model status, prediction metrics, and analytics for the corporate dashboard.
+ *
+ * Renders the current model's status, active model name, available model count, and prediction results such as accuracy, confidence, and execution time. If model data is simulated, a warning message is shown. Handles missing or unavailable data gracefully with fallback values and messages.
  */
 export function ModelResults() {
   const { modelData, isModelSimulated } = useDashboardData()

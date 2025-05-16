@@ -18,15 +18,13 @@ import {
 import { WarningBanner } from "./warning-banner";
 
 /**
- * Renders an overview of protocol allocations, including total value locked,
- * distribution across protocols, and individual protocol details.
+ * Displays a comprehensive overview of protocol allocations, including total value locked, protocol distribution, and detailed protocol information.
  *
- * Fetches protocol data from the API and displays it in a user-friendly format.
- * MSW will intercept the API request during development and testing.
- * If data loading fails, displays fallback data with a warning banner.
+ * Fetches protocol data and presents it with summary cards, a pie chart of protocol distribution, and a detailed list of protocols. Shows loading placeholders while fetching data and displays a warning banner with fallback data if the fetch fails.
  *
- * @returns A React element displaying summary cards, a protocol distribution pie chart,
- * and protocol details, or loading and fallback UI as appropriate.
+ * @returns A React element containing protocol allocation summaries, distribution chart, and protocol details, or appropriate loading and warning UI.
+ *
+ * @remark If protocol data cannot be loaded, fallback data is shown with a warning indicating simulated data is in use.
  */
 export function ProtocolAllocation() {
   const { 

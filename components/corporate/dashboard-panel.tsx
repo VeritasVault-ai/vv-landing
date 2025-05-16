@@ -27,14 +27,12 @@ interface TableWithChartProps {
 }
 
 /**
- * Renders a styled panel with a title, optional description, and content area for dashboard layouts.
+ * Displays a styled dashboard panel with a title, optional description, and content area.
  *
- * Use this component to provide a consistent container for charts, tables, or other dashboard elements, with customizable styling via the {@link className} prop.
+ * Provides a consistent container for dashboard elements such as charts or tables, supporting additional custom styling.
  *
- * @param title - The panel's heading text.
- * @param description - Optional descriptive text displayed below the title.
- * @param children - The content to display within the panel.
- * @param className - Additional CSS classes for custom styling.
+ * @param title - The heading text displayed at the top of the panel.
+ * @param description - Optional text shown below the title for additional context.
  */
 export function DashboardPanel({ 
   title, 
@@ -56,10 +54,9 @@ export function DashboardPanel({
 }
 
 /**
- * Wraps content in a horizontally scrollable container for displaying wide data tables.
+ * Provides a horizontally scrollable container for wide data tables or similar content.
  *
- * @param children - The table or content to display within the scrollable area.
- * @param className - Additional CSS classes for customizing the container.
+ * Supports additional CSS classes for custom styling.
  */
 export function DataTable({ 
   children, 
@@ -73,11 +70,10 @@ export function DataTable({
 }
 
 /**
- * Renders a fixed-height container for charts with optional right or center alignment.
+ * Displays chart content within a fixed-height container, aligned either right or center.
  *
- * @param children - The React node to display in the chart container.
- * @param height - The height of the container in pixels. Defaults to 200.
- * @param alignRight - If true, aligns the content to the right; otherwise, centers it. Defaults to false.
+ * @param height - Height of the container in pixels. Defaults to 200.
+ * @param alignRight - If true, aligns content to the right; otherwise, centers it. Defaults to false.
  */
 export function ChartContainer({ 
   children, 
@@ -95,14 +91,14 @@ export function ChartContainer({
 }
 
 /**
- * Renders a responsive two-column layout displaying a table and a chart side by side.
+ * Displays a table and a chart in a responsive two-column layout with customizable section widths.
  *
- * On medium and larger screens, the table and chart are arranged horizontally with customizable width proportions. On smaller screens, the layout stacks vertically.
+ * On medium and larger screens, the table and chart are shown side by side; on smaller screens, they stack vertically. Section widths can be adjusted via props.
  *
- * @param table - The React node to display in the table section.
- * @param chart - The React node to display in the chart section.
- * @param tableWidth - Optional width for the table section (default: "70%").
- * @param chartWidth - Optional width for the chart section (default: "30%").
+ * @param table - Content to render in the table section.
+ * @param chart - Content to render in the chart section.
+ * @param tableWidth - Width of the table section (default: "70%").
+ * @param chartWidth - Width of the chart section (default: "30%").
  */
 export function TableWithChart({ 
   table, 

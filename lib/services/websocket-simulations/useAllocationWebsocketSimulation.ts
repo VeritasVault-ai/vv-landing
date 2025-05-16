@@ -4,8 +4,12 @@ import { useBaseWebSocketSimulation } from './useBaseWebSocketSimulation';
 import { AllocationData, WebSocketStatus, AssetAllocation } from '@/types/websocket-data';
 
 /**
- * Custom hook for simulating WebSocket connections for asset allocation data
- * Provides mock data and connection status management with automatic reconnection
+ * Simulates a WebSocket connection for asset allocation data, providing live mock updates and connection status management.
+ *
+ * This custom React hook generates initial allocation data, periodically updates it with randomized changes, and manages simulated connection status, including automatic reconnection. It also allows manual updates to allocations for testing or interactive scenarios.
+ *
+ * @param onStatusChange - Optional callback invoked when the simulated WebSocket status changes.
+ * @returns An object containing the current allocation data, a reconnect function, a flag indicating simulation mode, and a function to manually update allocations.
  */
 export function useAllocationWebSocketSimulation(
   onStatusChange?: (status: WebSocketStatus) => void

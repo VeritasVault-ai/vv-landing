@@ -7,8 +7,12 @@ import { useDashboardData } from "@/lib/hooks/useDashboardData"
 import { Activity, BarChart3, Clock, Users } from "lucide-react"
 import styles from "./overview.module.css"
 /**
- * Dashboard overview component that demonstrates the use of WebSocket simulations
- * and simulation indicators
+ * Displays a corporate dashboard overview with real-time metrics, system status, model information, and active proposals.
+ *
+ * Renders status cards for active users, system health, model status, and voting activity, along with performance metrics and a list of active proposals when available.
+ *
+ * @remark
+ * Uses simulated data indicators when real-time data is not available.
  */
 export default function DashboardOverview() {
   const {

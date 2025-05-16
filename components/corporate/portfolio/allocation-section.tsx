@@ -24,11 +24,13 @@ const transformAllocationsForChart = (allocations: AssetAllocation[]) => {
 };
 
 /**
- * Displays asset allocation data as both a table and a chart.
+ * Renders a section displaying asset allocation data as both a table and a chart, with optional real-time updates.
  *
- * Renders a responsive section showing each asset's symbol and weight in a table, 
- * alongside a chart visualizing the same data. Can optionally use real-time updates
- * via WebSocket simulation.
+ * Shows each asset's symbol and weight in a table alongside a chart visualization. When real-time updates are enabled, the component subscribes to simulated WebSocket data and displays a live status indicator with the last update time.
+ *
+ * @param allocations - Optional initial asset allocation data. Defaults to {@link DEFAULT_ALLOCATIONS}.
+ * @param className - Optional additional CSS class names for the container.
+ * @param enableRealtime - If true, enables real-time updates via WebSocket simulation.
  */
 export function AllocationSection({ 
   allocations = DEFAULT_ALLOCATIONS, 

@@ -3,7 +3,11 @@ import { ProtocolItemProps } from "./protocol-allocation.types";
 import styles from "./protocol-allocation.module.css";
 
 /**
- * Displays a protocol item in the details list
+ * Renders a protocol item with its name, portfolio percentage, and total value locked in USD.
+ *
+ * Displays the protocol's name, its percentage of the portfolio (formatted or "N/A" if unavailable), and a badge showing the total value locked in USD with locale-specific formatting.
+ *
+ * @param protocol - The protocol data to display, including name, percentage, color, and total value locked in USD.
  */
 export function ProtocolItem({ protocol }: ProtocolItemProps) {
   const value = parseFloat(protocol.totalValueLockedUSD) || 0;

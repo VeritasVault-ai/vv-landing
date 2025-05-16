@@ -12,6 +12,13 @@ interface PerformanceMetricsProps {
   metrics: PerformanceMetric[];
 }
 
+/**
+ * Displays a card containing a list of performance metrics with labels, values, units, and progress bars.
+ *
+ * Each metric is shown with its label and value (including unit), and a progress bar visualizes the value as a percentage of its maximum if provided.
+ *
+ * @param metrics - Array of performance metrics to display.
+ */
 export function PerformanceMetrics({ metrics }: PerformanceMetricsProps) {
   return (
     <Card className={styles.container}>

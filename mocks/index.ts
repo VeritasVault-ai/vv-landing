@@ -1,4 +1,11 @@
-// This file initializes MSW in development
+/**
+ * Initializes Mock Service Worker (MSW) for API mocking in development environments.
+ *
+ * Dynamically starts the MSW server or worker based on the runtime environment if API mocking is enabled via the {@link process.env.NEXT_PUBLIC_API_MOCKING} environment variable.
+ *
+ * @remark
+ * Has no effect unless {@link process.env.NEXT_PUBLIC_API_MOCKING} is set to `'enabled'`.
+ */
 async function initMocks() {
   if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
     if (typeof window === 'undefined') {
