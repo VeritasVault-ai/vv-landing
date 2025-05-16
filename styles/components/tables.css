@@ -1,0 +1,44 @@
+/* Add this file if it doesn't exist, or add these styles to your global CSS */
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.dashboard-table th {
+  font-weight: 600;
+  color: #64748b;
+  background-color: rgba(241, 245, 249, 0.8);
+}
+
+.dashboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dashboard-table tbody tr:hover {
+  background-color: rgba(241, 245, 249, 0.5);
+}
+
+/* Dark mode */
+.dark .dashboard-table th {
+  background-color: rgba(30, 41, 59, 0.8);
+  color: #94a3b8;
+}
+
+.dark .dashboard-table td,
+.dark .dashboard-table th {
+  border-color: rgba(51, 65, 85, 0.5);
+}
+
+.dark .dashboard-table tbody tr:hover {
+  background-color: rgba(30, 41, 59, 0.5);
+}

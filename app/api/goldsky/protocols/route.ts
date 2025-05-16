@@ -1,77 +1,45 @@
-import { NextResponse } from "next/server"
+import { NextResponse } from 'next/server';
+import type { AssetAllocation } from '@/lib/models/types';
+import { portfolioRepository } from '@/lib/repository/portfolio-repository';
 
-// Goldsky GraphQL endpoint
-// Update the GOLDSKY_API_URL to use a more reliable public API or your specific Goldsky URL
-// Replace this:
-// const GOLDSKY_API_URL =
-//   "https://api.goldsky.com/api/public/project_cldf2o9pqagp43svs5rg9kta8/subgraphs/tezos-defi/0.0.1/gn"
+// Fallback data to use when no portfolio is found or an error occurs
+const FALLBACK_PROTOCOLS = [
+  { name: "stETH", totalValueLockedUSD: "50", color: "#3B82F6" },
+  { name: "tzBTC", totalValueLockedUSD: "20", color: "#10B981" },
+  { name: "USDC", totalValueLockedUSD: "30", color: "#F59E0B" }
+];
 
-// With your actual Goldsky URL or use a fallback:
-const GOLDSKY_API_URL =
-  process.env.GOLDSKY_API_URL ||
-  "https://api.goldsky.com/api/public/project_YOUR_PROJECT_ID/subgraphs/YOUR_SUBGRAPH_NAME/VERSION/gn"
-
-/**
- * Fetches the list of available protocols from Goldsky
- */
 export async function GET() {
   try {
-    // For now, always return mock data until the Goldsky subgraph is being set up
-    console.log("Using mock data while Goldsky subgraph is being set up")
-    return NextResponse.json(getMockProtocolData())
-
-    // The rest of the function remains unchanged but will be skipped for now
-    // You can uncomment this section once your Goldsky subgraph is ready
+    // Get the current user's ID - in a real app, you'd get this from the session
+    // For demo purposes, we'll use a placeholder
+    const userId = "current-user";
+    
+    const portfolio = await portfolioRepository.getForUser(userId);
+    
+    if (!portfolio) {
+      console.log("No portfolio found, using fallback data");
+      return NextResponse.json(FALLBACK_PROTOCOLS);
+    }
+    
+    // Check if portfolio has allocations property and it's an array
+    const allocations = (portfolio as any).allocations;
+    
+    if (!allocations || !Array.isArray(allocations) || allocations.length === 0) {
+      console.log("No allocations found in portfolio, using fallback data");
+      return NextResponse.json(FALLBACK_PROTOCOLS);
+    }
+    // Transform portfolio allocations into the format expected by the chart
+    const protocols = allocations.map((allocation: any) => ({
+      name: allocation.asset_symbol || allocation.symbol || "Unknown Asset",
+      totalValueLockedUSD: (allocation.percentage || allocation.value || 0).toString(),
+      color: allocation.color || "#3B82F6" // Default color if not provided
+    }));
+    return NextResponse.json(protocols);
   } catch (error) {
-    console.error("Error fetching protocols:", error)
-    return NextResponse.json(getMockProtocolData())
+    console.error('API Error:', error);
+    
+    // Return fallback data in case of error
+    return NextResponse.json(FALLBACK_PROTOCOLS);
   }
-}
-
-/**
- * Generate mock protocol data for development and preview environments
- */
-function getMockProtocolData() {
-  return [
-    {
-      id: "1",
-      name: "Quipuswap",
-      slug: "quipuswap",
-      type: "DEX",
-      totalValueLockedUSD: "1200000",
-      cumulativeVolumeUSD: "5000000",
-    },
-    {
-      id: "2",
-      name: "Plenty",
-      slug: "plenty",
-      type: "DEX",
-      totalValueLockedUSD: "800000",
-      cumulativeVolumeUSD: "3000000",
-    },
-    {
-      id: "3",
-      name: "Youves",
-      slug: "youves",
-      type: "Lending",
-      totalValueLockedUSD: "600000",
-      cumulativeVolumeUSD: "2000000",
-    },
-    {
-      id: "4",
-      name: "Spicyswap",
-      slug: "spicyswap",
-      type: "DEX",
-      totalValueLockedUSD: "400000",
-      cumulativeVolumeUSD: "1500000",
-    },
-    {
-      id: "5",
-      name: "Crunchy",
-      slug: "crunchy",
-      type: "Yield",
-      totalValueLockedUSD: "200000",
-      cumulativeVolumeUSD: "800000",
-    },
-  ]
 }

@@ -15,11 +15,16 @@ import { Switch } from "@/components/ui/switch"
 import { Settings } from "lucide-react"
 import { useDashboard } from "@/contexts/dashboard-context"
 
+interface DashboardSettingsProps {
+  compact?: boolean;
+}
 /**
  * Dashboard settings component that allows users to customize their dashboard experience
  * Uses a dialog to present settings options and saves preferences using the dashboard context
+ * 
+ * @param compact - Whether to show a compact version of the settings button
  */
-export function DashboardSettings() {
+export function DashboardSettings({ compact = false }: DashboardSettingsProps) {
   const { settings, updateSettings } = useDashboard()
 
   const handleCompactViewChange = (checked: boolean) => {
@@ -45,10 +50,17 @@ export function DashboardSettings() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="flex items-center gap-2">
-          <Settings className="h-4 w-4" />
-          <span>Settings</span>
-        </Button>
+        {compact ? (
+          <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+            <Settings className="h-4 w-4" />
+            <span className="sr-only">Settings</span>
+          </Button>
+        ) : (
+          <Button variant="outline" size="sm" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            <span>Settings</span>
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

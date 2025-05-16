@@ -1,15 +1,15 @@
 "use client"
 
+import { ErrorBoundary } from "@/components/error-boundary"
 import { Button } from "@/components/ui/button"
 import { useDashboard } from "@/contexts/dashboard-context"
-import { Download, RefreshCw } from "lucide-react"
-import { ReactNode, useState, Suspense } from "react"
-import { DashboardSettings } from "./dashboard-settings"
-import { CorporateHeader } from "./corporate-header"
-import { CorporateFooter } from "./corporate-footer"
-import { SimulationIndicator } from "./simulation-indicator"
-import { ErrorBoundary } from "@/components/error-boundary"
 import { useRobustTheme } from "@/src/context/RobustThemeProvider"
+import { Download, RefreshCw } from "lucide-react"
+import { ReactNode, Suspense, useEffect, useRef, useState } from "react"
+import { CorporateFooter } from "./corporate-footer"
+import { CorporateHeader } from "./corporate-header"
+import { DashboardSettings } from "./dashboard-settings"
+import { SimulationIndicator } from "./simulation-indicator"
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -25,18 +25,15 @@ interface DashboardLayoutProps {
  */
 function DashboardSectionLoading() {
   return (
-    <div className="w-full p-8 flex items-center justify-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-700 dark:border-blue-400"></div>
+    <div className="w-full p-4 flex items-center justify-center">
+      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-700 dark:border-blue-400"></div>
     </div>
   )
 }
 
 /**
- * Provides a responsive layout wrapper for a corporate dashboard, using the corporate header and footer.
- *
- * Renders a main section with title, description, and action buttons (refresh, export, settings).
- * The refresh button triggers either a provided refresh callback or a context-based refresh,
- * with built-in loading state management.
+ * Provides a compact, responsive layout wrapper for a corporate dashboard.
+ * Features a minimalist header and footer with maximized content area.
  *
  * @param children - Content to display within the dashboard layout.
  * @param title - Main heading for the dashboard section.
@@ -52,7 +49,6 @@ export function DashboardLayout({
   const { settings, refreshData, isLoading: contextLoading, performanceData, portfolioData, marketData } = useDashboard()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const { isDark } = useRobustTheme()
-
   // Check if any data is simulated
   const hasSimulatedData = 
     (performanceData?.isSimulated || 
@@ -60,6 +56,22 @@ export function DashboardLayout({
      marketData?.isSimulated) && 
     settings.showSimulationIndicators;
 
+  // Suppress console warnings about ResponsiveContainer
+  useEffect(() => {
+    const originalWarn = console.warn;
+    console.warn = function(...args) {
+      if (args[0] && typeof args[0] === 'string' && 
+          args[0].includes('maybe you don\'t need to use a ResponsiveContainer')) {
+        return;
+      }
+      originalWarn.apply(console, args);
+    };
+    
+    return () => {
+      console.warn = originalWarn;
+    };
+  }, []);
+  
   const handleRefresh = async () => {
     if (isRefreshing || contextLoading) return
     try {
@@ -75,52 +87,67 @@ export function DashboardLayout({
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* We're using the existing CorporateHeader component */}
-      <CorporateHeader isLoggedIn={true} />
-
-      <main className={`container mx-auto px-4 py-8 flex-grow ${settings?.compactView ? 'space-y-4' : 'space-y-6'}`}>
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{title}</h1>
-            <p className="text-slate-600 dark:text-slate-400">{description}</p>
+    <div className="flex flex-col h-screen">
+      {/* Compact header with navigation */}
+      <div className="bg-slate-900 dark:bg-slate-950 py-2 px-4 border-b border-slate-800">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <CorporateHeader isLoggedIn={true} minimal={true} />
           </div>
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-3 mt-4 md:mt-0">
-            {/* Show simulation indicator if there's simulated data */}
-            {hasSimulatedData && (
-              <SimulationIndicator showLabel />
-            )}
-            
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex items-center gap-2"
-                onClick={handleRefresh}
-                disabled={isRefreshing || contextLoading}
-              >
-                <RefreshCw className={`h-4 w-4 ${isRefreshing || contextLoading ? 'animate-spin' : ''}`} />
-                <span>Refresh</span>
-              </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                <Download className="h-4 w-4" />
-                <span>Export</span>
-              </Button>
-              <DashboardSettings />
-            </div>
+          <div className="flex items-center space-x-2">
+            {hasSimulatedData && <SimulationIndicator compact={true} />}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-8 px-2 flex items-center gap-1"
+              onClick={handleRefresh}
+              disabled={isRefreshing || contextLoading}
+            >
+              <RefreshCw className={`h-3 w-3 ${isRefreshing || contextLoading ? 'animate-spin' : ''}`} />
+              <span className="text-xs">Refresh</span>
+            </Button>
+            <Button variant="outline" size="sm" className="h-8 px-2 flex items-center gap-1">
+              <Download className="h-3 w-3" />
+              <span className="text-xs">Export</span>
+            </Button>
+            <DashboardSettings compact={true} />
           </div>
         </div>
+      </div>
 
-        {/* Wrap children in ErrorBoundary and Suspense for better error handling and loading states */}
-        <ErrorBoundary>
-          <Suspense fallback={<DashboardSectionLoading />}>
-            {children}
-          </Suspense>
-        </ErrorBoundary>
-      </main>
+      {/* Dashboard title bar - more compact */}
+      <div className="bg-slate-800 dark:bg-slate-900 py-3 px-4 border-b border-slate-700">
+        <div className="flex flex-row justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold text-white">{title}</h1>
+            <p className="text-sm text-slate-300">{description}</p>
+          </div>
+        </div>
+      </div>
 
-      {/* We're using the existing CorporateFooter component */}
-      <CorporateFooter />
+      {/* Scrollable content area */}
+      <div className="flex-grow overflow-y-auto">
+        <main className="container mx-auto px-4 py-4">
+          <ErrorBoundary>
+            <Suspense fallback={<DashboardSectionLoading />}>
+              <div className="flex flex-col space-y-6 pb-6">
+                {children}
+              </div>
+            </Suspense>
+          </ErrorBoundary>
+        </main>
+      </div>
+
+      {/* Minimal footer */}
+      <div className="bg-slate-900 dark:bg-slate-950 py-2 px-4 border-t border-slate-800">
+        <div className="flex justify-between items-center">
+          <div className="text-xs text-slate-400">© 2025 VeritasVault.net</div>
+          <div className="flex space-x-4">
+            <a href="/terms" className="text-xs text-slate-400 hover:text-white">Terms</a>
+            <a href="/privacy" className="text-xs text-slate-400 hover:text-white">Privacy</a>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

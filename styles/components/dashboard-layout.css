@@ -1,0 +1,24 @@
+/* Fix for the overflow issue in dashboard flex containers */
+.flex-1.flex.flex-col.overflow-hidden {
+  overflow: visible !important; /* Override the overflow-hidden */
+}
+
+/* Alternatively, target the specific container */
+div.flex-1.flex.flex-col.overflow-hidden {
+  overflow: visible !important;
+}
+
+/* For the specific div with class="flex-1 flex flex-col overflow-hidden" */
+.flex.h-screen > .flex-1.flex.flex-col.overflow-hidden {
+  overflow: visible !important;
+}
+
+/* Additional fix for any flex containers that might be causing issues */
+.flex.flex-col.overflow-hidden {
+  overflow: visible !important;
+}
+
+/* If the issue is with a specific container with fixed height */
+.h-full.overflow-hidden {
+  overflow: visible !important;
+}
