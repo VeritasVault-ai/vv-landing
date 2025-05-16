@@ -67,6 +67,12 @@ export function usePortfolioData() {
     // Ensure weights sum to 100%
     const totalWeight = normalizedAllocations.reduce((sum, asset) => sum + asset.weight, 0);
 
+    // Protect against division by zero
+    if (Math.abs(totalWeight) < 0.00001) {
+      console.warn('Cannot normalize portfolio weights: total weight is zero or near-zero');
+      return;
+    }
+
     // Always normalize to ensure exact 100% total
     // This handles both cases where total might be slightly off due to floating point precision
     if (Math.abs(totalWeight - 100) > 0.001) {
