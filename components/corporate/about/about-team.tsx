@@ -11,7 +11,7 @@ export function AboutTeam() {
     {
       name: "Eben Mare",
       role: "Chief Executive Officer",
-      image: "/team/ceo-placeholder.jpg",
+      image: "/team/eben-pic.jpg",
       bio: "...",
       linkedin: "#",
       twitter: "#"
@@ -19,8 +19,8 @@ export function AboutTeam() {
     {
       name: "Hans Jurgens (Jurie) Smit",
       role: "Chief Technology Officer",
-      image: "/team/cto-placeholder.jpg",
-      bio: "P...",
+      image: "/team/jurie-ai.png",
+      bio: "...",
       linkedin: "#",
       twitter: "#"
     }

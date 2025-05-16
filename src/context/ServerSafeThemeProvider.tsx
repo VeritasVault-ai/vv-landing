@@ -3,13 +3,17 @@
 import { ThemeProvider } from 'next-themes'
 import { ReactNode, useEffect, useState } from 'react'
 
+// Define the Attribute type based on next-themes
+type Attribute = 'class' | 'data-theme' | 'data-mode'
+
 interface ServerSafeThemeProviderProps {
   children: ReactNode
-  attribute?: string
+  attribute?: Attribute | Attribute[]
   defaultTheme?: string
   enableSystem?: boolean
   forcedTheme?: string
   storageKey?: string
+  disableTransitionOnChange?: boolean
 }
 
 /**
@@ -23,6 +27,7 @@ export function ServerSafeThemeProvider({
   enableSystem = true,
   forcedTheme,
   storageKey = 'theme',
+  disableTransitionOnChange,
 }: ServerSafeThemeProviderProps) {
   const [mounted, setMounted] = useState(false)
 
@@ -44,6 +49,7 @@ export function ServerSafeThemeProvider({
       enableSystem={enableSystem}
       forcedTheme={forcedTheme}
       storageKey={storageKey}
+      disableTransitionOnChange={disableTransitionOnChange}
     >
       {children}
     </ThemeProvider>

@@ -29,7 +29,7 @@ export function AboutHero() {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5 rounded-lg blur-xl"></div>
               <Image
-                src="/office-team-meeting.jpg"
+                src="/about_us.png"
                 alt="VeritasVault team"
                 width={600}
                 height={400}
