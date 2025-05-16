@@ -1,8 +1,8 @@
+import { votingEvents } from "@/lib/events/voting-events"
 import { VotingOverview as VotingOverviewType } from "@/lib/repositories/voting-repository"
 import { votingService } from "@/lib/services/voting-service"
-import { votingEvents } from "@/lib/events/voting-events"
-import { useState, useEffect } from "react"
 import { isValidEthereumAddress, isValidPositiveNumber } from "@/lib/utils/validation"
+import { useEffect, useState } from "react"
 import { mockVotingOverview } from "../voting-overview.mock"
 
 // Chart colors
@@ -20,7 +20,7 @@ type VotingOverviewFactoryOptions = {
 export function createVotingOverview({
   useFallback = true,
   fallbackData = mockVotingOverview,
-  useMsw = process.env.NEXT_PUBLIC_API_MOCKING === 'enabled'
+  useMsw = false 
 }: VotingOverviewFactoryOptions = {}) {
   const [data, setData] = useState<VotingOverviewType | null>(null)
   const [loading, setLoading] = useState(true)
@@ -31,6 +31,7 @@ export function createVotingOverview({
 
   useEffect(() => {
     let isMounted = true
+    const isMswEnabled = useMsw || process.env.NEXT_PUBLIC_API_MOCKING === 'enabled' 
 
     async function fetchData() {
       try {
@@ -41,26 +42,26 @@ export function createVotingOverview({
         if (isMounted) {
           setData(result)
           // If MSW is enabled, we're using mocks but NOT fallback data
-          setIsMockData(useMsw)
-        setUsedFallback(false)
-      }
+          setIsMockData(isMswEnabled)
+          setUsedFallback(false)
+        }
       } catch (err) {
         console.error('Error fetching voting overview:', err)
         
-        if (isMounted && !useMsw) {
+        if (isMounted && !isMswEnabled) {
           setError('Failed to load voting data. Using fallback data instead.')
           
           if (useFallback) {
             setData(fallbackData)
             setUsedFallback(true)
             setIsMockData(true) // Fallback data is also mock data
-      }
-    }
+          }
+        }
       } finally {
         if (isMounted) {
           setLoading(false)
-  }
-}
+        }
+      }
     }
 
     fetchData()
@@ -91,6 +92,9 @@ export function createVotingOverview({
     },
     {} as Record<string, { label: string; color: string }>,
   ) || {}
+
+  // Use this function to safely check MSW status at runtime
+  const checkMswEnabled = () => useMsw || process.env.NEXT_PUBLIC_API_MOCKING === 'enabled';
 
   return {
     loading,
@@ -147,7 +151,8 @@ export function createVotingOverview({
         if (result.success && result.overview) {
           setData(result.overview);
           setUsedFallback(false);
-          setIsMockData(useMsw); // If MSW is enabled, this is still mock data
+          // Use the same MSW check at runtime
+          setIsMockData(checkMswEnabled()); 
           return true;
         }
         
