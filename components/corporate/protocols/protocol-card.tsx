@@ -4,7 +4,14 @@ import styles from "./protocol-allocation.module.css";
 import { ProtocolCardProps } from "./protocol-allocation.types";
 
 /**
- * Displays a card with protocol information including name, percentage, and value
+ * Renders a card displaying protocol information, including the protocol name, percentage, and value.
+ *
+ * The percentage is normalized to a numeric value for the progress bar, and the value is formatted as a localized string if numeric.
+ *
+ * @param name - The protocol's display name.
+ * @param percentage - The protocol's percentage value, as a number or string.
+ * @param value - The protocol's value, as a number or string.
+ * @param color - The base color used for the progress bar background.
  */
 export function ProtocolCard({ name, percentage, value, color }: ProtocolCardProps) {
   const numericPercentage = typeof percentage === 'string' ? parseFloat(percentage) || 0 : percentage;

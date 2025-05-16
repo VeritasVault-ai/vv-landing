@@ -12,8 +12,12 @@ interface VoteSubmission {
 }
 
 /**
- * Custom hook for simulating WebSocket connections for voting data
- * Provides mock data and connection status management with automatic reconnection
+ * React hook that simulates a WebSocket connection for voting data, providing live updates, optimistic vote submission, and automatic reconnection.
+ *
+ * Periodically updates voting data with simulated changes and recent votes. Optimistically updates local state when a vote is submitted, then attempts to persist the vote via an API call. All in-flight vote submissions are aborted on unmount.
+ *
+ * @param onStatusChange - Optional callback invoked when the WebSocket connection status changes.
+ * @returns An object containing the current voting data, a function to manually reconnect, a flag indicating simulation mode, and a function to submit votes.
  */
 export function useVotingWebSocketSimulation(
   onStatusChange?: (status: WebSocketStatus) => void

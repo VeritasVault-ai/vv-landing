@@ -17,13 +17,14 @@ export const metadata: Metadata = {
 }
 
 /**
- * Defines the root layout for the application, applying global theming and structure to all pages.
+ * Provides the root layout for the application, applying global theming and context providers to all pages.
  *
- * Wraps the provided content with the {@link UnifiedThemeProvider} and sets the HTML language to English.
- * Includes a script that immediately applies theme settings to prevent flash of wrong theme.
- * Also initializes MSW for API mocking during development when NEXT_PUBLIC_API_MOCKING is enabled.
+ * Renders the given page content within a consistent HTML structure, sets the language to English, and ensures immediate theme initialization to prevent visual inconsistencies.
  *
- * @param children - The page content to be rendered within the layout.
+ * @param children - The page content to display within the layout.
+ *
+ * @remark
+ * During development, API mocking with MSW is automatically initialized if the environment variable `NEXT_PUBLIC_API_MOCKING` is set to "enabled".
  */
 export default function RootLayout({
   children,

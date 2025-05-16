@@ -1,6 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
+/**
+ * Renders a skeleton placeholder UI for the protocol allocation interface.
+ *
+ * Displays a responsive layout with multiple cards containing skeleton elements to simulate loading states for descriptions, titles, content lines, graphical elements, and lists.
+ */
 export function ProtocolAllocationSkeleton() {
   return (
     <div className="space-y-6">

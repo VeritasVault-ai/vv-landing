@@ -2,8 +2,13 @@ import { WebSocketSimulationOptions } from '@/types/websocket-simulation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
- * Base hook for WebSocket simulation
- * Handles common WebSocket connection logic, simulation, and reconnection
+ * React hook that manages a WebSocket connection with automatic reconnection and simulation fallback.
+ *
+ * Establishes a WebSocket connection to the specified endpoint, automatically handling reconnection with exponential backoff. If the connection fails or exceeds the maximum number of reconnect attempts, the hook switches to a simulation mode that periodically updates data using provided simulation functions. Supports fetching initial data from an API or generating it locally, and exposes state and controls for data, simulation mode, and manual reconnection.
+ *
+ * @returns An object containing the current data, a manual reconnect function, a flag indicating simulation mode, and a setter for the data.
+ *
+ * @remark In development environments or when not running in a browser, the hook always operates in simulation mode.
  */
 export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOptions<T>) {
   const {

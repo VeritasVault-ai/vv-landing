@@ -8,7 +8,9 @@ export const metadata = {
 }
 
 /**
- * Dashboard page component that renders the dashboard content with a loading fallback
+ * Displays the corporate dashboard page with a loading indicator while content is loading.
+ *
+ * Renders the dashboard content inside a React Suspense boundary, showing a loading fallback until the content is ready.
  */
 export default function CorporateDashboardPage() {
   return (

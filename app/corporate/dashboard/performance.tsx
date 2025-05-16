@@ -3,7 +3,11 @@
 import { useDashboardData } from "@/lib/hooks/useDashboardData"
 
 /**
- * Dashboard performance component that shows detailed performance metrics
+ * Displays the performance analytics dashboard with sections for historical performance and performance breakdown.
+ *
+ * Renders placeholder areas for charts and tables, and shows a warning if simulated performance data is being used.
+ *
+ * @remark If simulated data is active, a warning message is displayed to inform users.
  */
 export function DashboardPerformance() {
   const { performanceMetrics, isModelSimulated } = useDashboardData()

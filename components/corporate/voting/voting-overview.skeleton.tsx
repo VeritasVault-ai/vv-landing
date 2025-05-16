@@ -3,10 +3,11 @@ import styles from "./voting-overview.skeleton.module.css"
 import { cn } from "@/lib/utils"
 
 /**
- * Skeleton loading state for the VotingOverview component.
- * Uses CSS modules for styling isolation and better maintainability.
- * 
- * @returns A React component that mimics the structure of the VotingOverview component with animated placeholders.
+ * Displays a skeleton UI that mimics the layout of the VotingOverview component while data is loading.
+ *
+ * Renders animated placeholder elements styled with CSS modules to provide a visual loading state consistent with the final VotingOverview layout.
+ *
+ * @returns A React element representing the skeleton loading state for VotingOverview.
  */
 export function VotingOverviewSkeleton() {
   return (

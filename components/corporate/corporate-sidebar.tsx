@@ -19,14 +19,14 @@ interface SidebarProps {
   className?: string
 }
 
-/**
- * Renders a collapsible sidebar navigation menu for corporate-related pages.
+/****
+ * Displays a collapsible sidebar navigation menu for corporate-related routes.
  *
- * The sidebar displays navigation links with icons, highlights the active section based on the current path, and includes a toggle to expand or collapse its width. It is only visible on routes containing `/corporate/` or `/corporate-version/`.
+ * The sidebar shows navigation links with icons, highlights the active section based on the current path, and allows toggling between expanded and collapsed states. It is only rendered on routes containing `/corporate/` or `/corporate-version/`.
  *
  * @param className - Optional additional CSS classes for the sidebar container.
  *
- * @returns The sidebar element if on a corporate page; otherwise, `null`.
+ * @returns The sidebar element if on a corporate-related page; otherwise, `null`.
  */
 export function CorporateSidebar({ className }: SidebarProps) {
   const pathname = usePathname()

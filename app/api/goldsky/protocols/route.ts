@@ -18,13 +18,12 @@ interface Portfolio {
 /**
  * Handles GET requests to retrieve asset allocation data for the current user's portfolio.
  *
- * Returns a list of protocol allocation objects, each containing `name`, `totalValueLockedUSD`, and `color`. 
- * If the user's portfolio or allocations are missing, or if an error occurs, returns a predefined fallback dataset.
+ * Returns a JSON array of protocol allocation objects, transforming portfolio data if available or falling back to a predefined mock dataset if the portfolio or allocations are missing, empty, or an error occurs.
  *
- * @returns A JSON response with an array of protocol allocation objects.
+ * @returns A JSON response containing an array of protocol allocation objects.
  *
- * @remark The user ID is currently hardcoded as "current-user" for demonstration purposes.
- * @remark Uses the same mock data as MSW for fallbacks to ensure consistency.
+ * @remark The user ID is hardcoded as "current-user" for demonstration purposes.
+ * @remark Returns the same mock data as MSW for fallback consistency.
  */
 export async function GET() {
   try {

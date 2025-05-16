@@ -1,7 +1,10 @@
 /**
- * Validates if a string is a properly formatted Ethereum address
- * @param address The address to validate
- * @returns True if the address is valid, false otherwise
+ * Checks whether a string is a valid Ethereum address.
+ *
+ * An address is considered valid if it is a non-empty string that starts with "0x" followed by exactly 40 hexadecimal characters.
+ *
+ * @param address - The string to validate as an Ethereum address.
+ * @returns `true` if {@link address} is a properly formatted Ethereum address; otherwise, `false`.
  */
 export function isValidEthereumAddress(address: string): boolean {
   // Basic validation: Ethereum addresses are 42 characters long and start with '0x'
@@ -17,11 +20,14 @@ export function isValidEthereumAddress(address: string): boolean {
 }
 
 /**
- * Validates if a value is a positive number within acceptable bounds
- * @param value The value to validate
- * @param min Optional minimum value (default: 0)
- * @param max Optional maximum value
- * @returns True if the value is valid, false otherwise
+ * Determines whether a value represents a positive number greater than a specified minimum and, optionally, less than or equal to a maximum.
+ *
+ * Accepts numbers or numeric strings. Returns `false` if the value is not a finite number, is less than or equal to {@link min}, or exceeds {@link max} (if provided). Also returns `false` if {@link max} is defined and less than {@link min}.
+ *
+ * @param value - The number or numeric string to validate.
+ * @param min - The exclusive lower bound (default is 0).
+ * @param max - The inclusive upper bound (optional).
+ * @returns `true` if the value is a valid positive number within the specified bounds; otherwise, `false`.
  */
 export function isValidPositiveNumber(
   value: number | string,

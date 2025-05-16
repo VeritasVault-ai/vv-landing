@@ -3,8 +3,12 @@ import { useCallback } from 'react';
 import { useBaseWebSocketSimulation } from './useBaseWebSocketSimulation';
 
 /**
- * Custom hook for simulating WebSocket connections for model data
- * Provides mock data and connection status management with automatic reconnection
+ * Simulates a WebSocket connection for model data, providing mock model status, progress updates, and results.
+ *
+ * This hook returns simulated model data and connection status, supports automatic reconnection, and allows triggering model run simulations via commands.
+ *
+ * @param onStatusChange - Optional callback invoked when the simulated WebSocket status changes.
+ * @returns An object containing the current model data, a reconnect function, a boolean indicating simulation mode, and a command sender for controlling simulations.
  */
 export function useModelWebSocketSimulation(
   onStatusChange?: (status: WebSocketStatus) => void

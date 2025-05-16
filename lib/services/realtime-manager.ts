@@ -20,13 +20,11 @@ type ConnectionError = {
 const MAX_ERROR_HISTORY = 10;
 
 /**
- * Real-Time Data Manager
- * 
- * A unified manager for all WebSocket connections across the application that provides:
- * - Combined and individual connection statuses
- * - Centralized data access
- * - Detailed simulation status tracking
- * - Unified reconnection capabilities
+ * Centralizes management of all WebSocket connections, statuses, and simulation states for real-time data sources.
+ *
+ * Provides unified connection status indicators, error tracking and management, reconnection capability, and access to live or simulated data from voting, model, dashboard, and allocation sources.
+ *
+ * @returns An object containing connection statuses, error information and management functions, reconnection method, real-time data from all sources, simulation state indicators, and an allocation update function.
  */
 export function useRealTimeManager() {
   // Track connection status for each WebSocket

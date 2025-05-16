@@ -16,14 +16,13 @@ import { useVotingSkeleton } from "@/lib/hooks/use-voting-skeleton"
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"]
 
 /**
- * Renders an overview of voting statistics, including voting power, participation metrics, voting power distribution, and delegations.
+ * Displays a comprehensive overview of voting statistics, including voting power, participation metrics, voting power distribution, and delegations.
  *
- * Fetches live voting data on mount and updates in real time when voting power changes. If data loading fails, displays simulated fallback data with a warning banner. Shows loading placeholders while fetching.
+ * Shows loading placeholders while fetching data and presents a warning banner if simulated fallback data is used due to a data loading failure.
  *
- * @returns A React element displaying summary cards, a voting power distribution pie chart, and a list of delegations, or loading and fallback UI as appropriate.
+ * @returns A React element with summary cards, a voting power distribution pie chart, a list of delegations, or appropriate loading and fallback UI.
  *
- * @remark If live data cannot be loaded, simulated fallback data is shown with a warning to the user.
- * When MSW is enabled, API requests are intercepted and mock data is returned.
+ * @remark If live voting data cannot be loaded, simulated fallback data is shown with a warning. When MSW is enabled, API requests are intercepted and mock data is returned.
  */
 export function VotingOverview() {
   // Pass an object with useFallback property

@@ -13,6 +13,18 @@ interface StatusCardProps {
   statusColor?: 'healthy' | 'warning' | 'error';
 }
 
+/**
+ * Displays a status summary card with a title, value, description, and icon.
+ *
+ * Renders a styled card showing a main metric or value, an associated icon, a description, and an optional simulation indicator. The value's appearance can be customized based on the provided status color.
+ *
+ * @param title - The card's title.
+ * @param value - The main metric or value to display.
+ * @param description - Additional descriptive text.
+ * @param icon - Icon component to display in the header.
+ * @param isSimulated - If true, shows a simulation indicator.
+ * @param statusColor - Optional status color ('healthy', 'warning', or 'error') for styling the value.
+ */
 export function StatusCard({
   title,
   value,

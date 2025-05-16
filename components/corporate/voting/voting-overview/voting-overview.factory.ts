@@ -15,7 +15,12 @@ type VotingOverviewFactoryOptions = {
 }
 
 /**
- * Factory hook for creating VotingOverview instances
+ * React hook factory for managing voting overview data, including fetching, fallback handling, real-time updates, and vote delegation.
+ *
+ * Provides state and methods for loading voting overview data, handling errors, supporting mock and fallback data, subscribing to real-time voting power changes, and delegating votes with input validation.
+ *
+ * @param options - Optional configuration for fallback data usage, mock service worker integration, and custom fallback data.
+ * @returns An object containing loading state, voting overview data, error messages, fallback and mock data flags, chart configuration, color palette, delegation loading state, and a method to delegate votes.
  */
 export function createVotingOverview({
   useFallback = true,
@@ -33,6 +38,14 @@ export function createVotingOverview({
     let isMounted = true
     const isMswEnabled = useMsw || process.env.NEXT_PUBLIC_API_MOCKING === 'enabled' 
 
+    /**
+     * Fetches the latest voting overview data and updates state, using mock or fallback data if necessary.
+     *
+     * If the fetch fails and MSW is not enabled, sets an error and optionally falls back to provided mock data.
+     *
+     * @remark
+     * When MSW (Mock Service Worker) is enabled, mock data is used automatically. If fetching fails and fallback is enabled, fallback data is used and marked as mock.
+     */
     async function fetchData() {
       try {
         // When MSW is enabled, it will intercept this request

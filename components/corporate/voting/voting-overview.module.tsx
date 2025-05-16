@@ -5,11 +5,14 @@ import { votingEvents } from "@/lib/events/voting-events"
 import { MOCK_VOTING_OVERVIEW, VOTING_CHART_COLORS } from "@/mocks/data/voting";
 
 /**
- * Module hook for VotingOverview component.
- * Handles data fetching, state management, and business logic.
- * 
- * @param options Configuration options
- * @returns State and data for the VotingOverview component
+ * React hook for managing voting overview data, state, and chart configuration.
+ *
+ * Fetches voting overview information, handles loading and error states, supports fallback data on fetch failure, and subscribes to real-time updates. Returns state, data, and chart configuration for use in the VotingOverview component.
+ *
+ * @param options - Optional configuration for fallback behavior and fallback data.
+ * @returns An object containing loading state, voting overview data (or fallback), error message, fallback usage flag, and chart configuration for visualization.
+ *
+ * @remark If data fetching fails and fallback is enabled, the hook uses the provided fallback data and sets {@link usedFallback} to true.
  */
 export function useVotingOverviewModule({
   useFallback = true,
@@ -26,6 +29,12 @@ export function useVotingOverviewModule({
   useEffect(() => {
     let isMounted = true
 
+    /**
+     * Fetches the latest voting overview data and updates state, optionally falling back to predefined data on failure.
+     *
+     * @remark
+     * If data fetching fails and {@link useFallback} is true, fallback data is used and the error state is set.
+     */
     async function fetchData() {
       try {
         const result = await votingService.getVotingOverview()

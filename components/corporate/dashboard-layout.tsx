@@ -21,7 +21,7 @@ interface DashboardLayoutProps {
 }
 
 /**
- * Displays a centered spinner as a loading indicator for suspended dashboard sections.
+ * Renders a centered spinner as a loading indicator for dashboard sections in suspense.
  */
 function DashboardSectionLoading() {
   return (
@@ -32,14 +32,17 @@ function DashboardSectionLoading() {
 }
 
 /**
- * Renders a compact, responsive layout for a corporate dashboard with a minimalist header, footer, and maximized content area.
+ * Provides a compact, responsive layout for a corporate dashboard, including a minimalist header, title bar, scrollable content area, and footer.
  *
- * Wraps dashboard content with a title bar, navigation controls, and simulation indicators. Provides refresh functionality and displays children within error and suspense boundaries.
+ * Wraps dashboard content with navigation controls, simulation indicators, and refresh functionality. Children are displayed within error and suspense boundaries to handle loading and runtime errors gracefully.
  *
- * @param children - The main content to display within the dashboard layout.
- * @param title - The primary heading for the dashboard section.
- * @param description - Optional subtitle displayed below the title.
- * @param onRefresh - Optional async callback to refresh dashboard data when the refresh button is clicked.
+ * @param children - The main dashboard content to render.
+ * @param title - The primary heading displayed in the title bar.
+ * @param description - Optional subtitle shown below the title.
+ * @param onRefresh - Optional async callback invoked when the refresh button is clicked.
+ *
+ * @remark
+ * Suppresses specific console warnings related to ResponsiveContainer during the component's lifecycle.
  */
 export function DashboardLayout({ 
   children, 

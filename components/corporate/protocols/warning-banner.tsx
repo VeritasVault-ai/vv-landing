@@ -2,7 +2,9 @@ import { WarningBannerProps } from "./protocol-allocation.types";
 import styles from "./protocol-allocation.module.css";
 
 /**
- * Displays a warning banner with a message
+ * Renders a styled banner displaying a warning message.
+ *
+ * @param message - The warning text to display in the banner.
  */
 export function WarningBanner({ message }: WarningBannerProps) {
   return (

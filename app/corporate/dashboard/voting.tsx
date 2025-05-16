@@ -5,7 +5,12 @@ import { ProposalsList } from "@/components/corporate/dashboard/proposals-list"
 import styles from "./voting.module.css"
 
 /**
- * Dashboard voting component that shows governance proposals and voting activity
+ * Displays governance voting statistics, active proposals, and recent voting activity on the dashboard.
+ *
+ * Renders sections for voting statistics, a list of active proposals, and recent votes, each with fallback UI if data is unavailable. Shows a warning if simulated voting data is in use.
+ *
+ * @remark
+ * If voting data is simulated, a warning message is displayed to inform users.
  */
 export function DashboardVoting() {
   const { votingData, isVotingSimulated } = useDashboardData()

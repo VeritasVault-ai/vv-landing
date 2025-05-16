@@ -2,9 +2,9 @@ import { useRealTimeManager } from "@/lib/services/realtime-manager";
 import { AssetAllocation } from "@/types/websocket-data";
 
 /**
- * Custom hook that provides portfolio allocation data from the real-time manager
- * 
- * @returns Portfolio allocation data and related functionality
+ * Provides portfolio allocation data, connection status, simulation state, and actions for updating or rebalancing allocations using real-time data.
+ *
+ * Returns the current allocation data, connection and error statuses, simulation flags, and methods to refresh the connection, update an individual asset's weight, or rebalance the entire portfolio to target allocations.
  */
 export function usePortfolioData() {
   const { 

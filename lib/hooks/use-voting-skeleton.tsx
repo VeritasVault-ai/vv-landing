@@ -29,12 +29,12 @@ const DEFAULT_FALLBACK_DATA: VotingOverviewType = {
   }
 
 /**
- * Hook for managing voting data with loading, error, and fallback states.
- * 
- * @param options Configuration options for the hook
- * @param options.useFallback Whether to use fallback data when the API call fails (default: true)
- * @param options.fallbackData Custom fallback data to use (optional)
- * @returns Object containing loading state, data, error message, and fallback status
+ * React hook for retrieving and managing voting overview data with support for loading, error, and fallback states.
+ *
+ * Fetches voting overview data asynchronously and updates in real-time when voting power changes. If fetching fails, fallback data is used if enabled.
+ *
+ * @param options - Optional configuration for fallback behavior and custom fallback data.
+ * @returns An object containing the loading state, voting overview data (or fallback), error message, and a flag indicating if fallback data is in use.
  */
 export function useVotingSkeleton({ 
   useFallback = true, 
@@ -51,6 +51,12 @@ export function useVotingSkeleton({
   useEffect(() => {
     let isMounted = true
 
+    /**
+     * Fetches the latest voting overview data and updates state, using fallback data if retrieval fails and fallback is enabled.
+     *
+     * @remark
+     * Only updates state if the component is still mounted.
+     */
     async function fetchData() {
       try {
         const result = await votingService.getVotingOverview()

@@ -11,8 +11,13 @@ type ProtocolAllocationFactoryOptions = {
 }
 
 /**
- * Factory hook for creating ProtocolAllocation instances
- * Handles data fetching, state management, and configuration
+ * React hook factory for managing protocol asset allocation data with optional fallback support.
+ *
+ * Fetches protocol allocation data from the `/api/goldsky/protocols` endpoint, providing loading status, error handling, and fallback data usage if fetching fails. Calculates the total locked value across all protocols and generates a chart configuration mapping protocol names to labels and colors.
+ *
+ * @param useFallback - Whether to use fallback data if fetching fails. Defaults to `true`.
+ * @param fallbackData - The fallback dataset to use if fetching fails. Defaults to `mockProtocolAllocations`.
+ * @returns An object containing loading status, protocol allocation data, error message, fallback usage flag, chart configuration, color palette, and total locked value.
  */
 export function createProtocolAllocation({
   useFallback = true,
@@ -25,6 +30,12 @@ export function createProtocolAllocation({
   useEffect(() => {
     let isMounted = true;
 
+    /**
+     * Fetches protocol allocation data from the API and updates state, using fallback data if enabled and the fetch fails.
+     *
+     * @remark
+     * Updates state only if the component is still mounted to prevent memory leaks.
+     */
     async function fetchData() {
       try {
         // MSW will intercept this request when enabled
