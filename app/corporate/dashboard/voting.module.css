@@ -1,0 +1,79 @@
+.container {
+  @apply space-y-6;
+}
+
+.title {
+  @apply text-2xl font-bold;
+}
+
+.card {
+  @apply bg-white dark:bg-slate-800 rounded-lg shadow p-6;
+}
+
+.cardTitle {
+  @apply text-lg font-medium mb-4;
+}
+
+.statsGrid {
+  @apply grid grid-cols-1 md:grid-cols-4 gap-6;
+}
+
+.statItem {
+  @apply p-4 border rounded-lg;
+}
+
+.statLabel {
+  @apply text-sm text-slate-500 mb-1;
+}
+
+.statValue {
+  @apply text-xl font-semibold;
+}
+
+.emptyState {
+  @apply flex items-center justify-center h-32 border border-dashed border-slate-300 dark:border-slate-700 rounded-lg;
+}
+
+.emptyText {
+  @apply text-slate-500;
+}
+
+.votesList {
+  @apply space-y-4;
+}
+
+.voteItem {
+  @apply flex justify-between items-center p-3 border rounded-lg;
+}
+
+.voteInfo {
+  @apply font-medium;
+}
+
+.voterInfo {
+  @apply text-sm text-slate-500;
+}
+
+.voteActions {
+  @apply flex items-center gap-4;
+}
+
+.voteTypeFor {
+  @apply text-sm font-medium text-green-600;
+}
+
+.voteTypeAgainst {
+  @apply text-sm font-medium text-red-600;
+}
+
+.voteTypeAbstain {
+  @apply text-sm font-medium text-slate-600;
+}
+
+.voteTimestamp {
+  @apply text-sm text-slate-500;
+}
+
+.simulationWarning {
+  @apply text-xs text-amber-600 dark:text-amber-400 flex items-center justify-end gap-1;
+}

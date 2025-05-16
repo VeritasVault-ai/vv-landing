@@ -1,7 +1,8 @@
 "use client"
 
-import { CollapsibleSidebar } from '@/components/ui/sidebar'
-import { ThemeProvider } from '@/lib/context/ThemeProvider'
+import { CollapsibleSidebar } from '@/components/layout/collapsible-sidebar'
+import { NavItemOrGroup } from '@/src/components/layout/CollapsibleSidebar'
+import { NavGroup, NavItem } from '@/src/components/layout/sidebar/types'
 import {
   BarChart3,
   Droplets,
@@ -14,21 +15,21 @@ import {
 import { ReactNode } from 'react'
 
 // Define corporate dashboard navigation items
-const navigationItems = [
+const navigationItems: NavItemOrGroup[] = [
   {
     type: 'link',
     name: 'Dashboard',
     href: '/corporate/dashboard',
     icon: <LayoutDashboard className="h-5 w-5" />,
     label: 'Dashboard'
-  },
+  } as NavItem,
   {
     type: 'link',
     name: 'Analytics',
     href: '/corporate/analytics',
     icon: <BarChart3 className="h-5 w-5" />,
     label: 'Analytics'
-  },
+  } as NavItem,
   {
     type: 'group',
     name: 'Strategies',
@@ -40,7 +41,7 @@ const navigationItems = [
       { href: '/corporate/strategies/templates', label: 'Strategy Templates' }
     ],
     defaultOpen: true
-  },
+  } as NavGroup,
   {
     type: 'link',
     name: 'Pools',
@@ -48,32 +49,32 @@ const navigationItems = [
     icon: <Droplets className="h-5 w-5" />,
     label: 'Liquidity Pools',
     badge: '6'
-  },
+  } as NavItem,
   {
     type: 'link',
     name: 'Risk Assessment',
     href: '/corporate/risk-assessment',
     icon: <ShieldAlert className="h-5 w-5" />,
     label: 'Risk Assessment'
-  }
+  } as NavItem
 ]
 
 // Define secondary navigation items
-const secondaryNavigationItems = [
+const secondaryNavigationItems: NavItemOrGroup[] = [
   {
     type: 'link',
     name: 'Settings',
     href: '/corporate/settings',
     icon: <Settings className="h-5 w-5" />,
     label: 'Settings'
-  },
+  } as NavItem,
   {
     type: 'link',
     name: 'Help',
     href: '/corporate/help',
     icon: <HelpCircle className="h-5 w-5" />,
     label: 'Help & Support'
-  }
+  } as NavItem
 ]
 
 /**

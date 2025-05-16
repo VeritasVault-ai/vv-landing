@@ -1,7 +1,7 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui";
 import { Proposal } from "@/types/voting";
 import { useState } from "react";
 import styles from "./proposals-list.module.css";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui";
 
 interface ProposalsListProps {
   proposals: Proposal[];

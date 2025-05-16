@@ -1,29 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
 import { WebSocketStatus } from '@/types/websocket-data';
-
-// Options for the base WebSocket hook
-export interface WebSocketSimulationOptions<T> {
-  // WebSocket endpoint URL
-  endpoint: string;
-  
-  // Status change handler
-  onStatusChange?: (status: WebSocketStatus) => void;
-  
-  // Initial data generator function
-  getInitialData: () => T | Promise<T>;
-  
-  // Data update function (optional)
-  updateDataPeriodically?: (prevData: T) => T;
-  
-  // Update interval in milliseconds (default: 10000)
-  updateInterval?: number;
-  
-  // Whether to fetch initial data from an API endpoint
-  fetchInitialData?: boolean;
-  
-  // API endpoint for fetching initial data
-  initialDataEndpoint?: string;
-}
+import { WebSocketSimulationOptions } from '@/types/websocket-simulation';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Base hook for WebSocket simulation
@@ -37,7 +14,10 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
     updateDataPeriodically,
     updateInterval = 10000,
     fetchInitialData = false,
-    initialDataEndpoint
+    initialDataEndpoint,
+    maxReconnectAttempts = 10,
+    initialReconnectDelay = 1000,
+    maxReconnectDelay = 30000
   } = options;
 
   const [data, setData] = useState<T | null>(null);
@@ -47,11 +27,49 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
   const [isSimulated, setIsSimulated] = useState(true);
   // Use a ref to track current isSimulated value to avoid stale closures
   const isSimulatedRef = useRef(true);
+  
+  // Track reconnection attempts
+  const reconnectAttemptsRef = useRef(0);
+  const reconnectDelayRef = useRef(initialReconnectDelay);
 
   // Keep the ref in sync with the state
   useEffect(() => {
     isSimulatedRef.current = isSimulated;
   }, [isSimulated]);
+
+  // Schedule reconnect with exponential backoff
+  const scheduleReconnect = useCallback(() => {
+    // Clear any existing reconnect timeout
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+    
+    // Check if we've exceeded maximum reconnect attempts
+    if (reconnectAttemptsRef.current >= maxReconnectAttempts) {
+      console.warn(`Maximum reconnect attempts (${maxReconnectAttempts}) reached. Falling back to simulation.`);
+      onStatusChange?.('error');
+      setIsSimulated(true);
+      isSimulatedRef.current = true;
+      startSimulation();
+      return;
+    }
+    
+    // Calculate next delay with exponential backoff
+    const delay = Math.min(
+      reconnectDelayRef.current * Math.pow(1.5, reconnectAttemptsRef.current),
+      maxReconnectDelay
+    );
+    
+    console.log(`Scheduling reconnect attempt ${reconnectAttemptsRef.current + 1}/${maxReconnectAttempts} in ${delay}ms`);
+    
+    // Schedule reconnect
+    reconnectTimeoutRef.current = setTimeout(() => {
+      reconnectAttemptsRef.current++;
+      onStatusChange?.('connecting');
+      connect();
+    }, delay);
+  }, [maxReconnectAttempts, maxReconnectDelay, onStatusChange]);
 
   const connect = useCallback(() => {
     try {
@@ -84,6 +102,10 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
         wsRef.current = ws;
         
         ws.onopen = () => {
+          // Reset reconnect attempts and delay on successful connection
+          reconnectAttemptsRef.current = 0;
+          reconnectDelayRef.current = initialReconnectDelay;
+          
           setIsSimulated(false);
           isSimulatedRef.current = false;
           onStatusChange?.('connected');
@@ -93,7 +115,7 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
             clearTimeout(reconnectTimeoutRef.current);
             reconnectTimeoutRef.current = null;
           }
-    };
+        };
         
         ws.onmessage = (event) => {
           try {
@@ -102,23 +124,32 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
           } catch (error) {
             console.error('Failed to parse WebSocket message');
           }
-  };
+        };
         
         ws.onclose = (event) => {
-          // Don't report error for normal closure
+          // Don't report error or reconnect for normal closure (code 1000)
           if (event.code !== 1000) {
+            console.log(`WebSocket closed abnormally with code ${event.code}, reason: ${event.reason}`);
             onStatusChange?.('disconnected');
             
-            // Fall back to simulation
+            // Schedule reconnect with exponential backoff
+            scheduleReconnect();
+            
+            // Fall back to simulation while attempting to reconnect
             setIsSimulated(true);
             isSimulatedRef.current = true;
             startSimulation();
-}
+          } else {
+            console.log('WebSocket closed normally');
+          }
         };
         
-        ws.onerror = () => {
-          console.error('WebSocket connection error - falling back to simulation');
+        ws.onerror = (error) => {
+          console.error('WebSocket connection error:', error);
           onStatusChange?.('error');
+          
+          // WebSocket will also trigger onclose after an error
+          // The reconnection will be handled there
           
           // Fall back to simulation
           setIsSimulated(true);
@@ -129,19 +160,25 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
           startSimulation();
         };
       } catch (error) {
-        console.error('WebSocket not available - using simulation instead');
+        console.error('WebSocket not available - using simulation instead:', error);
         setIsSimulated(true);
         isSimulatedRef.current = true;
         startSimulation();
+        
+        // Schedule reconnect attempt
+        scheduleReconnect();
       }
     } catch (error) {
-      console.error('Failed to establish WebSocket connection - using simulation');
+      console.error('Failed to establish WebSocket connection - using simulation:', error);
       onStatusChange?.('error');
       setIsSimulated(true);
       isSimulatedRef.current = true;
       startSimulation();
+      
+      // Schedule reconnect attempt
+      scheduleReconnect();
     }
-  }, [endpoint, onStatusChange]);
+  }, [endpoint, onStatusChange, initialReconnectDelay, scheduleReconnect]);
 
   // Start the WebSocket simulation
   const startSimulation = useCallback(async () => {
@@ -225,8 +262,12 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
       reconnectTimeoutRef.current = null;
     }
     
+    // Reset reconnect attempts and delay for manual reconnect
+    reconnectAttemptsRef.current = 0;
+    reconnectDelayRef.current = initialReconnectDelay;
+    
     connect();
-  }, [connect]);
+  }, [connect, initialReconnectDelay]);
 
   // Initialize connection
   useEffect(() => {

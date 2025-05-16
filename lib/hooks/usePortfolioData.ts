@@ -56,20 +56,33 @@ export function usePortfolioData() {
    * @param targetAllocations Target allocations to apply
    */
   const rebalancePortfolio = (targetAllocations: AssetAllocation[]) => {
-    if (!allocationData) return;
+    // Add null check to verify allocationData exists
+    if (!allocationData) {
+      console.warn('Cannot rebalance portfolio: allocation data is not available');
+      return;
+    }
 
+    // Create a copy of the target allocations to avoid mutating the input
+    let normalizedAllocations = [...targetAllocations];
     // Ensure weights sum to 100%
-    const totalWeight = targetAllocations.reduce((sum, asset) => sum + asset.weight, 0);
+    const totalWeight = normalizedAllocations.reduce((sum, asset) => sum + asset.weight, 0);
 
-    // Only normalize if there's a significant difference
-    if (Math.abs(totalWeight - 100) > 0.01) {
-      targetAllocations = targetAllocations.map(asset => ({
+    // Always normalize to ensure exact 100% total
+    // This handles both cases where total might be slightly off due to floating point precision
+    if (Math.abs(totalWeight - 100) > 0.001) {
+      console.info(`Normalizing portfolio weights from ${totalWeight.toFixed(2)}% to 100%`);
+      normalizedAllocations = normalizedAllocations.map(asset => ({
         ...asset,
         weight: (asset.weight / totalWeight) * 100
       }));
+      
+      // Verify the normalization worked correctly
+      const newTotal = normalizedAllocations.reduce((sum, asset) => sum + asset.weight, 0);
+      console.debug(`After normalization: total weight = ${newTotal.toFixed(2)}%`);
     }
 
-    updateAllocations(targetAllocations);
+    // Update allocations with normalized weights
+    updateAllocations(normalizedAllocations);
   };
   
   return {

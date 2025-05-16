@@ -24,6 +24,10 @@ export interface WebSocketSimulationOptions<T> {
   
   // API endpoint for fetching initial data
   initialDataEndpoint?: string;
+  
+  maxReconnectAttempts?: number;
+  initialReconnectDelay?: number;
+  maxReconnectDelay?: number;
 }
 
 /**

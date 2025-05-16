@@ -1,13 +1,23 @@
+import {
+  SimulationState,
+  WebSocketState,
+  WebSocketStatus
+} from '@/types/websocket-data';
 import { useCallback, useEffect, useState } from 'react';
+import { useAllocationWebSocketSimulation, useVotingWebSocketSimulation } from './websocket-simulations';
 import { useDashboardWebSocketSimulation } from './websocket-simulations/useDashboardWebSocketSimulation';
 import { useModelWebSocketSimulation } from './websocket-simulations/useModelWebSocketSimulation';
-import { useVotingWebSocketSimulation } from './websocket-simulations/useVotingWebSocketSimulation';
-import { useAllocationWebSocketSimulation } from './websocket-simulations/useAllocationWebSocketSimulation';
-import { 
-  WebSocketStatus, 
-  WebSocketState, 
-  SimulationState 
-} from '@/types/websocket-data';
+
+// Define a more structured error type
+type ConnectionError = {
+  id: string;
+  source: string;
+  message: string;
+  timestamp: number;
+};
+
+// Maximum number of errors to keep in history
+const MAX_ERROR_HISTORY = 10;
 
 /**
  * Real-Time Data Manager
@@ -27,8 +37,8 @@ export function useRealTimeManager() {
     allocation: 'connecting'
   });
   
-  // Track connection errors
-  const [connectionErrors, setConnectionErrors] = useState<string[]>([]);
+  // Track connection errors with a more structured approach
+  const [connectionErrors, setConnectionErrors] = useState<ConnectionError[]>([]);
 
   // Track simulation state
   const [simulationState, setSimulationState] = useState<SimulationState>({
@@ -47,38 +57,76 @@ export function useRealTimeManager() {
     isConnected ? 'connected' : 
     'connecting';
 
+  // Add a new connection error with proper structure
+  const addConnectionError = useCallback((source: string, message: string) => {
+    setConnectionErrors(prev => {
+      // Create new error object
+      const newError: ConnectionError = {
+        id: `${source}-${Date.now()}`,
+        source,
+        message,
+        timestamp: Date.now()
+      };
+      
+      // Add to beginning of array and limit size
+      const updatedErrors = [newError, ...prev].slice(0, MAX_ERROR_HISTORY);
+      
+      return updatedErrors;
+    });
+  }, []);
+
+  // Clear errors for a specific source
+  const clearErrorsForSource = useCallback((source: string) => {
+    setConnectionErrors(prev => 
+      prev.filter(error => error.source !== source)
+    );
+  }, []);
+
+  // Clear all connection errors
+  const clearAllErrors = useCallback(() => {
+    setConnectionErrors([]);
+  }, []);
+
   // Handlers for each WebSocket connection
   const handleVotingStatus = useCallback((newStatus: WebSocketStatus) => {
     setStatus(prev => ({ ...prev, voting: newStatus }));
     
     if (newStatus === 'error') {
-      setConnectionErrors(prev => [...prev, 'Voting connection failed']);
+      addConnectionError('voting', 'Voting connection failed');
+    } else if (newStatus === 'connected') {
+      clearErrorsForSource('voting');
     }
-  }, []);
+  }, [addConnectionError, clearErrorsForSource]);
   
   const handleModelStatus = useCallback((newStatus: WebSocketStatus) => {
     setStatus(prev => ({ ...prev, model: newStatus }));
     
     if (newStatus === 'error') {
-      setConnectionErrors(prev => [...prev, 'Model connection failed']);
+      addConnectionError('model', 'Model connection failed');
+    } else if (newStatus === 'connected') {
+      clearErrorsForSource('model');
     }
-  }, []);
+  }, [addConnectionError, clearErrorsForSource]);
   
   const handleDashboardStatus = useCallback((newStatus: WebSocketStatus) => {
     setStatus(prev => ({ ...prev, dashboard: newStatus }));
     
     if (newStatus === 'error') {
-      setConnectionErrors(prev => [...prev, 'Dashboard connection failed']);
+      addConnectionError('dashboard', 'Dashboard connection failed');
+    } else if (newStatus === 'connected') {
+      clearErrorsForSource('dashboard');
     }
-  }, []);
+  }, [addConnectionError, clearErrorsForSource]);
 
   const handleAllocationStatus = useCallback((newStatus: WebSocketStatus) => {
     setStatus(prev => ({ ...prev, allocation: newStatus }));
     
     if (newStatus === 'error') {
-      setConnectionErrors(prev => [...prev, 'Allocation connection failed']);
+      addConnectionError('allocation', 'Allocation connection failed');
+    } else if (newStatus === 'connected') {
+      clearErrorsForSource('allocation');
     }
-  }, []);
+  }, [addConnectionError, clearErrorsForSource]);
 
   // Initialize WebSocket connections with status handlers
   const { 
@@ -133,14 +181,27 @@ export function useRealTimeManager() {
     });
     
     // Clear any previous errors
-    setConnectionErrors([]);
+    clearAllErrors();
     
     // Call reconnect methods from each WebSocket hook
     reconnectVoting();
     reconnectModel();
     reconnectDashboard();
     reconnectAllocation();
-  }, [reconnectVoting, reconnectModel, reconnectDashboard, reconnectAllocation]);
+  }, [reconnectVoting, reconnectModel, reconnectDashboard, reconnectAllocation, clearAllErrors]);
+
+  // Auto-cleanup old errors (older than 5 minutes)
+  useEffect(() => {
+    const cleanupInterval = setInterval(() => {
+      const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
+      
+      setConnectionErrors(prev => 
+        prev.filter(error => error.timestamp > fiveMinutesAgo)
+      );
+    }, 60 * 1000); // Check every minute
+    
+    return () => clearInterval(cleanupInterval);
+  }, []);
 
   // Log connection status changes in development
   useEffect(() => {
@@ -157,6 +218,10 @@ export function useRealTimeManager() {
     isConnected,
     hasError,
     connectionErrors,
+    
+    // Error management
+    clearAllErrors,
+    clearErrorsForSource,
     
     // Reconnection method
     reconnect,
