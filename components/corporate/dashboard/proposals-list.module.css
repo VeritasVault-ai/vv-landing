@@ -1,0 +1,110 @@
+.container {
+  @apply space-y-4;
+}
+
+.item {
+  @apply border-b border-slate-200 dark:border-slate-700 pb-4 last:border-0 last:pb-0;
+}
+
+.title {
+  @apply font-medium text-slate-900 dark:text-white;
+}
+
+.description {
+  @apply text-sm text-slate-500 dark:text-slate-400 mt-1;
+}
+
+.stats {
+  @apply flex items-center justify-between mt-2;
+}
+
+.voteCounts {
+  @apply flex items-center gap-4;
+}
+
+.voteFor {
+  @apply text-xs text-green-600 dark:text-green-500;
+}
+
+.voteAgainst {
+  @apply text-xs text-red-600 dark:text-red-500;
+}
+
+.voteAbstain {
+  @apply text-xs text-slate-500;
+}
+
+.endDate {
+  @apply text-xs text-slate-500;
+}
+
+.progressBar {
+  @apply w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 mt-2;
+}
+
+.progressFor {
+  @apply bg-green-500 h-1.5 rounded-l-full;
+  float: left;
+}
+
+.progressAgainst {
+  @apply bg-red-500 h-1.5;
+  float: left;
+}
+
+.progressAbstain {
+  @apply bg-slate-400 h-1.5 rounded-r-full;
+  float: left;
+}
+
+.clickable {
+  cursor: pointer;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.clickable:hover {
+  opacity: 0.8;
+}
+
+.clickable[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.votingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 0.5rem;
+}
+
+.votingSpinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Make sure the proposal item has position relative for the overlay */
+.item {
+  position: relative;
+}

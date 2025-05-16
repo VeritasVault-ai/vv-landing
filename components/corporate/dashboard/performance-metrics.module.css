@@ -1,0 +1,27 @@
+.container {
+  @apply mb-6;
+}
+
+.metricsGrid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+}
+
+.column {
+  @apply flex flex-col;
+}
+
+.label {
+  @apply text-sm font-medium text-slate-500;
+}
+
+.value {
+  @apply text-2xl font-bold;
+}
+
+.progressBar {
+  @apply w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 mt-2;
+}
+
+.progressFill {
+  @apply bg-blue-600 h-2.5 rounded-full;
+}

@@ -1,0 +1,47 @@
+.container {
+  @apply bg-slate-800/50 dark:bg-slate-900/50 rounded-lg p-5;
+}
+
+.title {
+  @apply text-lg font-medium text-white mb-4;
+}
+
+.flexContainer {
+  @apply flex flex-col md:flex-row;
+}
+
+.tableSection {
+  @apply w-full md:w-3/5 pr-0 md:pr-4;
+}
+
+.tableContainer {
+  @apply overflow-x-auto;
+}
+
+.table {
+  @apply w-full;
+}
+
+.tableHeader {
+  @apply text-left py-2 text-slate-400 font-medium;
+}
+
+.tableHeaderRight {
+  @apply text-right py-2 text-slate-400 font-medium;
+}
+
+.tableCell {
+  @apply text-left py-2 border-t border-slate-700;
+}
+
+.tableCellRight {
+  @apply text-right py-2 border-t border-slate-700;
+}
+
+.chartSection {
+  @apply w-full md:w-2/5 mt-4 md:mt-0 flex items-center justify-center;
+}
+
+.chartContainer {
+  @apply h-[220px] w-full max-w-[220px];
+}

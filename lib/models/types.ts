@@ -1,4 +1,4 @@
-"\"use client"
+"use client"
 
 // Common types
 export type ID = string | number
@@ -113,9 +113,17 @@ export interface Portfolio {
   updatedAt: string
 }
 
-export interface AssetAllocation {
+/**
+ * Protocol asset allocation type
+ * Used for representing protocol-level asset allocations
+ */
+export interface ProtocolAssetAllocation {
+  totalValueLockedUSD: string
+  name: string
   asset_id: string
   percentage: number
+  color: string
+  protocol: string
 }
 
 export interface RiskFactor {
@@ -160,6 +168,3 @@ export interface Event {
   created_at: string
 }
 
-export type Pool = LiquidityPool
-\
-"

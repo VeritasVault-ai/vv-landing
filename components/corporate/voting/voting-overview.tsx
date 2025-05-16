@@ -9,46 +9,24 @@ import { ChartContainer } from "@/components/ui/chart"
 import { VotingOverview as VotingOverviewType } from "@/lib/repositories/voting-repository"
 import { votingService } from "@/lib/services/voting-service"
 import { votingEvents } from "@/lib/events/voting-events"
+import { VotingOverviewSkeleton } from "./voting-overview.skeleton"
+import { useVotingSkeleton } from "@/lib/hooks/use-voting-skeleton"
 
 // Colors for the chart
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"]
 
-/****
- * Displays a comprehensive overview of voting data, including voting power, participation statistics, voting power distribution, and delegations.
+/**
+ * Displays a comprehensive overview of voting statistics, including voting power, participation metrics, voting power distribution, and delegations.
  *
- * Fetches voting overview data on mount and updates in real time when voting power changes. Shows loading placeholders while data is being fetched and displays an error message if loading fails.
+ * Shows loading placeholders while fetching data and presents a warning banner if simulated fallback data is used due to a data loading failure.
  *
- * @returns A React element rendering summary cards, a voting power distribution pie chart, and a list of delegations, or appropriate loading/error UI.
+ * @returns A React element with summary cards, a voting power distribution pie chart, a list of delegations, or appropriate loading and fallback UI.
+ *
+ * @remark If live voting data cannot be loaded, simulated fallback data is shown with a warning. When MSW is enabled, API requests are intercepted and mock data is returned.
  */
 export function VotingOverview() {
-  const [data, setData] = useState<VotingOverviewType | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const result = await votingService.getVotingOverview()
-        setData(result)
-      } catch (err) {
-        console.error('Error fetching voting overview:', err)
-        setError('Failed to load voting data. Please try again later.')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-
-    // Subscribe to voting-power-changed events for real-time updates
-    const unsubscribe = votingEvents.subscribe('voting-power-changed', ({ overview }) => {
-      setData(overview)
-    })
-
-    // Clean up subscription when component unmounts
-    return () => unsubscribe()
-  }, [])
-
+  // Pass an object with useFallback property
+  const { loading, data, error, usedFallback } = useVotingSkeleton({ useFallback: true })
   // Create a config object for the chart
   const chartConfig = data?.votingPowerDistribution?.reduce(
     (acc, item, index) => {
@@ -62,68 +40,22 @@ export function VotingOverview() {
   ) || {}
 
   if (loading) {
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <Card key={i}>
-              <CardHeader className="pb-2">
-                <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
-                <div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mt-2"></div>
-              </CardHeader>
-              <CardContent>
-                <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <div className="h-6 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
-            </CardHeader>
-            <CardContent className="h-80">
-              <div className="h-full w-full bg-slate-100 dark:bg-slate-800 rounded animate-pulse"></div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <div className="h-6 w-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="flex justify-between items-center">
-                    <div className="space-y-2">
-                      <div className="h-5 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
-                      <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
-                    </div>
-                    <div className="h-6 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    )
+    return <VotingOverviewSkeleton />
   }
-
-  if (error) {
-    return (
-      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 rounded-md">
-        <p className="text-red-800 dark:text-red-200">{error}</p>
-      </div>
-    )
-  }
-
   if (!data) {
     return null
   }
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {usedFallback && (
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 rounded-md mb-4">
+          <p className="text-amber-800 dark:text-amber-200">
+            {error} This is simulated data for demonstration purposes.
+          </p>
+        </div>
+      )}
+     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Your Voting Power</CardDescription>

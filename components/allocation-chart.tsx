@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useEffect, useState } from "react"
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 
 interface AllocationData {
   name: string
@@ -10,12 +10,37 @@ interface AllocationData {
   color: string
 }
 
-export function AllocationChart() {
-  const [allocationData, setAllocationData] = useState<AllocationData[]>([])
-  const [loading, setLoading] = useState(true)
+// Fallback data in case API fails
+const FALLBACK_DATA: AllocationData[] = [
+  { name: "stETH", value: 50, color: "#3B82F6" },
+  { name: "tzBTC", value: 20, color: "#10B981" },
+  { name: "USDC", value: 30, color: "#F59E0B" }
+];
+
+interface AllocationChartProps {
+  // Allow passing initial data to avoid API call
+  initialData?: AllocationData[];
+}
+
+/**
+ * Displays a responsive pie chart of allocation data, using provided initial data or fetching from an API with fallback support.
+ *
+ * If `initialData` is supplied, it is rendered immediately; otherwise, the component fetches allocation data from an API endpoint and uses fallback data if the fetch fails.
+ *
+ * @param initialData - Optional allocation data to display instead of fetching from the API.
+ *
+ * @returns A React element showing the allocation pie chart, a loading skeleton, or an error message if data cannot be loaded.
+ */
+export function AllocationChart({ initialData }: AllocationChartProps) {
+  const [allocationData, setAllocationData] = useState<AllocationData[]>(initialData || [])
+  const [loading, setLoading] = useState(!initialData) // Only set loading to true if no initial data
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    // If we have initial data, don't fetch from API
+    if (initialData) {
+      return;
+    }
     const fetchAllocationData = async () => {
       try {
         setLoading(true)
@@ -25,23 +50,25 @@ export function AllocationChart() {
         const response = await fetch("/api/goldsky/protocols")
 
         if (!response.ok) {
-          throw new Error(`API request failed with status ${response.status}`)
+          console.warn(`API request failed with status ${response.status}, using fallback data`)
+          setAllocationData(FALLBACK_DATA)
+          return
         }
 
         const data = await response.json()
         console.log("Received data:", data)
 
         // Transform the data to include colors and convert values
-        const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#0088fe", "#00C49F", "#FFBB28", "#FF8042"]
+        const colors = ["#3B82F6", "#10B981", "#F59E0B", "#ff8042", "#0088fe", "#00C49F", "#FFBB28", "#FF8042"]
 
         const transformedData = data.map((item: any, index: number) => {
           // Convert string values to numbers and calculate a percentage value
           const tvl = Number.parseFloat(item.totalValueLockedUSD) || 0
           return {
             name: item.name || `Protocol ${index + 1}`,
-            // Use a percentage or the TVL as a fallback
-            value: index === 0 ? 35 : index === 1 ? 25 : index === 2 ? 20 : index === 3 ? 15 : index === 4 ? 5 : 10,
-            color: colors[index % colors.length],
+            // Use the TVL as the value, or fall back to index-based values
+            value: tvl || (index === 0 ? 35 : index === 1 ? 25 : index === 2 ? 20 : index === 3 ? 15 : index === 4 ? 5 : 10),
+            color: item.color || colors[index % colors.length],
             // Store original data for tooltip
             originalTVL: tvl,
           }
@@ -54,29 +81,22 @@ export function AllocationChart() {
         console.error("Failed to fetch allocation data:", err)
         setError("Failed to load allocation data")
 
-        // Fallback to mock data if API fails
-        setAllocationData([
-          { name: "Uniswap", value: 35, color: "#8884d8" },
-          { name: "SushiSwap", value: 25, color: "#82ca9d" },
-          { name: "Raydium", value: 20, color: "#ffc658" },
-          { name: "Gnosis", value: 15, color: "#ff8042" },
-          { name: "Other", value: 5, color: "#0088fe" },
-        ])
+        // Always use fallback data if there's any error
+        setAllocationData(FALLBACK_DATA)
       } finally {
         setLoading(false)
       }
     }
 
     fetchAllocationData()
-  }, [])
-
+  }, [initialData])
   if (loading) {
-    return <Skeleton className="h-[300px] w-full" />
+    return <Skeleton className="h-full w-full rounded-full" />
   }
 
-  if (error) {
+  if (error && !allocationData.length) {
     return (
-      <div className="flex items-center justify-center h-[300px] border rounded-md">
+      <div className="flex items-center justify-center h-full border rounded-md">
         <p className="text-muted-foreground">{error}</p>
       </div>
     )
@@ -90,17 +110,18 @@ export function AllocationChart() {
           cx="50%"
           cy="50%"
           labelLine={false}
-          outerRadius={80}
+          outerRadius={70}
+          innerRadius={0}
           fill="#8884d8"
           dataKey="value"
-          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+          label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
         >
           {allocationData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>
         <Tooltip formatter={(value) => `${value}%`} />
-        <Legend />
+        <Legend iconType="circle" layout="horizontal" verticalAlign="bottom" align="center" />
       </PieChart>
     </ResponsiveContainer>
   )

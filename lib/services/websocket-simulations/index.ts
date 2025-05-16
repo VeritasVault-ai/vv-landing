@@ -1,3 +1,5 @@
-export { useDashboardWebSocketSimulation } from './useDashboardWebSocketSimulation';
-export { useModelWebSocketSimulation } from './useModelWebSocketSimulation';
-export { useVotingWebSocketSimulation } from './useVotingWebsocketSimulation';
+export * from './useDashboardWebSocketSimulation';
+export * from './useModelWebSocketSimulation';
+export * from './useVotingWebsocketSimulation';
+export * from './useAllocationWebsocketSimulation';
+

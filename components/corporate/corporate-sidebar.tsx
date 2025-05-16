@@ -1,15 +1,15 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { 
-  BarChart3, 
-  Briefcase, 
-  ChevronRight, 
-  FileText, 
-  Home, 
-  Settings, 
-  Shield, 
-  Users 
+import {
+  BarChart3,
+  Briefcase,
+  ChevronRight,
+  FileText,
+  Home,
+  Settings,
+  Shield,
+  Users
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -19,10 +19,14 @@ interface SidebarProps {
   className?: string
 }
 
-/**
- * Sidebar component for the corporate version of the site
- * Displays navigation links with icons and supports active state
- * Only visible when the user is logged in
+/****
+ * Displays a collapsible sidebar navigation menu for corporate-related routes.
+ *
+ * The sidebar shows navigation links with icons, highlights the active section based on the current path, and allows toggling between expanded and collapsed states. It is only rendered on routes containing `/corporate/` or `/corporate-version/`.
+ *
+ * @param className - Optional additional CSS classes for the sidebar container.
+ *
+ * @returns The sidebar element if on a corporate-related page; otherwise, `null`.
  */
 export function CorporateSidebar({ className }: SidebarProps) {
   const pathname = usePathname()
@@ -39,8 +43,10 @@ export function CorporateSidebar({ className }: SidebarProps) {
     { icon: Settings, label: "Settings", path: "/corporate/settings" },
   ]
 
-  // Only show sidebar on dashboard and related pages
-  if (!pathname.includes('/corporate/')) {
+  // Check if we're on a corporate page - include corporate-version paths too
+  const isCorporatePage = pathname.includes('/corporate/') || pathname.includes('/corporate-version/')
+  // Only show sidebar on corporate pages
+  if (!isCorporatePage) {
     return null
   }
 
@@ -65,10 +71,12 @@ export function CorporateSidebar({ className }: SidebarProps) {
           </button>
         </div>
         
-        <nav className="flex-1 px-2 py-4">
+        <nav className="flex-1 px-2 py-4 overflow-y-auto">
           <ul className="space-y-1">
             {navItems.map((item) => {
-              const isActive = pathname === item.path
+              // Check if the current path starts with the nav item path
+              // This handles both exact matches and paths with fragments or additional segments
+              const isActive = pathname.startsWith(item.path)
               
               return (
                 <li key={item.path}>
@@ -82,7 +90,7 @@ export function CorporateSidebar({ className }: SidebarProps) {
                     )}
                   >
                     <item.icon className="h-5 w-5 flex-shrink-0" />
-                    {expanded && <span>{item.label}</span>}
+                    {expanded && <span className="truncate">{item.label}</span>}
                   </Link>
                 </li>
               )

@@ -3,6 +3,7 @@ import {
   ActiveProposal,
   PastProposal
 } from '@/lib/repositories/voting-repository';
+import { VotingData } from '@/types/websocket-data';
 
 /**
  * Service layer for interacting with the voting API
@@ -12,13 +13,16 @@ class VotingService {
    * Fetch voting overview data
    */
   async getVotingOverview(): Promise<VotingOverview> {
-    const response = await fetch('/api/voting/overview');
+    // This endpoint will be intercepted by MSW when enabled
+    const response = await fetch('/api/voting/overview')
+      
     if (!response.ok) {
-      throw new Error(`Failed to fetch voting overview: ${response.statusText}`);
+      throw new Error('Failed to fetch voting overview')
     }
-    return response.json();
+    
+    const data: VotingOverview = await response.json();
+    return data;
   }
-
   /**
    * Fetch active proposals
    */
@@ -44,17 +48,39 @@ class VotingService {
   /**
    * Submit a vote on a proposal
    */
-  async submitVote(proposalId: string, vote: 'for' | 'against' | null): Promise<{
+  async submitVote(
+    proposalId: string, 
+    vote: 'for' | 'against' | 'abstain' | null,
+    weight?: number
+  ): Promise<{
     success: boolean;
     message: string;
-    proposals: ActiveProposal[];
+    proposals?: ActiveProposal[];
   }> {
+    // Early return if vote is null - we can't submit a null vote
+    if (vote === null) {
+      return {
+        success: false,
+        message: 'Cannot submit a null vote. Use clearVote method instead.'
+      };
+    }
+    
+    const payload: {
+      proposalId: string;
+      vote: 'for' | 'against' | 'abstain';
+      weight?: number;
+    } = { proposalId, vote };
+    
+    // Add weight if provided
+    if (weight !== undefined) {
+      payload.weight = weight;
+    }
     const response = await fetch('/api/voting/vote', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ proposalId, vote }),
+      body: JSON.stringify(payload),
     });
     
     if (!response.ok) {
@@ -63,7 +89,40 @@ class VotingService {
     
     return response.json();
   }
-}
 
+  /**
+   * Delegate voting power to an address
+   */
+  async delegateVotes(address: string, amount: number): Promise<{ 
+    success: boolean, 
+    overview?: VotingOverview 
+  }> {
+    // This endpoint will be intercepted by MSW when enabled
+    const response = await fetch('/api/voting/delegate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ address, amount })
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to delegate votes')
+    }
+
+    return response.json()
+  }
+
+  /**
+   * Get initial WebSocket data
+   */
+  async getWebSocketData(): Promise<VotingData> {
+    const response = await fetch('/api/voting/websocket-data');
+    if (!response.ok) {
+      throw new Error('Failed to fetch WebSocket data');
+    }
+    return response.json();
+  }
+}
 // Export a singleton instance
 export const votingService = new VotingService();

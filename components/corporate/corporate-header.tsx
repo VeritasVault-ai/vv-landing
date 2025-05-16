@@ -18,14 +18,19 @@ import Link from "next/link"
 interface CorporateHeaderProps {
   isLoggedIn?: boolean;
   setIsLoggedIn?: (value: boolean) => void;
+  minimal?: boolean; // Add the minimal prop to the interface
 }
 
 /**
- * Header component for the corporate version of the site
- * Includes navigation, theme toggle, theme settings, and call-to-action buttons
- * Uses the robust theme provider to ensure theme context is always available
+ * Displays the corporate website header with navigation, theme controls, and authentication actions.
+ *
+ * Renders either a full-featured or minimal header based on the {@link minimal} prop. The full header includes navigation menus, theme toggles, and user account controls, while the minimal variant shows only the logo and a dashboard link if the user is logged in.
+ *
+ * @param isLoggedIn - Whether the user is currently logged in.
+ * @param setIsLoggedIn - Callback to toggle the login state for demonstration purposes.
+ * @param minimal - If true, renders a compact header with reduced navigation.
  */
-export function CorporateHeader({ isLoggedIn = false, setIsLoggedIn }: CorporateHeaderProps) {
+export function CorporateHeader({ isLoggedIn = false, setIsLoggedIn, minimal = false }: CorporateHeaderProps) {
   const { isDark } = useRobustTheme()
 
   // Toggle login state (for demo purposes)
@@ -35,6 +40,33 @@ export function CorporateHeader({ isLoggedIn = false, setIsLoggedIn }: Corporate
     }
   }
 
+  // If minimal is true, render a simplified header
+  if (minimal) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link href="/corporate-version" className="flex items-center gap-1">
+          <Image 
+            src={isDark ? "/logo-white.png" : "/logo.png"} 
+            alt="VeritasVault Logo" 
+            width={24} 
+            height={24} 
+          />
+          <span className="font-semibold text-base text-slate-900 dark:text-white">VeritasVault<span className="text-blue-600">.net</span></span>
+        </Link>
+          
+        {isLoggedIn && (
+          <Link 
+            href="/corporate/dashboard" 
+            className="text-sm text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
+          >
+            Dashboard
+          </Link>
+        )}
+      </div>
+    );
+  }
+        
+  // Regular header
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 bg-opacity-90 dark:bg-opacity-90 backdrop-blur-sm">
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
@@ -48,7 +80,6 @@ export function CorporateHeader({ isLoggedIn = false, setIsLoggedIn }: Corporate
             />
             <span className="font-semibold text-xl text-slate-900 dark:text-white">VeritasVault<span className="text-blue-600">.net</span></span>
           </Link>
-          
           <nav className="hidden md:flex items-center gap-6">
             {/* Dashboard link - only visible when logged in */}
             {isLoggedIn && (

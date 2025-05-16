@@ -1,17 +1,19 @@
 "use client"
 
+import { Linkedin, Twitter } from "lucide-react"
 import Image from "next/image"
-import { Linkedin, Twitter, Globe } from "lucide-react"
 
 /**
- * Team section for the About page
+ * Displays the leadership team section on the About page, featuring team member profiles with photos, roles, bios, and social media links in a responsive grid.
+ *
+ * @returns A React section element containing team member cards, descriptive text, and a call-to-action link to the careers page.
  */
 export function AboutTeam() {
   const teamMembers = [
     {
       name: "Eben Mare",
       role: "Chief Executive Officer",
-      image: "/team/eben-pic.jpg",
+      image: "/team/eben-ai.png",
       bio: "...",
       linkedin: "#",
       twitter: "#"
