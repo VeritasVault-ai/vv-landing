@@ -1,328 +1,214 @@
 "use client"
 
-import { dashboardService } from "@/lib/services/dashboard-service";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import type {
-  DashboardOverview,
-  DashboardPerformance,
-  DashboardSettings,
-} from "./dashboard/types";
-import { dashboardEvents } from "./dashboard";
+import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from "react"
+import { dashboardService } from "@/lib/services/dashboard-service"
 
-// Define the context state type
+// Import the mock service initialization
+import initMocks from "@/lib/mocks"
+
+// Initialize mocks in development environment
+if (process.env.NODE_ENV === 'development') {
+  initMocks()
+}
+
+// Define types for dashboard settings
+export interface DashboardSettings {
+  compactView: boolean
+  realTimeUpdates: boolean
+  showSimulationIndicators: boolean
+}
+
+// Define types for dashboard context
 interface DashboardContextType {
-  // Dashboard data
-  overviewData: DashboardOverview | null
-  performanceData: DashboardPerformance | null
-  
-  // Loading and error states
-  isLoading: {
-    overview: boolean
-    performance: boolean
-  }
-  errors: {
-    overview: string | null
-    performance: string | null
-  }
-  
-  // User settings
   settings: DashboardSettings
-  updateSettings: (newSettings: Partial<DashboardSettings>) => void
-  
-  // Active tab
-  activeTab: string
-  setActiveTab: (tab: string) => void
-  
-  // Refresh data manually
-  refreshData: (section?: "overview" | "performance" | "models" | "voting") => Promise<void>
+  updateSettings: (newSettings: DashboardSettings) => void
+  isLoading: boolean
+  error: string | null
+  performanceData: any | null
+  portfolioData: any | null
+  marketData: any | null
+  votingData: any | null
+  refreshData: () => Promise<void>
 }
 
-// Default settings
-const DEFAULT_SETTINGS: DashboardSettings = {
-  visibleMetrics: {
-    portfolioValue: true,
-    activeStrategies: true,
-    riskScore: true,
+// Create the dashboard context with default values
+const DashboardContext = createContext<DashboardContextType>({
+  settings: {
+    compactView: false,
+    realTimeUpdates: true,
+    showSimulationIndicators: true
   },
-  refreshRates: {
-    portfolioValue: 20, // 20 seconds
-    riskScore: 60, // 60 seconds
-    performance: 90, // 90 seconds
-    modelResults: 45, // 45 seconds
-    voting: 30, // 30 seconds
-  },
-  theme: "system",
-  compactView: false,
-}
+  updateSettings: () => {},
+  isLoading: false,
+  error: null,
+  performanceData: null,
+  portfolioData: null,
+  marketData: null,
+  votingData: null,
+  refreshData: async () => {}
+})
 
-// Create the context with a default value
-const DashboardContext = createContext<DashboardContextType | undefined>(undefined)
-
-/**
- * Provides dashboard state, user settings, and data management logic to child components via React context.
- *
- * Initializes and manages dashboard data, loading and error states, user preferences (with persistence), active tab, and theme. Fetches initial data, subscribes to real-time dashboard events for live updates, and applies the selected theme. Exposes functions to update settings, manually refresh data, and change the active tab.
- *
- * @remark Must wrap components that require access to dashboard context. Intended for use at the top level of dashboard-related UI.
- */
+// Provider component for the dashboard context
 export function DashboardProvider({ children }: { children: ReactNode }) {
-  // Dashboard data
-  const [overviewData, setOverviewData] = useState<DashboardOverview | null>(null)
-  const [performanceData, setPerformanceData] = useState<DashboardPerformance | null>(null)
-  
-  // Loading and error states
-  const [isLoading, setIsLoading] = useState({
-    overview: true,
-    performance: true,
+  // Dashboard settings state
+  const [settings, setSettings] = useState<DashboardSettings>({
+    compactView: false,
+    realTimeUpdates: true,
+    showSimulationIndicators: true
   })
-  const [errors, setErrors] = useState({
-    overview: null as string | null,
-    performance: null as string | null,
-  })
+
+  // Data loading state
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   
-  // User settings with persistence
-  const [settings, setSettings] = useState<DashboardSettings>(() => {
-    // Try to load settings from localStorage
-    if (typeof window !== "undefined") {
-      const savedSettings = localStorage.getItem("dashboardSettings")
-      if (savedSettings) {
-        try {
-          return JSON.parse(savedSettings) as DashboardSettings
-        } catch (e) {
-          console.error("Failed to parse saved dashboard settings", e)
-        }
-      }
-    }
-    return DEFAULT_SETTINGS
-  })
-  
-  // Active tab state
-  const [activeTab, setActiveTab] = useState("overview")
-  
-  // Update settings and save to localStorage
-  const updateSettings = (newSettings: Partial<DashboardSettings>) => {
-    setSettings(prev => {
-      const updated = {
-        ...prev,
-        ...newSettings,
-        // Handle nested objects
-        visibleMetrics: {
-          ...prev.visibleMetrics,
-          ...(newSettings.visibleMetrics || {}),
-        },
-        refreshRates: {
-          ...prev.refreshRates,
-          ...(newSettings.refreshRates || {}),
-        },
-      }
-      
-      // Save to localStorage
-      if (typeof window !== "undefined") {
-        localStorage.setItem("dashboardSettings", JSON.stringify(updated))
-      }
-      
-      return updated
-    })
-  }
-  
-  // Fetch dashboard overview data
-  const fetchOverviewData = async () => {
+  // Dashboard data state
+  const [performanceData, setPerformanceData] = useState<any | null>(null)
+  const [portfolioData, setPortfolioData] = useState<any | null>(null)
+  const [marketData, setMarketData] = useState<any | null>(null)
+  const [votingData, setVotingData] = useState<any | null>(null)
+
+  // Function to update dashboard settings
+  const updateSettings = useCallback((newSettings: DashboardSettings) => {
+    setSettings(newSettings)
+    // Save settings to local storage
     try {
-      setIsLoading(prev => ({ ...prev, overview: true }))
-      const data = await dashboardService.getDashboardOverview()
-      setOverviewData(data)
-      setErrors(prev => ({ ...prev, overview: null }))
-    } catch (err) {
-      console.error("Error fetching dashboard overview:", err)
-      setErrors(prev => ({ ...prev, overview: "Failed to load dashboard data" }))
-    } finally {
-      setIsLoading(prev => ({ ...prev, overview: false }))
-    }
-  }
-  
-  // Fetch dashboard performance data
-  const fetchPerformanceData = async () => {
-    try {
-      setIsLoading(prev => ({ ...prev, performance: true }))
-      const data = await dashboardService.getDashboardPerformance()
-      setPerformanceData(data)
-      setErrors(prev => ({ ...prev, performance: null }))
-    } catch (err) {
-      console.error("Error fetching dashboard performance:", err)
-      setErrors(prev => ({ ...prev, performance: "Failed to load performance data" }))
-    } finally {
-      setIsLoading(prev => ({ ...prev, performance: false }))
-    }
-  }
-  
-  // Refresh data manually
-  const refreshData = async (section?: "overview" | "performance" | "models" | "voting") => {
-    if (!section || section === "overview") {
-      await fetchOverviewData()
-    }
-    if (!section || section === "performance") {
-      await fetchPerformanceData()
-    }
-    // Add other sections as needed
-  }
-  
-  // Initial data fetch
-  // Initial data fetch
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    const fetchInitialData = async () => {
-      await Promise.all([
-        fetchOverviewData({ signal }),
-        fetchPerformanceData({ signal })
-      ]);
-    };
-
-    fetchInitialData();
-
-    // Cleanup function to abort any pending requests when unmounting
-    return () => controller.abort();
-  }, []);
-  
-  // Subscribe to dashboard events
-  useEffect(() => {
-    // Portfolio value updates
-    const portfolioSubscription = dashboardEvents.subscribe(
-      "portfolio-value-updated",
-      ({ portfolioValue, percentageChange, lastUpdated }) => {
-        setOverviewData(prev => {
-          if (!prev) return null
-          return {
-            ...prev,
-            portfolioValue: {
-              ...prev.portfolioValue,
-              current: portfolioValue,
-              percentageChange,
-              lastUpdated,
-            },
-          }
-        })
-      }
-    )
-    
-    // Risk score changes
-    const riskSubscription = dashboardEvents.subscribe(
-      "risk-score-changed",
-      ({ level, status, description }) => {
-        setOverviewData(prev => {
-          if (!prev) return null
-          return {
-            ...prev,
-            riskScore: {
-              level,
-              status,
-              description,
-            },
-          }
-        })
-      }
-    )
-    
-    // Performance data updates
-    const performanceSubscription = dashboardEvents.subscribe(
-      "performance-data-updated",
-      ({ historicalPerformance }) => {
-        setPerformanceData(prev => {
-          if (!prev) return null
-          return {
-            ...prev,
-            historicalPerformance,
-          }
-        })
-      }
-    )
-    
-    // Asset performance changes
-    const assetPerformanceSubscription = dashboardEvents.subscribe(
-      "asset-performance-changed",
-      ({ topPerformers, underperformers }) => {
-        setPerformanceData(prev => {
-          if (!prev) return null
-          return {
-            ...prev,
-            topPerformers,
-            underperformers,
-          }
-        })
-      }
-    )
-    
-    // Clean up subscriptions
-    return () => {
-      portfolioSubscription()
-      riskSubscription()
-      performanceSubscription()
-      assetPerformanceSubscription()
+      localStorage.setItem('dashboardSettings', JSON.stringify(newSettings))
+    } catch (error) {
+      console.error("Error saving dashboard settings:", error)
     }
   }, [])
-  
-  // Apply theme from settings
-  useEffect(() => {
-    if (typeof window === "undefined") return
+
+  // Function to fetch performance data
+  const fetchPerformanceData = useCallback(async () => {
+    try {
+      const data = await dashboardService.getDashboardPerformance()
+      setPerformanceData(data)
+      return data
+    } catch (error) {
+      console.error("Error fetching dashboard performance:", error)
+      setError("Failed to load performance data")
+      throw error
+    }
+  }, [])
+
+  // Function to fetch portfolio data
+  const fetchPortfolioData = useCallback(async () => {
+    try {
+      const data = await dashboardService.getDashboardPortfolio()
+      setPortfolioData(data)
+      return data
+    } catch (error) {
+      console.error("Error fetching portfolio data:", error)
+      setError("Failed to load portfolio data")
+      throw error
+    }
+  }, [])
+
+  // Function to fetch market data
+  const fetchMarketData = useCallback(async () => {
+    try {
+      const data = await dashboardService.getDashboardMarket()
+      setMarketData(data)
+      return data
+    } catch (error) {
+      console.error("Error fetching market data:", error)
+      setError("Failed to load market data")
+      throw error
+    }
+  }, [])
+
+  // Function to fetch voting data
+  const fetchVotingData = useCallback(async () => {
+    try {
+      const data = await dashboardService.getDashboardVoting()
+      setVotingData(data)
+      return data
+    } catch (error) {
+      console.error("Error fetching voting data:", error)
+      setError("Failed to load voting data")
+      throw error
+    }
+  }, [])
+
+  // Function to refresh all dashboard data
+  const refreshData = useCallback(async () => {
+    setIsLoading(true)
+    setError(null)
     
-    const applyTheme = () => {
-      if (settings.theme === "dark") {
-        document.documentElement.classList.add("dark")
-      } else if (settings.theme === "light") {
-        document.documentElement.classList.remove("dark")
-      } else {
-        // System preference
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-        if (prefersDark) {
-          document.documentElement.classList.add("dark")
-        } else {
-          document.documentElement.classList.remove("dark")
-        }
+    try {
+      const results = await Promise.allSettled([
+        fetchPerformanceData(),
+        fetchPortfolioData(),
+        fetchMarketData(),
+        fetchVotingData()
+      ])
+      
+      // Check for any rejected promises
+      const failedRequests = results.filter(result => result.status === 'rejected')
+      if (failedRequests.length > 0) {
+        setError(`Failed to load some dashboard data (${failedRequests.length} errors)`)
       }
+    } catch (error) {
+      console.error("Error refreshing dashboard data:", error)
+      setError("Failed to refresh dashboard data")
+    } finally {
+      setIsLoading(false)
     }
-    
-    applyTheme()
-    
-    // Listen for system preference changes if using system setting
-    if (settings.theme === "system") {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-      const handleChange = () => applyTheme()
-      mediaQuery.addEventListener("change", handleChange)
-      return () => mediaQuery.removeEventListener("change", handleChange)
+  }, [fetchPerformanceData, fetchPortfolioData, fetchMarketData, fetchVotingData])
+
+  // Load saved settings from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedSettings = localStorage.getItem('dashboardSettings')
+      if (savedSettings) {
+        const parsedSettings = JSON.parse(savedSettings)
+        setSettings(parsedSettings)
+      }
+    } catch (error) {
+      console.error("Error loading saved dashboard settings:", error)
     }
-  }, [settings.theme])
-  
-  const value: DashboardContextType = {
-    overviewData,
-    performanceData,
-    isLoading,
-    errors,
-    settings,
-    updateSettings,
-    activeTab,
-    setActiveTab,
-    refreshData,
-  }
-  
+  }, [])
+
+  // Set up real-time data updates if enabled
+  useEffect(() => {
+    if (!settings.realTimeUpdates) return
+    
+    const updateInterval = setInterval(() => {
+      refreshData()
+    }, 60000) // Update every minute if real-time updates are enabled
+    
+    return () => clearInterval(updateInterval)
+  }, [settings.realTimeUpdates, refreshData])
+
+  // Fetch initial data on mount
+  useEffect(() => {
+    refreshData()
+  }, [refreshData])
+
   return (
-    <DashboardContext.Provider value={value}>
+    <DashboardContext.Provider
+      value={{
+        settings,
+        updateSettings,
+        isLoading,
+        error,
+        performanceData,
+        portfolioData,
+        marketData,
+        votingData,
+        refreshData
+      }}
+    >
       {children}
     </DashboardContext.Provider>
   )
 }
 
-/**
- * Provides access to the dashboard context.
- *
- * @returns The current dashboard context value.
- *
- * @throws {Error} If called outside of a {@link DashboardProvider}.
- */
+// Custom hook to use the dashboard context
 export function useDashboard() {
   const context = useContext(DashboardContext)
   if (context === undefined) {
-    throw new Error("useDashboard must be used within a DashboardProvider")
+    throw new Error('useDashboard must be used within a DashboardProvider')
   }
   return context
 }

@@ -14,20 +14,25 @@ import { useRobustTheme } from "@/src/context/RobustThemeProvider"
 import { ChevronDown, LogOut, User } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+
+interface CorporateHeaderProps {
+  isLoggedIn?: boolean;
+  setIsLoggedIn?: (value: boolean) => void;
+}
 
 /**
  * Header component for the corporate version of the site
  * Includes navigation, theme toggle, theme settings, and call-to-action buttons
  * Uses the robust theme provider to ensure theme context is always available
  */
-export function CorporateHeader() {
+export function CorporateHeader({ isLoggedIn = false, setIsLoggedIn }: CorporateHeaderProps) {
   const { isDark } = useRobustTheme()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   // Toggle login state (for demo purposes)
   const handleAuthAction = () => {
-    setIsLoggedIn(!isLoggedIn)
+    if (setIsLoggedIn) {
+      setIsLoggedIn(!isLoggedIn)
+    }
   }
 
   return (
@@ -45,6 +50,16 @@ export function CorporateHeader() {
           </Link>
           
           <nav className="hidden md:flex items-center gap-6">
+            {/* Dashboard link - only visible when logged in */}
+            {isLoggedIn && (
+              <Link 
+                href="/corporate/dashboard" 
+                className="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
+              >
+                Dashboard
+              </Link>
+            )}
+            
             {/* Solutions Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-1 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">
@@ -102,14 +117,14 @@ export function CorporateHeader() {
                   <Button variant="outline" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     <span>My Account</span>
-            </Button>
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/corporate/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/settings">Settings</Link>
+                    <Link href="/corporate/settings">Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleAuthAction} className="text-red-500 dark:text-red-400">
@@ -128,7 +143,7 @@ export function CorporateHeader() {
                 </Button>
               </>
             )}
-      </div>
+          </div>
         </div>
       </div>
     </header>

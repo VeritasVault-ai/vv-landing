@@ -1,157 +1,36 @@
-import { DashboardOverview, DashboardPerformance } from '@/lib/repositories/dashboard-repository';
-import { ApiError, ApiRequestOptions, ApiResponse, BaseService } from './base-service';
+import { BaseService } from './base-service';
 
 /**
- * Type definitions for dashboard service responses
- */
-export type DashboardOverviewResponse = ApiResponse<DashboardOverview>;
-export type DashboardPerformanceResponse = ApiResponse<DashboardPerformance>;
-
-/**
- * Service layer for interacting with the dashboard API with security enhancements
+ * Dashboard service for fetching dashboard-related data
+ * Works with both real API and MSW mocks
  */
 class DashboardService extends BaseService {
   /**
-   * Fetch dashboard overview data
-   * @param options Request options including AbortSignal for cancellation
+   * Fetch performance data for the dashboard
    */
-  async getDashboardOverview(options?: ApiRequestOptions): Promise<DashboardOverview> {
-    const response = await this.get<DashboardOverview>('/api/dashboard/overview', options);
-    return response.data;
+  async getDashboardPerformance() {
+    return this.get<any>('/api/dashboard/performance');
   }
 
   /**
-   * Fetch dashboard performance data
-   * @param options Request options including AbortSignal for cancellation
+   * Fetch portfolio data for the dashboard
    */
-  async getDashboardPerformance(options?: ApiRequestOptions): Promise<DashboardPerformance> {
-    const response = await this.get<DashboardPerformance>('/api/dashboard/performance', options);
-    return response.data;
+  async getDashboardPortfolio() {
+    return this.get<any>('/api/dashboard/portfolio');
   }
-  
+
   /**
-   * Export dashboard data in the specified format
-   * @param format The format to export (csv, pdf, or excel)
-   * @param options Request options including AbortSignal for cancellation
-   * @returns A blob containing the exported data
+   * Fetch market data for the dashboard
    */
-  async exportDashboardData(
-    format: 'csv' | 'pdf' | 'excel' = 'csv', 
-    options?: ApiRequestOptions
-  ): Promise<Blob> {
-    // Get authentication token securely
-    const authToken = await this.getAuthToken();
-    
-    // Cancel any ongoing export request
-    this.cancelOngoingRequest(`/api/dashboard/export?format=${format}`, 'GET');
-    
-    // Create a new AbortController if one wasn't provided
-    const controller = new AbortController();
-    const signal = options?.signal ? 
-      this.createCombinedSignal(controller.signal, options.signal) : 
-      controller.signal;
-    
-    try {
-      const response = await fetch(`/api/dashboard/export?format=${format}`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/octet-stream',
-          'Authorization': `Bearer ${authToken}`
-        },
-        signal,
-      });
-      
-      if (!response.ok) {
-        const errorDetails = await this.getErrorDetails(response);
-        throw new ApiError(`Failed to export dashboard data: ${errorDetails}`, response.status);
-      }
-      
-      return await response.blob();
-    } catch (error) {
-      // Don't throw for aborted requests
-      if (error instanceof DOMException && error.name === 'AbortError') {
-        return Promise.reject(new ApiError('Export request was cancelled', 499));
-      }
-      
-      // Re-throw ApiErrors
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      
-      // Handle other errors
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      throw new ApiError(`Export failed: ${errorMessage}`, 500);
-    }
+  async getDashboardMarket() {
+    return this.get<any>('/api/dashboard/market');
   }
-  
+
   /**
-   * Get authentication token securely
-   * @returns JWT token for authenticated requests
+   * Fetch voting data for the dashboard
    */
-  private async getAuthToken(): Promise<string> {
-    try {
-      const response = await fetch('/api/auth/token', {
-        method: 'GET',
-        credentials: 'include', // Include cookies for session-based auth
-      });
-      
-      if (!response.ok) {
-        throw new ApiError(
-          `Failed to get authentication token: ${response.statusText}`,
-          response.status
-        );
-      }
-      
-      const data = await response.json();
-      return data.token;
-    } catch (error) {
-      console.error('Error getting authentication token:', error);
-      throw new ApiError('Authentication failed', 401);
-    }
-  }
-  
-  /**
-   * Extract detailed error information from a response
-   * @param response The fetch Response object
-   * @returns A string with error details
-   */
-  private async getErrorDetails(response: Response): Promise<string> {
-    try {
-      // Try to get error details from response body
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const errorData = await response.clone().json();
-        return `[${response.status} ${response.statusText}] ${
-          errorData.message || JSON.stringify(errorData)
-        }`;
-      }
-      
-      // Fall back to status text
-      return `[${response.status}] ${response.statusText}`;
-    } catch (e) {
-      // If parsing fails, return basic error info
-      return `[${response.status}] ${response.statusText}`;
-    }
-  }
-  
-  /**
-   * Create a signal that aborts when either input signal aborts
-   */
-  private createCombinedSignal(signal1: AbortSignal, signal2: AbortSignal): AbortSignal {
-    const controller = new AbortController();
-    
-    const abortHandler = () => controller.abort();
-    
-    signal1.addEventListener('abort', abortHandler);
-    signal2.addEventListener('abort', abortHandler);
-    
-    // Clean up event listeners when this signal aborts
-    controller.signal.addEventListener('abort', () => {
-      signal1.removeEventListener('abort', abortHandler);
-      signal2.removeEventListener('abort', abortHandler);
-    });
-    
-    return controller.signal;
+  async getDashboardVoting() {
+    return this.get<any>('/api/dashboard/voting');
   }
 }
 

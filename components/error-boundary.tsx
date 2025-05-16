@@ -1,25 +1,27 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
+import { AlertCircle, RefreshCw } from "lucide-react"
 import { Component, ErrorInfo, ReactNode } from "react"
-import { DefaultErrorFallback } from "./error-boundary/default-error-fallback"
 
-interface Props {
+interface ErrorBoundaryProps {
   children: ReactNode
   fallback?: ReactNode
-  onError?: (error: Error, errorInfo: ErrorInfo) => void
+  onReset?: () => void
 }
 
-interface State {
+interface ErrorBoundaryState {
   hasError: boolean
   error: Error | null
   errorInfo: ErrorInfo | null
 }
 
 /**
- * Error boundary component to catch JavaScript errors anywhere in the child component tree
+ * Error Boundary component that catches JavaScript errors in its child component tree,
+ * logs those errors, and displays a fallback UI instead of crashing the whole application.
  */
-export class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = {
       hasError: false,
@@ -28,7 +30,7 @@ export class ErrorBoundary extends Component<Props, State> {
     }
   }
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     // Update state so the next render will show the fallback UI
     return {
       hasError: true,
@@ -39,97 +41,55 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // You can log the error to an error reporting service
-    // Sanitize error information before logging
-    const sanitizedError = {
-      name: error.name,
-      message: error.message,
-      // Avoid logging potentially sensitive stack information in production
-      stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined
-    }
-    console.error(
-      "Error caught by ErrorBoundary:",
-      sanitizedError,
-      process.env.NODE_ENV !== 'production'
-        ? errorInfo
-        : { componentStack: 'hidden in production' }
-    )
-    
-    // Update state with error info
+    console.error("Error caught by ErrorBoundary:", error, errorInfo)
     this.setState({
       error,
       errorInfo
     })
-    
-    // Call onError prop if provided
-    if (this.props.onError) {
-      this.props.onError(error, errorInfo)
-    }
   }
 
-  // Reset the error boundary state
   handleReset = (): void => {
+    const { onReset } = this.props
     this.setState({
       hasError: false,
       error: null,
       errorInfo: null
     })
+    if (onReset) {
+      onReset()
+    }
   }
 
   render(): ReactNode {
-    if (this.state.hasError) {
-      // If a custom fallback is provided, use it
-      if (this.props.fallback) {
-        return this.props.fallback
-      }
+    const { hasError, error } = this.state
+    const { children, fallback } = this.props
 
-      // Otherwise, use the default error fallback
-      return (
-        <DefaultErrorFallback 
-          error={this.state.error} 
-          errorInfo={this.state.errorInfo}
-          resetErrorBoundary={this.handleReset}
-        />
+    if (hasError) {
+      // You can render any custom fallback UI
+      return fallback || (
+        <div className="rounded-lg border border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/50 p-6 my-4">
+          <div className="flex items-center gap-3 mb-4">
+            <AlertCircle className="h-6 w-6 text-red-500" />
+            <h3 className="text-lg font-semibold text-red-700 dark:text-red-400">
+              Something went wrong
+            </h3>
+          </div>
+          <div className="mb-4 text-sm text-red-600 dark:text-red-300">
+            {error?.message || "An unexpected error occurred"}
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={this.handleReset}
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span>Try Again</span>
+          </Button>
+        </div>
       )
     }
 
-    // When there's no error, render children normally
-    return this.props.children
+    return children
   }
-}
-
-/**
- * Displays a minimal error message and a retry button for use as a fallback UI in error boundaries.
- *
- * @param error - The error object to display.
- * @param resetErrorBoundary - Callback to reset the error boundary and attempt to re-render children.
- */
-export function ErrorFallback({ 
-  error, 
-  resetErrorBoundary 
-}: { 
-  error: Error
-  resetErrorBoundary: () => void
-}) {
-  return (
-    <div className="p-6 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg">
-      <div className="flex items-center gap-3 mb-4">
-        <AlertCircle className="h-5 w-5 text-red-500" />
-        <h3 className="text-lg font-medium text-red-700 dark:text-red-400">
-          Something went wrong
-        </h3>
-      </div>
-      <p className="text-slate-600 dark:text-slate-300 mb-4">
-        {error.message || "An unexpected error occurred"}
-      </p>
-      <Button 
-        variant="outline" 
-        size="sm"
-        onClick={resetErrorBoundary}
-        className="flex items-center gap-2"
-      >
-        <RefreshCw className="h-4 w-4" />
-        <span>Try Again</span>
-      </Button>
-    </div>
-  )
 }
