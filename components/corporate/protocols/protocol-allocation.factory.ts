@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AssetAllocation } from '@/lib/models/types';
-import { mockProtocolAllocations } from './protocol-allocation.mock';
+import { mockProtocolAllocations } from '@/mocks/data/protocols';
 
 // Chart colors - could be moved to a theme constants file
 export const PROTOCOL_CHART_COLORS = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899"];
@@ -8,15 +8,6 @@ export const PROTOCOL_CHART_COLORS = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444"
 type ProtocolAllocationFactoryOptions = {
   useFallback?: boolean;
   fallbackData?: AssetAllocation[];
-  useMsw?: boolean;
-}
-
-type ProtocolAllocationState = {
-  loading: boolean;
-  data: AssetAllocation[] | null;
-  error: string | null;
-  usedFallback: boolean;
-  totalValue: number;
 }
 
 /**
@@ -25,70 +16,45 @@ type ProtocolAllocationState = {
  */
 export function createProtocolAllocation({
   useFallback = true,
-  fallbackData = mockProtocolAllocations,
-  useMsw = process.env.NEXT_PUBLIC_API_MOCKING === 'enabled'
+  fallbackData = mockProtocolAllocations
 }: ProtocolAllocationFactoryOptions = {}) {
-  const [state, setState] = useState<ProtocolAllocationState>({
-    loading: true,
-    data: null,
-    error: null,
-    usedFallback: false,
-    totalValue: 0
-  });
-
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<AssetAllocation[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [usedFallback, setUsedFallback] = useState(false);
   useEffect(() => {
     let isMounted = true;
 
     async function fetchData() {
       try {
-        // When MSW is enabled, it will intercept this request
+        // MSW will intercept this request when enabled
         const response = await fetch('/api/goldsky/protocols');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch protocol data: ${response.status}`);
         }
         
-        const data = await response.json();
+        const result = await response.json();
         
         if (isMounted) {
-          // Calculate total value for percentage calculations
-          const totalValue = data.reduce(
-            (sum: number, protocol: AssetAllocation) => 
-              sum + parseFloat(protocol.totalValueLockedUSD), 
-            0
-          );
-          
-          setState({
-            loading: false,
-            data,
-            error: null,
-            usedFallback: useMsw, // If MSW is enabled, we're using mocks
-            totalValue
-          });
+          setData(result);
+          setUsedFallback(false);
+          setError(null);
         }
       } catch (err) {
         console.error('Error fetching protocol allocation:', err);
         
-        if (isMounted && useFallback) {
-          const totalValue = fallbackData.reduce(
-            (sum: number, protocol: AssetAllocation) => 
-              sum + parseFloat(protocol.totalValueLockedUSD), 
-            0
-          );
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Failed to load protocol data');
           
-          setState({
-            loading: false,
-            data: fallbackData,
-            error: err instanceof Error ? err.message : 'Failed to load protocol data',
-            usedFallback: true,
-            totalValue
-          });
-        } else if (isMounted) {
-          setState(prev => ({
-            ...prev,
-            loading: false,
-            error: err instanceof Error ? err.message : 'Failed to load protocol data',
-          }));
+          if (useFallback) {
+            setData(fallbackData);
+            setUsedFallback(true);
+          }
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
         }
       }
     }
@@ -98,10 +64,16 @@ export function createProtocolAllocation({
     return () => {
       isMounted = false;
     };
-  }, [useFallback, fallbackData, useMsw]);
+  }, [useFallback, fallbackData]);
+
+  // Calculate total value for percentages
+  const totalValue = data?.reduce(
+    (sum, protocol) => sum + parseFloat(protocol.totalValueLockedUSD), 
+    0
+  ) || 0;
 
   // Create chart configuration
-  const chartConfig = state.data?.reduce(
+  const chartConfig = data?.reduce(
     (acc, item, index) => {
       acc[item.name] = {
         label: item.name,
@@ -112,19 +84,13 @@ export function createProtocolAllocation({
     {} as Record<string, { label: string; color: string }>,
   ) || {};
 
-  // Calculate percentages for each protocol
-  const dataWithPercentages = state.data?.map(protocol => ({
-    ...protocol,
-    percentage: (parseFloat(protocol.totalValueLockedUSD) / state.totalValue * 100).toFixed(1)
-  }));
-
   return {
-    loading: state.loading,
-    data: dataWithPercentages,
-    error: state.error,
-    usedFallback: state.usedFallback,
+    loading,
+    data,
+    error,
+    usedFallback,
     chartConfig,
     colors: PROTOCOL_CHART_COLORS,
-    totalValue: state.totalValue
+    totalValue
   };
 }

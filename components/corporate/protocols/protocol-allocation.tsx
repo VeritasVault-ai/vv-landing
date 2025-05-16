@@ -5,21 +5,19 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
-import { ProtocolAllocationSkeleton } from "./protocol-allocation.skeleton";
 import { createProtocolAllocation } from "./protocol-allocation.factory";
+import { ProtocolAllocationSkeleton } from "./protocol-allocation.skeleton";
 
 /**
  * Renders an overview of protocol allocations, including total value locked,
  * distribution across protocols, and individual protocol details.
  *
  * Fetches protocol data from the API and displays it in a user-friendly format.
+ * MSW will intercept the API request during development and testing.
  * If data loading fails, displays fallback data with a warning banner.
- * Shows loading placeholders while fetching.
  *
  * @returns A React element displaying summary cards, a protocol distribution pie chart,
  * and protocol details, or loading and fallback UI as appropriate.
- *
- * @remark If live data cannot be loaded, simulated fallback data is shown with a warning to the user.
  */
 export function ProtocolAllocation() {
   const { 
@@ -29,7 +27,7 @@ export function ProtocolAllocation() {
     usedFallback, 
     chartConfig, 
     totalValue 
-  } = createProtocolAllocation({ useFallback: true });
+  } = createProtocolAllocation();
 
   if (loading) {
     return <ProtocolAllocationSkeleton />;
@@ -84,7 +82,7 @@ export function ProtocolAllocation() {
             </CardHeader>
             <CardContent>
               <Progress 
-                value={parseFloat(protocol.percentage)} 
+                value={protocol.percentage} 
                 className="h-2" 
                 style={{ backgroundColor: protocol.color + '40' }} // Add transparency
               />
