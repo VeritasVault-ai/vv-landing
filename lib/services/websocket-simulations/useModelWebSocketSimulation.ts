@@ -32,13 +32,13 @@ export function useModelWebSocketSimulation(
   }, []);
 
   // Use the base WebSocket simulation hook
-  const { data, reconnect, isSimulated, setData } = useBaseWebSocketSimulation<ModelData>({
-    endpoint: 'wss://your-api.com/model',
-    onStatusChange,
-    getInitialData,
-    updateInterval: 10000,
-    fetchInitialData: false
-  });
+const { data, reconnect, isSimulated, setData } = useBaseWebSocketSimulation<ModelData>({
+  endpoint: process.env.NEXT_PUBLIC_MODEL_WS ?? 'wss://localhost/mock-model',
+  onStatusChange,
+  getInitialData,
+  updateInterval: 10000,
+  fetchInitialData: false
+});
 
   // Simulate a model run with progress updates
   const simulateModelRun = useCallback((modelId: string) => {

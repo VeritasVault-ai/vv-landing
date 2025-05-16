@@ -32,8 +32,9 @@ export function PerformanceMetrics({ metrics }: PerformanceMetricsProps) {
                   style={{ 
                     width: `${metric.maxValue 
                       ? Math.min(100, (metric.value / metric.maxValue) * 100) 
-                      : metric.value}%` 
+                      : Math.min(100, metric.value)}%` 
                   }}
+                >
                 ></div>
               </div>
             </div>
