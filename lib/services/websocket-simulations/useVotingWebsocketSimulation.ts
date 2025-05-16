@@ -1,6 +1,16 @@
-import { useCallback } from 'react';
-import { WebSocketStatus, VotingData } from '@/types/websocket-data';
+import { VotingData, WebSocketStatus } from '@/types/websocket-data';
+import { useCallback, useEffect, useRef } from 'react';
 import { useBaseWebSocketSimulation } from './useBaseWebSocketSimulation';
+
+/**
+ * Type for vote submission parameters
+ */
+interface VoteSubmission {
+  proposalId: string;
+  vote: 'for' | 'against' | 'abstain';
+  weight: number;
+}
+
 /**
  * Custom hook for simulating WebSocket connections for voting data
  * Provides mock data and connection status management with automatic reconnection
@@ -8,6 +18,9 @@ import { useBaseWebSocketSimulation } from './useBaseWebSocketSimulation';
 export function useVotingWebSocketSimulation(
   onStatusChange?: (status: WebSocketStatus) => void
 ) {
+  // Ref to store abort controllers for in-flight requests
+  const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
+  
   // Create initial data function
   const getInitialData = useCallback(async (): Promise<VotingData> => {
     // For simulation, we'll return an empty structure
@@ -28,21 +41,44 @@ export function useVotingWebSocketSimulation(
   }, []);
 
   // Submit a vote to our API endpoint - memoized to prevent stale closures
-  const submitVote = useCallback(async (vote: {
-    proposalId: string;
-    vote: 'for' | 'against' | 'abstain';
-    weight: number;
-  }) => {
+  const submitVote = useCallback(async (vote: VoteSubmission): Promise<boolean> => {
+    // Generate a unique ID for this request
+    const requestId = `vote-${vote.proposalId}-${Date.now()}`;
+    
+    // Create a new AbortController for this request
+    const abortController = new AbortController();
+    abortControllersRef.current.set(requestId, abortController);
+    
     try {
-      await fetch('/api/voting/vote', {
+      const response = await fetch('/api/voting/vote', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(vote),
+        signal: abortController.signal
       });
+      
+      // Clean up the abort controller
+      abortControllersRef.current.delete(requestId);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to submit vote: ${response.status} ${response.statusText}`);
+      }
+      
+      return true;
     } catch (error) {
-      console.error('Error submitting vote:', error);
+      // Don't log aborted requests as errors
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        console.log('Vote submission aborted');
+      } else {
+        console.error('Error submitting vote:', error);
+      }
+      
+      // Clean up the abort controller
+      abortControllersRef.current.delete(requestId);
+      
+      return false;
     }
   }, []);
 
@@ -82,14 +118,14 @@ export function useVotingWebSocketSimulation(
               : `0x${Math.random().toString(16).substring(2, 10)}...`
           };
           
-          // Submit only the payload fields the API accepts
+          // Submit only the payload fields the API accepts - fixed type mismatch
           submitVote({
             proposalId: newVote.proposalId,
             vote: newVote.vote,
             weight: newVote.weight
           });
+          
           updatedData.recentVotes.unshift(newVote);
-        }
           
           // Keep only the 5 most recent votes
           if (updatedData.recentVotes.length > 5) {
@@ -122,15 +158,9 @@ export function useVotingWebSocketSimulation(
   });
 
   // Enhanced submitVote function that also updates local state
-  const submitUserVote = useCallback(async (vote: {
-    proposalId: string;
-    vote: 'for' | 'against' | 'abstain';
-    weight: number;
-  }) => {
+  const submitUserVote = useCallback(async (vote: VoteSubmission): Promise<boolean> => {
     try {
-      await submitVote(vote);
-      
-      // Update local data to reflect the vote
+      // Optimistically update UI
       setData(prevData => {
         if (!prevData) return null;
         
@@ -170,10 +200,32 @@ export function useVotingWebSocketSimulation(
         return updatedData;
       });
       
+      // Submit the vote to the API
+      const success = await submitVote(vote);
+      
+      // If submission failed, we could revert the optimistic update here
+      if (!success) {
+        console.warn('Vote submission failed, but optimistic UI update was not reverted');
+        // Implement rollback logic if needed
+      }
+      
+      return success;
     } catch (error) {
       console.error('Error submitting vote:', error);
+      return false;
     }
   }, [submitVote, setData]);
+
+  // Cancel all in-flight requests when component unmounts
+  useEffect(() => {
+    return () => {
+      // Abort all in-flight requests
+      abortControllersRef.current.forEach((controller, key) => {
+        controller.abort();
+        abortControllersRef.current.delete(key);
+      });
+    };
+  }, []);
 
   return { 
     data, 

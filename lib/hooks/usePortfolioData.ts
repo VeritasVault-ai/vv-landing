@@ -51,7 +51,7 @@ export function usePortfolioData() {
   };
   
   /**
-   * Rebalances all allocations to match target weights
+   * Rebalance all allocations to match target weights
    * 
    * @param targetAllocations Target allocations to apply
    */
@@ -61,15 +61,32 @@ export function usePortfolioData() {
       console.warn('Cannot rebalance portfolio: allocation data is not available');
       return;
     }
+    
+    // Validate that target allocations array is not empty
+    if (!targetAllocations || targetAllocations.length === 0) {
+      console.warn('Cannot rebalance portfolio: target allocations array is empty');
+      return;
+    }
 
     // Create a copy of the target allocations to avoid mutating the input
     let normalizedAllocations = [...targetAllocations];
+    
     // Ensure weights sum to 100%
-    const totalWeight = normalizedAllocations.reduce((sum, asset) => sum + asset.weight, 0);
+    const totalWeight = normalizedAllocations.reduce((sum, asset) => sum + (asset.weight || 0), 0);
 
-    // Protect against division by zero
-    if (Math.abs(totalWeight) < 0.00001) {
-      console.warn('Cannot normalize portfolio weights: total weight is zero or near-zero');
+    // Enhanced protection against division by zero
+    if (totalWeight <= 0.00001) {
+      console.warn('Cannot normalize portfolio weights: total weight is zero or negative');
+      
+      // Apply a fallback strategy - equal distribution
+      const equalWeight = 100 / normalizedAllocations.length;
+      normalizedAllocations = normalizedAllocations.map(asset => ({
+        ...asset,
+        weight: equalWeight
+      }));
+      
+      console.info(`Applied equal weight distribution (${equalWeight.toFixed(2)}% each) as fallback`);
+      updateAllocations(normalizedAllocations);
       return;
     }
 
