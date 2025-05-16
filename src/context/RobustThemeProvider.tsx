@@ -69,13 +69,18 @@ export function RobustThemeProvider({
   const [colorMode, setColorMode] = useState<ColorMode>(defaultColorMode)
   const [mounted, setMounted] = useState(false)
   
-  // Try to use next-themes, but don't fail if it's not available
-  let nextTheme: any = { theme: defaultColorMode, setTheme: () => {} }
-  try {
-    nextTheme = useNextTheme()
-  } catch (error) {
-    console.warn("next-themes provider not available:", error)
+  // Safely use next-themes with error handling
+  const safelyUseNextTheme = () => {
+    try {
+      return useNextTheme()
+    } catch (error) {
+      console.warn("custom theme provider not available:", error)
+      return { theme: defaultColorMode, setTheme: () => {}, resolvedTheme: defaultColorMode }
+    }
   }
+  
+  // Use the safe wrapper for next-themes
+  const nextTheme = safelyUseNextTheme()
   
   // Initialize theme from stored preferences or URL parameters
   useEffect(() => {
@@ -140,8 +145,8 @@ export function RobustThemeProvider({
     }
   }, [themeVariant, colorMode, mounted])
   
-  // Compute isDark based on colorMode
-  const isDark = colorMode === COLOR_MODES.DARK
+  // Compute isDark based on colorMode or next-themes resolvedTheme
+  const isDark = colorMode === COLOR_MODES.DARK || nextTheme.resolvedTheme === 'dark'
   
   // Create the context value
   const contextValue: ThemeContextType = {
@@ -154,13 +159,9 @@ export function RobustThemeProvider({
     isDark
   }
   
-  // Provide a loading state until client-side code is initialized
+  // Return children immediately for server rendering, but wrap with context on client
   if (!mounted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    )
+    return <>{children}</>
   }
   
   return (
