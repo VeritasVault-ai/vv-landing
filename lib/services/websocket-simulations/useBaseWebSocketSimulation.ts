@@ -269,33 +269,30 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
 
   // Initialize connection
   useEffect(() => {
-    let cleanupSimulation: (() => void) | undefined;
-    
     if (typeof window !== 'undefined') {
       connect();
     }
-    
+
     // Clean up on unmount
     return () => {
-      if (cleanupSimulation) {
-        cleanupSimulation();
-      }
-      
+      simulationCleanupRef.current?.();
+
       if (updateIntervalRef.current) {
         clearInterval(updateIntervalRef.current);
         updateIntervalRef.current = null;
       }
-      
+
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
         reconnectTimeoutRef.current = null;
       }
-      
+
       if (wsRef.current) {
         wsRef.current.close();
         wsRef.current = null;
       }
     };
+  }, []);
   }, [connect]);
 
   return {
