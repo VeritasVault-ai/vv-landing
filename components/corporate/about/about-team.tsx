@@ -1,7 +1,7 @@
 "use client"
 
+import { Linkedin, Twitter } from "lucide-react"
 import Image from "next/image"
-import { Linkedin, Twitter, Globe } from "lucide-react"
 
 /**
  * Team section for the About page
@@ -11,7 +11,7 @@ export function AboutTeam() {
     {
       name: "Eben Mare",
       role: "Chief Executive Officer",
-      image: "/team/eben-pic.jpg",
+      image: "/team/eben-ai.png",
       bio: "...",
       linkedin: "#",
       twitter: "#"
