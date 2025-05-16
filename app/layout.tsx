@@ -1,7 +1,8 @@
 import { UnifiedThemeProvider } from "@/src/providers/unified-theme-provider"
-import { ThemeInitializerScript } from "./theme-script"
 import type { Metadata } from "next"
+import Script from "next/script"
 import { ROOT_PRODUCT_DESCRIPTION, ROOT_PRODUCT_TITLE } from "@/lib/config/product-info"
+import { getThemeInitializerScript } from "./theme-script"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -22,10 +23,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const themeScript = getThemeInitializerScript();
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <ThemeInitializerScript />
+        {/* Use Next.js Script component with strategy="beforeInteractive" */}
+        <Script
+          id="theme-initializer"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeScript }}
+        />
       </head>
       <body>
         <UnifiedThemeProvider>
