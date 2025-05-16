@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/components/ui/use-toast"
@@ -10,7 +9,7 @@ import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 /**
  * Client component for the Signup page
@@ -28,15 +27,22 @@ export function SignupClient() {
     marketing: false
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  // Add the missing returnUrl state
+  const [returnUrl, setReturnUrl] = useState("/corporate-version/dashboard")
   
   const searchParams = useSearchParams()
   const router = useRouter()
   
-  // Validate returnUrl to prevent open redirect vulnerabilities
-  const rawReturnUrl = searchParams.get("returnUrl") || "/corporate-version/dashboard"
-  const returnUrl = rawReturnUrl.startsWith("/") && !rawReturnUrl.startsWith("//") 
-    ? rawReturnUrl 
-    : "/corporate-version/dashboard"
+  // Handle returnUrl in useEffect to avoid hydration issues
+  useEffect(() => {
+    if (searchParams) {
+      const rawReturnUrl = searchParams.get("returnUrl") || "/corporate-version/dashboard"
+      const safeReturnUrl = rawReturnUrl.startsWith("/") && !rawReturnUrl.startsWith("//") 
+        ? rawReturnUrl 
+        : "/corporate-version/dashboard"
+      setReturnUrl(safeReturnUrl)
+    }
+  }, [searchParams])
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value, type, checked } = e.target
@@ -202,111 +208,6 @@ export function SignupClient() {
                   <p className="text-xs text-red-500">{errors.lastName}</p>
                 )}
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input 
-                id="email" 
-                type="email" 
-                placeholder="Enter your email address" 
-                required 
-                value={formData.email}
-                onChange={handleChange}
-                className={errors.email ? "border-red-500" : ""}
-              />
-              {errors.email && (
-                <p className="text-xs text-red-500">{errors.email}</p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="company">Company Name</Label>
-              <Input 
-                id="company" 
-                placeholder="Enter your company name" 
-                required 
-                value={formData.company}
-                onChange={handleChange}
-                className={errors.company ? "border-red-500" : ""}
-              />
-              {errors.company && (
-                <p className="text-xs text-red-500">{errors.company}</p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input 
-                id="password" 
-                type="password" 
-                placeholder="Create a secure password" 
-                required 
-                value={formData.password}
-                onChange={handleChange}
-                className={errors.password ? "border-red-500" : ""}
-              />
-              {errors.password ? (
-                <p className="text-xs text-red-500">{errors.password}</p>
-              ) : (
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Password must be at least 8 characters with uppercase, lowercase, number, and special character.
-                </p>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input 
-                id="confirmPassword" 
-                type="password" 
-                placeholder="Confirm your password" 
-                required 
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className={errors.confirmPassword ? "border-red-500" : ""}
-              />
-              {errors.confirmPassword && (
-                <p className="text-xs text-red-500">{errors.confirmPassword}</p>
-              )}
-            </div>
-            
-            <div className="flex items-start space-x-2">
-              <Checkbox 
-                id="terms" 
-                required 
-                checked={formData.terms}
-                onCheckedChange={(checked) => 
-                  setFormData(prev => ({ ...prev, terms: checked === true }))
-                }
-              />
-              <div>
-                <Label 
-                  htmlFor="terms" 
-                  className="text-sm text-slate-700 dark:text-slate-300"
-                >
-                  I agree to the <Link href="/corporate-version/terms" className="text-blue-600 dark:text-blue-400 hover:underline">Terms of Service</Link> and <Link href="/corporate-version/privacy" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</Link>.
-                </Label>
-                {errors.terms && (
-                  <p className="text-xs text-red-500">{errors.terms}</p>
-                )}
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-2">
-              <Checkbox 
-                id="marketing" 
-                checked={formData.marketing}
-                onCheckedChange={(checked) => 
-                  setFormData(prev => ({ ...prev, marketing: checked === true }))
-                }
-              />
-              <Label 
-                htmlFor="marketing" 
-                className="text-sm text-slate-700 dark:text-slate-300"
-              >
-               I agree to receive communications about VeritasVault products, services, and events. I can unsubscribe at any time. View our <Link href="/corporate-version/privacy" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</Link>.  
-              </Label>
             </div>
             
             <Button 

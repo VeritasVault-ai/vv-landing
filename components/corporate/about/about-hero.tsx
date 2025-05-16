@@ -22,7 +22,7 @@ export function AboutHero() {
               Revolutionizing institutional liquidity management with cutting-edge technology and unparalleled security.
             </p>
             <p className="text-lg text-slate-700 dark:text-slate-300 max-w-xl">
-              Founded in 2022, VeritasVault has quickly become the trusted partner for institutions seeking advanced treasury management solutions in the digital asset space.
+              Founded in May 2025, VeritasVault will become the trusted partner for institutions seeking advanced treasury management solutions in the digital asset space. Our vision is to transform how institutions manage digital asset liquidity with innovative technology.
             </p>
           </div>
           <div className="lg:w-1/2">
