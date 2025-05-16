@@ -3,7 +3,7 @@ import {
   ActiveProposal,
   PastProposal
 } from '@/lib/repositories/voting-repository';
-import { VotingData } from './websocket-simulations/useVotingWebsocketSimulation';
+import { VotingData } from '@/types/websocket-data';
 
 /**
  * Service layer for interacting with the voting API
@@ -20,7 +20,8 @@ class VotingService {
       throw new Error('Failed to fetch voting overview')
     }
     
-    return response.json()
+    const data: VotingOverview = await response.json();
+    return data;
   }
   /**
    * Fetch active proposals
@@ -56,7 +57,19 @@ class VotingService {
     message: string;
     proposals?: ActiveProposal[];
   }> {
-    const payload: any = { proposalId, vote };
+    // Early return if vote is null - we can't submit a null vote
+    if (vote === null) {
+      return {
+        success: false,
+        message: 'Cannot submit a null vote. Use clearVote method instead.'
+      };
+    }
+    
+    const payload: {
+      proposalId: string;
+      vote: 'for' | 'against' | 'abstain';
+      weight?: number;
+    } = { proposalId, vote };
     
     // Add weight if provided
     if (weight !== undefined) {

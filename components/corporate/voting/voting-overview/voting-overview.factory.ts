@@ -2,7 +2,7 @@ import { VotingOverview as VotingOverviewType } from "@/lib/repositories/voting-
 import { votingService } from "@/lib/services/voting-service"
 import { votingEvents } from "@/lib/events/voting-events"
 import { useState, useEffect } from "react"
-import { isValidEthereumAddress } from "@/lib/utils/validation"
+import { isValidEthereumAddress, isValidPositiveNumber } from "@/lib/utils/validation"
 import { mockVotingOverview } from "../voting-overview.mock"
 
 // Chart colors
@@ -26,6 +26,7 @@ export function createVotingOverview({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [usedFallback, setUsedFallback] = useState(false)
+  const [isMockData, setIsMockData] = useState(false)
   const [delegationLoading, setDelegationLoading] = useState(false)
 
   useEffect(() => {
@@ -39,9 +40,10 @@ export function createVotingOverview({
         
         if (isMounted) {
           setData(result)
-          // If MSW is enabled, we're technically using mocks but not fallback
-          setUsedFallback(useMsw)
-        }
+          // If MSW is enabled, we're using mocks but NOT fallback data
+          setIsMockData(useMsw)
+        setUsedFallback(false)
+      }
       } catch (err) {
         console.error('Error fetching voting overview:', err)
         
@@ -51,13 +53,14 @@ export function createVotingOverview({
           if (useFallback) {
             setData(fallbackData)
             setUsedFallback(true)
-          }
-        }
+            setIsMockData(true) // Fallback data is also mock data
+      }
+    }
       } finally {
         if (isMounted) {
           setLoading(false)
-        }
-      }
+  }
+}
     }
 
     fetchData()
@@ -67,6 +70,7 @@ export function createVotingOverview({
       if (isMounted) {
         setData(overview)
         setUsedFallback(false)
+        setIsMockData(false) // Real-time data from events is not mock data
       }
     })
 
@@ -93,6 +97,7 @@ export function createVotingOverview({
     data,
     error,
     usedFallback,
+    isMockData, // Expose the new flag to consumers
     chartConfig,
     colors: VOTING_CHART_COLORS,
     delegationLoading,
@@ -111,7 +116,7 @@ export function createVotingOverview({
       }
       
       // Validate amount
-      if (isNaN(amount) || amount <= 0) {
+      if (!isValidPositiveNumber(amount)) {
         setError('Amount must be a positive number.');
         return false;
       }
@@ -141,6 +146,8 @@ export function createVotingOverview({
         
         if (result.success && result.overview) {
           setData(result.overview);
+          setUsedFallback(false);
+          setIsMockData(useMsw); // If MSW is enabled, this is still mock data
           return true;
         }
         

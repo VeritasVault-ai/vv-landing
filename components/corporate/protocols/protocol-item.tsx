@@ -13,9 +13,12 @@ export function ProtocolItem({ protocol }: ProtocolItemProps) {
       <div>
         <div className={styles.protocolName}>{protocol.name}</div>
         <div className={styles.protocolPercentage}>
-          {typeof protocol.percentage === 'number' 
-            ? protocol.percentage.toFixed(1) 
-            : protocol.percentage}% of portfolio
+          {protocol.percentage === null || protocol.percentage === undefined
+            ? 'N/A'
+            : typeof protocol.percentage === 'number'
+              ? `${protocol.percentage.toFixed(1)}%`
+              : `${protocol.percentage}%`
+          } of portfolio
         </div>
       </div>
       <Badge 

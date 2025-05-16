@@ -1,4 +1,4 @@
-import { Protocol, ChartData } from "../protocol-allocation.types";
+import { ChartData, Protocol } from "../protocol-allocation.types";
 
 // Threshold for grouping small protocols into "Others"
 export const SMALL_PROTOCOL_THRESHOLD = 0.03; // 3%
@@ -65,6 +65,6 @@ export function formatCurrency(value: string | number): string {
  * @returns Formatted percentage string
  */
 export function formatPercentage(value: string | number): string {
-  const numericValue = typeof value === 'string' ? parseFloat(value) : value;
+  const numericValue = typeof value === 'string' ? parseFloat(value) || 0 : (value || 0);  
   return `${numericValue.toFixed(1)}%`;
 }

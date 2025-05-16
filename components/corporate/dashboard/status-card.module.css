@@ -1,0 +1,23 @@
+.metricValue {
+  @apply text-2xl font-bold;
+}
+
+.smallText {
+  @apply text-xs text-slate-500 mt-1;
+}
+
+.simulationIndicator {
+  @apply mt-2;
+}
+
+.statusHealthy {
+  @apply text-green-600 dark:text-green-500;
+}
+
+.statusWarning {
+  @apply text-amber-600 dark:text-amber-500;
+}
+
+.statusError {
+  @apply text-red-600 dark:text-red-500;
+}

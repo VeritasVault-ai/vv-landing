@@ -28,17 +28,37 @@ export function isValidPositiveNumber(
   min: number = 0,
   max?: number
 ): boolean {
-  const numValue = typeof value === 'string' ? parseFloat(value) : value;
-  
-  if (isNaN(numValue)) {
+  // Check if max is defined and less than min
+  if (max !== undefined && max < min) {
     return false;
   }
   
-  if (numValue <= min) {
+  // For string values, ensure the entire string is a valid number
+  if (typeof value === 'string') {
+    // Check if the string is a valid number format with no trailing characters
+    if (!/^-?\d*\.?\d+$/.test(value)) {
+    return false;
+  }
+    value = parseFloat(value);
+  }
+  
+  // Check if the value is a number
+  if (typeof value !== 'number' || isNaN(value)) {
+    return false;
+}
+  
+  // Reject Infinity and -Infinity
+  if (!isFinite(value)) {
     return false;
   }
   
-  if (max !== undefined && numValue > max) {
+  // Check minimum bound
+  if (value <= min) {
+    return false;
+  }
+  
+  // Check maximum bound if provided
+  if (max !== undefined && value > max) {
     return false;
   }
   
