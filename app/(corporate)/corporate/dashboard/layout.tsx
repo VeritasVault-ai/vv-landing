@@ -15,7 +15,7 @@ import {
 import { ReactNode } from 'react';
 
 export const metadata = {
-  title: 'Dashboard | VeritasVault.ai',
+  title: 'Dashboard | VeritasVault.net',
   description: 'Enterprise liquidity management dashboard for institutional investors.',
 };
 

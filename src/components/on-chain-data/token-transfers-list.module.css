@@ -1,0 +1,87 @@
+.transfersList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.transferItem {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--card-background);
+}
+
+.transferItemSkeleton {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.transferHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.transferDate {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.transferTime {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.transferAddresses {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.transferFrom,
+.transferTo {
+  font-size: 0.875rem;
+}
+
+.address {
+  font-family: monospace;
+  background-color: var(--muted);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.transferAmount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.amount {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.txButton {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.txIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.errorCard {
+  border-color: var(--destructive);
+  background-color: var(--destructive-foreground);
+}
+
+.errorMessage {
+  color: var(--destructive);
+  margin-bottom: 1rem;
+}

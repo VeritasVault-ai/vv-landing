@@ -7,55 +7,38 @@
  * should be active based on the current route.
  */
 
-import { useEffect, useState } from "react"
 import { EXPERIENCE_TYPES } from "@/src/constants/theme"
+import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
 
 /**
- * React hook that returns the current user experience type based on the browser's URL path.
+ * React hook that returns the current user experience type based on the URL path.
  *
- * Determines the experience type by inspecting the pathname and updates automatically when the route changes via browser navigation.
+ * Determines the experience type by inspecting the pathname and updates automatically when the route changes.
  *
  * @returns The current experience type, as defined in {@link EXPERIENCE_TYPES}.
- *
- * @remark Returns the default experience type if used in a non-browser environment.
  */
 export function useCurrentExperience() {
-  const [currentExperience, setCurrentExperience] = useState(EXPERIENCE_TYPES.STANDARD)
-  
+  // Use Next.js's usePathname hook which works on both client and server
+  const pathname = usePathname()
+  const [currentExperience, setCurrentExperience] = useState(() => {
+    // Initial state based on pathname
+    if (pathname?.startsWith('/corporate') || pathname?.startsWith('/institutional') || 
+        pathname?.startsWith('/corporate-version')) {
+      return EXPERIENCE_TYPES.CORPORATE
+    } else {
+      return EXPERIENCE_TYPES.STANDARD
+    }
+  })
+    
+  // Update experience when pathname changes
   useEffect(() => {
-    // Only run in the browser
-    if (typeof window === "undefined") return
-    
-    const path = window.location.pathname
-    
-    // Determine experience based on path
-    if (path.startsWith('/corporate') || path.startsWith('/institutional')) {
+    if (pathname?.startsWith('/corporate') || pathname?.startsWith('/institutional') || 
+        pathname?.startsWith('/corporate-version')) {
       setCurrentExperience(EXPERIENCE_TYPES.CORPORATE)
-    } else if (path.startsWith('/veritasvault')) {
-      setCurrentExperience(EXPERIENCE_TYPES.VERITASVAULT)
     } else {
       setCurrentExperience(EXPERIENCE_TYPES.STANDARD)
     }
-    
-    // Listen for route changes if using client-side routing
-    const handleRouteChange = () => {
-      const newPath = window.location.pathname
-      
-      if (newPath.startsWith('/corporate') || newPath.startsWith('/institutional')) {
-        setCurrentExperience(EXPERIENCE_TYPES.CORPORATE)
-      } else if (newPath.startsWith('/veritasvault')) {
-        setCurrentExperience(EXPERIENCE_TYPES.VERITASVAULT)
-      } else {
-        setCurrentExperience(EXPERIENCE_TYPES.STANDARD)
-      }
-    }
-    
-    window.addEventListener('popstate', handleRouteChange)
-    
-    return () => {
-      window.removeEventListener('popstate', handleRouteChange)
-    }
-  }, [])
-  
+  }, [pathname])
   return currentExperience
 }

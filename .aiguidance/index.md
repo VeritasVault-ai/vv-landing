@@ -1,6 +1,6 @@
 # AI Guidance Index
 
-This is the main index of AI guidance documents for the VeritasVault.ai project.
+This is the main index of AI guidance documents for the VeritasVault.net project.
 
 ## Current Project Status
 

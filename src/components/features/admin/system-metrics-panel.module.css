@@ -1,0 +1,94 @@
+.metricsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.statusRow {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.statusIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconSuccess {
+  color: var(--color-success);
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.iconNeutral {
+  color: var(--color-neutral);
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.iconDanger {
+  color: var(--color-danger);
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.statusLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.statusValue {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.metricItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metricHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metricLabel {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.metricValue {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.metricProgress {
+  height: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+  .statusRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

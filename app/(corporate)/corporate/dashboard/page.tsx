@@ -3,7 +3,7 @@ import { Suspense } from "react"
 import { DashboardPageBridge } from "./page-bridge"
 
 export const metadata: Metadata = {
-  title: "Dashboard | VeritasVault.ai",
+  title: "Dashboard | VeritasVault.net",
   description: "Enterprise liquidity management dashboard for institutional investors.",
 }
 

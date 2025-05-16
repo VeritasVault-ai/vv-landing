@@ -255,7 +255,7 @@ export function createTheme(options: Partial<Theme>): Theme {
       },
     },
     brand: {
-      logo: '/logo.svg',
+      logo: '/logo.png',
       gradient: {
         from: palette.blue[500],
         to: palette.blue[700],

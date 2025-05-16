@@ -10,11 +10,12 @@
  * have access to theme context.
  */
 
-import { ReactNode, useEffect, useState } from "react"
-import { ThemeProvider as NextThemesProvider } from "next-themes"
-import { ThemeProvider as CustomThemeProvider } from "@/src/lib/context/ThemeProvider"
 import { EXPERIENCE_TYPES } from "@/src/constants/theme"
 import { useCurrentExperience } from "@/src/hooks/use-current-experience"
+import { ThemeProvider as CustomThemeProvider } from "@/src/lib/context/ThemeProvider"
+import { ServerSafeThemeProvider } from "@/src/context/ServerSafeThemeProvider"
+import { ReactNode } from "react"
+import { ExperienceType } from "@/src/types/theme"
 
 interface UnifiedThemeProviderProps {
   children: ReactNode
@@ -24,25 +25,26 @@ interface UnifiedThemeProviderProps {
 /**
  * Provides a unified theme context to the application using both custom and system-based theming.
  *
- * Wraps its children with both the `next-themes` provider and a custom theme provider, selecting the theme experience based on the current route or an optional default.
+ * Wraps its children with both the server-safe theme provider and a custom theme provider, 
+ * selecting the theme experience based on the current route or an optional default.
  *
  * @param children - The components to receive the theme context.
  * @param defaultExperience - Optional default theme experience to use if no route-based experience is available.
  */
 export function UnifiedThemeProvider({ 
   children, 
-  defaultExperience
+  defaultExperience = EXPERIENCE_TYPES.STANDARD
 }: UnifiedThemeProviderProps) {
   // Use the current experience based on route if no default is provided
   const routeBasedExperience = useCurrentExperience()
-  const experienceToUse = defaultExperience || routeBasedExperience
+  const experienceToUse = routeBasedExperience || defaultExperience
   
   return (
-    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ServerSafeThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <CustomThemeProvider defaultExperience={experienceToUse}>
         {children}
       </CustomThemeProvider>
-    </NextThemesProvider>
+    </ServerSafeThemeProvider>
   )
 }
 
@@ -58,11 +60,13 @@ export function ExperienceProvider({
   experience 
 }: { 
   children: ReactNode, 
-  experience: string 
+  experience: ExperienceType | undefined
 }) {
   return (
-    <CustomThemeProvider defaultExperience={experience}>
-      {children}
-    </CustomThemeProvider>
+    <ServerSafeThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <CustomThemeProvider defaultExperience={experience}>
+        {children}
+      </CustomThemeProvider>
+    </ServerSafeThemeProvider>
   )
 }

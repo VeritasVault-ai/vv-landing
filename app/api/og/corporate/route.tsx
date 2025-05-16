@@ -6,7 +6,7 @@ export const runtime = "edge"
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const title = searchParams.get("title") || "VeritasVault.ai - Institutional-Grade Liquidity Management"
+    const title = searchParams.get("title") || "VeritasVault.net - Institutional-Grade Liquidity Management"
 
     return new ImageResponse(
       <div
@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
             textAlign: "center",
           }}
         >
-          VeritasVault.ai by NeuralLiquid
+          VeritasVault.net by NeuralLiquid
         </div>
       </div>,
       {

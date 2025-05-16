@@ -1,0 +1,106 @@
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.rankColumn {
+  width: 50px;
+}
+
+.assetCell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.assetIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.assetInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.assetName {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #1e293b;
+}
+
+.assetSymbol {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.chainBadge {
+  display: inline-block;
+  padding: 0.125rem 0.375rem;
+  background-color: #f1f5f9;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.priceColumn {
+  text-align: right;
+  width: 100px;
+}
+
+.changeColumn {
+  text-align: right;
+  width: 100px;
+}
+
+.volumeColumn {
+  text-align: right;
+  width: 120px;
+}
+
+.marketCapColumn {
+  text-align: right;
+  width: 120px;
+}
+
+.actionColumn {
+  width: 50px;
+  text-align: center;
+}
+
+.positive {
+  color: #10b981;
+}
+
+.negative {
+  color: #ef4444;
+}
+
+.viewButton {
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  background-color: transparent;
+  transition: background-color 0.2s;
+}
+
+.viewButton:hover {
+  background-color: #f1f5f9;
+}
+
+.viewIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #64748b;
+}
+
+@media (max-width: 768px) {
+  .marketCapColumn {
+    display: none;
+  }
+  
+  .volumeColumn {
+    display: none;
+  }
+}

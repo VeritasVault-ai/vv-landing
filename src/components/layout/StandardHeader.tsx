@@ -5,11 +5,12 @@ import { LoginDialog } from '@/components/auth/login-dialog'
 import { RegisterDialog } from '@/components/auth/register-dialog'
 import { Button } from '@/components/ui/button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { STANDARD_PRODUCT_NAME } from '@/lib/config/product-info'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/src/components/ThemeToggle'
 import { ChevronDown, Menu, User, X } from 'lucide-react'
@@ -18,7 +19,6 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { StandardMobileHeader } from './StandardMobileHeader'
 import { CommonHeaderProps } from './VersionAwareHeader'
-import { STANDARD_PRODUCT_NAME } from '@/lib/config/product-info'
 
 /**
  * Renders a responsive website header with navigation, authentication controls, and theme toggling.
@@ -80,7 +80,7 @@ export function StandardHeader({
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src="/logo.svg"
+                src="/logo.png"
                 alt={STANDARD_PRODUCT_NAME}
                 width={32}
                 height={32}

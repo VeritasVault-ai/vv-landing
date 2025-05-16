@@ -1,6 +1,6 @@
 # AI Guidance Documentation
 
-This directory contains AI guidance documents for the VeritasVault.ai project. These documents serve as a knowledge base for AI assistants working on the codebase, providing context, decisions, and insights to maintain continuity across different AI sessions.
+This directory contains AI guidance documents for the VeritasVault.net project. These documents serve as a knowledge base for AI assistants working on the codebase, providing context, decisions, and insights to maintain continuity across different AI sessions.
 
 ## File Structure
 

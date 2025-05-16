@@ -1,16 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { useToast } from "@/hooks/use-toast"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAnalytics } from "@/hooks/use-analytics"
-import { ArrowRight, Copy, Check, ExternalLink, Plus, Trash, Save } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 import { AnalyticsEvents } from "@/lib/analytics/event-constants"
+import { ArrowRight, Check, Copy, ExternalLink, Plus, Save, Trash } from "lucide-react"
+import { useState } from "react"
 
 // Predefined funnel templates
 const FUNNEL_TEMPLATES = [
@@ -31,9 +31,9 @@ const FUNNEL_TEMPLATES = [
     description: "Track user adoption of AI-powered features",
     steps: [
       { name: "View AI Features", event: "page_view", params: { page_path: "/ai-features" } },
-      { name: "Generate AI Strategy", event: AnalyticsEvents.AI.GENERATE_STRATEGY, params: {} },
+      { name: "Generate AI Strategy", event: AnalyticsEvents.net.GENERATE_STRATEGY, params: {} },
       { name: "Review AI Strategy", event: "ai_strategy_reviewed", params: {} },
-      { name: "Save AI Strategy", event: AnalyticsEvents.AI.SAVE_STRATEGY, params: {} },
+      { name: "Save AI Strategy", event: AnalyticsEvents.net.SAVE_STRATEGY, params: {} },
     ],
   },
   {

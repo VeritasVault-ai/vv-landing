@@ -116,8 +116,8 @@ export abstract class BaseService {
   private abortControllers: Map<string, AbortController> = new Map();
   
   constructor() {
-    // Use environment validation to safely get API base URL
-    this.apiBaseUrl = getRequiredEnv('NEXT_PUBLIC_APP_URL');
+    // Use environment variable or fallback to localhost if not available
+    this.apiBaseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   }
   
   /**
@@ -199,7 +199,7 @@ export abstract class BaseService {
         signal,
         headers: {
           'Content-Type': 'application/json',
-          ...optHeaders,
+          ...(options.headers || {}),
         },
       });
       

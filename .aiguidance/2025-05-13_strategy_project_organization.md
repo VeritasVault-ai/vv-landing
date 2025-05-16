@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the overall strategy for organizing the VeritasVault.ai project, particularly focusing on the migration to the src/ directory structure.
+This document outlines the overall strategy for organizing the VeritasVault.net project, particularly focusing on the migration to the src/ directory structure.
 
 ## Context
 

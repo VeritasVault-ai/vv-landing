@@ -1,0 +1,164 @@
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1.5rem;
+}
+
+.dashboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboardTitle {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.dashboardDescription {
+  color: var(--muted-foreground);
+  margin-top: 0.25rem;
+}
+
+.headerActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .headerActions {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.timeframeSelector {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.timeframeTrigger {
+  min-width: 150px;
+}
+
+.timeframeIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+}
+
+.dateRangePicker {
+  min-width: 240px;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background-color: #f1f5f9;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+.actionIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dashboardTabs {
+  width: 100%;
+}
+
+.tabsList {
+  margin-bottom: 1.5rem;
+}
+
+.tabsTrigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tabIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.tabContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .chartsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.chartCard {
+  height: 100%;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem;
+}
+
+.cardHeader {
+  padding-bottom: 1rem;
+}
+
+.chartContent {
+  height: 300px;
+  position: relative;
+}
+
+.mapContent {
+  height: 400px;
+  position: relative;
+}
+
+.fullWidthSection {
+  width: 100%;
+}

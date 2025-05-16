@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Login | VeritasVault.ai",
-  description: "Login to your VeritasVault.ai corporate account.",
+  title: "Login | VeritasVault.net",
+  description: "Login to your VeritasVault.net corporate account.",
 }
 
 export default function CorporateLoginPage() {
@@ -15,7 +15,7 @@ export default function CorporateLoginPage() {
               <span className="text-xl font-bold text-blue-900 dark:text-blue-300">
                 <span>Veritas</span>
                 <span className="text-blue-700 dark:text-blue-400">Vault</span>
-                <span className="text-blue-500">.ai</span>
+                <span className="text-blue-500">.net</span>
               </span>
             </a>
           </div>
@@ -88,7 +88,7 @@ export default function CorporateLoginPage() {
       <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-6">
         <div className="container mx-auto px-4">
           <p className="text-center text-slate-600 dark:text-slate-400">
-            &copy; 2023 VeritasVault.ai. All rights reserved.
+            &copy; 2025 VeritasVault.net. All rights reserved.
           </p>
         </div>
       </footer>

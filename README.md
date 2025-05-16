@@ -1,6 +1,6 @@
-# VeritasVault.ai Landing Page
+# VeritasVault.net Landing Page
 
-Welcome to the VeritasVault.ai landing page repository! This document will guide you through the project setup, development workflow, and deployment process.
+Welcome to the VeritasVault.net landing page repository! This document will guide you through the project setup, development workflow, and deployment process.
 
 ## 📚 Table of Contents
 
@@ -19,7 +19,7 @@ Welcome to the VeritasVault.ai landing page repository! This document will guide
 
 ## Introduction
 
-The VeritasVault.ai landing page serves as the primary entry point for users to learn about our services, features, and offerings. This repository contains all the code and assets needed to build, develop, and deploy the landing page.
+The VeritasVault.net landing page serves as the primary entry point for users to learn about our services, features, and offerings. This repository contains all the code and assets needed to build, develop, and deploy the landing page.
 
 This project is built with modern web technologies to ensure optimal performance, accessibility, and user experience across all devices.
 
@@ -123,12 +123,12 @@ For manual deployment:
 
 ### Deployment Environments
 
-- **Production**: [https://veritasvault.ai](https://veritasvault.ai)
-- **Staging**: [https://staging.veritasvault.ai](https://staging.veritasvault.ai)
+- **Production**: [https://VeritasVault.net](https://VeritasVault.net)
+- **Staging**: [https://staging.VeritasVault.net](https://staging.VeritasVault.net)
 
 ## Contributing
 
-We welcome contributions to improve the VeritasVault.ai landing page! Please follow these steps:
+We welcome contributions to improve the VeritasVault.net landing page! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -148,10 +148,10 @@ Please adhere to our coding standards and include appropriate tests for new feat
 - **Styling inconsistencies**: Clear your browser cache or try building in production mode.
 - **API connection issues**: Verify that the API endpoints are correctly configured in your environment variables.
 
-For more help, please check our [internal documentation](https://docs.veritasvault.ai) or reach out to the development team.
+For more help, please check our [internal documentation](https://docs.VeritasVault.net) or reach out to the development team.
 
 ## License
 
 This project is proprietary and confidential. Unauthorized copying, transferring, or reproduction of the contents of this repository, via any medium, is strictly prohibited.
 
-Copyright © 2023 VeritasVault.ai. All rights reserved.
+Copyright © 2025 VeritasVault.net. All rights reserved.

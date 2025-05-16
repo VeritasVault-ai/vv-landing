@@ -1,0 +1,40 @@
+.chainButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-weight: 500;
+}
+
+.chainIcon {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dropdownIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.25rem;
+  opacity: 0.7;
+}
+
+.chainMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+}
+
+.chainMenuItem:hover {
+  background-color: var(--muted);
+}
+
+.checkIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-left: auto;
+  color: var(--color-primary);
+}

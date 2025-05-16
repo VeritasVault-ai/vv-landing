@@ -1,31 +1,28 @@
-'use client'
+import { ComingSoonBanner } from "@/components/corporate/coming-soon-banner"
+import { CorporateLayoutClient } from "./layout-client"
+import { Metadata } from "next"
 
-import { Providers } from "@/app/providers"
-import { VersionAwareFooter } from "@/components/layout/footer"
-import VersionAwareHeader from "@/components/layout/header"
-import { EXPERIENCE_TYPES } from "@/src/constants/theme"
-import { Analytics } from "@vercel/analytics/next"
-import type { ReactNode } from "react"
+export const metadata: Metadata = {
+  title: {
+    template: "%s | VeritasVault Enterprise",
+    default: "VeritasVault Enterprise",
+  },
+  description: "Enterprise-grade digital asset management and treasury solutions",
+}
 
 /**
- * Wraps corporate version content in a corporate-themed context provider.
- *
- * @param children - The content to display within the corporate version layout.
- * @returns The provided {@link children} wrapped in a {@link UnifiedThemeProvider} configured for the corporate experience.
+ * Layout for all corporate version pages
+ * Wraps all corporate pages with the appropriate theme provider
  */
-export default function CorporateVersionLayout({
+export default function CorporateLayout({
   children,
 }: {
-  children: ReactNode
+  children: React.ReactNode
 }) {
   return (
-    <>
-      <Analytics />
-      <Providers experience={EXPERIENCE_TYPES.CORPORATE}>
-        <VersionAwareHeader/>
-          <main>{children}</main>
-        <VersionAwareFooter/>
-      </Providers>
-    </>
+    <CorporateLayoutClient>
+    <ComingSoonBanner />
+      {children}
+    </CorporateLayoutClient>
   )
 }

@@ -1,0 +1,73 @@
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .metricsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.metricTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.metricValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.changeIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.positive {
+  color: var(--color-success);
+  display: flex;
+  align-items: center;
+}
+
+.negative {
+  color: var(--color-destructive);
+  display: flex;
+  align-items: center;
+}
+
+.trendIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.25rem;
+}
+
+.periodLabel {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.dominanceBar {
+  display: flex;
+  height: 0.5rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.dominanceSegment {
+  height: 100%;
+  transition: width 0.3s ease;
+}

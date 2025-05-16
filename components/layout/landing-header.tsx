@@ -1,7 +1,7 @@
 "use client"
 
-import Link from "next/link"
 import { StandaloneThemeToggle } from "@/components/ui/standalone-theme-toggle"
+import Link from "next/link"
 
 export function LandingHeader() {
   return (
@@ -12,7 +12,7 @@ export function LandingHeader() {
             <span className="text-xl font-bold text-blue-900 dark:text-blue-300">
               <span>Neural</span>
               <span className="text-blue-700 dark:text-blue-400">Liquid</span>
-              <span className="text-blue-500 dark:text-blue-500">.ai</span>
+              <span className="text-blue-500 dark:text-blue-500">.net</span>
             </span>
           </Link>
         </div>

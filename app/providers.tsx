@@ -1,22 +1,22 @@
 'use client'
 
-import { EXPERIENCE_TYPES } from "@/src/constants/theme"
-import { UnifiedThemeProvider } from "@/src/providers/unified-theme-provider"
-import { SessionProvider } from "next-auth/react"
-import { ReactNode } from "react"
+import { ReactNode, useEffect } from 'react'
+import { MockInitializer } from './layout-with-mocks'
 
-export function Providers({
-  children,
-  experience = EXPERIENCE_TYPES.CORPORATE,
-}: {
+interface ProvidersProps {
   children: ReactNode
-  experience?: string
-}) {
+}
+
+/**
+ * Client-side providers wrapper that initializes necessary services
+ * Includes MSW initialization for development environment
+ */
+export function Providers({ children }: ProvidersProps) {
   return (
-    <SessionProvider>
-      <UnifiedThemeProvider defaultExperience={experience}>
-        {children}
-      </UnifiedThemeProvider>
-    </SessionProvider>
+    <>
+      {/* Initialize MSW in development */}
+      <MockInitializer />
+      {children}
+    </>
   )
 }

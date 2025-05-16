@@ -1,0 +1,49 @@
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.poolCell {
+  display: flex;
+  flex-direction: column;
+}
+
+.poolName {
+  font-weight: 500;
+}
+
+.poolPair {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.numericCell {
+  text-align: right;
+}
+
+.actionCell {
+  width: 48px;
+  text-align: center;
+}
+
+.actionIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.aprValue {
+  font-weight: 500;
+  color: var(--color-success);
+}
+
+.errorContainer {
+  padding: 1rem;
+  border: 1px solid var(--destructive);
+  border-radius: 0.5rem;
+  background-color: var(--destructive-foreground);
+}
+
+.errorMessage {
+  color: var(--destructive);
+  font-size: 0.875rem;
+}

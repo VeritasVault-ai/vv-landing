@@ -1,14 +1,14 @@
-import type { Metadata } from "next"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, BarChart3, Cog, LineChart, PieChart, RefreshCw } from "lucide-react"
-import Link from "next/link"
 import PoolsTable from "@/components/pools-table"
-import { Suspense } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
 import RiskAssessment from "@/components/risk-assessment"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ArrowLeft, BarChart3, Cog, LineChart, PieChart, RefreshCw } from "lucide-react"
+import type { Metadata } from "next"
+import Link from "next/link"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Strategy Details | NeuralLiquid",
@@ -26,8 +26,8 @@ const strategyData = {
   stable_pairs_percentage: 40,
   medium_volatility_percentage: 40,
   high_volatility_percentage: 20,
-  created_at: "2023-05-15T10:30:00Z",
-  last_rebalanced: "2023-05-28T14:45:00Z",
+  created_at: "2025-05-15T10:30:00Z",
+  last_rebalanced: "2025-05-28T14:45:00Z",
   total_value: 25000,
   current_apy: 16.2,
   pools: [
@@ -37,11 +37,11 @@ const strategyData = {
     { name: "Etherlink Farm", protocol: "EtherYield", allocation: 10, apy: 24.5 },
   ],
   performance: [
-    { date: "2023-05-01", value: 23500 },
-    { date: "2023-05-08", value: 24100 },
-    { date: "2023-05-15", value: 24300 },
-    { date: "2023-05-22", value: 24800 },
-    { date: "2023-05-29", value: 25000 },
+    { date: "2025-05-01", value: 23500 },
+    { date: "2025-05-08", value: 24100 },
+    { date: "2025-05-15", value: 24300 },
+    { date: "2025-05-22", value: 24800 },
+    { date: "2025-05-29", value: 25000 },
   ],
 }
 

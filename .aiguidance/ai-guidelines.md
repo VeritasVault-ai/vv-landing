@@ -1,8 +1,8 @@
-# AI Guidelines for VeritasVault.ai
+# AI Guidelines for VeritasVault.net
 
 ## Overview
 
-This document outlines the guidelines and best practices for AI integration within the VeritasVault.ai platform. These guidelines ensure consistent, ethical, and effective use of AI technologies across our enterprise liquidity management solutions.
+This document outlines the guidelines and best practices for AI integration within the VeritasVault.net platform. These guidelines ensure consistent, ethical, and effective use of AI technologies across our enterprise liquidity management solutions.
 
 ## Core Principles
 
@@ -48,7 +48,7 @@ This document outlines the guidelines and best practices for AI integration with
    - Track and analyze user interactions with AI features
    - Implement mechanisms to report and address AI inaccuracies
 
-## AI Features in VeritasVault.ai
+## AI Features in VeritasVault.net
 
 ### Risk Assessment
 

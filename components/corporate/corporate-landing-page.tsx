@@ -6,9 +6,9 @@ import {
   InstitutionalBadges,
   KeyBenefits,
   SolutionsTabs,
-  TrustedInstitutions,
   ValueProposition
 } from "@/components/corporate/landing-sections"
+import { ComingSoonBanner } from "./coming-soon-banner"
 
 /**
  * Corporate landing page component that assembles all section components
@@ -33,8 +33,8 @@ export function CorporateLandingPage() {
 
       {/* CTA Section */}
       <CtaSection />
-      {/* Trusted Institutions Section */}
-      <TrustedInstitutions />
+      {/* Trusted Institutions Section
+      <TrustedInstitutions /> */}
     </div>
   )
 }

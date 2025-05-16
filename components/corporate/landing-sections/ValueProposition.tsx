@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Lock, TrendingUp, Globe } from "lucide-react"
+import { Globe, Lock, TrendingUp } from "lucide-react"
 
 /**
  * Renders a landing page section highlighting the value proposition of an institutional-grade digital asset management service.
@@ -17,7 +17,7 @@ export function ValueProposition() {
             Institutional-Grade Digital Asset Management
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-            VeritasVault.ai combines traditional finance principles with blockchain technology to deliver secure,
+            VeritasVault.net combines traditional finance principles with blockchain technology to deliver secure,
             compliant, and optimized treasury management solutions.
           </p>
         </div>

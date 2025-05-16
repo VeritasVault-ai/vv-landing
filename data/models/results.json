@@ -1,42 +1,217 @@
 {
-  "model": "BlackLitterman",
-  "modelResults": [
+  "Model": "BlackLittermanModel",
+  "ModelResults": [
     {
       "Views": [
         {
-          "Weights": [{ "asset": "stETH", "weight": 1.0 }, { "asset": "tzBTC", "weight": -1.0 }],
-          "Return": 0.0125
+          "Weights": [
+            {
+              "Asset": "STETH",
+              "Weight": 0.015380886054340766
+            }
+          ],
+          "Return": 0.015380886054340766
         },
         {
-          "Weights": [{ "asset": "USDC", "weight": 1.0 }],
-          "Return": 0.03
+          "Weights": [
+            {
+              "Asset": "GHO",
+              "Weight": 0.010930316344005141
+            }
+          ],
+          "Return": 0.010930316344005141
+        },
+        {
+          "Weights": [
+            {
+              "Asset": "USDC",
+              "Weight": 0.030844169578271557
+            }
+          ],
+          "Return": 0.030844169578271557
+        },
+        {
+          "Weights": [
+            {
+              "Asset": "WBTC",
+              "Weight": 0.034111776906413205
+            }
+          ],
+          "Return": 0.034111776906413205
+        },
+        {
+          "Weights": [
+            {
+              "Asset": "JITOSOL",
+              "Weight": 0.005383345439156081
+            }
+          ],
+          "Return": 0.005383345439156081
         }
       ],
       "Allocations": [
-        { "asset": "stETH", "weight": 0.5 },
-        { "asset": "tzBTC", "weight": 0.2 },
-        { "asset": "USDC", "weight": 0.3 }
+        {
+          "asset": "STETH",
+          "weight": 0.60619
+        },
+        {
+          "asset": "GHO",
+          "weight": 0.01237
+        },
+        {
+          "asset": "USDC",
+          "weight": 0.03179
+        },
+        {
+          "asset": "WBTC",
+          "weight": 0.23762
+        },
+        {
+          "asset": "JITOSOL",
+          "weight": 0.11203
+        }
       ]
     },
     {
       "Views": [
         {
-          "Weights": [{ "asset": "stETH", "weight": 1.0 }, { "asset": "USDC", "weight": -1.0 }],
-          "Return": 0.02
+          "Weights": [
+            {
+              "Asset": "STETH",
+              "Weight": 0.01076511149561649
+            }
+          ],
+          "Return": 0.01076511149561649
         },
         {
-          "Weights": [{ "asset": "USDC", "weight": 1.0 }],
-          "Return": 0.02
+          "Weights": [
+            {
+              "Asset": "GHO",
+              "Weight": 0.01604207145258401
+            }
+          ],
+          "Return": 0.01604207145258401
         },
         {
-          "Weights": [{ "asset": "tzBTC", "weight": 1.0 }],
-          "Return": 0.035
+          "Weights": [
+            {
+              "Asset": "USDC",
+              "Weight": 0.044915640302185304
+            }
+          ],
+          "Return": 0.044915640302185304
+        },
+        {
+          "Weights": [
+            {
+              "Asset": "WBTC",
+              "Weight": -0.0010080009570317579
+            }
+          ],
+          "Return": -0.0010080009570317579
+        },
+        {
+          "Weights": [
+            {
+              "Asset": "JITOSOL",
+              "Weight": 0.010408338403052884
+            }
+          ],
+          "Return": 0.010408338403052884
         }
       ],
       "Allocations": [
-        { "asset": "stETH", "weight": 0.4 },
-        { "asset": "tzBTC", "weight": 0.5 },
-        { "asset": "USDC", "weight": 0.1 }
+        {
+          "asset": "STETH",
+          "weight": 0.6828
+        },
+        {
+          "asset": "GHO",
+          "weight": 0.01311
+        },
+        {
+          "asset": "USDC",
+          "weight": 0.03852
+        },
+        {
+          "asset": "WBTC",
+          "weight": 0.15854
+        },
+        {
+          "asset": "JITOSOL",
+          "weight": 0.10703
+        }
+      ]
+    },
+    {
+      "Views": [
+        {
+          "Weights": [
+            {
+              "Asset": "STETH",
+              "Weight": 0.006340150596699034
+            }
+          ],
+          "Return": 0.006340150596699034
+        },
+        {
+          "Weights": [
+            {
+              "Asset": "GHO",
+              "Weight": 0.015204700026962231
+            }
+          ],
+          "Return": 0.015204700026962231
+        },
+        {
+          "Weights": [
+            {
+              "Asset": "USDC",
+              "Weight": 0.04245552239997218
+            }
+          ],
+          "Return": 0.04245552239997218
+        },
+        {
+          "Weights": [
+            {
+              "Asset": "WBTC",
+              "Weight": -0.01766276057543965
+            }
+          ],
+          "Return": -0.01766276057543965
+        },
+        {
+          "Weights": [
+            {
+              "Asset": "JITOSOL",
+              "Weight": 0.010685274638558763
+            }
+          ],
+          "Return": 0.010685274638558763
+        }
+      ],
+      "Allocations": [
+        {
+          "asset": "STETH",
+          "weight": 0.698
+        },
+        {
+          "asset": "GHO",
+          "weight": 0.01266
+        },
+        {
+          "asset": "USDC",
+          "weight": 0.03859
+        },
+        {
+          "asset": "WBTC",
+          "weight": 0.14706
+        },
+        {
+          "asset": "JITOSOL",
+          "weight": 0.10369
+        }
       ]
     }
   ]

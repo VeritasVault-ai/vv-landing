@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .overviewGrid {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.summaryCard,
+.allocationCard,
+.assetsCard {
+  height: 100%;
+}
+
+.cardHeader {
+  padding-bottom: 1rem;
+}
+
+.titleIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+  display: inline;
+  vertical-align: middle;
+}

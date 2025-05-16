@@ -6,7 +6,7 @@
  * is not available.
  */
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { VersionAwareFooter as OriginalVersionAwareFooter } from "./VersionAwareFooter"
 
 /**
@@ -32,7 +32,7 @@ export function VersionAwareFooter() {
       <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-6">
         <div className="container mx-auto px-4">
           <p className="text-center text-slate-600 dark:text-slate-400">
-            &copy; {new Date().getFullYear()} VeritasVault.ai. All rights reserved.
+            &copy; {new Date().getFullYear()} VeritasVault.net. All rights reserved.
           </p>
         </div>
       </footer>
@@ -45,7 +45,7 @@ export function VersionAwareFooter() {
       <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-6">
         <div className="container mx-auto px-4">
           <p className="text-center text-slate-600 dark:text-slate-400">
-            &copy; {new Date().getFullYear()} VeritasVault.ai. All rights reserved.
+            &copy; {new Date().getFullYear()} VeritasVault.net. All rights reserved.
           </p>
         </div>
       </footer>
@@ -66,7 +66,7 @@ export function VersionAwareFooter() {
       <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-6">
         <div className="container mx-auto px-4">
           <p className="text-center text-slate-600 dark:text-slate-400">
-            &copy; {new Date().getFullYear()} VeritasVault.ai. All rights reserved.
+            &copy; {new Date().getFullYear()} VeritasVault.net. All rights reserved.
           </p>
         </div>
       </footer>

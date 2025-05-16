@@ -1,0 +1,93 @@
+.userButton {
+  position: relative;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 9999px;
+}
+
+.userAvatar {
+  display: flex;
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: var(--blue-100);
+  color: var(--blue-700);
+  font-weight: 500;
+}
+
+.dropdownContent {
+  width: 14rem;
+  background-color: white;
+  border: 1px solid var(--slate-200);
+}
+
+.dropdownLabel {
+  color: var(--slate-900);
+}
+
+.dropdownSeparator {
+  background-color: var(--slate-200);
+}
+
+.dropdownItem {
+  color: var(--slate-700);
+}
+
+.dropdownItem:focus {
+  color: var(--slate-900);
+  background-color: var(--slate-100);
+}
+
+.dropdownItemIcon {
+  margin-right: 0.5rem;
+  height: 1rem;
+  width: 1rem;
+}
+
+.dropdownItemDanger {
+  color: var(--red-600);
+}
+
+.dropdownItemDanger:focus {
+  color: var(--red-700);
+  background-color: var(--slate-100);
+}
+
+/* Dark mode styles */
+:global(.dark) .userAvatar {
+  background-color: var(--blue-900);
+  color: var(--blue-300);
+}
+
+:global(.dark) .dropdownContent {
+  background-color: var(--slate-900);
+  border-color: var(--slate-800);
+}
+
+:global(.dark) .dropdownLabel {
+  color: var(--slate-100);
+}
+
+:global(.dark) .dropdownSeparator {
+  background-color: var(--slate-800);
+}
+
+:global(.dark) .dropdownItem {
+  color: var(--slate-300);
+}
+
+:global(.dark) .dropdownItem:focus {
+  color: white;
+  background-color: var(--slate-800);
+}
+
+:global(.dark) .dropdownItemDanger {
+  color: var(--red-400);
+}
+
+:global(.dark) .dropdownItemDanger:focus {
+  color: var(--red-300);
+  background-color: var(--slate-800);
+}

@@ -1,0 +1,99 @@
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metricItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metricLabel {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.metricValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.volumeWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.usersWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.usersIcon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-foreground);
+}
+
+.positive {
+  color: var(--color-success);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
+
+.negative {
+  color: var(--color-destructive);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
+
+.trendIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.chartContainer {
+  height: 200px;
+  margin-top: 1rem;
+}
+
+.cardFooter {
+  justify-content: flex-end;
+}
+
+.viewMoreButton {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.linkIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.errorCard {
+  border-color: var(--destructive);
+  background-color: var(--destructive-foreground);
+}
+
+.errorMessage {
+  color: var(--destructive);
+  margin-bottom: 1rem;
+}
+
+.retryButton {
+  margin-top: 0.5rem;
+}

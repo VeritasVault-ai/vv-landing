@@ -152,7 +152,7 @@ export const neuralliquidLightTheme = createTheme({
     },
   },
   brand: {
-    logo: '/logos/neuralliquid-logo.svg',
+    logo: '/logos/neuralliquid-logo.png',
     gradient: {
       from: '#7c3aed', // Violet 600
       to: '#06b6d4', // Cyan 500

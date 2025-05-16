@@ -151,7 +151,7 @@ export const veritasVaultLightTheme = createTheme({
     },
   },
   brand: {
-    logo: '/logos/veritasvault-logo.svg',
+    logo: '/logos/veritasvault-logo.png',
     gradient: {
       from: '#1a365d', // Navy
       to: '#d69e2e', // Gold

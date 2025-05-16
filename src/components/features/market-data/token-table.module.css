@@ -1,0 +1,79 @@
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tokenCell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tokenIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.placeholderIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--muted);
+}
+
+.tokenInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.tokenName {
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.tokenSymbol {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.rankColumn {
+  width: 50px;
+}
+
+.priceColumn {
+  width: 120px;
+  text-align: right;
+}
+
+.changeColumn {
+  width: 120px;
+  text-align: right;
+}
+
+.marketCapColumn {
+  width: 150px;
+  text-align: right;
+}
+
+.positive {
+  color: var(--color-success);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.negative {
+  color: var(--color-destructive);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.changeIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.25rem;
+}

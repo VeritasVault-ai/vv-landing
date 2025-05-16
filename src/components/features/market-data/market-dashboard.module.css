@@ -1,0 +1,90 @@
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.dashboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboardTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.metricsContainer {
+  margin-bottom: 1rem;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .metricsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.dataTabs {
+  width: 100%;
+}
+
+.tabContent {
+  margin-top: 1rem;
+}
+
+.cardFooter {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.chartContainer {
+  height: 400px;
+  position: relative;
+}
+
+.chartSkeleton {
+  height: 300px;
+  width: 100%;
+}
+
+.tableSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.errorAlert {
+  max-width: 600px;
+  margin: 2rem auto;
+}

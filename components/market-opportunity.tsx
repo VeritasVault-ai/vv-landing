@@ -1,10 +1,10 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts"
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 const marketSizeData = [
-  { year: 2023, value: 24.5 },
+  { year: 2025, value: 24.5 },
   { year: 2024, value: 31.2 },
   { year: 2025, value: 39.7 },
   { year: 2026, value: 50.5 },
@@ -33,7 +33,7 @@ export default function MarketOpportunity() {
         <div className="rounded-lg border p-4">
           <h3 className="text-lg font-medium mb-2">Market Size & Growth</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            The global DeFi liquidity management market is projected to grow at a CAGR of 27.3% from 2023 to 2028.
+            The global DeFi liquidity management market is projected to grow at a CAGR of 27.3% from 2025 to 2028.
           </p>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
