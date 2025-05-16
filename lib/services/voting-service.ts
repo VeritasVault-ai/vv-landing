@@ -12,36 +12,14 @@ class VotingService {
    * Fetch voting overview data
    */
   async getVotingOverview(): Promise<VotingOverview> {
-    try {
-      console.log('Fetching voting overview from API...');
-      const response = await fetch('/api/voting/overview');
+    // This endpoint will be intercepted by MSW when enabled
+    const response = await fetch('/api/voting/overview')
       
-      console.log('API response status:', response.status, response.statusText);
-      if (!response.ok) {
-        // Try to get more details about the error
-        let errorDetails = '';
-        try {
-          const errorData = await response.json();
-          errorDetails = JSON.stringify(errorData);
-        } catch (e) {
-          // If we can't parse JSON, try to get text
-          try {
-            errorDetails = await response.text();
-          } catch (e2) {
-            errorDetails = 'Could not extract error details';
-          }
-        }
-
-        throw new Error(`Failed to fetch voting overview: ${response.statusText}. Details: ${errorDetails}`);
-      }
-      
-      const data = await response.json();
-      console.log('Successfully fetched voting overview data');
-      return data;
-    } catch (error) {
-      console.error('Error in getVotingOverview:', error);
-      throw error;
+    if (!response.ok) {
+      throw new Error('Failed to fetch voting overview')
     }
+    
+    return response.json()
   }
   /**
    * Fetch active proposals
@@ -87,7 +65,23 @@ class VotingService {
     
     return response.json();
   }
-}
 
+  async delegateVotes(address: string, amount: number): Promise<{ success: boolean, overview?: VotingOverview }> {
+    // This endpoint will be intercepted by MSW when enabled
+    const response = await fetch('/api/voting/delegate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ address, amount })
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to delegate votes')
+    }
+
+    return response.json()
+  }
+}
 // Export a singleton instance
 export const votingService = new VotingService();

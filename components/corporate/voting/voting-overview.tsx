@@ -9,31 +9,8 @@ import { ChartContainer } from "@/components/ui/chart"
 import { VotingOverview as VotingOverviewType } from "@/lib/repositories/voting-repository"
 import { votingService } from "@/lib/services/voting-service"
 import { votingEvents } from "@/lib/events/voting-events"
-
-// Fallback data to use when API fails
-const FALLBACK_DATA: VotingOverviewType = {
-  votingPower: {
-    percentage: 5.2,
-    votes: 52000,
-    totalVotes: 1000000
-  },
-  participation: {
-    participated: 12,
-    totalProposals: 15,
-    rate: 80,
-    comparedToAverage: 15
-  },
-  votingPowerDistribution: [
-    { name: "Core Team", value: 15 },
-    { name: "Community", value: 45 },
-    { name: "Treasury", value: 40 }
-  ],
-  delegations: [
-    { address: "0x1a2...3b4c", timeAgo: "2 days ago", votes: 12000 },
-    { address: "0x5d6...7e8f", timeAgo: "1 week ago", votes: 8000 },
-    { address: "0x9a0...1b2c", timeAgo: "3 weeks ago", votes: 5000 }
-  ]
-};
+import { VotingOverviewSkeleton } from "./voting-overview.skeleton"
+import { useVotingSkeleton } from "@/lib/hooks/use-voting-skeleton"
 
 // Colors for the chart
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"]
@@ -46,48 +23,11 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28"]
  * @returns A React element displaying summary cards, a voting power distribution pie chart, and a list of delegations, or loading and fallback UI as appropriate.
  *
  * @remark If live data cannot be loaded, simulated fallback data is shown with a warning to the user.
+ * When MSW is enabled, API requests are intercepted and mock data is returned.
  */
 export function VotingOverview() {
-  const [data, setData] = useState<VotingOverviewType | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [usedFallback, setUsedFallback] = useState(false)
-
-  useEffect(() => {
-    /**
-     * Fetches voting overview data and updates component state with the result.
-     *
-     * If the fetch fails, sets an error message and uses fallback data to ensure the UI remains populated.
-     */
-    async function fetchData() {
-      try {
-        console.log("Attempting to fetch voting overview data...")
-        const result = await votingService.getVotingOverview()
-        setData(result)
-        setUsedFallback(false)
-      } catch (err) {
-        console.error('Error fetching voting overview:', err)
-        setError('Failed to load voting data. Using fallback data instead.')
-        // Use fallback data instead of showing an error
-        setData(FALLBACK_DATA)
-        setUsedFallback(true)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-
-    // Subscribe to voting-power-changed events for real-time updates
-    const unsubscribe = votingEvents.subscribe('voting-power-changed', ({ overview }) => {
-      setData(overview)
-      setUsedFallback(false)
-    })
-
-    // Clean up subscription when component unmounts
-    return () => unsubscribe()
-  }, [])
-
+  // Pass an object with useFallback property
+  const { loading, data, error, usedFallback } = useVotingSkeleton({ useFallback: true })
   // Create a config object for the chart
   const chartConfig = data?.votingPowerDistribution?.reduce(
     (acc, item, index) => {
@@ -101,15 +41,8 @@ export function VotingOverview() {
   ) || {}
 
   if (loading) {
-    // Loading UI (unchanged)
-    return (
-      <div className="space-y-6">
-        {/* Loading skeleton UI */}
-        {/* ... (existing loading UI code) ... */}
-      </div>
-    )
+    return <VotingOverviewSkeleton />
   }
-
   if (!data) {
     return null
   }
@@ -123,8 +56,7 @@ export function VotingOverview() {
           </p>
         </div>
       )}
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Your Voting Power</CardDescription>
