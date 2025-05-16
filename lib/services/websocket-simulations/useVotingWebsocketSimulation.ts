@@ -132,72 +132,37 @@ export function useVotingWebSocketSimulation(
   const startSimulation = useCallback(() => {
     onStatusChange?.('connected');
     
-    // For simulation, send initial data
-    setTimeout(() => {
-      // Simulate initial message
-      const initialData: VotingData = {
-        status: 'active',
-        activeProposals: [
-          {
-            id: 'prop-2023-05',
-            title: 'Treasury Reallocation',
-            description: 'Proposal to reallocate 5% of treasury to new liquidity pools',
-            startTime: new Date(Date.now() - 86400000).toISOString(),
-            endTime: new Date(Date.now() + 172800000).toISOString(),
-            votes: {
-              for: 1250000,
-              against: 450000,
-              abstain: 120000
-            },
-            quorum: 2000000,
-            requiredMajority: 0.66
-          },
-          {
-            id: 'prop-2023-06',
-            title: 'Protocol Upgrade',
-            description: 'Upgrade core protocol to v2.5 with enhanced security features',
-            startTime: new Date(Date.now() - 172800000).toISOString(),
-            endTime: new Date(Date.now() + 86400000).toISOString(),
-            votes: {
-              for: 1820000,
-              against: 230000,
-              abstain: 50000
-            },
-            quorum: 1500000,
-            requiredMajority: 0.75
-          }
-        ],
-        recentVotes: [
-          {
-            proposalId: 'prop-2023-05',
-            timestamp: new Date(Date.now() - 3600000).toISOString(),
-            vote: 'for',
-            weight: 50000,
-            anonymous: true
-          },
-          {
-            proposalId: 'prop-2023-06',
-            timestamp: new Date(Date.now() - 7200000).toISOString(),
-            vote: 'against',
-            weight: 25000,
-            anonymous: false,
-            voter: '0x1a2b...3c4d'
-          }
-        ],
-        userVotingPower: 75000,
-        userVotesCast: 1,
-        votingStats: {
-          totalProposals: 12,
-          activeProposals: 2,
-          participationRate: 0.68,
-          averageTurnout: 0.72
+    // For simulation, fetch initial data from our mock API endpoint
+    setTimeout(async () => {
+      try {
+        // Fetch initial data from our mock API endpoint
+        const response = await fetch('/api/voting/websocket-data');
+        if (!response.ok) {
+          throw new Error('Failed to fetch initial voting data');
         }
-      };
+        
+        const initialData = await response.json();
+        setData(initialData);
       
-      setData(initialData);
-      
-      // Start periodic updates
-      startPeriodicUpdates();
+        // Start periodic updates
+        startPeriodicUpdates();
+      } catch (error) {
+        console.error('Error fetching initial voting data:', error);
+        // Fallback to empty data structure
+        setData({
+          status: 'active',
+          activeProposals: [],
+          recentVotes: [],
+          userVotingPower: 0,
+          userVotesCast: 0,
+          votingStats: {
+            totalProposals: 0,
+            activeProposals: 0,
+            participationRate: 0,
+            averageTurnout: 0
+          }
+        });
+      }
     }, 1000);
   }, [onStatusChange]);
 
@@ -234,14 +199,19 @@ export function useVotingWebSocketSimulation(
               const weight = Math.floor(Math.random() * 30000) + 5000;
               const anonymous = Math.random() > 0.5;
               
-              updatedData.recentVotes.unshift({
+              // Create a new vote
+              const newVote = {
                 proposalId: proposal.id,
                 timestamp: new Date().toISOString(),
                 vote: voteType as 'for' | 'against' | 'abstain',
                 weight,
                 anonymous,
                 voter: anonymous ? undefined : `0x${Math.random().toString(16).substring(2, 10)}...`
-              });
+              };
+              
+              // Submit the vote to our API endpoint
+              submitVote(newVote);
+              updatedData.recentVotes.unshift(newVote);
               
               // Keep only the 5 most recent votes
               if (updatedData.recentVotes.length > 5) {
@@ -266,6 +236,25 @@ export function useVotingWebSocketSimulation(
     return () => clearInterval(updateInterval);
   }, [isSimulated]);
 
+  // Submit a vote to our API endpoint
+  const submitVote = async (vote: {
+    proposalId: string;
+    vote: 'for' | 'against' | 'abstain';
+    weight: number;
+  }) => {
+    try {
+      await fetch('/api/voting/vote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(vote),
+      });
+    } catch (error) {
+      console.error('Error submitting vote:', error);
+    }
+  };
+
   // Manual reconnect function
   const reconnect = useCallback(() => {
     // Clear any pending reconnect
@@ -273,7 +262,6 @@ export function useVotingWebSocketSimulation(
       clearTimeout(reconnectTimeoutRef.current);
       reconnectTimeoutRef.current = null;
     }
-    
     connect();
   }, [connect]);
 
@@ -281,7 +269,7 @@ export function useVotingWebSocketSimulation(
   useEffect(() => {
     if (typeof window !== 'undefined') {
       connect();
-    }
+}
     
     // Clean up on unmount
     return () => {
@@ -298,6 +286,7 @@ export function useVotingWebSocketSimulation(
   return { 
     data, 
     reconnect,
-    isSimulated
+    isSimulated,
+    submitVote // Export the submitVote function for direct use
   };
 }

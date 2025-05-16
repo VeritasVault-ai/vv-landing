@@ -3,6 +3,7 @@ import {
   ActiveProposal,
   PastProposal
 } from '@/lib/repositories/voting-repository';
+import { VotingData } from './websocket-simulations/useVotingWebsocketSimulation';
 
 /**
  * Service layer for interacting with the voting API
@@ -46,17 +47,27 @@ class VotingService {
   /**
    * Submit a vote on a proposal
    */
-  async submitVote(proposalId: string, vote: 'for' | 'against' | null): Promise<{
+  async submitVote(
+    proposalId: string, 
+    vote: 'for' | 'against' | 'abstain' | null,
+    weight?: number
+  ): Promise<{
     success: boolean;
     message: string;
-    proposals: ActiveProposal[];
+    proposals?: ActiveProposal[];
   }> {
+    const payload: any = { proposalId, vote };
+    
+    // Add weight if provided
+    if (weight !== undefined) {
+      payload.weight = weight;
+    }
     const response = await fetch('/api/voting/vote', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ proposalId, vote }),
+      body: JSON.stringify(payload),
     });
     
     if (!response.ok) {
@@ -66,7 +77,13 @@ class VotingService {
     return response.json();
   }
 
-  async delegateVotes(address: string, amount: number): Promise<{ success: boolean, overview?: VotingOverview }> {
+  /**
+   * Delegate voting power to an address
+   */
+  async delegateVotes(address: string, amount: number): Promise<{ 
+    success: boolean, 
+    overview?: VotingOverview 
+  }> {
     // This endpoint will be intercepted by MSW when enabled
     const response = await fetch('/api/voting/delegate', {
       method: 'POST',
@@ -81,6 +98,17 @@ class VotingService {
     }
 
     return response.json()
+  }
+
+  /**
+   * Get initial WebSocket data
+   */
+  async getWebSocketData(): Promise<VotingData> {
+    const response = await fetch('/api/voting/websocket-data');
+    if (!response.ok) {
+      throw new Error('Failed to fetch WebSocket data');
+    }
+    return response.json();
   }
 }
 // Export a singleton instance
