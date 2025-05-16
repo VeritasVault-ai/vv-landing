@@ -77,12 +77,19 @@ export function useVotingWebSocketSimulation(
             vote: voteType as 'for' | 'against' | 'abstain',
             weight,
             anonymous,
-            voter: anonymous ? undefined : `0x${Math.random().toString(16).substring(2, 10)}...`
+            voter: anonymous
+              ? undefined
+              : `0x${Math.random().toString(16).substring(2, 10)}...`
           };
           
-          // Submit the vote to our API endpoint
-          submitVote(newVote);
+          // Submit only the payload fields the API accepts
+          submitVote({
+            proposalId: newVote.proposalId,
+            vote: newVote.vote,
+            weight: newVote.weight
+          });
           updatedData.recentVotes.unshift(newVote);
+        }
           
           // Keep only the 5 most recent votes
           if (updatedData.recentVotes.length > 5) {
