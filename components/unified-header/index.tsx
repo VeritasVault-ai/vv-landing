@@ -349,7 +349,7 @@ export function UnifiedHeader({
       </div>
 
       {/* Mobile menu with animation */}
-      <div className={`${styles.mobileMenuContainer} ${mobileMenuAnimationClass}`}>
+      <div className={`${styles.mobileMenuContainer} ${mobileMenuAnimationClass}`} aria-hidden={!isMenuOpen}>
         {isMenuOpen && (
           <MobileMenu 
             version={version} 
