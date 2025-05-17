@@ -3,7 +3,7 @@
 import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
 import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
 import { UnifiedHeader } from "@/components/unified-header"
-import { CorporateFooter } from "@/components/corporate/corporate-footer"
+import { UnifiedFooter } from "@/components/unified-footer"
 import { CorporateSidebar } from "@/components/corporate/corporate-sidebar"
 import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
@@ -70,7 +70,10 @@ export function CorporateLayoutClient({
             {children}
           </main>
         </div>
-        <CorporateFooter />
+        <UnifiedFooter 
+          variant="corporate"
+          showNewsletter={!isDashboardPage}
+        />
       </div>
     </RobustThemeProvider>
   )

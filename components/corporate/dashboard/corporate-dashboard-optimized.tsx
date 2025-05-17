@@ -1,25 +1,19 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Menu, X } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import styles from './corporate-dashboard.module.css'
-import { Menu, X } from 'lucide-react'
-
-// Import layout components
-import { CorporateHeader } from '@/components/corporate/corporate-header'
-import { CorporateFooter } from '@/components/corporate/corporate-footer'
-
-// Import dashboard configuration utilities
-import {
-  DashboardCategory,
-  categoryDisplayNames,
-  createDashboardConfig,
-  getDashboardsByCategory
-} from './dashboard-config-optimized'
 
 // Import error boundary for better error handling
 import { ErrorBoundary } from '@/components/error-boundary'
+import {
+  categoryDisplayNames,
+  createDashboardConfig,
+  DashboardCategory,
+  DashboardConfig
+} from './dashboard-config'
 
 /**
  * Enhanced Corporate Dashboard with sidebar navigation to switch between different dashboards
@@ -32,7 +26,7 @@ export function CorporateDashboardOptimized() {
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
   
   // Generate dashboard configurations using the utility function
-  const dashboards = createDashboardConfig(styles)
+  const dashboards = createDashboardConfig({ styles })
   
   // Determine active dashboard based on URL path or default to first dashboard
   const getInitialDashboard = () => {
@@ -103,6 +97,11 @@ export function CorporateDashboardOptimized() {
     setSidebarExpanded(!sidebarExpanded)
   }
   
+  // Helper function to filter dashboards by category that works with readonly arrays
+  const filterDashboardsByCategory = (dashboards: readonly DashboardConfig[], category: DashboardCategory) => {
+    return dashboards.filter(dashboard => dashboard.category === category);
+  };
+  
   return (
     <div className={styles.appContainer}>
       <div className={styles.dashboardContainer}>
@@ -116,7 +115,7 @@ export function CorporateDashboardOptimized() {
             {categories.map(category => (
               <div key={category} className={styles.categoryGroup}>
                 <div className={styles.categoryLabel}>{categoryDisplayNames[category]}</div>
-                {getDashboardsByCategory(dashboards, category).map(dashboard => (
+                {filterDashboardsByCategory(dashboards, category).map(dashboard => (
                   <Button
                     key={dashboard.id}
                     variant={activeDashboard === dashboard.id ? "secondary" : "ghost"}
