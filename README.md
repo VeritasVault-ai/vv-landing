@@ -124,7 +124,7 @@ For manual deployment:
 ### Deployment Environments
 
 - **Production**: [https://VeritasVault.net](https://VeritasVault.net)
-- **Staging**: [https://staging.VeritasVault.net](https://staging.VeritasVault.net)
+- **Staging**: [https://staging.VeritasVault.net](https://test.VeritasVault.net)
 
 ## Contributing
 

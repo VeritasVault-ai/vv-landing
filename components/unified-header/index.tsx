@@ -261,12 +261,11 @@ export function UnifiedHeader({
           
           {/* Show navigation for dashboard and fixed variants */}
           {(variant === 'dashboard' || variant === 'fixed') && (
-            <MainNavigation 
-          version={version} 
-              customLinks={navigationLinks}
+            <MainNavigation
+              version={version}
+              customLinks={navigationLinks?.length ? navigationLinks : undefined}
               trackEvent={trackEvent}
-        />
-      )}
+            />
         </div>
 
         {/* Desktop actions */}

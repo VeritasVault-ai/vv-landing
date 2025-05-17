@@ -11,10 +11,12 @@ import { ChevronDown } from "lucide-react"
 import styles from "./main-navigation.module.css"
 import { NavigationLink } from "./index"
 
+import type { AnalyticsEvent } from "@/hooks/use-analytics"
+
 interface MainNavigationProps {
   version: string;
   customLinks?: NavigationLink[];
-  trackEvent?: (event: { action: string; category: string; label: string; destination?: string }) => void;
+  trackEvent?: (event: AnalyticsEvent) => void;
 }
 
 export function MainNavigation({ version, customLinks, trackEvent }: MainNavigationProps) {
@@ -112,16 +114,17 @@ export function MainNavigation({ version, customLinks, trackEvent }: MainNavigat
             align="start"
             className={styles.dropdownContent}
           >
-            {dropdownLinks.map((link) => (
-              <DropdownMenuItem key={link.href} className={styles.dropdownItem}>
-                <Link 
-                  href={link.href} 
+            {dropdownLinks.map((link, index) => (
+              <DropdownMenuItem key={link.href} asChild className={styles.dropdownItem}>
+                <Link
+                  href={link.href}
                   className={styles.dropdownLink}
                   onClick={() => handleLinkClick(link.label, link.href)}
                 >
                   {link.label}
                 </Link>
               </DropdownMenuItem>
+            ))}
             ))}
           </DropdownMenuContent>
         </DropdownMenu>

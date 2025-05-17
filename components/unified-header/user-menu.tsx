@@ -31,15 +31,10 @@ export function UserMenu({
   onHelpClick,
   trackEvent
 }: UserMenuProps) {
-  // Track menu item clicks
-  // Handler factory for menu item clicks
-  const createMenuItemHandler = (
-    callback?: () => void,
-    action: string,
-    category: string = "navigation"
-  ) => () => {
-    if (callback) {
-      callback();
+
+  const createClickHandler = (onClick?: () => void, action: string, category: string) => () => {
+    if (onClick) {
+      onClick();
     }
     
     if (trackEvent) {
@@ -50,16 +45,16 @@ export function UserMenu({
       });
     }
   };
+
+  const handleProfileClick = createClickHandler(onProfileClick, "profile_click", "navigation");
+  const handleSettingsClick = createClickHandler(onSettingsClick, "settings_click", "navigation");
+  const handleHelpClick = createClickHandler(onHelpClick, "help_click", "navigation");
+  const handleLogoutClick = createClickHandler(onLogout, "logout_click", "authentication");
   
-  // Create handlers for each menu item
-  const handleProfileClick = createMenuItemHandler(onProfileClick, "profile_click");
-  const handleSettingsClick = createMenuItemHandler(onSettingsClick, "settings_click");
-  const handleHelpClick = createMenuItemHandler(onHelpClick, "help_click");
-  const handleLogoutClick = createMenuItemHandler(onLogout, "logout_click", "authentication");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className={styles.userButton}>
+        <Button variant="ghost" className={styles.userButton} aria-label="User menu">
           <div className={styles.userAvatar}>
             {userInitials}
           </div>

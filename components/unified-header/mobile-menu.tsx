@@ -211,71 +211,28 @@ function MobileUserProfile({
   } = userMenuProps;
   
   // Handle profile click
+  // Utility function for handling user actions
+  const handleUserAction = (
+    actionCallback?: () => void,
+    eventData?: { action: string, category: string, label: string }
+  ) => {
+    setIsMenuOpen(false);
+    
+    if (actionCallback) {
+      actionCallback();
+    }
+    
+    if (trackEvent && eventData) {
+      trackEvent(eventData);
+    }
+  };
+
   const handleProfileClick = () => {
-    setIsMenuOpen(false);
-    
-    if (onProfileClick) {
-      onProfileClick();
-    }
-    
-    if (trackEvent) {
-      trackEvent({
-        action: "profile_click",
-        category: "navigation",
-        label: "mobile_menu"
-      });
-    }
-  };
-  
-  // Handle settings click
-  const handleSettingsClick = () => {
-    setIsMenuOpen(false);
-    
-    if (onSettingsClick) {
-      onSettingsClick();
-    }
-    
-    if (trackEvent) {
-      trackEvent({
-        action: "settings_click",
-        category: "navigation",
-        label: "mobile_menu"
-      });
-    }
-  };
-  
-  // Handle help click
-  const handleHelpClick = () => {
-    setIsMenuOpen(false);
-    
-    if (onHelpClick) {
-      onHelpClick();
-    }
-    
-    if (trackEvent) {
-      trackEvent({
-        action: "help_click",
-        category: "navigation",
-        label: "mobile_menu"
-      });
-    }
-  };
-  
-  // Handle logout click
-  const handleLogoutClick = () => {
-    setIsMenuOpen(false);
-    
-    if (onLogout) {
-      onLogout();
-    }
-    
-    if (trackEvent) {
-      trackEvent({
-        action: "logout_click",
-        category: "authentication",
-        label: "mobile_menu"
-      });
-    }
+    handleUserAction(onProfileClick, {
+      action: "profile_click",
+      category: "navigation",
+      label: "mobile_menu"
+    });
   };
 
   return (

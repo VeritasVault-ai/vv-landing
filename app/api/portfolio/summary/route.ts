@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { withAuth } from "@/lib/auth/auth-utils"
 export async function GET(request: NextRequest) {
   // Get filter from query params
   const { searchParams } = new URL(request.url);
