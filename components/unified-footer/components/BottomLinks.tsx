@@ -3,7 +3,7 @@ import styles from "../unified-footer.module.css"
 
 export interface BottomLinksProps {
   version: string;
-  trackEvent: (event: any) => void;
+  trackEvent: (event: { action: string; category: string; label: string }) => void;
 }
 
 export function BottomLinks({ 
