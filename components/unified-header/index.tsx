@@ -1,0 +1,293 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useCurrentVersion } from "@/hooks/use-current-version"
+import Link from "next/link"
+import { Menu, X, AlertTriangle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ThemeToggleEnhanced } from "@/components/theme-toggle-enhanced"
+import styles from "./unified-header.module.css"
+
+// Import sub-components
+import { MainNavigation } from "./main-navigation"
+import { MobileMenu } from "./mobile-menu"
+import { UserMenu } from "./user-menu"
+import { SearchBar } from "./search-bar"
+import { NotificationsButton } from "./notifications-button"
+
+export type NavigationLink = {
+    label: string;
+    href: string;
+    active?: boolean;
+  icon?: React.ReactNode;
+  children?: NavigationLink[];
+};
+  
+export interface HeaderProps {
+  /**
+   * The type of header to render
+   * - 'landing': Simple header for landing pages
+   * - 'dashboard': Complex header for the corporate dashboard
+   * - 'demo': Header for demo mode with badge
+   * - 'fixed': Fixed position header with scroll effects
+   */
+  variant?: 'landing' | 'dashboard' | 'demo' | 'fixed';
+  
+  /**
+   * Whether to show the search bar
+   */
+  showSearch?: boolean;
+  
+  /**
+   * Whether to show notifications
+   */
+  showNotifications?: boolean;
+  
+  /**
+   * Number of unread notifications
+   */
+  notificationCount?: number;
+  
+  /**
+   * Whether to show the user menu
+   */
+  showUserMenu?: boolean;
+  
+  /**
+   * Custom navigation links to override defaults
+   */
+  navigationLinks?: NavigationLink[];
+  
+  /**
+   * Additional actions to show in the header
+   */
+  actions?: React.ReactNode;
+  
+  /**
+   * Whether to show the theme toggle
+   */
+  showThemeToggle?: boolean;
+  
+  /**
+   * Whether to show the "Get Early Access" CTA (for fixed variant)
+   */
+  showCTA?: boolean;
+  
+  /**
+   * Custom logo component
+   */
+  customLogo?: React.ReactNode;
+  
+  /**
+   * Custom CSS class for the header
+   */
+  className?: string;
+
+  /**
+   * Callback for when the search form is submitted
+   */
+  onSearchSubmit?: (query: string) => void;
+
+  /**
+   * Callback for when notifications are clicked
+   */
+  onNotificationClick?: () => void;
+
+  /**
+   * Props to pass to the UserMenu component
+   */
+  userMenuProps?: {
+    userName?: string;
+    userInitials?: string;
+    onLogout?: () => void;
+    onProfileClick?: () => void;
+    onSettingsClick?: () => void;
+    onHelpClick?: () => void;
+  };
+
+  /**
+   * Callback for when the CTA button is clicked
+   */
+  onCTAClick?: () => void;
+
+  /**
+   * Text for the CTA button
+   */
+  ctaText?: string;
+
+  /**
+   * Callback for when the "Exit Demo" button is clicked
+   */
+  onExitDemoClick?: () => void;
+
+  /**
+   * Whether the user is authenticated
+   */
+  isAuthenticated?: boolean;
+}
+
+export function UnifiedHeader({
+  variant = 'dashboard',
+  showSearch = true,
+  showNotifications = true,
+  notificationCount = 0,
+  showUserMenu = true,
+  navigationLinks,
+  actions,
+  showThemeToggle = true,
+  showCTA = false,
+  customLogo,
+  className,
+  onSearchSubmit,
+  onNotificationClick,
+  userMenuProps,
+  onCTAClick,
+  ctaText = "Get Early Access",
+  onExitDemoClick,
+  isAuthenticated = true,
+}: HeaderProps) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const { version } = useCurrentVersion()
+  
+  // Handle scroll effect for fixed variant
+  useEffect(() => {
+    if (variant === 'fixed') {
+      const handleScroll = () => {
+        setScrolled(window.scrollY > 10)
+      }
+      
+      window.addEventListener('scroll', handleScroll)
+      return () => window.removeEventListener('scroll', handleScroll)
+    }
+  }, [variant])
+  
+  // Determine header class based on variant and scroll state
+  const headerClass = `${styles.header} ${
+    variant === 'fixed' ? (scrolled ? styles.headerScrolled : '') : ''
+  } ${variant === 'landing' ? styles.headerLanding : ''} ${
+    className || ''
+  }`;
+  
+  return (
+    <header className={headerClass}>
+      {/* Demo mode badge */}
+          {variant === 'demo' && (
+        <div className={styles.demoBadge}>
+          <AlertTriangle className={styles.demoIcon} />
+          <span>Demo Mode</span>
+        </div>
+          )}
+          
+      <div className={styles.headerContainer}>
+        <div className={styles.logoContainer}>
+          {customLogo || (
+            <Link href={`/${version}`} className={styles.logo}>
+              <span className={styles.logoText}>
+                <span className={styles.logoVeritas}>Veritas</span>
+                <span className={styles.logoVault}>Vault</span>
+                <span className={styles.logoDomain}>.net</span>
+              </span>
+            </Link>
+          )}
+          
+          {/* Show navigation for dashboard and fixed variants */}
+          {(variant === 'dashboard' || variant === 'fixed') && (
+            <MainNavigation 
+          version={version} 
+              customLinks={navigationLinks}
+        />
+      )}
+        </div>
+
+        {/* Desktop actions */}
+        <div className={styles.desktopActions}>
+          {showSearch && variant !== 'landing' && (
+            <SearchBar onSubmit={onSearchSubmit} />
+          )}
+          
+          {showNotifications && variant !== 'landing' && (
+            <NotificationsButton 
+              count={notificationCount} 
+              onClick={onNotificationClick} 
+            />
+          )}
+          
+          {showThemeToggle && <ThemeToggleEnhanced />}
+          
+          {/* Custom actions */}
+          {actions}
+          
+          {/* CTA for fixed variant */}
+          {variant === 'fixed' && showCTA && (
+            <Button 
+              className={styles.ctaButton}
+              onClick={onCTAClick}
+            >
+              {ctaText}
+            </Button>
+          )}
+          
+          {/* Exit Demo button for demo variant */}
+          {variant === 'demo' && (
+            <Button 
+              variant="outline" 
+              className={styles.exitDemoButton}
+              onClick={onExitDemoClick}
+            >
+              Exit Demo
+            </Button>
+          )}
+          
+          {/* User menu for authenticated views */}
+          {showUserMenu && variant !== 'landing' && isAuthenticated && (
+            <UserMenu {...userMenuProps} />
+          )}
+        </div>
+
+        {/* Mobile actions */}
+        <div className={styles.mobileActions}>
+          {showThemeToggle && <ThemeToggleEnhanced />}
+          
+          {/* Demo exit button on mobile */}
+          {variant === 'demo' && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className={styles.exitDemoButtonMobile}
+              onClick={onExitDemoClick}
+            >
+              Exit
+            </Button>
+          )}
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? (
+              <X className={styles.iconButton} />
+            ) : (
+              <Menu className={styles.iconButton} />
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <MobileMenu 
+          version={version} 
+          setIsMenuOpen={setIsMenuOpen} 
+          customLinks={navigationLinks}
+          variant={variant}
+          isAuthenticated={isAuthenticated}
+          userMenuProps={userMenuProps}
+          showSearch={showSearch}
+          onSearchSubmit={onSearchSubmit}
+        />
+      )}
+    </header>
+  )
+}

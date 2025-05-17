@@ -1,4 +1,4 @@
-import { DashboardHeader } from "@/components/corporate/dashboard/dashboard-header"
+import { UnifiedHeader } from "@/components/unified-header"
 
 export default function DashboardLayout({
   children,
@@ -7,7 +7,13 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="flex min-h-screen flex-col">
-      <DashboardHeader notificationCount={3} />
+      <UnifiedHeader 
+        variant="dashboard" 
+        notificationCount={3}
+        showSearch={true}
+        showNotifications={true}
+        showUserMenu={true}
+      />
       <main>
         {children}
       </main>

@@ -2,7 +2,7 @@
 
 import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
 import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
-import { CorporateHeader } from "@/components/corporate/corporate-header"
+import { UnifiedHeader } from "@/components/unified-header"
 import { CorporateFooter } from "@/components/corporate/corporate-footer"
 import { CorporateSidebar } from "@/components/corporate/corporate-sidebar"
 import { usePathname } from "next/navigation"
@@ -40,6 +40,9 @@ export function CorporateLayoutClient({
   // Determine if sidebar should be shown (only when logged in and on dashboard pages)
   const showSidebar = isLoggedIn && isDashboardPage
   
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
   return (
     <RobustThemeProvider 
       defaultExperience={EXPERIENCE_TYPES.CORPORATE}
@@ -47,7 +50,16 @@ export function CorporateLayoutClient({
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="flex flex-col min-h-screen">
-        <CorporateHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        <UnifiedHeader 
+          variant="dashboard"
+          showSearch={isDashboardPage}
+          showNotifications={isDashboardPage}
+          showUserMenu={isLoggedIn}
+          isAuthenticated={isLoggedIn}
+          userMenuProps={{
+            onLogout: handleLogout
+          }}
+        />
         <div className="flex flex-1">
           {showSidebar && <CorporateSidebar />}
           <main 
