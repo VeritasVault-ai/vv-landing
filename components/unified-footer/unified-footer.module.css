@@ -1,0 +1,213 @@
+.footer {
+  border-top-width: 1px;
+  margin-top: auto;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.footerContainer {
+  @apply container py-8 md:py-12;
+}
+
+/* Demo badge */
+.demoBadge {
+  @apply bg-yellow-500 text-black text-sm py-1 px-4 flex items-center justify-center gap-2 font-medium;
+  opacity: 0.9;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(-100%);
+}
+
+.demoIcon {
+  @apply h-4 w-4;
+}
+
+/* Footer variants */
+.footerLanding {
+  @apply border-t border-border;
+  background-color: var(--background);
+}
+
+.footerDashboard {
+  @apply border-t border-border py-4;
+  background-color: rgba(var(--muted), 0.3);
+}
+
+.footerCorporate {
+  @apply border-t border-slate-200 dark:border-slate-800;
+  background-color: rgb(248, 250, 252);
+}
+
+.footerDemo {
+  @apply border-t border-border;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Top section */
+.footerTop {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-8 mb-8;
+}
+
+.logoSection {
+  @apply flex flex-col;
+}
+
+.logo {
+  @apply flex items-center mb-4;
+}
+
+.logoIcon {
+  @apply h-6 w-auto;
+}
+
+.logoText {
+  @apply ml-2 text-lg font-bold bg-gradient-to-r from-[#3A86FF] to-[#4ECDC4] bg-clip-text text-transparent;
+}
+
+.productDescription {
+  @apply text-muted-foreground mb-4 max-w-md text-sm;
+}
+
+.socialLinks {
+  @apply flex space-x-4;
+}
+
+.socialLink {
+  color: rgba(var(--foreground), 0.6);
+  @apply hover:text-primary transition-colors;
+}
+
+.socialIcon {
+  @apply h-5 w-5;
+}
+
+/* Newsletter section */
+.newsletterSection {
+  @apply flex flex-col justify-center;
+}
+
+.newsletterTitle {
+  @apply text-sm font-semibold mb-2;
+}
+
+.newsletterForm {
+  @apply flex gap-2;
+}
+
+.newsletterInput {
+  @apply max-w-xs;
+}
+
+.newsletterButton {
+  @apply transition-all duration-300 hover:bg-primary;
+}
+
+.newsletterIcon {
+  @apply h-4 w-4;
+}
+
+/* Link groups */
+.linkGroups {
+  @apply grid grid-cols-1 gap-8 md:grid-cols-4 mb-8;
+}
+
+.linkGroup {
+  @apply space-y-2;
+}
+
+.linkGroupTitle {
+  @apply mb-4 text-lg font-semibold;
+}
+
+.linkList {
+  @apply space-y-2 text-sm;
+}
+
+.footerLink {
+  @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
+}
+
+/* Contact section */
+.contactSection {
+  @apply space-y-2;
+}
+
+.contactTitle {
+  @apply mb-4 text-lg font-semibold;
+}
+
+.contactList {
+  @apply space-y-3 text-sm;
+}
+
+.contactItem {
+  @apply flex items-start gap-2;
+}
+
+.contactIcon {
+  @apply mt-0.5 h-4 w-4 text-muted-foreground;
+}
+
+.contactLink {
+  @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
+}
+
+.contactText {
+  @apply text-muted-foreground;
+}
+
+/* Bottom section */
+.footerBottom {
+  @apply border-t pt-8 text-center text-sm text-muted-foreground;
+}
+
+.copyright {
+  @apply mb-0;
+}
+
+.bottomLinks {
+  @apply flex justify-center gap-6 mt-4;
+}
+
+.bottomLink {
+  @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
+}
+
+/* Animation for hover effects */
+.footerLink,
+.socialLink,
+.contactLink,
+.bottomLink {
+  @apply relative;
+  transition: all 0.2s ease;
+}
+
+.footerLink:after,
+.bottomLink:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: currentColor;
+  transition: width 0.3s ease;
+}
+
+.footerLink:hover:after,
+.bottomLink:hover:after {
+  width: 100%;
+}
+
+/* Dashboard variant specific styles */
+.footerDashboard .footerBottom {
+  @apply flex flex-col md:flex-row justify-between items-center border-t-0 pt-0;
+}
+
+.footerDashboard .bottomLinks {
+  @apply mt-2 md:mt-0;
+}

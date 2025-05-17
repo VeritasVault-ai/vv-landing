@@ -154,16 +154,13 @@ export function UnifiedHeader({
   
   // Handle scroll effect for fixed variant
   useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+
     if (variant === 'fixed') {
-      const handleScroll = () => {
-        setScrolled(window.scrollY > 10)
-      }
-      
-      window.addEventListener('scroll', handleScroll)
-      return () => window.removeEventListener('scroll', handleScroll)
+      window.addEventListener('scroll', handleScroll);
     }
-  }, [variant])
-  
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [variant]);
   // Track menu toggle
   const handleMenuToggle = () => {
     const newState = !isMenuOpen
@@ -339,6 +336,7 @@ export function UnifiedHeader({
             size="icon" 
             onClick={handleMenuToggle}
             className={styles.menuButton}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           >
             {isMenuOpen ? (
               <X className={styles.iconButton} />
@@ -350,7 +348,7 @@ export function UnifiedHeader({
       </div>
 
       {/* Mobile menu with animation */}
-      <div className={`${styles.mobileMenuContainer} ${mobileMenuAnimationClass}`}>
+      <div className={`${styles.mobileMenuContainer} ${mobileMenuAnimationClass}`} aria-hidden={!isMenuOpen}>
         {isMenuOpen && (
           <MobileMenu 
             version={version} 

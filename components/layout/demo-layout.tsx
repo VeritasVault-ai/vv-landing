@@ -39,7 +39,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { Footer } from "@/components/layout/footer"
+import { UnifiedFooter } from "@/components/unified-footer"
 import { useTheme } from "next-themes"
 import { LogoFull } from "@/components/ui/logo-full"
 
@@ -300,7 +300,7 @@ export function DemoLayout({ children }: DemoLayoutProps) {
               <div className="w-full pt-0">{children}</div>
             </main>
 
-            <Footer />
+            <UnifiedFooter variant="demo" showDemoBadge={true} />
           </div>
         </div>
       </div>

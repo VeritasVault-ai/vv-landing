@@ -1,5 +1,5 @@
 import { DashboardOverview } from "@/components/dashboard/dashboard-overview"
-import { UnifiedHeader } from "@/components/layout/unified-header"
+import { UnifiedHeader } from "@/components/unified-header"
 import { generateStandardMetadata } from "@/lib/metadata-utils"
 import type { Metadata } from "next"
 

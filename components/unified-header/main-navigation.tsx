@@ -93,7 +93,7 @@ export function MainNavigation({ version, customLinks, trackEvent }: MainNavigat
     <div className={styles.navigation}>
       {links.map((link, index) => (
         <Link
-          key={link.href}
+          key={link.label}
           href={link.href}
           className={link.active ? styles.navLinkActive : styles.navLinkDefault}
           onClick={() => handleLinkClick(link.label, link.href)}

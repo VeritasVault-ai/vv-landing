@@ -34,7 +34,7 @@ export function MobileMenu({
   setIsMenuOpen, 
   customLinks, 
   variant = 'dashboard',
-  isAuthenticated = true,
+  isAuthenticated = false,
   userMenuProps = {},
   showSearch = true,
   onSearchSubmit,
@@ -119,7 +119,16 @@ export function MobileMenu({
     if (onSearchSubmit) {
       onSearchSubmit(query);
     }
-    
+
+    if (trackEvent) {
+      trackEvent({
+        action: "search",
+        category: "engagement",
+        label: query,
+        variant: variant
+      });
+    }
+
     setIsMenuOpen(false);
   };
 
@@ -138,7 +147,7 @@ export function MobileMenu({
           )}
 
         <nav className={styles.navMenu}>
-          {links.map((link, index) => (
+          {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -148,6 +157,7 @@ export function MobileMenu({
               {link.label}
             </Link>
           ))}
+        </nav>
 
           {variant === 'demo' && (
         <Button

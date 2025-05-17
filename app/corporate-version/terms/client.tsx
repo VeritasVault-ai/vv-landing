@@ -2,8 +2,9 @@
 
 import { RobustThemeProvider } from "@/src/context/RobustThemeProvider"
 import { EXPERIENCE_TYPES, CORPORATE_VARIANTS, COLOR_MODES } from "@/src/constants/theme"
-import { CorporateHeader } from "@/components/corporate/corporate-header"
-import { CorporateFooter } from "@/components/corporate/corporate-footer"
+import { UnifiedFooter } from "@/components/unified-footer"
+import { CORPORATE_PRODUCT_NAME, CORPORATE_PRODUCT_DESCRIPTION } from "@/lib/config/product-info"
+import { UnifiedHeader } from "@/components/unified-header"
 
 /**
  * Client component for the Terms page
@@ -16,6 +17,7 @@ export function TermsClient() {
       defaultColorMode={COLOR_MODES.LIGHT}
     >
       <div className="min-h-screen flex flex-col">
+        <UnifiedHeader />
         
         <main className="flex-grow">
           <div className="container mx-auto px-4 py-16">
@@ -86,6 +88,11 @@ export function TermsClient() {
           </div>
         </main>
         
+        <UnifiedFooter 
+          experience="corporate"
+          productName={CORPORATE_PRODUCT_NAME}
+          productDescription={CORPORATE_PRODUCT_DESCRIPTION}
+        />
       </div>
     </RobustThemeProvider>
   )

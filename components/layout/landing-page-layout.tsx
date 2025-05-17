@@ -1,11 +1,8 @@
 "use client"
-
+import { UnifiedFooter } from "@/components/unified-footer"
+import { UnifiedHeader } from "@/components/unified-header"
 import type { ReactNode } from "react"
-import { Header } from "@/components/layout/header"
-import { CorporateHeader } from "@/components/layout/corporate-header"
-import { LandingPageToggle } from "@/components/landing-page-toggle"
-import { UnifiedFooter } from "@/components/layout/unified-footer"
-import { CorporateFooter } from "@/components/layout/corporate-footer"
+import { LandingPageToggle } from "../landing-page-toggle"
 
 interface LandingPageLayoutProps {
   children: ReactNode
@@ -17,9 +14,16 @@ export function LandingPageLayout({ children, mode, onModeChange }: LandingPageL
   return (
     <div className="min-h-screen flex flex-col">
       <LandingPageToggle onChange={onModeChange} initialMode={mode} />
-      {mode === "standard" ? <Header /> : <CorporateHeader />}
+      <UnifiedHeader 
+        variant="landing"
+        showSearch={false}
+        data-mode={mode}
+      />
       <main className="flex-1">{children}</main>
-      {mode === "standard" ? <UnifiedFooter /> : <CorporateFooter />}
+      <UnifiedFooter 
+        variant={mode === "standard" ? "landing" : "corporate"} 
+        showNewsletter={mode === "corporate"}
+      />
     </div>
   )
 }

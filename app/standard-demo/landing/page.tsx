@@ -15,7 +15,8 @@ export default function DemoLandingPage() {
 
   const handleExitDemo = () => {
     // Navigate to main site or handle demo exit
-    window.location.href = "/";
+    const router = useRouter();
+    router.push('/');
   };
 
   return (
