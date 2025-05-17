@@ -115,15 +115,16 @@ export function MainNavigation({ version, customLinks, trackEvent }: MainNavigat
             className={styles.dropdownContent}
           >
             {dropdownLinks.map((link, index) => (
-              <DropdownMenuItem key={index} className={styles.dropdownItem}>
-                <Link 
-                  href={link.href} 
+              <DropdownMenuItem key={link.href} asChild className={styles.dropdownItem}>
+                <Link
+                  href={link.href}
                   className={styles.dropdownLink}
                   onClick={() => handleLinkClick(link.label, link.href)}
                 >
                   {link.label}
                 </Link>
               </DropdownMenuItem>
+            ))}
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
