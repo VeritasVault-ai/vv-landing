@@ -1,5 +1,6 @@
-import type { HistoricalTvlData, ProtocolData } from "@/types/market-data"
-import { API_ENDPOINTS } from "@/lib/constants"
+import { API_ENDPOINTS } from "@/src/lib/constants"
+import { HistoricalTvlData, ProtocolData } from "@/src/types/market-data"
+
 
 class DefiLlamaService {
   private baseUrl: string

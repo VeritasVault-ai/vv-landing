@@ -1,25 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
-import { Calendar, Download } from "lucide-react"
 import { CollapsibleSidebar } from "@/src/components/layout/CollapsibleSidebar"
-import { CorporateDashboardHeader } from "@/components/corporate/dashboard/corporate-dashboard-header"
+import { NavItemOrGroup } from '@/src/components/layout/sidebar'
+import {
+  BarChart3, Calendar, Download, Droplets,
+  FlaskConical, HelpCircle, LayoutDashboard, Settings, ShieldAlert
+} from "lucide-react"
+import { useState } from 'react'
 import { CorporateDashboardMetrics } from './CorporateDashboardMetrics'
 import { CorporateDashboardTabs } from './CorporateDashboardTabs'
-import { 
-  LayoutDashboard, 
-  BarChart3, 
-  LineChart, 
-  Droplets, 
-  FlaskConical, 
-  Settings, 
-  HelpCircle,
-  ShieldAlert,
-  Zap,
-  BookOpen
-} from 'lucide-react'
-import { NavItemOrGroup } from '@/src/components/layout/sidebar'
 
 /**
  * Renders the main corporate dashboard interface with navigation, sidebar, and integrated dashboard modules.
@@ -111,7 +101,6 @@ export function CorporateDashboard() {
 
         {/* Main content */}
         <div className={`flex-1 overflow-auto transition-all duration-300 ${sidebarCollapsed ? "ml-16" : "ml-64"}`}>
-          <CorporateDashboardHeader />
 
           <div className="container mx-auto px-4 py-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">

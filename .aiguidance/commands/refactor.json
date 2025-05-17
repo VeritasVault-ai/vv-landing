@@ -1,0 +1,5 @@
+{
+  "name": "refactor",
+  "prompt": "{{{ input }}}\n\n<boilerplate refactor template>",
+  "description": "Suggest refactoring improvements"
+}

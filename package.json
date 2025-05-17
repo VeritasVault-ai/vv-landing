@@ -1,6 +1,6 @@
 {
-  "name": "my-v0-project",
-  "version": "0.1.0",
+  "name": "VeritasVault.net_Landing",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "msw:init": "npx msw init public --save"
+    "msw:init": "npx msw init public --save",
+    "dup-check": "jscpd --config .jscpd.json",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@ai-sdk/deepinfra": "^0.2.15",
@@ -59,10 +61,11 @@
     "date-fns": "4.1.0",
     "embla-carousel-react": "8.5.1",
     "framer-motion": "^12.11.3",
+    "husky": "^9.1.7",
     "input-otp": "1.4.1",
     "jose": "^6.0.11",
     "lucide-react": "^0.454.0",
-    "msw": "^2.8.2",
+    "msw": "^2.0.0",
     "next": "15.2.4",
     "next-auth": "^4.24.11",
     "next-themes": "^0.4.6",
@@ -89,8 +92,6 @@
     "typescript": "^5.8.3"
   },
   "msw": {
-    "workerDirectory": [
-      "public"
-    ]
+    "workerDirectory": "public"
   }
 }

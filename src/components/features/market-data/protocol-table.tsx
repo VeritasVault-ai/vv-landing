@@ -1,9 +1,9 @@
+import { Button } from "@/components/ui/button"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { formatCurrency, formatPercentage } from "@/src/lib/formatters"
+import { ProtocolData } from "@/src/types/market-data"
 import { ArrowDown, ArrowUp, ExternalLink } from "lucide-react"
 import Image from "next/image"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { formatCurrency, formatPercentage } from "@/lib/formatters"
-import type { ProtocolData } from "@/types/market-data"
 import styles from "./protocol-table.module.css"
 
 export interface ProtocolTableProps {

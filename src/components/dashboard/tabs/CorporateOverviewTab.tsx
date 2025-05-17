@@ -6,6 +6,7 @@ import { CorporateRecentActivity } from "@/components/corporate/dashboard/corpor
 import { CorporateUpcomingEvents } from "@/components/corporate/dashboard/corporate-upcoming-events"
 import { PerformanceChart } from "@/components/performance-chart"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useUnifiedTheme } from "@/src/hooks/use-unified-theme"
 
 /**
  * Renders the Overview tab content for the corporate dashboard, including portfolio performance, asset allocation, summary, recent activity, and upcoming events.

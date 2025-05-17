@@ -4,9 +4,9 @@ import { useState } from "react"
 import { Bell, BellOff, ChevronRight, Loader2 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useEventGridTopics, useEventGridSubscription } from "@/hooks/use-event-grid"
 import { Badge } from "@/components/ui/badge"
 import styles from "./event-grid-topics-list.module.css"
+import { useEventGridSubscription, useEventGridTopics } from "@/src/hooks/use-event-grid"
 
 export interface EventGridTopicsListProps {
   onSelectTopic?: (topicId: string) => void
