@@ -140,7 +140,7 @@ export function MobileMenu({
         <nav className={styles.navMenu}>
           {links.map((link, index) => (
             <Link
-              key={index}
+              key={link.href}
               href={link.href}
               className={link.active ? styles.navLinkActive : styles.navLink}
               onClick={() => handleLinkClick(link.label, link.href)}
