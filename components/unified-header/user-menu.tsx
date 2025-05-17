@@ -32,61 +32,30 @@ export function UserMenu({
   trackEvent
 }: UserMenuProps) {
   // Track menu item clicks
-  const handleProfileClick = () => {
-    if (onProfileClick) {
-      onProfileClick();
+  // Handler factory for menu item clicks
+  const createMenuItemHandler = (
+    callback?: () => void,
+    action: string,
+    category: string = "navigation"
+  ) => () => {
+    if (callback) {
+      callback();
     }
     
     if (trackEvent) {
       trackEvent({
-        action: "profile_click",
-        category: "navigation",
+        action,
+        category,
         label: "user_menu"
       });
     }
   };
   
-  const handleSettingsClick = () => {
-    if (onSettingsClick) {
-      onSettingsClick();
-    }
-    
-    if (trackEvent) {
-      trackEvent({
-        action: "settings_click",
-        category: "navigation",
-        label: "user_menu"
-      });
-    }
-  };
-  
-  const handleHelpClick = () => {
-    if (onHelpClick) {
-      onHelpClick();
-    }
-    
-    if (trackEvent) {
-      trackEvent({
-        action: "help_click",
-        category: "navigation",
-        label: "user_menu"
-      });
-    }
-  };
-  
-  const handleLogoutClick = () => {
-    if (onLogout) {
-      onLogout();
-    }
-    
-    if (trackEvent) {
-      trackEvent({
-        action: "logout_click",
-        category: "authentication",
-        label: "user_menu"
-      });
-    }
-  };
+  // Create handlers for each menu item
+  const handleProfileClick = createMenuItemHandler(onProfileClick, "profile_click");
+  const handleSettingsClick = createMenuItemHandler(onSettingsClick, "settings_click");
+  const handleHelpClick = createMenuItemHandler(onHelpClick, "help_click");
+  const handleLogoutClick = createMenuItemHandler(onLogout, "logout_click", "authentication");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
