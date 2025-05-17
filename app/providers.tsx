@@ -1,8 +1,8 @@
 'use client'
 
-import { SessionProvider } from 'next-auth/react'
 import { ReactNode } from 'react'
 import { MockInitializer } from './layout-with-mocks'
+import { SessionProvider } from '@/components/providers/SessionProvider'
 
 interface ProvidersProps {
   children: ReactNode

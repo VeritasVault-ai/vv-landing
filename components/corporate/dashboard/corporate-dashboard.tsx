@@ -5,33 +5,31 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import styles from './corporate-dashboard.module.css'
 
-// Import dashboard components
-import { TreasuryDashboard } from '@/app/corporate-version/solutions/treasury/components/treasury-dashboard'
-import { AIAnalyticsDashboard } from '@/components/ai-analytics-dashboard'
-import { DashboardPerformance } from '@/components/corporate/dashboard-performance'
-import { DashboardVoting } from '@/components/corporate/voting'
-import { DashboardOverview } from '@/components/dashboard/dashboard-overview'
-import { CorporateDashboard as ModularCorporateDashboard } from '@/src/components/dashboard/CorporateDashboard'
-import { AdminDashboard } from '@/src/components/features/admin/admin-dashboard'
-import { AnalyticsDashboard } from '@/src/components/features/analytics/analytics-dashboard'
-import { ConsumerDashboard } from '@/src/components/features/consumer/dashboard/consumer-dashboard'
-import { ModelPortfolioDashboard } from '@/src/components/features/consumer/model-portfolio/model-portfolio-dashboard'
-import { EventGridDashboard } from '@/src/components/features/event-grid/event-grid-dashboard'
-import { MarketDashboard } from '@/src/components/features/market-data/market-dashboard'
-
-// Import modular analytics dashboards
-import { OffChainDashboard } from './analytics/offchain-dashboard'
-import { OnChainDashboard } from './analytics/onchain-dashboard'
-
-// Import placeholder components for tools section
-import { StrategiesDashboard } from './tools/strategies-dashboard'
+// Import dynamic dashboard components
+import {
+  DynamicAIAnalyticsDashboard,
+  DynamicAdminDashboard,
+  DynamicAnalyticsDashboard,
+  DynamicConsumerDashboard,
+  DynamicDashboardOverview,
+  DynamicDashboardPerformance,
+  DynamicDashboardVoting,
+  DynamicEventGridDashboard,
+  DynamicFlashLoanExplorer,
+  DynamicMarketDashboard,
+  DynamicModelPortfolioDashboard,
+  DynamicCorporateDashboard as DynamicModularCorporateDashboard,
+  DynamicOffChainDashboard,
+  DynamicOnChainDashboard,
+  DynamicRiskAssessmentDashboard,
+  DynamicStrategiesDashboard,
+  DynamicTreasuryDashboard
+} from '@/components/dynamic-imports/dashboard-imports'
 
 // Import dashboard configuration utilities
-import { RiskAssessmentDashboard } from '@/components/demo/risk-assessment-dashboard'
-import FlashLoanExplorer from '@/components/flash-loan-explorer'
-import { VersionAwareFooter } from '@/src/components/layout/VersionAwareFooterBridge'
 import {
   DashboardCategory,
+  DashboardConfig,
   categoryDisplayNames,
   createDashboardConfig,
   getDashboardsByCategory
@@ -46,27 +44,34 @@ export function CorporateDashboard() {
   
   // Create dashboard components object to pass to the configuration function
   const dashboardComponents = {
-    ModularCorporateDashboard,
-    AIAnalyticsDashboard,
-    DashboardPerformance,
-    DashboardVoting,
-    DashboardOverview,
-    AdminDashboard,
-    AnalyticsDashboard,
-    ConsumerDashboard,
-    ModelPortfolioDashboard,
-    EventGridDashboard,
-    MarketDashboard,
-    TreasuryDashboard,
-    OnChainDashboard,
-    OffChainDashboard,
-    StrategiesDashboard,
-    RiskAssessmentDashboard,
-    FlashLoanExplorer
+    ModularCorporateDashboard: DynamicModularCorporateDashboard,
+    AIAnalyticsDashboard: DynamicAIAnalyticsDashboard,
+    DashboardPerformance: DynamicDashboardPerformance,
+    DashboardVoting: DynamicDashboardVoting,
+    DashboardOverview: DynamicDashboardOverview,
+    AdminDashboard: DynamicAdminDashboard,
+    AnalyticsDashboard: DynamicAnalyticsDashboard,
+    ConsumerDashboard: DynamicConsumerDashboard,
+    ModelPortfolioDashboard: DynamicModelPortfolioDashboard,
+    EventGridDashboard: DynamicEventGridDashboard,
+    MarketDashboard: DynamicMarketDashboard,
+    TreasuryDashboard: DynamicTreasuryDashboard,
+    OnChainDashboard: DynamicOnChainDashboard,
+    OffChainDashboard: DynamicOffChainDashboard,
+    StrategiesDashboard: DynamicStrategiesDashboard,
+    RiskAssessmentDashboard: DynamicRiskAssessmentDashboard,
+    FlashLoanExplorer: DynamicFlashLoanExplorer
   }
   
   // Generate dashboard configurations using the utility function
-  const dashboards = createDashboardConfig(dashboardComponents, styles)
+  const readonlyDashboards = createDashboardConfig({
+    lazy: false, // We're using next/dynamic instead of lazy loading
+    styles,
+    components: dashboardComponents
+  })
+  
+  // Convert readonly array to regular array to fix TypeScript error
+  const dashboards = [...readonlyDashboards] as DashboardConfig[]
   
   // Determine active dashboard based on URL path or hash fragment
   const getInitialDashboard = () => {
@@ -153,18 +158,12 @@ export function CorporateDashboard() {
         
         {/* Main dashboard content area */}
         <div className={styles.dashboardContent}>
-          <div className={styles.dashboardHeader}>
-            <h1 className={styles.dashboardTitle}>{currentDashboard.name}</h1>
-            <p className={styles.dashboardDescription}>{currentDashboard.description}</p>
-          </div>
           <div className={styles.dashboardComponentWrapper}>
             <ActiveDashboardComponent />
           </div>
         </div>
       </div>
       
-      {/* Corporate Footer */}
-      <VersionAwareFooter />
     </div>
   )
 }

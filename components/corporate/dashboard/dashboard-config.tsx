@@ -56,19 +56,6 @@ export const getDashboardsByCategory = (
 };
 
 /** ----------------------------------------------------
- *  Factory helpers
- *  --------------------------------------------------*/
-
-/**
- * Convenience wrapper to dynamically `import()` a component path.
- * Keeps the call site tiny & consistent with the eager path.
- */
-const lazyImport = (path: string) =>
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore – dynamic import path is runtime‑checked
-  import(path).then((m) => m.default ?? m);
-
-/** ----------------------------------------------------
  *  Public factory
  *  --------------------------------------------------*/
 

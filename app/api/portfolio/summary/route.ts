@@ -1,70 +1,60 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { withAuth } from "@/lib/auth/auth-utils"
-import { liquidityPoolRepository } from "@/lib/repository/liquidity-pool-repository"
-import { strategyRepository } from "@/lib/repository/strategy-repository"
+export async function GET(request: NextRequest) {
+  // Get filter from query params
+  const { searchParams } = new URL(request.url);
+  const filter = searchParams.get('filter') || 'all';
 
-export async function GET(req: NextRequest) {
-  return withAuth(req, async (req, user) => {
-    try {
-      const { searchParams } = new URL(req.url)
-      const filter = searchParams.get("filter") || "all"
-
-      // Get user's portfolio data
-      // In a real app, you would fetch the user's actual portfolio
-      // For now, we'll generate some data based on the available pools and strategies
-
-      // Get liquidity pools
-      const pools = await liquidityPoolRepository.getAll()
-
-      // Get strategies
-      const strategies = await strategyRepository.getAll()
-
-      // Generate allocation data based on filter
-      let allocation = []
-
-      if (filter === "all" || filter === "liquidity-pools") {
-        // Add top 3 liquidity pools by TVL
-        const topPools = pools
-          .sort((a, b) => b.tvl - a.tvl)
-          .slice(0, 3)
-          .map((pool, index) => ({
-            name: pool.name,
-            value: pool.tvl * (Math.random() * 0.5 + 0.5), // Simulate user's allocation
-            color: [`#4f46e5`, `#0ea5e9`, `#10b981`][index % 3],
-          }))
-
-        allocation = [...allocation, ...topPools]
-      }
-
-      if (filter === "all" || filter === "strategies") {
-        // Add top 2 strategies
-        const topStrategies = strategies.slice(0, 2).map((strategy, index) => ({
-          name: strategy.name,
-          value: Math.random() * 50000 + 10000, // Simulate value
-          color: [`#f59e0b`, `#ec4899`][index % 2],
-        }))
-
-        allocation = [...allocation, ...topStrategies]
-      }
-
-      // Calculate total value
-      const totalValue = allocation.reduce((sum, item) => sum + item.value, 0)
-
-      // Generate performance data
-      const performance = {
-        daily: (Math.random() * 6 - 2).toFixed(2), // Between -2% and +4%
-        weekly: (Math.random() * 10 - 3).toFixed(2), // Between -3% and +7%
-        monthly: (Math.random() * 20 - 5).toFixed(2), // Between -5% and +15%
-      }
-
-      return NextResponse.json({
-        allocation,
-        totalValue,
-        performance,
-      })
-    } catch (error) {
-      console.error("Error in portfolio summary API:", error)
-      return NextResponse.json({ error: error.message || "Failed to fetch portfolio data" }, { status: 500 })
-    }
-  })
+  // Mock data based on filter
+  let mockData;
+  
+  switch (filter) {
+    case 'liquidity-pools':
+      mockData = {
+        allocation: [
+          { name: 'XTZ/USDT', value: 125000, color: '#3b82f6' },
+          { name: 'ETH/USDC', value: 85000, color: '#10b981' },
+          { name: 'BTC/USDT', value: 65000, color: '#f59e0b' },
+        ],
+        totalValue: 275000,
+        performance: {
+          daily: 1.8,
+          weekly: 3.2,
+          monthly: 7.5,
+        }
+      };
+      break;
+    case 'strategies':
+      mockData = {
+        allocation: [
+          { name: 'Yield Farming', value: 180000, color: '#8b5cf6' },
+          { name: 'Staking', value: 120000, color: '#ec4899' },
+          { name: 'Lending', value: 90000, color: '#14b8a6' },
+        ],
+        totalValue: 390000,
+        performance: {
+          daily: 0.9,
+          weekly: 2.7,
+          monthly: 5.8,
+        }
+      };
+      break;
+    default:
+      mockData = {
+        allocation: [
+          { name: 'Liquidity Pools', value: 275000, color: '#3b82f6' },
+          { name: 'Strategies', value: 390000, color: '#8b5cf6' },
+          { name: 'Staked Assets', value: 210000, color: '#ef4444' },
+          { name: 'Treasury', value: 125000, color: '#f59e0b' },
+        ],
+        totalValue: 1000000,
+        performance: {
+          daily: 1.2,
+          weekly: 3.5,
+          monthly: 8.7,
+        }
+      };
+  }
+  
+  return NextResponse.json(mockData);
 }

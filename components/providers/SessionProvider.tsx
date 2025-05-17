@@ -12,5 +12,12 @@ interface SessionProviderProps {
  * to make session data available throughout the app.
  */
 export function SessionProvider({ children }: SessionProviderProps) {
-  return <NextAuthSessionProvider>{children}</NextAuthSessionProvider>
+  return (
+    <NextAuthSessionProvider 
+      // Explicitly specify the API path to ensure consistency
+      basePath="/api/auth"
+    >
+      {children}
+    </NextAuthSessionProvider>
+  )
 }

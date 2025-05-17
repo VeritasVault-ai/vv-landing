@@ -1,5 +1,5 @@
 {
-  "contextWindow": { "maxTokens": 50000 },
+  "contextWindow": { "maxTokens": 70000 },
   "responseFormat": { "preferCodeBlocks": true, "syntaxHighlighting": true },
   "performance":    { "cacheResponses": true, "parallelContextLoading": true },
   "startup": {

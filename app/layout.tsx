@@ -2,16 +2,14 @@
 import { UnifiedThemeProvider } from '@/src/providers/unified-theme-provider';
 import './globals.css';
 import { Providers } from './providers';
-import { ThemeInitializerScript } from './theme-initializer';
+import { ThemeInitializerClient } from './theme-initializer-client';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <ThemeInitializerScript />
-      </head>
-
+      <head />
       <body>
+        <ThemeInitializerClient />
         <Providers>
           <UnifiedThemeProvider>
             {children}
