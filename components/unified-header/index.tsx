@@ -154,16 +154,13 @@ export function UnifiedHeader({
   
   // Handle scroll effect for fixed variant
   useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+
     if (variant === 'fixed') {
-      const handleScroll = () => {
-        setScrolled(window.scrollY > 10)
-      }
-      
-      window.addEventListener('scroll', handleScroll)
-      return () => window.removeEventListener('scroll', handleScroll)
+      window.addEventListener('scroll', handleScroll);
     }
-  }, [variant])
-  
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [variant]);
   // Track menu toggle
   const handleMenuToggle = () => {
     const newState = !isMenuOpen
