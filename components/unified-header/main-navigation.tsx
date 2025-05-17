@@ -112,8 +112,8 @@ export function MainNavigation({ version, customLinks, trackEvent }: MainNavigat
             align="start"
             className={styles.dropdownContent}
           >
-            {dropdownLinks.map((link, index) => (
-              <DropdownMenuItem key={index} className={styles.dropdownItem}>
+            {dropdownLinks.map((link) => (
+              <DropdownMenuItem key={link.href} className={styles.dropdownItem}>
                 <Link 
                   href={link.href} 
                   className={styles.dropdownLink}
