@@ -126,6 +126,13 @@ export function UnifiedFooter({
     if (email && onNewsletterSubmit) {
       onNewsletterSubmit(email)
       setEmail("")
+      
+      // Track newsletter signup event
+      trackEvent({
+        action: "newsletter_signup",
+        category: "engagement",
+        label: "footer_newsletter"
+      })
     }
     
     // Track newsletter signup event
