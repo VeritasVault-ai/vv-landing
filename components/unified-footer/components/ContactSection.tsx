@@ -6,7 +6,7 @@ export interface ContactSectionProps {
     email?: string;
     address?: string;
   };
-  trackEvent: (event: any) => void;
+  trackEvent: (event: { action: string; category: string; label: string }) => void;
 }
 
 export function ContactSection({ 
