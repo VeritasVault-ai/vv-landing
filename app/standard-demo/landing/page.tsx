@@ -1,21 +1,31 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
+import { UnifiedHeader } from "@/components/unified-header"
 import { ArrowRight, ChevronRight, HelpCircle } from "lucide-react"
-import { DemoHeader } from "@/components/demo/demo-header"
+import Image from "next/image"
+import Link from "next/link"
+import { useState } from "react"
 
 export default function DemoLandingPage() {
   const [activeTab, setActiveTab] = useState("overview")
 
+  const handleExitDemo = () => {
+    // Navigate to main site or handle demo exit
+    window.location.href = "/";
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
-      <DemoHeader />
+      <UnifiedHeader 
+        variant="demo"
+        showSearch={false}
+        showUserMenu={false}
+        onExitDemoClick={handleExitDemo}
+      />
 
       <main className="flex-1">
         {/* Hero Section */}

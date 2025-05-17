@@ -1,0 +1,200 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid var(--slate-200);
+  background-color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.headerScrolled {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.headerLanding {
+  background-color: transparent;
+  border-bottom: none;
+  box-shadow: none;
+}
+
+.headerContainer {
+  display: flex;
+  height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logoText {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.logoVeritas {
+  color: var(--blue-900);
+}
+
+.logoVault {
+  color: var(--blue-700);
+}
+
+.logoDomain {
+  color: var(--blue-500);
+}
+
+.desktopActions {
+  display: none;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobileActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iconButton {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.demoBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--amber-100);
+  color: var(--amber-800);
+  padding: 0.25rem 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  width: 100%;
+}
+  
+.demoIcon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.ctaButton {
+  background-color: var(--blue-600);
+  color: white;
+  font-weight: 500;
+}
+
+.ctaButton:hover {
+  background-color: var(--blue-700);
+}
+
+.exitDemoButton {
+  border-color: var(--amber-500);
+  color: var(--amber-700);
+}
+
+.exitDemoButton:hover {
+  background-color: var(--amber-50);
+}
+
+.exitDemoButtonMobile {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--amber-500);
+  color: var(--amber-700);
+}
+
+.exitDemoButtonMobile:hover {
+  background-color: rgba(254, 240, 138, 0.1);
+}
+
+.exitDemoButtonMobile:focus-visible {
+  outline: 2px solid var(--amber-300);
+  outline-offset: 2px;
+}
+.exitDemoButtonMobile:hover {
+  background-color: var(--amber-50);
+}
+
+/* Dark mode styles */
+:global(.dark) .header {
+  border-color: var(--slate-800);
+  background-color: var(--slate-950);
+}
+
+:global(.dark) .headerScrolled {
+  background-color: rgba(2, 6, 23, 0.95);
+}
+
+:global(.dark) .headerLanding {
+  background-color: transparent;
+  border-bottom: none;
+}
+
+:global(.dark) .logoVeritas {
+  color: var(--blue-300);
+}
+
+:global(.dark) .logoVault {
+  color: var(--blue-400);
+}
+
+:global(.dark) .demoBadge {
+  background-color: var(--amber-900);
+  color: var(--amber-100);
+}
+
+:global(.dark) .exitDemoButton {
+  border-color: var(--amber-400);
+  color: var(--amber-300);
+}
+
+:global(.dark) .exitDemoButton:hover {
+  background-color: rgba(254, 240, 138, 0.1);
+}
+
+:global(.dark) .exitDemoButtonMobile {
+  border-color: var(--amber-400);
+  color: var(--amber-300);
+}
+
+/* Media queries */
+@media (min-width: 768px) {
+  .headerContainer {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .desktopActions {
+    display: flex;
+  }
+  
+  .mobileActions {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .headerContainer {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
