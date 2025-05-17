@@ -34,7 +34,7 @@ export function MobileMenu({
   setIsMenuOpen, 
   customLinks, 
   variant = 'dashboard',
-  isAuthenticated = true,
+  isAuthenticated = false,
   userMenuProps = {},
   showSearch = true,
   onSearchSubmit,
