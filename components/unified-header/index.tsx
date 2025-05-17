@@ -337,6 +337,7 @@ export function UnifiedHeader({
             size="icon" 
             onClick={handleMenuToggle}
             className={styles.menuButton}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           >
             {isMenuOpen ? (
               <X className={styles.iconButton} />
