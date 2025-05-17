@@ -19,7 +19,7 @@ export function NotificationsButton({ count = 0, onClick }: NotificationsButtonP
     >
       <Bell className={styles.notificationIcon} />
       {count > 0 && (
-        <span className={styles.notificationBadge}>
+        <span className={styles.badge}>
           {count > 99 ? "99+" : count}
         </span>
       )}
