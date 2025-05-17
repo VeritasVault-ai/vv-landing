@@ -181,7 +181,7 @@ export function UnifiedFooter({
           />
 
           {/* Newsletter signup */}
-          {showNewsletter && variant !== 'dashboard' && (
+          {showNewsletter && variant !== 'dashboard' && onNewsletterSubmit && (
             <NewsletterSection 
               email={email} 
               setEmail={setEmail} 
