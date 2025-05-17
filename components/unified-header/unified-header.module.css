@@ -122,6 +122,10 @@
   color: var(--amber-700);
 }
 
+.exitDemoButtonMobile:hover {
+  background-color: var(--amber-50);
+}
+
 /* Dark mode styles */
 :global(.dark) .header {
   border-color: var(--slate-800);
