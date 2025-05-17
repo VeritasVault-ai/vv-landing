@@ -1,6 +1,5 @@
 'use client'
 
-import { CorporateDashboardHeader } from '@/components/corporate/dashboard/header'
 import { Button } from "@/components/ui/button"
 import { CollapsibleSidebar } from "@/src/components/layout/CollapsibleSidebar"
 import { NavItemOrGroup } from '@/src/components/layout/sidebar'
@@ -102,7 +101,6 @@ export function CorporateDashboard() {
 
         {/* Main content */}
         <div className={`flex-1 overflow-auto transition-all duration-300 ${sidebarCollapsed ? "ml-16" : "ml-64"}`}>
-          <CorporateDashboardHeader />
 
           <div className="container mx-auto px-4 py-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">

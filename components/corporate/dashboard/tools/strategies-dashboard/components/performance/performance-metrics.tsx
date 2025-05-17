@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from 'react';
 import { useHistoricalData } from "../../hooks/use-historical-data";
 
 interface PerformanceMetricsProps {
@@ -357,9 +357,15 @@ function calculateMetrics(data: any[] | undefined) {
   const recoveryTime = 45;
   
   // Performance ratios
-  const riskFreeRate = 0.03; // 3% risk-free rate assumption
-  const excessReturn = annualizedReturn - riskFreeRate;
-  const sharpeRatio = volatility > 0 ? excessReturn / volatility : 0;
+  const riskFreeRate = 0.03; // 3% expressed as 0.03
+  
+  // Convert annualizedReturn from % to decimal before subtraction
+  const annualizedReturnDecimal = annualizedReturn / 100;
+  const excessReturn = annualizedReturnDecimal - riskFreeRate;
+  
+  // Convert volatility from % to decimal for ratio calculation
+  const volatilityDecimal = volatility / 100;
+  const sharpeRatio = volatilityDecimal > 0 ? excessReturn / volatilityDecimal : 0;
   
   // Downside deviation (standard deviation of negative returns only)
   const negativeReturns = returns.filter(r => r < 0);
@@ -368,11 +374,15 @@ function calculateMetrics(data: any[] | undefined) {
     : 0;
   const downsideDeviation = Math.sqrt(downsideVariance) * Math.sqrt(252); // Annualized
   
+  // Convert downsideDeviation from % to decimal for ratio calculation
+  const downsideDeviationDecimal = downsideDeviation / 100;
   // Sortino ratio
-  const sortinoRatio = downsideDeviation > 0 ? excessReturn / downsideDeviation : 0;
+  const sortinoRatio = downsideDeviationDecimal > 0 ? excessReturn / downsideDeviationDecimal : 0;
   
+  // Convert maxDrawdown from % to decimal for ratio calculation
+  const maxDrawdownDecimal = Math.abs(maxDrawdown) / 100;
   // Calmar ratio
-  const calmarRatio = maxDrawdown !== 0 ? Math.abs(annualizedReturn / maxDrawdown) : 0;
+  const calmarRatio = maxDrawdownDecimal !== 0 ? Math.abs(annualizedReturnDecimal / maxDrawdownDecimal) : 0;
   
   // Value at Risk (95% confidence)
   const valueAtRisk = avgReturn - (1.645 * Math.sqrt(variance));

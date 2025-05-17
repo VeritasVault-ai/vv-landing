@@ -49,8 +49,6 @@ export const MOCK_HISTORICAL_DATA: Record<string, HistoricalDataPoint[]> = {
   '1y': generateMockTimeseriesData(365, '1y')
 };
 
-
-
 /**
  * Generate mock time series data for a specific timeframe
  */
@@ -73,14 +71,23 @@ function generateMockTimeseriesData(
   
   const adjustedVolatility = volatility * timeframeVolatilityFactor;
   
+  // Calculate the base interval in milliseconds
+  const baseInterval = 
+    timeframe === '1d' ? (24 / dataPoints) * 60 * 60 * 1000 :  // Hours for 1d
+    timeframe === '1w' ? 24 * 60 * 60 * 1000 :                 // Days for 1w
+    24 * 60 * 60 * 1000;                                       // Days for other periods
+  
+  // Get current date/time
+  const now = new Date();
+  
   for (let i = 0; i < dataPoints; i++) {
+    // Create a new date object for this data point
     const date = new Date();
-    const interval = 
-      timeframe === '1d' ? i * (24 / dataPoints) * 60 * 60 * 1000 :  // Hours for 1d
-      timeframe === '1w' ? i * 24 * 60 * 60 * 1000 :                 // Days for 1w
-      i * 24 * 60 * 60 * 1000;                                       // Days for other periods
     
-    date.setTime(date.getTime() - (dataPoints - i) * interval);
+    // Calculate time offset: start from (dataPoints) intervals ago, then add (i) intervals
+    // This creates evenly spaced intervals counting forward from the start date
+    const timeOffset = (dataPoints - i - 1) * baseInterval;
+    date.setTime(now.getTime() - timeOffset);
     
     // Calculate daily change with randomness and trend
     const dailyChange = ((Math.random() - 0.5) * adjustedVolatility) + (trend / dataPoints);

@@ -1,4 +1,7 @@
+import { API_CONFIG } from '@/config/api-config';
 import { useBaseWebSocketSimulation } from '@/lib/services/websocket-simulations/useBaseWebSocketSimulation';
+import { getMockHistoricalDataForStrategy } from '@/mocks/data/historical-data';
+import { HistoricalDataPoint } from '@/src/types/historical-data';
 import { WebSocketStatus } from '@/types/websocket-data';
 
 /**
@@ -17,11 +20,36 @@ export function useHistoricalData(
   onStatusChange?: (status: WebSocketStatus) => void
 ) {
   // Use the base WebSocket simulation hook
-  const { data, reconnect, isSimulated, status } = useBaseWebSocketSimulation<HistoricalDataPoint[]>({
-    endpoint: `wss://your-api.com/historical-data/${strategyId}/${timeframe}`,
+  const { data, reconnect, isSimulated } = useBaseWebSocketSimulation<HistoricalDataPoint[]>({
+    // Use configurable endpoint from API_CONFIG
+    endpoint: `${API_CONFIG.WS_BASE_URL}/historical-data/${strategyId}/${timeframe}`,
     onStatusChange,
     fetchInitialData: true,
-    initialDataEndpoint: `/api/goldsky/historical-data?protocol=${strategyId}&days=${getDaysFromTimeframe(timeframe)}`
+    // Add the required getInitialData function to fetch mock data
+    getInitialData: async () => {
+      try {
+        // In development or test environments, use mock data
+        if (process.env.NODE_ENV !== 'production' || process.env.USE_MOCK_DATA === 'true') {
+          return getMockHistoricalDataForStrategy(strategyId, timeframe);
+        }
+        
+        // In production, fetch from the API
+        const days = getDaysFromTimeframe(timeframe);
+        const response = await fetch(
+          `${API_CONFIG.API_BASE_URL}/historical-data?protocol=${strategyId}&days=${days}`
+        );
+        
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error("Failed to fetch historical data:", error);
+        // Fallback to mock data if API request fails
+        return getMockHistoricalDataForStrategy(strategyId, timeframe);
+      }
+    }
   });
 
   // Return data in formats expected by the different components
