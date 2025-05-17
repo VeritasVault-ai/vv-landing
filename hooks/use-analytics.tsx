@@ -45,8 +45,9 @@ export function useAnalytics() {
    */
   const trackPageView = useCallback((url: string, title?: string) => {
     // Track with Google Analytics if available
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('config', process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '', {
+    const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+    if (typeof window !== 'undefined' && window.gtag && gaId) {
+      window.gtag('config', gaId, {
         page_path: url,
         page_title: title
       });
