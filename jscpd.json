@@ -1,0 +1,12 @@
+{
+  "reporters": ["console", "json"],
+  "threshold": 0,
+  "minTokens": 50,
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/*.generated.*",
+    "**/__tests__/**"
+  ]
+}

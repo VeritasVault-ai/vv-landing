@@ -1,0 +1,6 @@
+{
+  "currentFile":  { "maxTokens": 6000 },
+  "diff":         { "maxTokens": 3000 },
+  "terminal":     { "maxLines": 150 },
+  "folder":       { "maxDepth": 2, "maxFiles": 10, "maxFileSize": 80000 }
+}
