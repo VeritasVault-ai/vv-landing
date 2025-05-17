@@ -44,6 +44,10 @@ export interface FooterProps {
    * Custom product description
    */
   productDescription?: string;
+
+  /**
+   * Custom link groups to override defaults
+   */
   /**
    * Custom link groups to override defaults
    */
