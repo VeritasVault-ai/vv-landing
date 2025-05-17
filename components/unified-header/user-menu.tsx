@@ -90,7 +90,7 @@ export function UserMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className={styles.userButton}>
+        <Button variant="ghost" className={styles.userButton} aria-label="User menu">
           <div className={styles.userAvatar}>
             {userInitials}
           </div>
