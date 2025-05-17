@@ -13,12 +13,12 @@ export function LinkGroups({
 }: LinkGroupsProps) {
   return (
     <>
-      {linkGroups.map((group, index) => (
-        <div key={index} className={styles.linkGroup}>
+      {linkGroups.map((group) => (
+        <div key={group.title} className={styles.linkGroup}>
           <h3 className={styles.linkGroupTitle}>{group.title}</h3>
           <ul className={styles.linkList}>
-            {group.links.map((link, linkIndex) => (
-              <li key={linkIndex}>
+            {group.links.map((link) => (
+              <li key={`${group.title}-${link.label}`}>
                 {link.external ? (
                   <a 
                     href={link.href} 
