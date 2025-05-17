@@ -14,7 +14,7 @@ import { NavigationLink } from "./index"
 interface MainNavigationProps {
   version: string;
   customLinks?: NavigationLink[];
-  trackEvent?: (event: any) => void;
+  trackEvent?: (event: { action: string; category: string; label: string; destination?: string }) => void;
 }
 
 export function MainNavigation({ version, customLinks, trackEvent }: MainNavigationProps) {
