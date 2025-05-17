@@ -118,10 +118,18 @@
 .exitDemoButtonMobile {
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
-  border-color: var(--amber-500);
+  border: 1px solid var(--amber-500);
   color: var(--amber-700);
 }
 
+.exitDemoButtonMobile:hover {
+  background-color: rgba(254, 240, 138, 0.1);
+}
+
+.exitDemoButtonMobile:focus-visible {
+  outline: 2px solid var(--amber-300);
+  outline-offset: 2px;
+}
 .exitDemoButtonMobile:hover {
   background-color: var(--amber-50);
 }
