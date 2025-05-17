@@ -15,7 +15,10 @@ export function LandingPageLayout({ children, mode, onModeChange }: LandingPageL
   return (
     <div className="min-h-screen flex flex-col">
       <LandingPageToggle onChange={onModeChange} initialMode={mode} />
-      <UnifiedHeader />
+-      <UnifiedHeader />
++      <UnifiedHeader
++        variant={mode === "standard" ? "landing" : "dashboard"}
++      />
       <main className="flex-1">{children}</main>
       <UnifiedFooter 
         variant={mode === "standard" ? "landing" : "corporate"} 
