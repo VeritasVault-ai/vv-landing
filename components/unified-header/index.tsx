@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useCurrentVersion } from "@/hooks/use-current-version"
+import { useAnalytics } from "@/hooks/use-analytics"
 import Link from "next/link"
 import { Menu, X, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -149,6 +150,7 @@ export function UnifiedHeader({
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { version } = useCurrentVersion()
+  const { trackEvent } = useAnalytics()
   
   // Handle scroll effect for fixed variant
   useEffect(() => {
@@ -162,12 +164,81 @@ export function UnifiedHeader({
     }
   }, [variant])
   
+  // Track menu toggle
+  const handleMenuToggle = () => {
+    const newState = !isMenuOpen
+    setIsMenuOpen(newState)
+    
+    trackEvent({
+      action: newState ? 'mobile_menu_open' : 'mobile_menu_close',
+      category: 'navigation',
+      label: variant
+    })
+  }
+  
+  // Track search submission
+  const handleSearchSubmit = (query: string) => {
+    if (onSearchSubmit) {
+      onSearchSubmit(query)
+    }
+    
+    trackEvent({
+      action: 'search',
+      category: 'engagement',
+      label: query,
+      variant: variant
+    })
+  }
+  
+  // Track notification click
+  const handleNotificationClick = () => {
+    if (onNotificationClick) {
+      onNotificationClick()
+    }
+    
+    trackEvent({
+      action: 'notification_click',
+      category: 'engagement',
+      label: variant,
+      count: notificationCount
+    })
+  }
+  
+  // Track CTA click
+  const handleCTAClick = () => {
+    if (onCTAClick) {
+      onCTAClick()
+    }
+    
+    trackEvent({
+      action: 'cta_click',
+      category: 'conversion',
+      label: ctaText
+    })
+  }
+  
+  // Track demo exit click
+  const handleExitDemoClick = () => {
+    if (onExitDemoClick) {
+      onExitDemoClick()
+    }
+    
+    trackEvent({
+      action: 'exit_demo_click',
+      category: 'navigation',
+      label: 'header'
+    })
+  }
+  
   // Determine header class based on variant and scroll state
   const headerClass = `${styles.header} ${
     variant === 'fixed' ? (scrolled ? styles.headerScrolled : '') : ''
   } ${variant === 'landing' ? styles.headerLanding : ''} ${
     className || ''
   }`;
+  
+  // Add animation classes
+  const mobileMenuAnimationClass = isMenuOpen ? styles.mobileMenuOpen : '';
   
   return (
     <header className={headerClass}>
@@ -196,6 +267,7 @@ export function UnifiedHeader({
             <MainNavigation 
           version={version} 
               customLinks={navigationLinks}
+              trackEvent={trackEvent}
         />
       )}
         </div>
@@ -203,13 +275,13 @@ export function UnifiedHeader({
         {/* Desktop actions */}
         <div className={styles.desktopActions}>
           {showSearch && variant !== 'landing' && (
-            <SearchBar onSubmit={onSearchSubmit} />
+            <SearchBar onSubmit={handleSearchSubmit} />
           )}
           
           {showNotifications && variant !== 'landing' && (
             <NotificationsButton 
               count={notificationCount} 
-              onClick={onNotificationClick} 
+              onClick={handleNotificationClick} 
             />
           )}
           
@@ -222,7 +294,7 @@ export function UnifiedHeader({
           {variant === 'fixed' && showCTA && (
             <Button 
               className={styles.ctaButton}
-              onClick={onCTAClick}
+              onClick={handleCTAClick}
             >
               {ctaText}
             </Button>
@@ -233,7 +305,7 @@ export function UnifiedHeader({
             <Button 
               variant="outline" 
               className={styles.exitDemoButton}
-              onClick={onExitDemoClick}
+              onClick={handleExitDemoClick}
             >
               Exit Demo
             </Button>
@@ -241,10 +313,12 @@ export function UnifiedHeader({
           
           {/* User menu for authenticated views */}
           {showUserMenu && variant !== 'landing' && isAuthenticated && (
-            <UserMenu {...userMenuProps} />
+            <UserMenu 
+              {...userMenuProps} 
+              trackEvent={trackEvent}
+            />
           )}
         </div>
-
         {/* Mobile actions */}
         <div className={styles.mobileActions}>
           {showThemeToggle && <ThemeToggleEnhanced />}
@@ -255,16 +329,17 @@ export function UnifiedHeader({
               variant="outline" 
               size="sm" 
               className={styles.exitDemoButtonMobile}
-              onClick={onExitDemoClick}
+              onClick={handleExitDemoClick}
             >
               Exit
             </Button>
-          )}
+      )}
           
           <Button 
             variant="ghost" 
             size="icon" 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={handleMenuToggle}
+            className={styles.menuButton}
           >
             {isMenuOpen ? (
               <X className={styles.iconButton} />
@@ -275,19 +350,25 @@ export function UnifiedHeader({
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <MobileMenu 
-          version={version} 
-          setIsMenuOpen={setIsMenuOpen} 
-          customLinks={navigationLinks}
-          variant={variant}
-          isAuthenticated={isAuthenticated}
-          userMenuProps={userMenuProps}
-          showSearch={showSearch}
-          onSearchSubmit={onSearchSubmit}
-        />
-      )}
+      {/* Mobile menu with animation */}
+      <div className={`${styles.mobileMenuContainer} ${mobileMenuAnimationClass}`}>
+        {isMenuOpen && (
+          <MobileMenu 
+            version={version} 
+            setIsMenuOpen={setIsMenuOpen} 
+            customLinks={navigationLinks}
+            variant={variant}
+            isAuthenticated={isAuthenticated}
+            userMenuProps={{
+              ...userMenuProps,
+              trackEvent
+            }}
+            showSearch={showSearch}
+            onSearchSubmit={handleSearchSubmit}
+            trackEvent={trackEvent}
+          />
+        )}
+      </div>
     </header>
   )
 }

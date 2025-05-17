@@ -19,6 +19,7 @@ interface UserMenuProps {
   onProfileClick?: () => void;
   onSettingsClick?: () => void;
   onHelpClick?: () => void;
+  trackEvent?: (event: any) => void;
 }
 
 export function UserMenu({
@@ -27,8 +28,65 @@ export function UserMenu({
   onLogout,
   onProfileClick,
   onSettingsClick,
-  onHelpClick
+  onHelpClick,
+  trackEvent
 }: UserMenuProps) {
+  // Track menu item clicks
+  const handleProfileClick = () => {
+    if (onProfileClick) {
+      onProfileClick();
+    }
+    
+    if (trackEvent) {
+      trackEvent({
+        action: "profile_click",
+        category: "navigation",
+        label: "user_menu"
+      });
+    }
+  };
+  
+  const handleSettingsClick = () => {
+    if (onSettingsClick) {
+      onSettingsClick();
+    }
+    
+    if (trackEvent) {
+      trackEvent({
+        action: "settings_click",
+        category: "navigation",
+        label: "user_menu"
+      });
+    }
+  };
+  
+  const handleHelpClick = () => {
+    if (onHelpClick) {
+      onHelpClick();
+    }
+    
+    if (trackEvent) {
+      trackEvent({
+        action: "help_click",
+        category: "navigation",
+        label: "user_menu"
+      });
+    }
+  };
+  
+  const handleLogoutClick = () => {
+    if (onLogout) {
+      onLogout();
+    }
+    
+    if (trackEvent) {
+      trackEvent({
+        action: "logout_click",
+        category: "authentication",
+        label: "user_menu"
+      });
+    }
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -48,21 +106,21 @@ export function UserMenu({
         <DropdownMenuSeparator className={styles.dropdownSeparator} />
         <DropdownMenuItem 
           className={styles.dropdownItem}
-          onClick={onProfileClick}
+          onClick={handleProfileClick}
         >
           <User className={styles.dropdownItemIcon} />
           <span>Profile</span>
         </DropdownMenuItem>
         <DropdownMenuItem 
           className={styles.dropdownItem}
-          onClick={onSettingsClick}
+          onClick={handleSettingsClick}
         >
           <Settings className={styles.dropdownItemIcon} />
           <span>Settings</span>
         </DropdownMenuItem>
         <DropdownMenuItem 
           className={styles.dropdownItem}
-          onClick={onHelpClick}
+          onClick={handleHelpClick}
         >
           <HelpCircle className={styles.dropdownItemIcon} />
           <span>Help & Support</span>
@@ -70,7 +128,7 @@ export function UserMenu({
         <DropdownMenuSeparator className={styles.dropdownSeparator} />
         <DropdownMenuItem 
           className={styles.dropdownItemDanger}
-          onClick={onLogout}
+          onClick={handleLogoutClick}
         >
           <LogOut className={styles.dropdownItemIcon} />
           <span>Log out</span>

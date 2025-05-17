@@ -6,23 +6,43 @@ import { HelpCircle, LogOut, Settings, User, AlertTriangle } from "lucide-react"
 import { Dispatch, SetStateAction } from "react"
 import styles from "./mobile-menu.module.css"
 import { SearchBar } from "./search-bar"
-
-interface NavLink {
-  label: string;
-  href: string;
-  active?: boolean;
-}
+import { NavigationLink } from "./index"
 
 interface MobileMenuProps {
   version: string;
   setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
-  customLinks?: NavLink[];
+  customLinks?: NavigationLink[];
   variant?: 'landing' | 'dashboard' | 'demo' | 'fixed';
+  isAuthenticated?: boolean;
+  userMenuProps?: {
+    userName?: string;
+    userInitials?: string;
+    onLogout?: () => void;
+    onProfileClick?: () => void;
+    onSettingsClick?: () => void;
+    onHelpClick?: () => void;
+    trackEvent?: (event: any) => void;
+  };
+  showSearch?: boolean;
+  onSearchSubmit?: (query: string) => void;
+  trackEvent?: (event: any) => void;
+  onExitDemoClick?: () => void;
 }
 
-export function MobileMenu({ version, setIsMenuOpen, customLinks, variant = 'dashboard' }: MobileMenuProps) {
+export function MobileMenu({ 
+  version, 
+  setIsMenuOpen, 
+  customLinks, 
+  variant = 'dashboard',
+  isAuthenticated = true,
+  userMenuProps = {},
+  showSearch = true,
+  onSearchSubmit,
+  trackEvent,
+  onExitDemoClick
+}: MobileMenuProps) {
   // Default navigation links if no custom links are provided
-  const defaultLinks: NavLink[] = [
+  const defaultLinks: NavigationLink[] = [
     {
       label: "Dashboard",
       href: `/${version}/dashboard`,
@@ -63,17 +83,59 @@ export function MobileMenu({ version, setIsMenuOpen, customLinks, variant = 'das
   // Use custom links if provided, otherwise use default links
   const links = customLinks || defaultLinks;
 
+  // Handle link click with analytics tracking
+  const handleLinkClick = (label: string, href: string) => {
+    setIsMenuOpen(false);
+    
+    if (trackEvent) {
+      trackEvent({
+        action: "mobile_navigation_click",
+        category: "navigation",
+        label: label,
+        destination: href
+      });
+    }
+  };
+  
+  // Handle exit demo click
+  const handleExitDemo = () => {
+    setIsMenuOpen(false);
+    
+    if (onExitDemoClick) {
+      onExitDemoClick();
+    }
+    
+    if (trackEvent) {
+      trackEvent({
+        action: "exit_demo_click",
+        category: "navigation",
+        label: "mobile_menu"
+      });
+    }
+  };
+  
+  // Handle search submission
+  const handleSearchSubmit = (query: string) => {
+    if (onSearchSubmit) {
+      onSearchSubmit(query);
+    }
+    
+    setIsMenuOpen(false);
+  };
+
   return (
     <div className={styles.mobileMenu}>
       <div className={styles.mobileMenuContainer}>
-        {variant !== 'landing' && <SearchBar />}
+        {showSearch && variant !== 'landing' && (
+          <SearchBar onSubmit={handleSearchSubmit} />
+        )}
 
-        {variant === 'demo' && (
+          {variant === 'demo' && (
           <div className={styles.demoModeNotice}>
             <AlertTriangle className={styles.demoIcon} />
             <span>You are currently in Demo Mode</span>
           </div>
-        )}
+          )}
 
         <nav className={styles.navMenu}>
           {links.map((link, index) => (
@@ -81,24 +143,30 @@ export function MobileMenu({ version, setIsMenuOpen, customLinks, variant = 'das
               key={index}
               href={link.href}
               className={link.active ? styles.navLinkActive : styles.navLink}
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => handleLinkClick(link.label, link.href)}
             >
               {link.label}
             </Link>
           ))}
-          
+
           {variant === 'demo' && (
-            <Button
+        <Button
               variant="outline"
               className={styles.exitDemoButton}
-              onClick={() => setIsMenuOpen(false)}
-            >
+              onClick={handleExitDemo}
+        >
               Exit Demo Mode
-            </Button>
+        </Button>
           )}
         </nav>
 
-        {variant !== 'landing' && <MobileUserProfile setIsMenuOpen={setIsMenuOpen} />}
+        {variant !== 'landing' && isAuthenticated && (
+          <MobileUserProfile 
+            setIsMenuOpen={setIsMenuOpen} 
+            userMenuProps={userMenuProps}
+            trackEvent={trackEvent}
+          />
+        )}
       </div>
     </div>
   )
@@ -106,17 +174,108 @@ export function MobileMenu({ version, setIsMenuOpen, customLinks, variant = 'das
 
 interface MobileUserProfileProps {
   setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
+  userMenuProps?: {
+    userName?: string;
+    userInitials?: string;
+    onLogout?: () => void;
+    onProfileClick?: () => void;
+    onSettingsClick?: () => void;
+    onHelpClick?: () => void;
+    trackEvent?: (event: any) => void;
+  };
+  trackEvent?: (event: any) => void;
 }
 
-function MobileUserProfile({ setIsMenuOpen }: MobileUserProfileProps) {
+function MobileUserProfile({ 
+  setIsMenuOpen, 
+  userMenuProps = {},
+  trackEvent
+}: MobileUserProfileProps) {
+  const {
+    userName = "Institutional Treasury",
+    userInitials = "IT",
+    onLogout,
+    onProfileClick,
+    onSettingsClick,
+    onHelpClick
+  } = userMenuProps;
+  
+  // Handle profile click
+  const handleProfileClick = () => {
+    setIsMenuOpen(false);
+    
+    if (onProfileClick) {
+      onProfileClick();
+    }
+    
+    if (trackEvent) {
+      trackEvent({
+        action: "profile_click",
+        category: "navigation",
+        label: "mobile_menu"
+      });
+    }
+  };
+  
+  // Handle settings click
+  const handleSettingsClick = () => {
+    setIsMenuOpen(false);
+    
+    if (onSettingsClick) {
+      onSettingsClick();
+    }
+    
+    if (trackEvent) {
+      trackEvent({
+        action: "settings_click",
+        category: "navigation",
+        label: "mobile_menu"
+      });
+    }
+  };
+  
+  // Handle help click
+  const handleHelpClick = () => {
+    setIsMenuOpen(false);
+    
+    if (onHelpClick) {
+      onHelpClick();
+    }
+    
+    if (trackEvent) {
+      trackEvent({
+        action: "help_click",
+        category: "navigation",
+        label: "mobile_menu"
+      });
+    }
+  };
+  
+  // Handle logout click
+  const handleLogoutClick = () => {
+    setIsMenuOpen(false);
+    
+    if (onLogout) {
+      onLogout();
+    }
+    
+    if (trackEvent) {
+      trackEvent({
+        action: "logout_click",
+        category: "authentication",
+        label: "mobile_menu"
+      });
+    }
+  };
+
   return (
     <div className={styles.userProfileSection}>
       <div className={styles.userProfileHeader}>
         <div className={styles.userAvatar}>
-          IT
+          {userInitials}
         </div>
         <div className={styles.userInfo}>
-          <p className={styles.userName}>Institutional Treasury</p>
+          <p className={styles.userName}>{userName}</p>
           <p className={styles.userRole}>Enterprise Account</p>
         </div>
       </div>
@@ -125,7 +284,7 @@ function MobileUserProfile({ setIsMenuOpen }: MobileUserProfileProps) {
         <Button
           variant="ghost"
           className={styles.actionButton}
-          onClick={() => setIsMenuOpen(false)}
+          onClick={handleProfileClick}
         >
           <User className={styles.actionIcon} />
           <span>Profile</span>
@@ -133,7 +292,7 @@ function MobileUserProfile({ setIsMenuOpen }: MobileUserProfileProps) {
         <Button
           variant="ghost"
           className={styles.actionButton}
-          onClick={() => setIsMenuOpen(false)}
+          onClick={handleSettingsClick}
         >
           <Settings className={styles.actionIcon} />
           <span>Settings</span>
@@ -141,7 +300,7 @@ function MobileUserProfile({ setIsMenuOpen }: MobileUserProfileProps) {
         <Button
           variant="ghost"
           className={styles.actionButton}
-          onClick={() => setIsMenuOpen(false)}
+          onClick={handleHelpClick}
         >
           <HelpCircle className={styles.actionIcon} />
           <span>Help & Support</span>
@@ -149,7 +308,7 @@ function MobileUserProfile({ setIsMenuOpen }: MobileUserProfileProps) {
         <Button
           variant="ghost"
           className={styles.actionButtonDanger}
-          onClick={() => setIsMenuOpen(false)}
+          onClick={handleLogoutClick}
         >
           <LogOut className={styles.actionIcon} />
           <span>Log out</span>

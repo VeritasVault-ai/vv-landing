@@ -9,21 +9,17 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ChevronDown } from "lucide-react"
 import styles from "./main-navigation.module.css"
-
-interface NavLink {
-  label: string;
-  href: string;
-  active?: boolean;
-}
+import { NavigationLink } from "./index"
 
 interface MainNavigationProps {
   version: string;
-  customLinks?: NavLink[];
+  customLinks?: NavigationLink[];
+  trackEvent?: (event: any) => void;
 }
 
-export function MainNavigation({ version, customLinks }: MainNavigationProps) {
+export function MainNavigation({ version, customLinks, trackEvent }: MainNavigationProps) {
   // Default navigation links if no custom links are provided
-  const defaultLinks: NavLink[] = [
+  const defaultLinks: NavigationLink[] = [
     {
       label: "Dashboard",
       href: `/${version}/dashboard`,
@@ -47,7 +43,7 @@ export function MainNavigation({ version, customLinks }: MainNavigationProps) {
   ];
 
   // Additional links for dropdown
-  const dropdownLinks: NavLink[] = [
+  const dropdownLinks: NavigationLink[] = [
     {
       label: "Compliance",
       href: `/${version}/compliance`,
@@ -68,6 +64,29 @@ export function MainNavigation({ version, customLinks }: MainNavigationProps) {
   // Use custom links if provided, otherwise use default links
   const links = customLinks || defaultLinks;
 
+  // Handle link click with analytics tracking
+  const handleLinkClick = (label: string, href: string) => {
+    if (trackEvent) {
+      trackEvent({
+        action: "navigation_click",
+        category: "navigation",
+        label: label,
+        destination: href
+      });
+    }
+  };
+  
+  // Handle dropdown toggle
+  const handleDropdownToggle = (open: boolean) => {
+    if (trackEvent) {
+      trackEvent({
+        action: open ? "dropdown_open" : "dropdown_close",
+        category: "navigation",
+        label: "more_menu"
+      });
+    }
+  };
+
   return (
     <div className={styles.navigation}>
       {links.map((link, index) => (
@@ -75,13 +94,14 @@ export function MainNavigation({ version, customLinks }: MainNavigationProps) {
           key={index}
           href={link.href}
           className={link.active ? styles.navLinkActive : styles.navLinkDefault}
+          onClick={() => handleLinkClick(link.label, link.href)}
         >
           {link.label}
         </Link>
       ))}
 
       {!customLinks && (
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={handleDropdownToggle}>
           <DropdownMenuTrigger asChild>
             <button className={styles.moreButton}>
               More
@@ -94,7 +114,11 @@ export function MainNavigation({ version, customLinks }: MainNavigationProps) {
           >
             {dropdownLinks.map((link, index) => (
               <DropdownMenuItem key={index} className={styles.dropdownItem}>
-                <Link href={link.href} className={styles.dropdownLink}>
+                <Link 
+                  href={link.href} 
+                  className={styles.dropdownLink}
+                  onClick={() => handleLinkClick(link.label, link.href)}
+                >
                   {link.label}
                 </Link>
               </DropdownMenuItem>
