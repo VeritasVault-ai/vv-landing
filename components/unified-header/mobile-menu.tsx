@@ -119,7 +119,16 @@ export function MobileMenu({
     if (onSearchSubmit) {
       onSearchSubmit(query);
     }
-    
+
+    if (trackEvent) {
+      trackEvent({
+        action: "search",
+        category: "engagement",
+        label: query,
+        variant: variant
+      });
+    }
+
     setIsMenuOpen(false);
   };
 
