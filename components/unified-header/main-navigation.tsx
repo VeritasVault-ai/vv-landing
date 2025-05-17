@@ -11,7 +11,6 @@ import { ChevronDown } from "lucide-react"
 import styles from "./main-navigation.module.css"
 import { NavigationLink } from "./index"
 
-import { NavigationLink } from "./index"
 import type { AnalyticsEvent } from "@/hooks/use-analytics"
 
 interface MainNavigationProps {
