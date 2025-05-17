@@ -1,6 +1,6 @@
-import { TrendingDown, TrendingUp } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { formatCurrency, formatPercentage } from "@/lib/formatters"
+import { formatCurrency, formatPercentage } from "@/src/lib/formatters"
+import { TrendingDown, TrendingUp } from "lucide-react"
 import styles from "./market-metrics-grid.module.css"
 
 export interface MarketMetricsGridProps {

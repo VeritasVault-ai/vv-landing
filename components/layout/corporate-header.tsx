@@ -22,8 +22,8 @@ import { ChevronDown, Menu, User, X } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
+import { useMemo, useState } from "react"
 import { CorporateMobileHeader } from "./corporate-mobile-header"
 
 /**
@@ -34,26 +34,22 @@ import { CorporateMobileHeader } from "./corporate-mobile-header"
  * @returns The corporate header React element.
  */
 export function CorporateHeader() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false)
-  const [registerDialogOpen, setRegisterDialogOpen] = useState(false)
-  const { trackEvent } = useAnalytics()
-  const { logout } = useAuth()
-  
-  // Client-side only rendering for session
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-  
-  // Handle session safely with fallback for server-side rendering
-  const { data: session, status } = useSession()
-  const isAuthenticated = mounted && status === 'authenticated'
-  
-  // Only fetch navigation items when component is mounted
-  const headerNav = mounted ? getHeaderNavigationByExperience('corporate', isAuthenticated) : []
+  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
+  const { trackEvent } = useAnalytics();
+  const { logout } = useAuth();
+
+  const { status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+
+  const headerNav = useMemo(
+    () => status === 'loading'
+      ? [] // keep it empty until we know
+      : getHeaderNavigationByExperience('corporate', isAuthenticated),
+    [status, isAuthenticated]
+  );
   
   // Separate featured items from regular items
   const featuredItems = headerNav.filter(item => item.featured)

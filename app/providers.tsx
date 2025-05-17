@@ -1,6 +1,7 @@
 'use client'
 
-import { ReactNode, useEffect } from 'react'
+import { SessionProvider } from 'next-auth/react'
+import { ReactNode } from 'react'
 import { MockInitializer } from './layout-with-mocks'
 
 interface ProvidersProps {
@@ -11,12 +12,15 @@ interface ProvidersProps {
  * Client-side providers wrapper that initializes necessary services
  * Includes MSW initialization for development environment
  */
-export function Providers({ children }: ProvidersProps) {
+export function Providers({ children }: { children: ReactNode }) {
   return (
     <>
       {/* Initialize MSW in development */}
       <MockInitializer />
-      {children}
+
+      <SessionProvider>
+        {children}
+      </SessionProvider>
     </>
   )
 }

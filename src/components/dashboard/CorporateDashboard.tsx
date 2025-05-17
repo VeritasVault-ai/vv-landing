@@ -1,25 +1,16 @@
 'use client'
 
-import React, { useState } from 'react'
+import { CorporateDashboardHeader } from '@/components/corporate/dashboard/header'
 import { Button } from "@/components/ui/button"
-import { Calendar, Download } from "lucide-react"
 import { CollapsibleSidebar } from "@/src/components/layout/CollapsibleSidebar"
-import { CorporateDashboardHeader } from "@/components/corporate/dashboard/corporate-dashboard-header"
+import { NavItemOrGroup } from '@/src/components/layout/sidebar'
+import {
+  BarChart3, Calendar, Download, Droplets,
+  FlaskConical, HelpCircle, LayoutDashboard, Settings, ShieldAlert
+} from "lucide-react"
+import { useState } from 'react'
 import { CorporateDashboardMetrics } from './CorporateDashboardMetrics'
 import { CorporateDashboardTabs } from './CorporateDashboardTabs'
-import { 
-  LayoutDashboard, 
-  BarChart3, 
-  LineChart, 
-  Droplets, 
-  FlaskConical, 
-  Settings, 
-  HelpCircle,
-  ShieldAlert,
-  Zap,
-  BookOpen
-} from 'lucide-react'
-import { NavItemOrGroup } from '@/src/components/layout/sidebar'
 
 /**
  * Renders the main corporate dashboard interface with navigation, sidebar, and integrated dashboard modules.

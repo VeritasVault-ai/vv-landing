@@ -5,34 +5,31 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import styles from './corporate-dashboard.module.css'
 
-// Import layout components
-import { CorporateHeader } from '@/components/layout/corporate-header'
-import { CorporateFooter } from '@/components/layout/corporate-footer'
-
 // Import dashboard components
-import { CorporateDashboard as ModularCorporateDashboard } from '@/src/components/dashboard/CorporateDashboard'
+import { TreasuryDashboard } from '@/app/corporate-version/solutions/treasury/components/treasury-dashboard'
 import { AIAnalyticsDashboard } from '@/components/ai-analytics-dashboard'
 import { DashboardPerformance } from '@/components/corporate/dashboard-performance'
 import { DashboardVoting } from '@/components/corporate/voting'
 import { DashboardOverview } from '@/components/dashboard/dashboard-overview'
+import { CorporateDashboard as ModularCorporateDashboard } from '@/src/components/dashboard/CorporateDashboard'
 import { AdminDashboard } from '@/src/components/features/admin/admin-dashboard'
 import { AnalyticsDashboard } from '@/src/components/features/analytics/analytics-dashboard'
 import { ConsumerDashboard } from '@/src/components/features/consumer/dashboard/consumer-dashboard'
 import { ModelPortfolioDashboard } from '@/src/components/features/consumer/model-portfolio/model-portfolio-dashboard'
 import { EventGridDashboard } from '@/src/components/features/event-grid/event-grid-dashboard'
 import { MarketDashboard } from '@/src/components/features/market-data/market-dashboard'
-import { TreasuryDashboard } from '@/app/corporate-version/solutions/treasury/components/treasury-dashboard'
 
 // Import modular analytics dashboards
-import { OnChainDashboard } from './analytics/onchain-dashboard'
 import { OffChainDashboard } from './analytics/offchain-dashboard'
+import { OnChainDashboard } from './analytics/onchain-dashboard'
 
 // Import placeholder components for tools section
 import { StrategiesDashboard } from './tools/strategies-dashboard'
-import { RiskAssessmentDashboard } from './tools/risk-assessment-dashboard'
-import { FlashLoansDashboard } from './tools/flash-loans-dashboard'
 
 // Import dashboard configuration utilities
+import { RiskAssessmentDashboard } from '@/components/demo/risk-assessment-dashboard'
+import FlashLoanExplorer from '@/components/flash-loan-explorer'
+import { VersionAwareFooter } from '@/src/components/layout/VersionAwareFooterBridge'
 import {
   DashboardCategory,
   categoryDisplayNames,
@@ -65,20 +62,27 @@ export function CorporateDashboard() {
     OffChainDashboard,
     StrategiesDashboard,
     RiskAssessmentDashboard,
-    FlashLoansDashboard
+    FlashLoanExplorer
   }
   
   // Generate dashboard configurations using the utility function
   const dashboards = createDashboardConfig(dashboardComponents, styles)
   
-  // Determine active dashboard based on URL path or default to first dashboard
+  // Determine active dashboard based on URL path or hash fragment
   const getInitialDashboard = () => {
-    const dashPath = pathname.split('/').slice(0, 4).join('/')
-    const found = dashboards.find(dash => dash.path === dashPath)
-    return found ? found.id : dashboards[0].id
-  }
+    // First check if there's a hash fragment that matches a dashboard ID
+    const hash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '';
+    if (hash) {
+      const foundByHash = dashboards.find(dash => dash.id === hash || dash.id.toLowerCase() === hash.toLowerCase());
+      if (foundByHash) return foundByHash.id;
+    }
   
-  const [activeDashboard, setActiveDashboard] = useState(getInitialDashboard())
+    // Otherwise check the path
+    const dashPath = pathname.split('/').slice(0, 4).join('/')
+    const foundByPath = dashboards.find(dash => dash.path === dashPath)
+    return foundByPath ? foundByPath.id : dashboards[0].id
+  }
+  const [activeDashboard, setActiveDashboard] = useState(() => getInitialDashboard())
   
   // Find the currently active dashboard component
   const currentDashboard = dashboards.find(
@@ -93,11 +97,11 @@ export function CorporateDashboard() {
     if (dashboard) {
       setActiveDashboard(dashboardId)
       // Use replace instead of push to avoid building up history stack
-      router.replace(dashboard.path)
+      router.replace(`${dashboard.path}#${dashboardId}`)
     }
   }
   
-  // Sync URL with active dashboard when path changes
+  // Sync URL with active dashboard when path or hash changes
   useEffect(() => {
     const dashId = getInitialDashboard()
     if (dashId !== activeDashboard) {
@@ -105,14 +109,24 @@ export function CorporateDashboard() {
     }
   }, [pathname, activeDashboard])
   
+  // Listen for hash changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      const dashId = getInitialDashboard()
+      if (dashId !== activeDashboard) {
+        setActiveDashboard(dashId)
+      }
+    }
+    
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [activeDashboard])
   // List of all available dashboard categories
   const categories: DashboardCategory[] = ['main', 'analytics', 'portfolio', 'tools', 'admin']
   
   return (
     <div className={styles.appContainer}>
-      {/* Corporate Header */}
-      <CorporateHeader />
-      
+   
       <div className={styles.dashboardContainer}>
         {/* Sidebar for dashboard selection */}
         <div className={styles.dashboardSidebar}>
@@ -150,7 +164,7 @@ export function CorporateDashboard() {
       </div>
       
       {/* Corporate Footer */}
-      <CorporateFooter />
+      <VersionAwareFooter />
     </div>
   )
 }

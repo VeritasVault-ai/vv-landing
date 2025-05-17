@@ -1,8 +1,8 @@
 import type React from "react"
-import type { KPIs } from "@/types/analytics"
-import { formatCurrency, formatPercentage } from "@/lib/formatters"
 import { Users, UserCheck, BarChart, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight } from "lucide-react"
 import styles from "./kpi-cards.module.css"
+import { KPIs } from "@/src/types/analytics"
+import { formatCurrency, formatPercentage } from "@/src/lib/formatters"
 
 interface KpiCardsProps {
   data: KPIs | undefined

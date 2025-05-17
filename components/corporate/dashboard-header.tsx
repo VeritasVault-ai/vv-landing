@@ -1,10 +1,10 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { DashboardStatus } from "./dashboard-status"
-import { RefreshCw, Download } from "lucide-react"
+import { Download, RefreshCw } from "lucide-react"
 import { useState } from "react"
-import { WebSocketStatus } from "@/lib/services/dashboard-realtime-manager"
+import { DashboardStatus } from "./dashboard-status"
+import { WebSocketStatus } from "@/types/websocket-infrastructure"
 
 interface DashboardHeaderProps {
   title: string

@@ -1,46 +1,45 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { BarChart3, TrendingUp, Shield, FileText } from "lucide-react"
 import { trackNavigationEvent } from "@/lib/analytics/track-events"
+import { BarChart3, FileText, Shield, TrendingUp } from "lucide-react"
+import { useEffect, useState } from 'react'
 import { CorporateOverviewTab } from './tabs/CorporateOverviewTab'
 import { CorporatePerformanceTab } from './tabs/CorporatePerformanceTab'
-import { CorporateRiskTab } from './tabs/CorporateRiskTab'
 import { CorporateReportsTab } from './tabs/CorporateReportsTab'
+import { CorporateRiskTab } from './tabs/CorporateRiskTab'
+
+// Define a type for the valid tab values
+type TabValue = "overview" | "performance" | "risk" | "reports";
 
 /**
  * Renders a tabbed interface for the corporate dashboard, allowing users to switch between Overview, Performance, Risk, and Reports sections.
  *
- * @returns The tabbed dashboard component with corresponding content for each tab.
+ * @param {Object} props - The component props.
+ * @param {string} [props.defaultTab="overview"] - The default tab to be displayed.
+ * @returns {JSX.Element} The tabbed dashboard component with corresponding content for each tab.
  */
-export function CorporateDashboardTabs() {
-  const handleTabChange = (value: string) => {
-
-    setActiveTab(value)
-    window.location.hash = value
-
-    trackNavigationEvent({
-      feature_name: "corporate_dashboard_tab",
-      tab_destination: value,
-    })
-  }
+export function CorporateDashboardTabs({
+  defaultTab = "overview"
+}: {
+  defaultTab?: TabValue
+}) {
+  const [activeTab, setActiveTab] = useState<TabValue>(defaultTab)
   
-  // …rest of your component (e.g. <Tabs onValueChange={handleTabChange} defaultValue="overview">…)
-}
-
   // Effect to handle URL hash for direct linking to tabs
   useEffect(() => {
     // Check if there's a hash in the URL
     const hash = window.location.hash.replace('#', '')
-    if (hash && ['overview', 'performance', 'risk', 'reports'].includes(hash)) {
+    
+    // Type guard to ensure hash is a valid tab value
+    if (isValidTab(hash)) {
       setActiveTab(hash)
     }
 
     // Update tab when hash changes
     const handleHashChange = () => {
       const newHash = window.location.hash.replace('#', '')
-      if (newHash && ['overview', 'performance', 'risk', 'reports'].includes(newHash)) {
+      if (isValidTab(newHash)) {
         setActiveTab(newHash)
       }
     }
@@ -48,20 +47,27 @@ export function CorporateDashboardTabs() {
     window.addEventListener('hashchange', handleHashChange)
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
-  return (
--export function CorporateDashboardTabs() {
-+export function CorporateDashboardTabs({
-+  defaultTab = "overview"
-+}: {
-+  defaultTab?: "overview" | "performance" | "risk" | "reports"
-+}) {
-  // ...
 
--    <Tabs defaultValue="overview" className="space-y-6" onValueChange={handleTabChange}>
-+    <Tabs defaultValue={defaultTab} className="space-y-6" onValueChange={handleTabChange}>
-     {/* ...other tab content */}
+  // Type guard function to check if a string is a valid tab value
+  const isValidTab = (value: string): value is TabValue => {
+    return ['overview', 'performance', 'risk', 'reports'].includes(value);
   }
-}
+
+  const handleTabChange = (value: string) => {
+    // Ensure value is a valid tab before setting it
+    if (isValidTab(value)) {
+      setActiveTab(value)
+      window.location.hash = value
+
+      trackNavigationEvent({
+        feature_name: "corporate_dashboard_tab",
+        tab_destination: value,
+      })
+    }
+  }
+  
+  return (
+    <Tabs defaultValue={defaultTab} className="space-y-6" onValueChange={handleTabChange}>
       <TabsList className="bg-slate-100 dark:bg-slate-800 p-1">
         <TabsTrigger
           value="overview"

@@ -1,17 +1,11 @@
 "use client"
 
 import { ErrorBoundary } from "@/components/error-boundary"
-import { Button } from "@/components/ui/button"
 import { useDashboard } from "@/contexts/dashboard-context"
 import { useRobustTheme } from "@/src/context/RobustThemeProvider"
-import { Download, RefreshCw } from "lucide-react"
-import { ReactNode, Suspense, useEffect, useRef, useState } from "react"
-import { CorporateFooter } from "./corporate-footer"
-import { CorporateHeader } from "./corporate-header"
-import { DashboardSettings } from "./dashboard-settings"
-import { SimulationIndicator } from "./simulation-indicator"
+import { ReactNode, Suspense, useEffect, useState } from "react"
 
-interface DashboardLayoutProps {
+interface DashboardShellProps {
   children: ReactNode
   title: string
   description?: string
@@ -44,12 +38,12 @@ function DashboardSectionLoading() {
  * @remark
  * Suppresses specific console warnings related to ResponsiveContainer during the component's lifecycle.
  */
-export function DashboardLayout({ 
+export function DashboardShell({ 
   children, 
   title, 
   description = "Portfolio overview and performance metrics",
   onRefresh
-}: DashboardLayoutProps) {
+}: DashboardShellProps) {
   const { settings, refreshData, isLoading: contextLoading, performanceData, portfolioData, marketData } = useDashboard()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const { isDark } = useRobustTheme()
@@ -92,42 +86,6 @@ export function DashboardLayout({
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Compact header with navigation */}
-      <div className="bg-slate-900 dark:bg-slate-950 py-2 px-4 border-b border-slate-800">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <CorporateHeader isLoggedIn={true} minimal={true} />
-          </div>
-          <div className="flex items-center space-x-2">
-            {hasSimulatedData && <SimulationIndicator compact={true} />}
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-8 px-2 flex items-center gap-1"
-              onClick={handleRefresh}
-              disabled={isRefreshing || contextLoading}
-            >
-              <RefreshCw className={`h-3 w-3 ${isRefreshing || contextLoading ? 'animate-spin' : ''}`} />
-              <span className="text-xs">Refresh</span>
-            </Button>
-            <Button variant="outline" size="sm" className="h-8 px-2 flex items-center gap-1">
-              <Download className="h-3 w-3" />
-              <span className="text-xs">Export</span>
-            </Button>
-            <DashboardSettings compact={true} />
-          </div>
-        </div>
-      </div>
-
-      {/* Dashboard title bar - more compact */}
-      <div className="bg-slate-800 dark:bg-slate-900 py-3 px-4 border-b border-slate-700">
-        <div className="flex flex-row justify-between items-center">
-          <div>
-            <h1 className="text-xl font-bold text-white">{title}</h1>
-            <p className="text-sm text-slate-300">{description}</p>
-          </div>
-        </div>
-      </div>
 
       {/* Scrollable content area */}
       <div className="flex-grow overflow-y-auto">

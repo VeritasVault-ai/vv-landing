@@ -79,15 +79,27 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
       // Fetch initial data from API if specified
       if (fetchInitialData && initialDataEndpoint) {
         try {
-          const response = await fetch(initialDataEndpoint);
+          // Add timeout to fetch to prevent hanging
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+          
+          const response = await fetch(initialDataEndpoint, {
+            signal: controller.signal
+          }).finally(() => {
+            clearTimeout(timeoutId);
+          });
           
           if (!response.ok) {
-            throw new Error(`Failed to fetch initial data from ${initialDataEndpoint}`);
+            console.warn(`API returned ${response.status} ${response.statusText} for ${initialDataEndpoint}`);
+            // Don't throw, just fall back to generated data
+            initialData = await Promise.resolve(getInitialData());
+          } else {
+            initialData = await response.json();
           }
-          
-          initialData = await response.json();
         } catch (error) {
-          console.error('Error fetching initial data:', error);
+          // Log the error but don't let it crash the simulation
+          console.warn(`Could not fetch initial data: ${error instanceof Error ? error.message : String(error)}`);
+          console.info('Using generated initial data instead');
           // Fall back to generated initial data
           initialData = await Promise.resolve(getInitialData());
         }
@@ -115,7 +127,12 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
             
             setData(prevData => {
               if (!prevData) return null;
-              return updateDataPeriodically(prevData);
+              try {
+                return updateDataPeriodically(prevData);
+              } catch (error) {
+                console.error('Error in periodic update:', error);
+                return prevData; // Return previous data on error
+              }
             });
           }, updateInterval);
         }
@@ -124,6 +141,14 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
     } catch (error) {
       console.error('Error starting simulation:', error);
       onStatusChange?.('error');
+      
+      // Even if there's an error, try to use generated initial data
+      try {
+        const fallbackData = await Promise.resolve(getInitialData());
+        setData(fallbackData);
+      } catch (fallbackError) {
+        console.error('Failed to generate fallback data:', fallbackError);
+      }
     } finally {
       // Reset the flag when simulation setup is complete
       isStartingSimulationRef.current = false;
@@ -146,6 +171,7 @@ export function useBaseWebSocketSimulation<T>(options: WebSocketSimulationOption
     return simulationCleanupRef.current;
   }, [fetchInitialData, getInitialData, initialDataEndpoint, onStatusChange, updateDataPeriodically, updateInterval]);
 
+  // The rest of the code remains the same...
   // Schedule reconnect with exponential backoff
   const scheduleReconnect = useCallback(() => {
     // Clear any existing reconnect timeout
