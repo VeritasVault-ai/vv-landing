@@ -4,7 +4,7 @@ import { FooterLinkGroup } from "../types"
 
 export interface LinkGroupsProps {
   linkGroups: FooterLinkGroup[];
-  trackEvent: (event: any) => void;
+  trackEvent: (event: { action: string; category: string; label: string }) => void;
 }
 
 export function LinkGroups({ 
