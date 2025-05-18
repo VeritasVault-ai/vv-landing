@@ -10,7 +10,27 @@ export async function middleware(request) {
     path.startsWith('/wordpress/wp-admin') ||
     path.endsWith('setup-config.php')
   ) {
-    const html = `...` // (see above)
+     const html = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>404 – Not Found</title>
+        <style>
+          body { background: #09090b; color: #fafaf9; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; }
+          .container { text-align: center; }
+          h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+          p { color: #94a3b8; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>🛡️ 404 – This is not the WordPress you’re looking for.</h1>
+          <p>If you’re a bot, go probe somewhere else.<br>If you’re human and ended up here by mistake, contact the site admin.</p>
+        </div>
+      </body>
+      </html>
+    `
     return new NextResponse(html, {
       status: 404,
       headers: { 'Content-Type': 'text/html; charset=utf-8' }
