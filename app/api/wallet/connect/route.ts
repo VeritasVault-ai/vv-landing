@@ -7,15 +7,16 @@ interface ConnectRequest {
   walletAddress: string
   chainId: number
   signature: string
+  message: string
 }
 
 export async function POST(request: NextRequest) {
   try {
     // Parse the request body
     const body = await request.json() as ConnectRequest
-    const { walletAddress, chainId, signature } = body
+    const { walletAddress, chainId, signature, message } = body
     
-    if (!walletAddress || !chainId || !signature) {
+    if (!walletAddress || !chainId || !signature || !message) {
       return NextResponse.json({ 
         error: 'Missing required parameters' 
       }, { status: 400 })
@@ -31,18 +32,20 @@ export async function POST(request: NextRequest) {
       }, { status: 403 })
     }
     
-    // Verify the provided signature (simplified for this implementation)
-    const isSignatureValid = signature.length > 32 // Placeholder for actual signature verification
+    // Import the signature verification utility
+    const { verifyWalletSignature } = await import('@/lib/wallet/signature-utils')
+    
+    // Verify the provided signature
+    const isSignatureValid = await verifyWalletSignature(walletAddress, message, signature)
     
     if (!isSignatureValid) {
       return NextResponse.json({ 
-        error: 'Invalid signature' 
+        error: 'Invalid signature - authentication failed' 
       }, { status: 401 })
     }
     
-    // Create a Supabase client for server-side operations
-    const cookieStore = cookies()
-    const supabase = createServerClient({ cookies: cookieStore })
+    // Create a Supabase client for server-side operations with cookie handling
+    const supabase = createServerClient({ cookies })
     
     // Get the current user session
     const { data: { session } } = await supabase.auth.getSession()

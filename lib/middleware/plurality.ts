@@ -19,7 +19,7 @@ export async function pluralityMiddleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   
   // Only apply Plurality security to relevant paths
-  if (!(/^\/api\/wallet/.test(path) || /^\/wallet/.test(path))) {
+  if (!(path.startsWith('/api/wallet') || path.startsWith('/wallet'))) {
     return response
   }
   
@@ -59,8 +59,10 @@ export async function validateWalletWithPlurality(walletAddress: string) {
   // In reality, this would come from the Plurality API
   let securityScore = 0
   if (isAddressValid) {
-    // Simple mock scoring algorithm
-    securityScore = 85 + Math.floor(Math.random() * 15)
+    // Deterministic mock scoring algorithm based on address
+    const addressHash = walletAddress.slice(2, 10)
+    const hashValue = parseInt(addressHash, 16) % 15
+    securityScore = 85 + hashValue
     
     // Reduce score for specific patterns that might indicate risks
     // Enhanced mock security checks for suspicious patterns

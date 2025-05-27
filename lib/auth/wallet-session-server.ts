@@ -21,13 +21,12 @@ export async function validateWalletSession(request: NextRequest) {
     }
   }
 
-  const cookieStore = cookies()
-  const supabase = createServerClient()
+  const supabase = createServerClient({ cookies })
   
-  // Query the database for the session
+  // Query the database for the session with only required fields
   const { data: session, error } = await supabase
     .from("wallet_sessions")
-    .select("*")
+    .select("session_id, wallet_address, chain_id, connected_at, expires_at, last_active, is_active")
     .eq("session_id", sessionId)
     .single()
   
@@ -63,11 +62,11 @@ export async function validateWalletSession(request: NextRequest) {
  * @returns Array of active wallet sessions for the user
  */
 export async function getUserWalletSessions(userId: string) {
-  const supabase = createServerClient()
+  const supabase = createServerClient({ cookies })
   
   const { data: sessions, error } = await supabase
     .from("wallet_sessions")
-    .select("*")
+    .select("session_id, wallet_address, chain_id, connected_at, expires_at, last_active, is_active")
     .eq("user_id", userId)
     .eq("is_active", true)
     .order("last_active", { ascending: false })
@@ -87,13 +86,15 @@ export async function getUserWalletSessions(userId: string) {
  * @param userId The ID of the user to terminate sessions for
  */
 export async function terminateAllUserWalletSessions(userId: string) {
-  const supabase = createServerClient()
+  const supabase = createServerClient({ cookies })
   
-  await supabase
+  const { error } = await supabase
     .from("wallet_sessions")
     .update({
       is_active: false
     })
     .eq("user_id", userId)
     .eq("is_active", true)
+    
+  return { success: !error, error }
 }

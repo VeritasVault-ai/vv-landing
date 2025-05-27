@@ -9,7 +9,7 @@ interface WalletSessionHook {
   walletAddress: string | null
   chainId: number | null
   connectWallet: (address: string, chainId: number, signature: string) => Promise<boolean>
-  disconnectWallet: () => Promise<void>
+  disconnectWallet: () => Promise<boolean>
   refreshSession: () => Promise<boolean>
   sessionExpiresAt: Date | null
 }
@@ -26,6 +26,23 @@ export function useWalletSession(): WalletSessionHook {
   const [sessionExpiresAt, setSessionExpiresAt] = useState<Date | null>(null)
   const { trackEvent } = useAnalytics()
 
+  // Check if we have a valid wallet session
+  const checkWalletSession = useCallback(() => {
+    const session = getWalletSession()
+    
+    if (session && isWalletSessionValid()) {
+      setIsConnected(true)
+      setWalletAddress(session.walletAddress)
+      setChainId(session.chainId)
+      setSessionExpiresAt(new Date(session.expiresAt))
+    } else {
+      setIsConnected(false)
+      setWalletAddress(null)
+      setChainId(null)
+      setSessionExpiresAt(null)
+    }
+  }, [])
+  
   // Check for existing session on mount
   useEffect(() => {
     checkWalletSession()
@@ -46,24 +63,7 @@ export function useWalletSession(): WalletSessionHook {
       clearInterval(refreshInterval)
       clearInterval(activityInterval)
     }
-  }, [isConnected])
-
-  // Check if we have a valid wallet session
-  const checkWalletSession = useCallback(() => {
-    const session = getWalletSession()
-    
-    if (session && isWalletSessionValid()) {
-      setIsConnected(true)
-      setWalletAddress(session.walletAddress)
-      setChainId(session.chainId)
-      setSessionExpiresAt(new Date(session.expiresAt))
-    } else {
-      setIsConnected(false)
-      setWalletAddress(null)
-      setChainId(null)
-      setSessionExpiresAt(null)
-    }
-  }, [])
+  }, [isConnected, checkWalletSession])
 
   // Connect wallet function
   const connectWallet = async (address: string, chainId: number, signature: string): Promise<boolean> => {
@@ -85,6 +85,7 @@ export function useWalletSession(): WalletSessionHook {
           walletAddress: address,
           chainId,
           signature,
+          message: `Sign this message to authenticate with VeritasVault.net. Timestamp: ${Date.now()}`,
         }),
       })
       
@@ -133,7 +134,7 @@ export function useWalletSession(): WalletSessionHook {
   }
 
   // Disconnect wallet function
-  const disconnectWallet = async (): Promise<void> => {
+  const disconnectWallet = async (): Promise<boolean> => {
     try {
       trackEvent({
         action: 'wallet_disconnect',
@@ -142,9 +143,14 @@ export function useWalletSession(): WalletSessionHook {
       })
       
       // Call the API to disconnect
-      await fetch('/api/wallet/disconnect', {
+      const response = await fetch('/api/wallet/disconnect', {
         method: 'POST',
       })
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to disconnect wallet on server');
+      }
       
       // Terminate local session
       await terminateWalletSession()
@@ -154,8 +160,19 @@ export function useWalletSession(): WalletSessionHook {
       setWalletAddress(null)
       setChainId(null)
       setSessionExpiresAt(null)
+      
+      return true
     } catch (error) {
       console.error('Error disconnecting wallet:', error)
+      trackEvent({
+        action: 'wallet_disconnect_error',
+        category: 'wallet',
+        label: 'disconnect',
+        custom_data: {
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }
+      })
+      return false
     }
   }
 

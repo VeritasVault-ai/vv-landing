@@ -42,11 +42,8 @@ export async function middleware(request: NextRequest) {
 
   // Check wallet session status for wallet-related endpoints
   if (path.startsWith('/api/wallet') || path.startsWith('/wallet')) {
-    // Apply Plurality middleware for enhanced wallet security
-    const pluralityResponse = await pluralityMiddleware(request)
-    
-    // For wallet-specific API endpoints that require authentication
-    if (path.includes('/api/wallet/secure') || path.includes('/wallet/transaction')) {
+    // For wallet-specific API endpoints that require authentication, validate the session first
+    if (path.startsWith('/api/wallet/secure') || path.startsWith('/wallet/transaction')) {
       // Check wallet session validity
       const { isValid, session } = await validateWalletSession(request)
       
@@ -54,8 +51,13 @@ export async function middleware(request: NextRequest) {
         // Redirect to wallet connection page if session is invalid
         return NextResponse.redirect(new URL('/wallet/connect', request.url))
       }
-
-      // Add wallet session status to the response for logging purposes
+    }
+    
+    // Apply Plurality middleware for enhanced wallet security
+    const pluralityResponse = await pluralityMiddleware(request)
+    
+    // Add a generic validity flag for successful auth
+    if (path.startsWith('/api/wallet/secure') || path.startsWith('/wallet/transaction')) {
       pluralityResponse.headers.set('X-Wallet-Session-Valid', 'true')
     }
     

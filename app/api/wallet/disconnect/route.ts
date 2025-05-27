@@ -14,9 +14,8 @@ export async function POST(request: NextRequest) {
       })
     }
     
-    // Create a Supabase client for server-side operations
-    const cookieStore = cookies()
-    const supabase = createServerClient({ cookies: cookieStore })
+    // Create a Supabase client for server-side operations with cookie handling
+    const supabase = createServerClient({ cookies })
     
     // Mark the session as inactive in the database
     const { error } = await supabase

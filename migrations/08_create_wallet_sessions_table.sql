@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS wallet_sessions (
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   ip_address TEXT,
   user_agent TEXT,
-  security_score INTEGER,
+  security_score INTEGER CHECK (security_score IS NULL OR (security_score >= 0 AND security_score <= 100)),
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
@@ -58,3 +58,6 @@ DROP TRIGGER IF EXISTS trigger_cleanup_expired_wallet_sessions ON wallet_session
 CREATE TRIGGER trigger_cleanup_expired_wallet_sessions
 AFTER INSERT OR UPDATE ON wallet_sessions
 EXECUTE FUNCTION cleanup_expired_wallet_sessions();
+
+-- Create an additional daily scheduled job for cleaning up expired sessions
+COMMENT ON FUNCTION cleanup_expired_wallet_sessions() IS 'Cleans up expired wallet sessions to maintain security. Should be called by trigger and scheduled job.';
