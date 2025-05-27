@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         connected: false,
         message: 'No active wallet session'
-      })
+      }, { status: 401 })
     }
     
     // Return the wallet session details

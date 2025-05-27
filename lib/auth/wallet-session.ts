@@ -47,18 +47,30 @@ export async function createWalletSession(walletAddress: string, chainId: number
   localStorage.setItem(STORAGE_KEY, JSON.stringify(session))
 
   // Store session in database for persistence and monitoring
-  await supabase
-    .from("wallet_sessions")
-    .insert({
-      session_id: session.id,
-      user_id: user.id,
-      wallet_address: walletAddress,
-      chain_id: chainId,
-      connected_at: new Date(session.connectedAt).toISOString(),
-      expires_at: new Date(session.expiresAt).toISOString(),
-      last_active: new Date(session.lastActive).toISOString(),
-      is_active: session.isActive
-    })
+  try {
+    const { error } = await supabase
+      .from("wallet_sessions")
+      .insert({
+        session_id: session.id,
+        user_id: user.id,
+        wallet_address: walletAddress,
+        chain_id: chainId,
+        connected_at: new Date(session.connectedAt).toISOString(),
+        expires_at: new Date(session.expiresAt).toISOString(),
+        last_active: new Date(session.lastActive).toISOString(),
+        is_active: session.isActive
+      })
+    
+    if (error) {
+      // Database insertion failed, clean up localStorage
+      localStorage.removeItem(STORAGE_KEY)
+      throw new Error(`Failed to create wallet session: ${error.message}`)
+    }
+  } catch (error) {
+    // Database insertion failed, clean up localStorage
+    localStorage.removeItem(STORAGE_KEY)
+    throw error
+  }
 
   return session
 }
@@ -77,13 +89,21 @@ export async function updateWalletSessionActivity(): Promise<void> {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(session))
 
     // Update the database record
-    const supabase = createBrowserClient()
-    await supabase
-      .from("wallet_sessions")
-      .update({
-        last_active: new Date(session.lastActive).toISOString()
-      })
-      .eq("session_id", session.id)
+    try {
+      const supabase = createBrowserClient()
+      const { error } = await supabase
+        .from("wallet_sessions")
+        .update({
+          last_active: new Date(session.lastActive).toISOString()
+        })
+        .eq("session_id", session.id)
+
+      if (error) {
+        console.error("Failed to update wallet session activity:", error)
+      }
+    } catch (error) {
+      console.error("Database error updating session activity:", error)
+    }
   }
 }
 
@@ -100,14 +120,24 @@ export async function extendWalletSession(): Promise<WalletSession | null> {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(session))
 
   // Update the database record
-  const supabase = createBrowserClient()
-  await supabase
-    .from("wallet_sessions")
-    .update({
-      expires_at: new Date(session.expiresAt).toISOString(),
-      last_active: new Date(session.lastActive).toISOString()
-    })
-    .eq("session_id", session.id)
+  try {
+    const supabase = createBrowserClient()
+    const { error } = await supabase
+      .from("wallet_sessions")
+      .update({
+        expires_at: new Date(session.expiresAt).toISOString(),
+        last_active: new Date(session.lastActive).toISOString()
+      })
+      .eq("session_id", session.id)
+
+    if (error) {
+      console.error("Failed to extend wallet session:", error)
+      return null
+    }
+  } catch (error) {
+    console.error("Database error extending session:", error)
+    return null
+  }
 
   return session
 }
@@ -124,13 +154,21 @@ export async function terminateWalletSession(): Promise<void> {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(session))
 
   // Update the database record
-  const supabase = createBrowserClient()
-  await supabase
-    .from("wallet_sessions")
-    .update({
-      is_active: false
-    })
-    .eq("session_id", session.id)
+  try {
+    const supabase = createBrowserClient()
+    const { error } = await supabase
+      .from("wallet_sessions")
+      .update({
+        is_active: false
+      })
+      .eq("session_id", session.id)
+
+    if (error) {
+      console.error("Failed to terminate wallet session:", error)
+    }
+  } catch (error) {
+    console.error("Database error terminating session:", error)
+  }
 }
 
 /**
@@ -142,12 +180,28 @@ export function getWalletSession(): WalletSession | null {
   const storedSession = localStorage.getItem(STORAGE_KEY)
   if (!storedSession) return null
 
-  const session = JSON.parse(storedSession) as WalletSession
+  let session: WalletSession
+  try {
+    session = JSON.parse(storedSession) as WalletSession
+  } catch (error) {
+    // Malformed session data, clean up and return null
+    localStorage.removeItem(STORAGE_KEY)
+    return null
+  }
   
   // Check if session has expired
   if (session.expiresAt < Date.now()) {
-    // Session expired, clean up
+    // Session expired, clean up both localStorage and database
     localStorage.removeItem(STORAGE_KEY)
+    
+    // Mark session as inactive in database
+    const supabase = createBrowserClient()
+    supabase
+      .from("wallet_sessions")
+      .update({ is_active: false })
+      .eq("session_id", session.id)
+      .then() // Fire and forget to avoid blocking
+    
     return null
   }
   

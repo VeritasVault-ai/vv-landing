@@ -19,7 +19,7 @@ export async function pluralityMiddleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   
   // Only apply Plurality security to relevant paths
-  if (!path.includes("/api/wallet") && !path.includes("/wallet")) {
+  if (!(/^\/api\/wallet/.test(path) || /^\/wallet/.test(path))) {
     return response
   }
   
@@ -63,10 +63,19 @@ export async function validateWalletWithPlurality(walletAddress: string) {
     securityScore = 85 + Math.floor(Math.random() * 15)
     
     // Reduce score for specific patterns that might indicate risks
-    // (These are mock security checks)
-    if (walletAddress.includes("0000")) securityScore -= 5
-    if (walletAddress.includes("1111")) securityScore -= 5
-    if (walletAddress.includes("dead")) securityScore -= 10
+    // Enhanced mock security checks for suspicious patterns
+    const suspiciousPatterns = [
+      { pattern: /0{4,}/, penalty: 5, description: 'repeated zeros' },
+      { pattern: /1{4,}/, penalty: 5, description: 'repeated ones' },
+      { pattern: /dead|beef|cafe/i, penalty: 10, description: 'vanity address patterns' },
+      { pattern: /^0x0+[1-9a-f]/, penalty: 3, description: 'leading zeros pattern' }
+    ]
+
+    for (const { pattern, penalty } of suspiciousPatterns) {
+      if (pattern.test(walletAddress)) {
+        securityScore -= penalty
+      }
+    }
   }
   
   return {

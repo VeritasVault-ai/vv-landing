@@ -56,5 +56,5 @@ $$ LANGUAGE plpgsql;
 -- Create trigger to run cleanup function periodically
 DROP TRIGGER IF EXISTS trigger_cleanup_expired_wallet_sessions ON wallet_sessions;
 CREATE TRIGGER trigger_cleanup_expired_wallet_sessions
-AFTER INSERT ON wallet_sessions
+AFTER INSERT OR UPDATE ON wallet_sessions
 EXECUTE FUNCTION cleanup_expired_wallet_sessions();

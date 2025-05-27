@@ -16,15 +16,23 @@ export async function POST(request: NextRequest) {
     
     // Create a Supabase client for server-side operations
     const cookieStore = cookies()
-    const supabase = createServerClient()
+    const supabase = createServerClient({ cookies: cookieStore })
     
     // Mark the session as inactive in the database
-    await supabase
+    const { error } = await supabase
       .from('wallet_sessions')
       .update({
         is_active: false
       })
       .eq('session_id', sessionId)
+    
+    if (error) {
+      console.error('Error updating wallet session:', error)
+      return NextResponse.json({
+        success: false,
+        error: 'Failed to update session status'
+      }, { status: 500 })
+    }
     
     // Clear the session cookie
     const response = NextResponse.json({
