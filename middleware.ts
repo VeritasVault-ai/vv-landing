@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { validateWalletSession } from '@/lib/auth/wallet-session-server'
+import { pluralityMiddleware } from '@/lib/middleware/plurality'
+import { checkAuthStatus, isProtectedRoute, isPublicRoute, getLoginRedirect } from '@/lib/auth/auth-middleware'
 
-export async function middleware(request) {
+export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone()
   const path = url.pathname
 
@@ -25,8 +28,8 @@ export async function middleware(request) {
       </head>
       <body>
         <div class="container">
-          <h1>🛡️ 404 – This is not the WordPress you’re looking for.</h1>
-          <p>If you’re a bot, go probe somewhere else.<br>If you’re human and ended up here by mistake, contact the site admin.</p>
+          <h1>🛡️ 404 – This is not the WordPress you're looking for.</h1>
+          <p>If you're a bot, go probe somewhere else.<br>If you're human and ended up here by mistake, contact the site admin.</p>
         </div>
       </body>
       </html>
@@ -35,6 +38,40 @@ export async function middleware(request) {
       status: 404,
       headers: { 'Content-Type': 'text/html; charset=utf-8' }
     })
+  }
+
+  // Check wallet session status for wallet-related endpoints
+  if (path.startsWith('/api/wallet') || path.startsWith('/wallet')) {
+    // For wallet-specific API endpoints that require authentication, validate the session first
+    if (path.startsWith('/api/wallet/secure') || path.startsWith('/wallet/transaction')) {
+      // Check wallet session validity
+      const { isValid, session } = await validateWalletSession(request)
+      
+      if (!isValid) {
+        // Redirect to wallet connection page if session is invalid
+        return NextResponse.redirect(new URL('/wallet/connect', request.url))
+      }
+    }
+    
+    // Apply Plurality middleware for enhanced wallet security
+    const pluralityResponse = await pluralityMiddleware(request)
+    
+    // Add a generic validity flag for successful auth
+    if (path.startsWith('/api/wallet/secure') || path.startsWith('/wallet/transaction')) {
+      pluralityResponse.headers.set('X-Wallet-Session-Valid', 'true')
+    }
+    
+    return pluralityResponse
+  }
+
+  // Authentication protection for routes
+  if (isProtectedRoute(path)) {
+    const { isAuthenticated } = await checkAuthStatus(request)
+    
+    if (!isAuthenticated) {
+      const loginUrl = getLoginRedirect(request)
+      return NextResponse.redirect(new URL(loginUrl, request.url))
+    }
   }
 
   const response = NextResponse.next()
@@ -54,6 +91,10 @@ export async function middleware(request) {
   response.headers.set('Cross-Origin-Resource-Policy', 'same-origin')
   response.headers.set('X-Permitted-Cross-Domain-Policies', 'none')
   response.headers.set('x-vercel-skip-auth', 'true')
+  
+  // Add Wallet Protection Headers 
+  response.headers.set('X-Wallet-Protection', 'enabled')
+  
   return response
 }
 

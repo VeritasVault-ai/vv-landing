@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "msw:init": "npx msw init public --save",
-    "dup-check": "jscpd --config .jscpd.json",
+    "dup-check": "node scripts/simple-jscpd.js",
+    "audit-config": "node scripts/audit-config.js",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -93,5 +94,6 @@
   },
   "msw": {
     "workerDirectory": "public"
-  }
+  },
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }
