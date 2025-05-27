@@ -1,157 +1,154 @@
-# VeritasVault.net Landing Page
+# Wallet Connection and Transaction Tracking
 
-Welcome to the VeritasVault.net landing page repository! This document will guide you through the project setup, development workflow, and deployment process.
+This implementation adds comprehensive tracking for wallet connections and transactions, with integration to the Plurality system. It includes:
 
-## 📚 Table of Contents
+1. **Event Tracking**
+   - Wallet connection attempts, successes, and failures
+   - Transaction initiation, signing, submission, confirmation, and failures
+   - Plurality session creation, authentication, and transactions
 
-- [Introduction](#introduction)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Development](#development)
-  - [Project Structure](#project-structure)
-  - [Available Scripts](#available-scripts)
-  - [Styling](#styling)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
+2. **Analytics Dashboards**
+   - Wallet connection success rates dashboard
+   - Plurality integration metrics dashboard
+   - Integration with the main analytics dashboard
 
-## Introduction
+3. **Tracking Services**
+   - `wallet-connection-tracker.ts` - Tracks wallet connection events
+   - `transaction-tracker.ts` - Tracks transaction lifecycle events
 
-The VeritasVault.net landing page serves as the primary entry point for users to learn about our services, features, and offerings. This repository contains all the code and assets needed to build, develop, and deploy the landing page.
+## Usage Examples
 
-This project is built with modern web technologies to ensure optimal performance, accessibility, and user experience across all devices.
+### Tracking Wallet Connections
 
-## Getting Started
+```typescript
+import { useWalletConnectionTracker } from '@/lib/services/wallet-connection-tracker'
+import { WalletType } from '@/lib/analytics/wallet-analytics'
 
-### Prerequisites
+function ConnectWalletButton() {
+  const { 
+    initiateConnection, 
+    handleConnectionSuccess, 
+    handleConnectionFailure,
+    connectionState
+  } = useWalletConnectionTracker()
 
-Before you begin, ensure you have the following installed on your system:
+  const connectWallet = async () => {
+    // Start tracking the connection attempt
+    const startTime = initiateConnection(WalletType.METAMASK, {
+      sessionId: 'plurality-session-id', // Optional Plurality data
+      userId: 'plurality-user-id'        // Optional Plurality data
+    })
 
-- [Node.js](https://nodejs.org/) (v18 or later)
-- [npm](https://www.npmjs.com/) (v8 or later) or [Yarn](https://yarnpkg.com/) (v1.22 or later)
-- [Git](https://git-scm.com/)
+    try {
+      // Actual wallet connection logic here
+      const { address, chainId } = await connectToMetaMask()
+      
+      // Track successful connection
+      handleConnectionSuccess(address, chainId, startTime, {
+        sessionId: 'plurality-session-id', // Optional Plurality data
+        userId: 'plurality-user-id'        // Optional Plurality data
+      })
+    } catch (error) {
+      // Track failed connection
+      handleConnectionFailure(
+        error.message, 
+        error.code, 
+        startTime, 
+        {
+          sessionId: 'plurality-session-id', // Optional Plurality data
+        }
+      )
+    }
+  }
 
-### Installation
-
-Follow these steps to get the project up and running on your local machine:
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/veritasvault/vv-landing.git
-   cd vv-landing
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-3. Set up environment variables:
-   ```bash
-   cp .env.example .env.local
-   ```
-   Then edit `.env.local` with your specific configuration values.
-
-4. Start the development server:
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the landing page.
-
-## Development
-
-### Project Structure
-
-```
-vv-landing/
-├── public/           # Static assets
-├── src/              # Source code
-│   ├── components/   # Reusable UI components
-│   ├── lib/          # Utility functions and services
-│   ├── pages/        # Page components and routing
-│   ├── styles/       # Global styles and theme configuration
-│   └── types/        # TypeScript type definitions
-├── .env.example      # Example environment variables
-├── .eslintrc.js      # ESLint configuration
-├── .gitignore        # Git ignore rules
-├── next.config.js    # Next.js configuration
-├── package.json      # Project dependencies and scripts
-├── README.md         # Project documentation (you are here!)
-└── tsconfig.json     # TypeScript configuration
+  return (
+    <button 
+      onClick={connectWallet}
+      disabled={connectionState.status === 'connecting'}
+    >
+      {connectionState.status === 'connecting' ? 'Connecting...' : 'Connect Wallet'}
+    </button>
+  )
+}
 ```
 
-### Available Scripts
+### Tracking Transactions
 
-- `npm run dev` - Start the development server
-- `npm run build` - Build the production-ready application
-- `npm run start` - Start the production server
-- `npm run lint` - Run ESLint to check code quality
-- `npm run test` - Run tests
-- `npm run type-check` - Check TypeScript types
+```typescript
+import { useTransactionTracker } from '@/lib/services/transaction-tracker'
+import { WalletType } from '@/lib/analytics/wallet-analytics'
 
-### Styling
+function SendTransactionButton() {
+  const { initiateTransaction } = useTransactionTracker()
 
-This project uses a combination of:
+  const sendTransaction = async () => {
+    // Start tracking the transaction
+    const { 
+      transactionState, 
+      signed, 
+      failed 
+    } = initiateTransaction(
+      'deposit',                // Transaction type
+      WalletType.METAMASK,      // Wallet type
+      '0x123...abc',            // User address
+      1,                        // Chain ID
+      '1.5',                    // Amount (optional)
+      'ETH',                    // Asset (optional)
+      {                         // Plurality data (optional)
+        sessionId: 'plurality-session-id',
+        userId: 'plurality-user-id'
+      }
+    )
 
-- [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
-- CSS modules for component-specific styles
-- Theme variables for consistent branding
+    try {
+      // Request signature from user
+      const signedTx = await requestSignature()
+      
+      // Track signed transaction
+      const { transactionState: signedState, submitted, failed: signFailed } = signed()
+      
+      try {
+        // Submit transaction to blockchain
+        const { hash } = await submitTransaction(signedTx)
+        
+        // Track submitted transaction
+        const { 
+          transactionState: submittedState, 
+          confirmed, 
+          failed: submitFailed 
+        } = submitted(hash)
+        
+        // Wait for confirmation
+        const receipt = await waitForConfirmation(hash)
+        
+        // Track confirmed transaction
+        const finalState = confirmed(
+          receipt.gasUsed.toString(),
+          receipt.effectiveGasPrice.toString()
+        )
+        
+        console.log('Transaction confirmed:', finalState)
+      } catch (submitError) {
+        // Track submission failure
+        const failedState = submitFailed(submitError.message, submitError.code)
+        console.error('Transaction submission failed:', failedState)
+      }
+    } catch (signError) {
+      // Track signing failure
+      const failedState = failed(signError.message, signError.code)
+      console.error('Transaction signing failed:', failedState)
+    }
+  }
 
-To modify the theme, check the files in `src/styles/theme`.
+  return (
+    <button onClick={sendTransaction}>
+      Send Transaction
+    </button>
+  )
+}
+```
 
-## Deployment
+## Dashboard Access
 
-The landing page is automatically deployed through our CI/CD pipeline when changes are pushed to the main branch.
+The wallet connection and Plurality dashboards are accessible through the main analytics dashboard under the "Wallet Connections" and "Plurality" tabs.
 
-For manual deployment:
-
-1. Build the project:
-   ```bash
-   npm run build
-   # or
-   yarn build
-   ```
-
-2. Deploy the `out` directory to your hosting provider.
-
-### Deployment Environments
-
-- **Production**: [https://VeritasVault.net](https://VeritasVault.net)
-- **Staging**: [https://staging.VeritasVault.net](https://test.VeritasVault.net)
-
-## Contributing
-
-We welcome contributions to improve the VeritasVault.net landing page! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests and ensure code quality (`npm run test && npm run lint`)
-5. Commit your changes (`git commit -m 'Add some amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-Please adhere to our coding standards and include appropriate tests for new features.
-
-## Troubleshooting
-
-### Common Issues
-
-- **Build failures**: Make sure all dependencies are installed correctly and environment variables are set properly.
-- **Styling inconsistencies**: Clear your browser cache or try building in production mode.
-- **API connection issues**: Verify that the API endpoints are correctly configured in your environment variables.
-
-For more help, please check our [internal documentation](https://docs.VeritasVault.net) or reach out to the development team.
-
-## License
-
-This project is proprietary and confidential. Unauthorized copying, transferring, or reproduction of the contents of this repository, via any medium, is strictly prohibited.
-
-Copyright © 2025 VeritasVault.net. All rights reserved.
