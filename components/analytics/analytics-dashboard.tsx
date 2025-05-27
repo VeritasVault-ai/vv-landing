@@ -7,9 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { Loader2, AlertCircle, BarChart3, LineChart, PieChart, Users } from "lucide-react"
+import { Loader2, AlertCircle, BarChart3, LineChart, PieChart, Users, Wallet, Shield } from "lucide-react"
 import { createBrowserClient } from "@/lib/supabase"
 import Link from "next/link"
+import { WalletConnectionDashboard } from "./wallet-connection-dashboard"
+import { PluralityDashboard } from "./plurality-dashboard"
 
 export function AnalyticsDashboard() {
   const [analyticsId, setAnalyticsId] = useState<string | null>(null)
@@ -93,24 +95,25 @@ export function AnalyticsDashboard() {
               <TabsTrigger value="users">Users</TabsTrigger>
               <TabsTrigger value="engagement">Engagement</TabsTrigger>
               <TabsTrigger value="conversion">Conversion</TabsTrigger>
+              <TabsTrigger value="wallet">Wallet Connections</TabsTrigger>
+              <TabsTrigger value="plurality">Plurality</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <MetricCard title="Total Users" value="1,234" change="+12.3%" icon={<Users className="h-4 w-4" />} />
                 <MetricCard title="Page Views" value="5,678" change="+8.7%" icon={<BarChart3 className="h-4 w-4" />} />
-                <MetricCard
-                  title="Avg. Session"
-                  value="2m 45s"
-                  change="-1.2%"
-                  negative
-                  icon={<LineChart className="h-4 w-4" />}
+                <MetricCard 
+                  title="Wallet Connections" 
+                  value="856" 
+                  change="+15.2%" 
+                  icon={<Wallet className="h-4 w-4" />} 
                 />
                 <MetricCard
-                  title="Conversion Rate"
-                  value="3.45%"
-                  change="+0.8%"
-                  icon={<PieChart className="h-4 w-4" />}
+                  title="Plurality Auth"
+                  value="92.5%"
+                  change="+3.8%"
+                  icon={<Shield className="h-4 w-4" />}
                 />
               </div>
 
@@ -163,6 +166,14 @@ export function AnalyticsDashboard() {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="wallet" className="space-y-4">
+              <WalletConnectionDashboard />
+            </TabsContent>
+
+            <TabsContent value="plurality" className="space-y-4">
+              <PluralityDashboard />
             </TabsContent>
           </Tabs>
         </CardContent>
