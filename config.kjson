@@ -1,0 +1,10 @@
+{
+  // Main configuration file for VeritasVault AI features
+  "contextProviders": {
+    "defaultProvider": {
+      "maxTokens": 4000,
+      "model": "gpt-4o"
+    }
+  },
+  "customCommands": []
+}

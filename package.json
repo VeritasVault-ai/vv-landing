@@ -87,8 +87,12 @@
     "@types/node": "^22.15.18",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
+    "chalk": "^4.1.2",
+    "fast-glob": "^3.3.2",
+    "jscpd": "^3.5.10",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "msw": {
