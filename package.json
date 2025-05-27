@@ -10,13 +10,14 @@
     "lint": "next lint",
     "msw:init": "npx msw init public --save",
     "dup-check": "jscpd --config .jscpd.json",
+    "audit-config": "ts-node scripts/audit-config.ts",
     "prepare": "husky install"
   },
   "dependencies": {
     "@ai-sdk/deepinfra": "^0.2.15",
     "@ai-sdk/groq": "^1.2.9",
     "@ai-sdk/openai": "^1.3.22",
-    "@auth/core": "latest",
+    "@auth/core": "^0.39.1",
     "@emotion/is-prop-valid": "^1.3.1",
     "@fal-ai/serverless-client": "^0.15.0",
     "@hookform/resolvers": "^5.0.1",
@@ -40,19 +41,19 @@
     "@radix-ui/react-select": "2.1.4",
     "@radix-ui/react-separator": "^1.1.6",
     "@radix-ui/react-slider": "1.2.2",
-    "@radix-ui/react-slot": "latest",
+    "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.2.4",
     "@radix-ui/react-tabs": "^1.1.11",
     "@radix-ui/react-toast": "^1.2.13",
     "@radix-ui/react-toggle": "1.1.1",
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "^1.2.6",
-    "@supabase/auth-helpers-nextjs": "latest",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
     "@tanstack/react-virtual": "^3.13.8",
     "@vercel/analytics": "^1.5.0",
-    "ai": "latest",
+    "ai": "^4.3.16",
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -87,11 +88,16 @@
     "@types/node": "^22.15.18",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
+    "chalk": "^4.1.2",
+    "fast-glob": "^3.3.2",
+    "jscpd": "^3.5.10",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "msw": {
     "workerDirectory": "public"
-  }
+  },
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }
