@@ -9,14 +9,14 @@
     "start": "next start",
     "lint": "next lint",
     "msw:init": "npx msw init public --save",
-    "dup-check": "jscpd --config .jscpd.json",
+    "dup-check": "node scripts/simple-jscpd.js",
+    "audit-config": "node scripts/audit-config.js",
     "prepare": "husky install"
   },
   "dependencies": {
     "@ai-sdk/deepinfra": "^0.2.15",
     "@ai-sdk/groq": "^1.2.9",
     "@ai-sdk/openai": "^1.3.22",
-    "ethers": "^6.11.1",
     "@auth/core": "latest",
     "@emotion/is-prop-valid": "^1.3.1",
     "@fal-ai/serverless-client": "^0.15.0",
@@ -81,7 +81,6 @@
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "uuid": "^9.0.1",
     "vaul": "^1.1.2",
     "zod": "^3.24.4"
   },
@@ -89,13 +88,8 @@
     "@types/node": "^22.15.18",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
-    "@types/uuid": "^9.0.8",
-    "chalk": "^4.1.2",
-    "fast-glob": "^3.3.2",
-    "jscpd": "^3.5.10",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
-    "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "msw": {

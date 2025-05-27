@@ -1,7 +1,6 @@
 "use client"
 
 import { createBrowserClient } from "@/lib/supabase"
-import { v4 as uuidv4 } from "uuid"
 
 export interface WalletSession {
   id: string
@@ -34,7 +33,7 @@ export async function createWalletSession(walletAddress: string, chainId: number
 
   const now = Date.now()
   const session: WalletSession = {
-    id: uuidv4(),
+    id: crypto.randomUUID(),
     walletAddress,
     chainId,
     connectedAt: now,

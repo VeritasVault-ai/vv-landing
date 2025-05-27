@@ -1,17 +1,16 @@
-import fs from 'fs';
-import path from 'path';
-import { exit } from 'process';
+const fs = require('fs');
+const path = require('path');
 
 // Simple chalk replacement for colored output
 const chalk = {
-  red: (text: string) => `\x1b[31m${text}\x1b[0m`,
-  green: (text: string) => `\x1b[32m${text}\x1b[0m`,
-  yellow: (text: string) => `\x1b[33m${text}\x1b[0m`
+  red: (text) => `\x1b[31m${text}\x1b[0m`,
+  green: (text) => `\x1b[32m${text}\x1b[0m`,
+  yellow: (text) => `\x1b[33m${text}\x1b[0m`
 };
 
 // Simple glob replacement for file patterns
-function simpleGlob(patterns: string[]): Promise<string[]> {
-  const files: string[] = [];
+function simpleGlob(patterns) {
+  const files = [];
   
   for (const pattern of patterns) {
     if (pattern.includes('*')) {
@@ -44,12 +43,10 @@ const CONFIG_FILES = [
   '.aiguidance/commands/*.json'
 ];
 
-type Violation = { file: string; message: string };
-
-const violations: Violation[] = [];
+const violations = [];
 
 /** Load and parse a JSON/JSONC file. */
-function loadJson(file: string): any {
+function loadJson(file) {
   try {
     if (!fs.existsSync(file)) {
       console.warn(`File not found: ${file}`);
@@ -66,11 +63,11 @@ function loadJson(file: string): any {
 }
 
 /** Rule 1 – Duplicate command names across files. */
-function checkDuplicateCommands(objs: Record<string, any>[], fileNames: string[]) {
-  const map = new Map<string, string>();
+function checkDuplicateCommands(objs, fileNames) {
+  const map = new Map();
   objs.forEach((obj, idx) => {
     const cmds = obj.customCommands ?? [];
-    cmds.forEach((c: any) => {
+    cmds.forEach((c) => {
       const where = fileNames[idx];
       if (map.has(c.name)) {
         violations.push({
@@ -85,10 +82,10 @@ function checkDuplicateCommands(objs: Record<string, any>[], fileNames: string[]
 }
 
 /** Rule 2 – Token limits sanity check. */
-function checkTokenLimits(obj: any, file: string) {
+function checkTokenLimits(obj, file) {
   const providers = obj.contextProviders ?? obj;
   const BIG = 20000;
-  Object.entries(providers).forEach(([name, cfg]: [string, any]) => {
+  Object.entries(providers).forEach(([name, cfg]) => {
     if (cfg.maxTokens && cfg.maxTokens > BIG) {
       violations.push({
         file,
@@ -115,13 +112,13 @@ function checkTokenLimits(obj: any, file: string) {
       violations.forEach(v =>
         console.error(`${chalk.yellow(v.file)} → ${v.message}`)
       );
-      exit(1);
+      process.exit(1);
     } else {
       console.log(chalk.green('✓ AI-config audit passed with no violations.'));
     }
   } catch (error) {
     console.error('Error running audit:', error);
     console.log('Audit script encountered errors but continuing...');
-    exit(0); // Don't fail the build due to audit script issues
+    process.exit(0); // Don't fail the build due to audit script issues
   }
 })();

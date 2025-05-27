@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Get list of staged and unstaged TS/TSX files
-CHANGED_TS_FILES=$(git diff --name-only --diff-filter=ACMR | grep -E "\.tsx?$" || true)
-STAGED_TS_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E "\.tsx?$" || true)
+CHANGED_TS_FILES=$(git diff --name-only --diff-filter=ACMR | grep -E '\.tsx?$' || true)
+STAGED_TS_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.tsx?$' || true)
 
 # Combine the lists and remove duplicates
 ALL_CHANGED_FILES=$(echo -e "$CHANGED_TS_FILES\n$STAGED_TS_FILES" | sort | uniq)
