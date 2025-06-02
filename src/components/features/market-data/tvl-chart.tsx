@@ -4,7 +4,7 @@ import { formatCurrency, formatDate } from "@/src/lib/formatters"
 import type { HistoricalTvlData } from "@/src/types/market-data"
 import { useMemo } from "react"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-import styles from "./tvl-chart.module.css"
+import styles from "@/src/components/shared/chart.module.css"
 
 export interface TvlChartProps {
   historicalData: HistoricalTvlData[]

@@ -10,7 +10,17 @@
 .tooltipDate {
   font-size: 0.875rem;
   font-weight: 500;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.25rem 0;
+}
+
+.tooltipValue {
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.tooltipLabel {
+  font-weight: 500;
+  margin-right: 0.25rem;
 }
 
 .tooltipMetrics {
@@ -24,8 +34,4 @@
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-}
-
-.tooltipLabel {
-  font-weight: 500;
 }
