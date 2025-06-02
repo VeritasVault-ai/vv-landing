@@ -1,7 +1,7 @@
-import chalk from 'chalk';
-import glob from 'fast-glob';
-import fs from 'fs';
-import { exit } from 'process';
+const chalk = require('chalk');
+const glob = require('fast-glob');
+const fs = require('fs');
+const { exit } = require('process');
 
 const CONFIG_FILES = [
   'config.kjson',
@@ -9,12 +9,10 @@ const CONFIG_FILES = [
   '.aiguidance/commands/*.json'
 ];
 
-type Violation = { file: string; message: string };
-
-const violations: Violation[] = [];
+const violations = [];
 
 /** Load and parse a JSON/JSONC file. */
-function loadJson(file: string): any {
+function loadJson(file) {
   const raw = fs.readFileSync(file, 'utf8');
   // strip simple // comments
   const cleaned = raw.replace(/\/\/.*$/gm, '');
@@ -22,11 +20,11 @@ function loadJson(file: string): any {
 }
 
 /** Rule 1 – Duplicate command names across files. */
-function checkDuplicateCommands(objs: Record<string, any>[], fileNames: string[]) {
-  const map = new Map<string, string>();
+function checkDuplicateCommands(objs, fileNames) {
+  const map = new Map();
   objs.forEach((obj, idx) => {
     const cmds = obj.customCommands ?? [];
-    cmds.forEach((c: any) => {
+    cmds.forEach((c) => {
       const where = fileNames[idx];
       if (map.has(c.name)) {
         violations.push({
@@ -41,10 +39,10 @@ function checkDuplicateCommands(objs: Record<string, any>[], fileNames: string[]
 }
 
 /** Rule 2 – Token limits sanity check. */
-function checkTokenLimits(obj: any, file: string) {
+function checkTokenLimits(obj, file) {
   const providers = obj.contextProviders ?? obj;
   const BIG = 20000;
-  Object.entries(providers).forEach(([name, cfg]: [string, any]) => {
+  Object.entries(providers).forEach(([name, cfg]) => {
     if (cfg.maxTokens && cfg.maxTokens > BIG) {
       violations.push({
         file,
@@ -56,19 +54,25 @@ function checkTokenLimits(obj: any, file: string) {
 
 /** MAIN **/
 (async () => {
-  const files = (await glob(CONFIG_FILES)).sort();
-  const jsonObjs = files.map(loadJson);
+  try {
+    const files = (await glob(CONFIG_FILES)).sort();
+    const jsonObjs = files.map(loadJson);
 
-  checkDuplicateCommands(jsonObjs, files);
-  files.forEach((file, i) => checkTokenLimits(jsonObjs[i], file));
+    checkDuplicateCommands(jsonObjs, files);
+    files.forEach((file, i) => checkTokenLimits(jsonObjs[i], file));
 
-  if (violations.length) {
-    console.error(chalk.red(`✖ Found ${violations.length} AI-config violation(s):`));
-    violations.forEach(v =>
-      console.error(`${chalk.yellow(v.file)} → ${v.message}`)
-    );
+    if (violations.length) {
+      console.error(chalk.red(`✖ Found ${violations.length} AI-config violation(s):`));
+      violations.forEach(v =>
+        console.error(`${chalk.yellow(v.file)} → ${v.message}`)
+      );
+      exit(1);
+    } else {
+      console.log(chalk.green('✓ AI-config audit passed with no violations.'));
+    }
+  } catch (error) {
+    console.error(chalk.red('✖ Error running AI-config audit:'));
+    console.error(error.message);
     exit(1);
-  } else {
-    console.log(chalk.green('✓ AI-config audit passed with no violations.'));
   }
 })();
