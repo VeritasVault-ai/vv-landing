@@ -15,6 +15,8 @@ fi
 
 # Create a temporary tsconfig that includes only the changed files
 TMP_TSCONFIG="tsconfig.check.json"
+[ -f "$TMP_TSCONFIG" ] && rm "$TMP_TSCONFIG"
+trap 'rm -f "$TMP_TSCONFIG"' EXIT
 cat > $TMP_TSCONFIG << JSON
 {
   "extends": "./tsconfig.json",
