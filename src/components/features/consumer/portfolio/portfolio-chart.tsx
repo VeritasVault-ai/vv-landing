@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
 import { formatCurrency, formatDate } from "@/src/lib/formatters"
-import styles from "./portfolio-chart.module.css"
+import styles from "@/src/components/shared/chart.module.css"
 
 interface PortfolioChartProps {
   data: {
