@@ -15,6 +15,9 @@ fi
 
 # Create a temporary tsconfig that includes only the changed files
 TMP_TSCONFIG="tsconfig.check.json"
+[ -f "$TMP_TSCONFIG" ] && rm "$TMP_TSCONFIG"
+trap 'rm -f "$TMP_TSCONFIG"' EXIT
+
 cat > $TMP_TSCONFIG << JSON
 {
   "extends": "./tsconfig.json",
@@ -29,13 +32,8 @@ echo "Checking TypeScript types for changed files..."
 
 if ! ./node_modules/.bin/tsc --project $TMP_TSCONFIG --noEmit; then
   echo "TypeScript check completed with issues"
-  # Remove the temporary tsconfig
-  rm $TMP_TSCONFIG
   exit 1
 fi
-
-# Remove the temporary tsconfig
-rm $TMP_TSCONFIG
 
 echo "TypeScript check completed."
 exit 0
