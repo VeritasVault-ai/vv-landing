@@ -26,7 +26,10 @@ JSON
 
 # Run TypeScript check on only the changed files
 echo "Checking TypeScript types for changed files..."
-./node_modules/.bin/tsc --project $TMP_TSCONFIG --noEmit || echo "TypeScript check completed with issues"
+if ! ./node_modules/.bin/tsc --project $TMP_TSCONFIG --noEmit; then
+  echo "TypeScript check completed with issues"
+  exit 1
+fi
 
 # Remove the temporary tsconfig
 rm $TMP_TSCONFIG
