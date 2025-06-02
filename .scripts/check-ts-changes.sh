@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Get list of staged and unstaged TS/TSX files
-CHANGED_TS_FILES=$(git diff --name-only --diff-filter=ACMR | grep -E '\.tsx?$' || true)
-STAGED_TS_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.tsx?$' || true)
+CHANGED_TS_FILES=$(git diff --name-only --diff-filter=ACMR | grep -E \"\\.tsx?$\" || true)
+STAGED_TS_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E \"\\.tsx?$\" || true)
 
 # Combine the lists and remove duplicates
 ALL_CHANGED_FILES=$(echo "$CHANGED_TS_FILES"$"\\n""$STAGED_TS_FILES" | sort | uniq)
@@ -28,7 +28,11 @@ JSON
 
 # Run TypeScript check on only the changed files
 echo "Checking TypeScript types for changed files..."
-./node_modules/.bin/tsc --project $TMP_TSCONFIG --noEmit || echo "TypeScript check completed with issues"
+
+if ! ./node_modules/.bin/tsc --project $TMP_TSCONFIG --noEmit; then
+  echo "TypeScript check completed with issues"
+  exit 1
+fi
 
 # Remove the temporary tsconfig
 rm $TMP_TSCONFIG
