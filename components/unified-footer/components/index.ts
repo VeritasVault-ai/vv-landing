@@ -1,6 +1,0 @@
-export * from './DemoBadge'
-export * from './LogoSection'
-export * from './NewsletterSection'
-export * from './LinkGroups'
-export * from './ContactSection'
-export * from './BottomLinks'
