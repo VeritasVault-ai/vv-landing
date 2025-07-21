@@ -1,13 +1,19 @@
-import { describe, it, expect } from 'vitest';
-
-// Example: Replace with your actual voting service logic
-function tallyVotes(votes: ('yes' | 'no')[]) {
-  return votes.filter(v => v === 'yes').length;
-}
+import { votingService } from '@/../backend/services/voting-service';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('Voting Service', () => {
-  it('counts yes votes correctly', () => {
-    expect(tallyVotes(['yes', 'no', 'yes'])).toBe(2);
+  it('should have a getVotingOverview method', () => {
+    expect(typeof votingService.getVotingOverview).toBe('function');
   });
-  // Add more tests for edge cases, error handling, etc.
-}); 
+
+  it('calls getVotingOverview and returns data (mocked)', async () => {
+    // Mock global fetch
+    const mockData = { foo: 'bar' };
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => mockData,
+    });
+    const result = await votingService.getVotingOverview();
+    expect(result).toEqual(mockData);
+  });
+});

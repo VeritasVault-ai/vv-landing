@@ -1,14 +1,12 @@
-import { describe, it, expect } from 'vitest';
-
-// Example: Replace with your actual analytics service logic
-function calculateAverage(data: number[]) {
-  if (data.length === 0) return 0;
-  return data.reduce((a, b) => a + b, 0) / data.length;
-}
+import { describe, expect, it } from 'vitest';
+import { createEventPayload } from '../packages/shared/analytics/track-event';
 
 describe('Analytics Service', () => {
-  it('calculates average correctly', () => {
-    expect(calculateAverage([2, 4, 6])).toBe(4);
+  it('creates a valid event payload', () => {
+    const payload = createEventPayload('login', 'authentication', { label: 'Test', value: 42 });
+    expect(payload).toHaveProperty('action', 'login');
+    expect(payload).toHaveProperty('category', 'authentication');
+    expect(payload).toHaveProperty('label', 'Test');
+    expect(payload).toHaveProperty('value', 42);
   });
-  // Add more tests for edge cases, error handling, etc.
-}); 
+});

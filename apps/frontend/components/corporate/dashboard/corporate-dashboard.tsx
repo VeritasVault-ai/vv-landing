@@ -1,9 +1,10 @@
-'use client'
+'use client';
+import * as React from 'react';
 
-import { Button } from '@/components/ui/button'
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import styles from './corporate-dashboard.module.css'
+import { Button } from '@/components/ui/button';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import styles from './corporate-dashboard.module.css';
 
 // Import dynamic dashboard components
 import {
@@ -23,8 +24,8 @@ import {
   DynamicOnChainDashboard,
   DynamicRiskAssessmentDashboard,
   DynamicStrategiesDashboard,
-  DynamicTreasuryDashboard
-} from '@/components/dynamic-imports/dashboard-imports'
+  DynamicTreasuryDashboard,
+} from '@/components/dynamic-imports/dashboard-imports';
 
 // Import dashboard configuration utilities
 import {
@@ -32,16 +33,16 @@ import {
   DashboardConfig,
   categoryDisplayNames,
   createDashboardConfig,
-  getDashboardsByCategory
-} from './dashboard-config'
+  getDashboardsByCategory,
+} from './dashboard-config';
 
 /**
  * Enhanced Corporate Dashboard with sidebar navigation to switch between different dashboards
  */
 export function CorporateDashboard() {
-  const router = useRouter()
-  const pathname = usePathname()
-  
+  const router = useRouter();
+  const pathname = usePathname();
+
   // Create dashboard components object to pass to the configuration function
   const dashboardComponents = {
     ModularCorporateDashboard: DynamicModularCorporateDashboard,
@@ -60,90 +61,90 @@ export function CorporateDashboard() {
     OffChainDashboard: DynamicOffChainDashboard,
     StrategiesDashboard: DynamicStrategiesDashboard,
     RiskAssessmentDashboard: DynamicRiskAssessmentDashboard,
-    FlashLoanExplorer: DynamicFlashLoanExplorer
-  }
-  
+    FlashLoanExplorer: DynamicFlashLoanExplorer,
+  };
+
   // Generate dashboard configurations using the utility function
   const readonlyDashboards = createDashboardConfig({
     lazy: false, // We're using next/dynamic instead of lazy loading
     styles,
-    components: dashboardComponents
-  })
-  
+    components: dashboardComponents,
+  });
+
   // Convert readonly array to regular array to fix TypeScript error
-  const dashboards = [...readonlyDashboards] as DashboardConfig[]
-  
+  const dashboards = [...readonlyDashboards] as DashboardConfig[];
+
   // Determine active dashboard based on URL path or hash fragment
   const getInitialDashboard = () => {
     // First check if there's a hash fragment that matches a dashboard ID
     const hash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '';
     if (hash) {
-      const foundByHash = dashboards.find(dash => dash.id === hash || dash.id.toLowerCase() === hash.toLowerCase());
+      const foundByHash = dashboards.find(
+        (dash) => dash.id === hash || dash.id.toLowerCase() === hash.toLowerCase()
+      );
       if (foundByHash) return foundByHash.id;
     }
-  
+
     // Otherwise check the path
-    const dashPath = pathname.split('/').slice(0, 4).join('/')
-    const foundByPath = dashboards.find(dash => dash.path === dashPath)
-    return foundByPath ? foundByPath.id : dashboards[0].id
-  }
-  const [activeDashboard, setActiveDashboard] = useState(() => getInitialDashboard())
-  
+    const dashPath = pathname.split('/').slice(0, 4).join('/');
+    const foundByPath = dashboards.find((dash) => dash.path === dashPath);
+    return foundByPath ? foundByPath.id : dashboards[0].id;
+  };
+  const [activeDashboard, setActiveDashboard] = useState(() => getInitialDashboard());
+
   // Find the currently active dashboard component
-  const currentDashboard = dashboards.find(
-    dashboard => dashboard.id === activeDashboard
-  ) || dashboards[0]
-  
-  const ActiveDashboardComponent = currentDashboard.component
-  
+  const currentDashboard =
+    dashboards.find((dashboard) => dashboard.id === activeDashboard) || dashboards[0];
+
+  const ActiveDashboardComponent = currentDashboard.component;
+
   // Update URL when dashboard changes
   const handleDashboardChange = (dashboardId: string) => {
-    const dashboard = dashboards.find(d => d.id === dashboardId)
+    const dashboard = dashboards.find((d) => d.id === dashboardId);
     if (dashboard) {
-      setActiveDashboard(dashboardId)
+      setActiveDashboard(dashboardId);
       // Use replace instead of push to avoid building up history stack
-      router.replace(`${dashboard.path}#${dashboardId}`)
+      router.replace(`${dashboard.path}#${dashboardId}`);
     }
-  }
-  
+  };
+
   // Sync URL with active dashboard when path or hash changes
   useEffect(() => {
-    const dashId = getInitialDashboard()
+    const dashId = getInitialDashboard();
     if (dashId !== activeDashboard) {
-      setActiveDashboard(dashId)
+      setActiveDashboard(dashId);
     }
-  }, [pathname, activeDashboard])
-  
+  }, [pathname, activeDashboard]);
+
   // Listen for hash changes
   useEffect(() => {
     const handleHashChange = () => {
-      const dashId = getInitialDashboard()
+      const dashId = getInitialDashboard();
       if (dashId !== activeDashboard) {
-        setActiveDashboard(dashId)
+        setActiveDashboard(dashId);
       }
-    }
-    
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
-  }, [activeDashboard])
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [activeDashboard]);
   // List of all available dashboard categories
-  const categories: DashboardCategory[] = ['main', 'analytics', 'portfolio', 'tools', 'admin']
-  
+  const categories: DashboardCategory[] = ['main', 'analytics', 'portfolio', 'tools', 'admin'];
+
   return (
     <div className={styles.appContainer}>
-   
       <div className={styles.dashboardContainer}>
         {/* Sidebar for dashboard selection */}
         <div className={styles.dashboardSidebar}>
           <h3 className={styles.sidebarTitle}>Dashboards</h3>
           <nav className={styles.dashboardNav}>
-            {categories.map(category => (
+            {categories.map((category) => (
               <div key={category} className={styles.categoryGroup}>
                 <div className={styles.categoryLabel}>{categoryDisplayNames[category]}</div>
-                {getDashboardsByCategory(dashboards, category).map(dashboard => (
+                {getDashboardsByCategory(dashboards, category).map((dashboard) => (
                   <Button
                     key={dashboard.id}
-                    variant={activeDashboard === dashboard.id ? "secondary" : "ghost"}
+                    variant={activeDashboard === dashboard.id ? 'secondary' : 'ghost'}
                     className={styles.dashboardButton}
                     onClick={() => handleDashboardChange(dashboard.id)}
                   >
@@ -155,7 +156,7 @@ export function CorporateDashboard() {
             ))}
           </nav>
         </div>
-        
+
         {/* Main dashboard content area */}
         <div className={styles.dashboardContent}>
           <div className={styles.dashboardComponentWrapper}>
@@ -163,7 +164,6 @@ export function CorporateDashboard() {
           </div>
         </div>
       </div>
-      
     </div>
-  )
+  );
 }

@@ -1,3 +1,4 @@
+import path from 'path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -12,6 +13,12 @@ export default defineConfig({
     ],
     coverage: {
       reporter: ['text', 'html'],
+    },
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'apps/frontend'),
+      '@shared': path.resolve(__dirname, 'packages/shared'),
     },
   },
 });

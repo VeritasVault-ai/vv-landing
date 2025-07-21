@@ -1,8 +1,8 @@
 import { JSX, ReactNode } from 'react';
 
 // Import from the new modular structure
-import { allDashboards } from '@/src/config/dashboardsIndex';
-import { getDashboardsByCategory as getModularDashboardsByCategory } from '@/src/config/getDashboards';
+import { allDashboards } from './allDashboards';
+import { getDashboardsByCategory as getModularDashboardsByCategory } from './getDashboards';
 
 /** ----------------------------------------------------
  *  Types & constants

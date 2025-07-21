@@ -3,7 +3,7 @@
 import React from "react"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+import { cn } from "@shared/utils"
 
 interface AIConfidenceIndicatorProps {
   level: number // 0 to 1

@@ -1,27 +1,23 @@
-"use client"
+import * as React from 'react';
 
-import React, { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { ThumbsUp, ThumbsDown, Send, X } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { aiHistoryTracker } from "@/lib/ai/ai-history-tracker"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Textarea } from '@/components/ui/textarea';
+import { aiHistoryTracker } from '@shared/ai/ai-history-tracker';
+import { cn } from '@shared/utils';
+import { Send, ThumbsDown, ThumbsUp, X } from 'lucide-react';
+import { useState } from 'react';
 
 interface AIFeedbackProps {
-  contentId: string
-  compact?: boolean
-  className?: string
+  contentId: string;
+  compact?: boolean;
+  className?: string;
   onFeedbackSubmitted?: (feedback: {
-    contentId: string
-    helpful: boolean
-    accurate: boolean
-    comments?: string
-  }) => void
+    contentId: string;
+    helpful: boolean;
+    accurate: boolean;
+    comments?: string;
+  }) => void;
 }
 
 /**
@@ -40,72 +36,72 @@ export function AIFeedback({
   contentId,
   compact = false,
   className,
-  onFeedbackSubmitted
+  onFeedbackSubmitted,
 }: AIFeedbackProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [helpful, setHelpful] = useState<boolean | null>(null)
-  const [accurate, setAccurate] = useState<boolean | null>(null)
-  const [comments, setComments] = useState("")
-  const [submitted, setSubmitted] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const [helpful, setHelpful] = useState<boolean | null>(null);
+  const [accurate, setAccurate] = useState<boolean | null>(null);
+  const [comments, setComments] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = () => {
-    if (helpful === null) return
+    if (helpful === null) return;
 
-    setSubmitting(true)
+    setSubmitting(true);
 
     const feedback = {
       contentId,
       helpful: helpful === true,
       accurate: accurate === true,
-      comments: comments.trim() || undefined
-    }
+      comments: comments.trim() || undefined,
+    };
 
     // Record feedback in AI history tracker
     aiHistoryTracker.addFeedback(contentId, {
       helpful: feedback.helpful,
       accurate: feedback.accurate,
-      comments: feedback.comments
-    })
+      comments: feedback.comments,
+    });
 
     // Call onFeedbackSubmitted callback if provided
     if (onFeedbackSubmitted) {
-      onFeedbackSubmitted(feedback)
+      onFeedbackSubmitted(feedback);
     }
 
     // Simulate API call delay
     setTimeout(() => {
-      setSubmitted(true)
-      setSubmitting(false)
-      
+      setSubmitted(true);
+      setSubmitting(false);
+
       // Close popover after a delay
       setTimeout(() => {
-        setIsOpen(false)
-        
+        setIsOpen(false);
+
         // Reset state after popover closes
         setTimeout(() => {
-          setHelpful(null)
-          setAccurate(null)
-          setComments("")
-          setSubmitted(false)
-        }, 300)
-      }, 2000)
-    }, 500)
-  }
+          setHelpful(null);
+          setAccurate(null);
+          setComments('');
+          setSubmitted(false);
+        }, 300);
+      }, 2000);
+    }, 500);
+  };
 
   // Compact version just shows thumbs up/down buttons
   if (compact) {
     return (
-      <div className={cn("flex items-center gap-1 text-sm", className)}>
+      <div className={cn('flex items-center gap-1 text-sm', className)}>
         <span className="text-slate-500 dark:text-slate-400 text-xs mr-1">Feedback:</span>
         <Button
           variant="ghost"
           size="sm"
           className="h-6 w-6 p-0 rounded-full"
           onClick={() => {
-            setHelpful(true)
-            setAccurate(true)
-            handleSubmit()
+            setHelpful(true);
+            setAccurate(true);
+            handleSubmit();
           }}
           aria-label="This AI content was helpful"
         >
@@ -116,16 +112,16 @@ export function AIFeedback({
           size="sm"
           className="h-6 w-6 p-0 rounded-full"
           onClick={() => {
-            setHelpful(false)
-            setAccurate(false)
-            handleSubmit()
+            setHelpful(false);
+            setAccurate(false);
+            handleSubmit();
           }}
           aria-label="This AI content was not helpful"
         >
           <ThumbsDown className="h-3 w-3 text-slate-600 dark:text-slate-400" />
         </Button>
       </div>
-    )
+    );
   }
 
   // Full version with popover
@@ -135,7 +131,7 @@ export function AIFeedback({
         <Button
           variant="outline"
           size="sm"
-          className={cn("text-xs", className)}
+          className={cn('text-xs', className)}
           aria-label="Provide feedback on this AI content"
         >
           Provide Feedback
@@ -165,15 +161,13 @@ export function AIFeedback({
                 <X className="h-4 w-4" />
               </Button>
             </div>
-            
+
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
-                  Was this content helpful?
-                </label>
+                <label className="block text-sm font-medium mb-2">Was this content helpful?</label>
                 <div className="flex gap-2">
                   <Button
-                    variant={helpful === true ? "default" : "outline"}
+                    variant={helpful === true ? 'default' : 'outline'}
                     size="sm"
                     className="flex-1"
                     onClick={() => setHelpful(true)}
@@ -182,7 +176,7 @@ export function AIFeedback({
                     Yes
                   </Button>
                   <Button
-                    variant={helpful === false ? "default" : "outline"}
+                    variant={helpful === false ? 'default' : 'outline'}
                     size="sm"
                     className="flex-1"
                     onClick={() => setHelpful(false)}
@@ -192,7 +186,7 @@ export function AIFeedback({
                   </Button>
                 </div>
               </div>
-              
+
               {helpful !== null && (
                 <div>
                   <label className="block text-sm font-medium mb-2">
@@ -200,7 +194,7 @@ export function AIFeedback({
                   </label>
                   <div className="flex gap-2">
                     <Button
-                      variant={accurate === true ? "default" : "outline"}
+                      variant={accurate === true ? 'default' : 'outline'}
                       size="sm"
                       className="flex-1"
                       onClick={() => setAccurate(true)}
@@ -208,7 +202,7 @@ export function AIFeedback({
                       Yes
                     </Button>
                     <Button
-                      variant={accurate === false ? "default" : "outline"}
+                      variant={accurate === false ? 'default' : 'outline'}
                       size="sm"
                       className="flex-1"
                       onClick={() => setAccurate(false)}
@@ -218,7 +212,7 @@ export function AIFeedback({
                   </div>
                 </div>
               )}
-              
+
               <div>
                 <label htmlFor="ai-feedback-comments" className="block text-sm font-medium mb-2">
                   Additional comments (optional)
@@ -232,8 +226,8 @@ export function AIFeedback({
                   rows={3}
                 />
               </div>
-              
-              <Button 
+
+              <Button
                 className="w-full"
                 disabled={helpful === null || submitting}
                 onClick={handleSubmit}
@@ -252,5 +246,5 @@ export function AIFeedback({
         )}
       </PopoverContent>
     </Popover>
-  )
+  );
 }
