@@ -1,17 +1,17 @@
 {
-  "name": "VeritasVault.net_Landing",
+  "name": "vv-landing",
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "postinstall": "husky install",
+    "dev": "pnpm --filter apps/frontend dev",
     "dev:mocks": "npx msw init public --save && next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "build": "pnpm --filter apps/frontend build",
+    "start": "pnpm --filter apps/frontend start",
+    "lint": "pnpm --filter apps/frontend lint",
     "msw:init": "npx msw init public --save",
     "dup-check": "jscpd --config .jscpd.json",
     "audit-config": "ts-node scripts/audit-config.ts",
-    "prepare": "husky install",
     "test": "vitest"
   },
   "dependencies": {
