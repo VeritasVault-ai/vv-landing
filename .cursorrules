@@ -1,0 +1,30 @@
+# VeritasVault.net Landing Page - Cursor Rules
+
+## Project Context
+Next.js 15 landing page with TypeScript, Tailwind CSS, Supabase integration, and corporate/standard dual themes
+
+## Development Commands
+- `pnpm dev` - Start development server (localhost:3000)
+- `pnpm build` - Build for production
+- `pnpm lint` - Run ESLint
+- `pnpm dup-check` - Check for code duplication
+
+## Code Guidelines
+- TypeScript strict mode with `@/*` path mapping
+- Use Radix UI components as primitives
+- Tailwind CSS with CSS variables for theming
+- Functional React components with proper typing
+- Import order: external packages → `@/` imports → relative imports
+- Naming: camelCase for vars/functions, PascalCase for components, kebab-case for files
+
+## Project Structure
+- `app/` - Next.js App Router pages and layouts
+- `components/` - Reusable UI components organized by domain
+- `lib/` - Utilities, API clients, auth helpers, theme utils
+- Supabase backend with NextAuth.js for authentication
+- AI integrations: OpenAI, DeepInfra, Groq, Fal.ai
+
+## Special Notes
+- Build ignores ESLint/TypeScript errors (see next.config.mjs)
+- MSW for API mocking in development
+- **IMPORTANT**: Keep this file in sync with .windsurfrules, CLAUDE.md, and .github/copilot-instructions.md

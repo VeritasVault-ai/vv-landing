@@ -1,8 +1,0 @@
-{
-  "name": "pwa-app",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@vv/shared": "0.1.0"
-  }
-}

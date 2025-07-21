@@ -1,0 +1,29 @@
+# VeritasVault.net Landing Page - Windsurf Rules
+
+## Project Overview
+Next.js 15 app with TypeScript, Tailwind CSS, Supabase auth, and dual theme system (Corporate/Standard)
+
+## Build Commands
+- `pnpm dev` - Development server
+- `pnpm build` - Production build
+- `pnpm lint` - ESLint check
+- `pnpm dup-check` - Check duplicate code
+
+## Code Standards
+- Use TypeScript strict mode with `@/*` path aliases
+- Functional components with proper TypeScript typing
+- Tailwind CSS with CSS variables for theming
+- Radix UI components for primitives
+- camelCase variables/functions, PascalCase components
+- External → internal → relative import order
+
+## Architecture
+- `/app` - Next.js App Router pages
+- `/components` - Reusable UI components  
+- `/lib` - Utilities, services, auth helpers
+- Supabase for auth/data, NextAuth.js integration
+- AI services: OpenAI, DeepInfra, Groq, Fal.ai
+
+## Important
+- ESLint/TypeScript errors ignored in builds
+- Keep all rules files (.windsurfrules, .cursorrules, CLAUDE.md, .github/copilot-instructions.md) in sync
