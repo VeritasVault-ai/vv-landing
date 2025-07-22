@@ -12,7 +12,9 @@ export default defineConfig({
       'packages/*/**/*.{test,spec}.{ts,tsx,js,jsx}',
     ],
     coverage: {
-      reporter: ['text', 'html'],
+      reporter: ['text', 'lcov'],
+      reportsDirectory: 'coverage',
+      exclude: ['**/node_modules/**', '**/tests/**', '**/playwright/**'],
     },
   },
   resolve: {

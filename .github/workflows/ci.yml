@@ -36,3 +36,21 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+      - name: Run E2E tests
+        run: pnpm test:e2e --reporter=line --reporter=lcov
+
+      - name: Merge coverage reports
+        run: |
+          mkdir -p merged-coverage
+          cp -r coverage/* merged-coverage/ || true
+          if [ -d "playwright-report/coverage" ]; then
+            cp -r playwright-report/coverage/* merged-coverage/ || true
+          fi
+          npx lcov-result-merger 'merged-coverage/**/*.lcov' > merged-coverage/lcov.info
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: merged-coverage/lcov.info
+          fail_ci_if_error: true

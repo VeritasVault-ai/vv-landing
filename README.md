@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/OWNER/REPO/branch/main/graph/badge.svg)](https://codecov.io/gh/OWNER/REPO)
 # VeritasVault.net Monorepo
 
 Welcome to the VeritasVault.net monorepo! This document will guide you through the project setup, development workflow, and deployment process.

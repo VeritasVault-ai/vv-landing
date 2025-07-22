@@ -30,4 +30,6 @@ next-env.d.ts
 node_modules
 
 # Turborepo
-.turbo
+.turbo*
+**/cache/webpack/**
+**/.next/**
