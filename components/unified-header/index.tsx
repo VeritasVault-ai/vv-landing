@@ -266,6 +266,7 @@ export function UnifiedHeader({
               customLinks={navigationLinks?.length ? navigationLinks : undefined}
               trackEvent={trackEvent}
             />
+          )}
         </div>
 
         {/* Desktop actions */}

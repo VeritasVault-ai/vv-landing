@@ -28,3 +28,9 @@ next-env.d.ts
 .vercel
 
 node_modules
+
+# Terraform provider cache and local state (lock file IS committed)
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.tfvars

@@ -1,0 +1,98 @@
+name: Deploy to Azure Container Apps
+
+# Manual until cutover. veritasvault.net is still served by Vercel, so an
+# automatic push trigger here would build and publish images that nothing serves
+# while giving the impression the site is deployed from Azure. Switch to
+# `push: branches: [main]` in the same commit that flips DNS.
+on:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Build and push only, or also update the Container App"
+        required: true
+        type: choice
+        default: build-only
+        options:
+          - build-only
+          - build-and-deploy
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-azure
+  cancel-in-progress: false
+
+env:
+  RESOURCE_GROUP: nl-prod-veritasvault-rg
+  CONTAINER_APP: nl-prod-veritasvault-web
+  REGISTRY: nlprodveritasvaultacr
+  IMAGE: veritasvault-web
+
+jobs:
+  deploy:
+    name: ${{ inputs.deploy }}
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Azure login
+        uses: azure/login@a457da9ea143d694d1b924b566507a8fad2b2b96 # v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: ACR login
+        run: az acr login --name "$REGISTRY"
+
+      # NEXT_PUBLIC_* values are inlined by Next at build time, so they are build
+      # args here rather than Container App env vars. Anything in this list is
+      # baked into the client bundle and is therefore public by definition — do
+      # not add real secrets.
+      - name: Build image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_SUPABASE_URL="${{ vars.NEXT_PUBLIC_SUPABASE_URL }}" \
+            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
+            --build-arg NEXT_PUBLIC_APP_URL="${{ vars.NEXT_PUBLIC_APP_URL }}" \
+            --build-arg NEXT_PUBLIC_API_BASE_URL="${{ vars.NEXT_PUBLIC_API_BASE_URL }}" \
+            --build-arg NEXT_PUBLIC_WS_BASE_URL="${{ vars.NEXT_PUBLIC_WS_BASE_URL }}" \
+            --build-arg NEXT_PUBLIC_ENV="production" \
+            --build-arg NEXT_PUBLIC_GA_MEASUREMENT_ID="${{ vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}" \
+            --build-arg NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING="${{ vars.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}" \
+            -t "$REGISTRY.azurecr.io/$IMAGE:${{ github.sha }}" \
+            -t "$REGISTRY.azurecr.io/$IMAGE:latest" \
+            .
+
+      - name: Push image
+        run: |
+          docker push "$REGISTRY.azurecr.io/$IMAGE:${{ github.sha }}"
+          docker push "$REGISTRY.azurecr.io/$IMAGE:latest"
+
+      - name: Update Container App
+        if: inputs.deploy == 'build-and-deploy'
+        run: |
+          az containerapp update \
+            --name "$CONTAINER_APP" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image "$REGISTRY.azurecr.io/$IMAGE:${{ github.sha }}"
+
+      - name: Smoke check the new revision
+        if: inputs.deploy == 'build-and-deploy'
+        run: |
+          FQDN=$(az containerapp show --name "$CONTAINER_APP" \
+            --resource-group "$RESOURCE_GROUP" --query 'properties.configuration.ingress.fqdn' -o tsv)
+          echo "Probing https://$FQDN/"
+          for i in $(seq 1 12); do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "https://$FQDN/" || true)
+            echo "attempt $i: HTTP $CODE"
+            [ "$CODE" = "200" ] && exit 0
+            sleep 10
+          done
+          echo "New revision never returned 200 — check revision logs before flipping DNS." >&2
+          exit 1

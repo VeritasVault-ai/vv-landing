@@ -125,7 +125,6 @@ export function MainNavigation({ version, customLinks, trackEvent }: MainNavigat
                 </Link>
               </DropdownMenuItem>
             ))}
-            ))}
           </DropdownMenuContent>
         </DropdownMenu>
       )}

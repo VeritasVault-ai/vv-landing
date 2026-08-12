@@ -168,7 +168,6 @@ export function MobileMenu({
               Exit Demo Mode
         </Button>
           )}
-        </nav>
 
         {variant !== 'landing' && isAuthenticated && (
           <MobileUserProfile 
