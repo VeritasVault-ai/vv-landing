@@ -79,7 +79,7 @@ resource "azurerm_key_vault" "main" {
   sku_name            = "standard"
 
   rbac_authorization_enabled = true
-  purge_protection_enabled  = true
+  purge_protection_enabled   = true
   # Not 'Enabled'. The absorbed vv-iac Bicep left Key Vault publicly reachable;
   # this estate does not repeat that. CI reaches the vault through the firewall
   # bypass below rather than by opening it to the internet.
