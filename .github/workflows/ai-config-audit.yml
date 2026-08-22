@@ -24,7 +24,7 @@ jobs:
 
       - name: 🕵️‍♂️  Audit AI config
         run: |
-          pnpm exec ts-node scripts/audit-config.ts
+          node scripts/audit-config.js
 
       - name: 🔎  Detect code duplication (jscpd)
         run: pnpm exec jscpd --config .jscpd.json

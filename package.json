@@ -10,7 +10,7 @@
     "lint": "next lint",
     "msw:init": "npx msw init public --save",
     "dup-check": "jscpd --config .jscpd.json",
-    "audit-config": "ts-node scripts/audit-config.ts",
+    "audit-config": "node scripts/audit-config.js",
     "prepare": "husky install"
   },
   "dependencies": {
