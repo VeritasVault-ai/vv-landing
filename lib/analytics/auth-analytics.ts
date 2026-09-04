@@ -25,7 +25,7 @@ interface LoginEventProperties {
 
 /**
  * Tracks authentication-related events through the provider-agnostic sink in
- * ./provider (Vercel Web Analytics and/or Application Insights).
+ * ./provider (Application Insights).
  * Includes support for login flags to track different login sources
  *
  * @param eventType The type of login event
@@ -33,7 +33,7 @@ interface LoginEventProperties {
  */
 export function trackLoginEvent(eventType: LoginEventType, properties: LoginEventProperties = {}) {
   try {
-    // Create the event name with proper formatting for Vercel Analytics
+    // Keep a stable event name across telemetry backends.
     const eventName = `auth_${eventType}`;
     
     // Add timestamp to properties

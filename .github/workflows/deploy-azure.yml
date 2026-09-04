@@ -1,9 +1,7 @@
 name: Deploy to Azure Container Apps
 
-# Manual until cutover. veritasvault.net is still served by Vercel, so an
-# automatic push trigger here would build and publish images that nothing serves
-# while giving the impression the site is deployed from Azure. Switch to
-# `push: branches: [main]` in the same commit that flips DNS.
+# Manual by design. Source merge is not permission to publish an image or mutate
+# the production Container App; both remain behind the production environment.
 on:
   workflow_dispatch:
     inputs:
@@ -29,6 +27,14 @@ env:
   CONTAINER_APP: nl-prod-veritasvault-web
   REGISTRY: nlprodveritasvaultacr
   IMAGE: veritasvault-web
+  IMAGE_TAG: ${{ github.sha }}
+  NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+  NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
+  NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
+  NEXT_PUBLIC_WS_BASE_URL: ${{ vars.NEXT_PUBLIC_WS_BASE_URL }}
+  NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+  NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ vars.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
 
 jobs:
   deploy:
@@ -38,7 +44,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Azure login
         uses: azure/login@a457da9ea143d694d1b924b566507a8fad2b2b96 # v2
@@ -57,21 +65,21 @@ jobs:
       - name: Build image
         run: |
           docker build \
-            --build-arg NEXT_PUBLIC_SUPABASE_URL="${{ vars.NEXT_PUBLIC_SUPABASE_URL }}" \
-            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
-            --build-arg NEXT_PUBLIC_APP_URL="${{ vars.NEXT_PUBLIC_APP_URL }}" \
-            --build-arg NEXT_PUBLIC_API_BASE_URL="${{ vars.NEXT_PUBLIC_API_BASE_URL }}" \
-            --build-arg NEXT_PUBLIC_WS_BASE_URL="${{ vars.NEXT_PUBLIC_WS_BASE_URL }}" \
+            --build-arg NEXT_PUBLIC_SUPABASE_URL="$NEXT_PUBLIC_SUPABASE_URL" \
+            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$NEXT_PUBLIC_SUPABASE_ANON_KEY" \
+            --build-arg NEXT_PUBLIC_APP_URL="$NEXT_PUBLIC_APP_URL" \
+            --build-arg NEXT_PUBLIC_API_BASE_URL="$NEXT_PUBLIC_API_BASE_URL" \
+            --build-arg NEXT_PUBLIC_WS_BASE_URL="$NEXT_PUBLIC_WS_BASE_URL" \
             --build-arg NEXT_PUBLIC_ENV="production" \
-            --build-arg NEXT_PUBLIC_GA_MEASUREMENT_ID="${{ vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}" \
-            --build-arg NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING="${{ vars.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}" \
-            -t "$REGISTRY.azurecr.io/$IMAGE:${{ github.sha }}" \
+            --build-arg NEXT_PUBLIC_GA_MEASUREMENT_ID="$NEXT_PUBLIC_GA_MEASUREMENT_ID" \
+            --build-arg NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING="$NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING" \
+            -t "$REGISTRY.azurecr.io/$IMAGE:$IMAGE_TAG" \
             -t "$REGISTRY.azurecr.io/$IMAGE:latest" \
             .
 
       - name: Push image
         run: |
-          docker push "$REGISTRY.azurecr.io/$IMAGE:${{ github.sha }}"
+          docker push "$REGISTRY.azurecr.io/$IMAGE:$IMAGE_TAG"
           docker push "$REGISTRY.azurecr.io/$IMAGE:latest"
 
       - name: Update Container App
@@ -80,7 +88,7 @@ jobs:
           az containerapp update \
             --name "$CONTAINER_APP" \
             --resource-group "$RESOURCE_GROUP" \
-            --image "$REGISTRY.azurecr.io/$IMAGE:${{ github.sha }}"
+            --image "$REGISTRY.azurecr.io/$IMAGE:$IMAGE_TAG"
 
       - name: Smoke check the new revision
         if: inputs.deploy == 'build-and-deploy'

@@ -19,13 +19,9 @@ yarn-error.log*
 # env files
 .env*
 
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-.vercel
 
 node_modules
 
@@ -33,4 +29,6 @@ node_modules
 .terraform/
 *.tfstate
 *.tfstate.*
-.terraform.tfvars
+*.tfvars
+*.tfvars.json
+!*.tfvars.example

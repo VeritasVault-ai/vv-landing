@@ -26,7 +26,6 @@ const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 const isPreviewEnvironment = () => {
   if (typeof window !== "undefined") {
     return (
-      window.location.hostname.includes("vercel.app") ||
       window.location.hostname === "localhost" ||
       window.location.hostname === "127.0.0.1"
     )

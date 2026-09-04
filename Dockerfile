@@ -2,7 +2,7 @@
 #
 # Why a container and not Static Web Apps: this app has middleware.ts and 45 API
 # routes, which need a real Node server. SWA cannot run Next middleware properly.
-# See docs/azure-migration.md.
+# See docs/azure-runtime.md.
 
 # ---- deps -------------------------------------------------------------------
 FROM node:22-alpine AS deps
@@ -29,7 +29,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # NEXT_PUBLIC_* values are inlined at build time, not read at runtime, so any
 # that must differ per environment have to be passed as build args here rather
-# than set on the Container App. See docs/azure-migration.md.
+# than set on the Container App. See docs/azure-runtime.md.
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 ARG NEXT_PUBLIC_APP_URL
@@ -57,9 +57,10 @@ RUN addgroup --system --gid 1001 nodejs \
 COPY --from=build /app/public ./public
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=build --chown=nextjs:nodejs /app/scripts/run-scheduled-sync.mjs ./scripts/run-scheduled-sync.mjs
 
 USER nextjs
 EXPOSE 3000
 
-# Container Apps health probes hit / — see infra/terraform/main.tf.
+# Container Apps health probes hit /api/health — see infra/terraform/main.tf.
 CMD ["node", "server.js"]
