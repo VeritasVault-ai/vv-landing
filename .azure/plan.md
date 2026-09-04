@@ -237,4 +237,5 @@ Approval of this document authorizes implementation and validation of repository
 - `terraform plan -lock=false` from `infra/terraform`: passed with the safe defaults (`application_enabled = false`, `runtime_secret_references_enabled = false`, `sync_job_enabled = false`); preview is 14 additions, 0 changes, and 0 destroys. No saved plan artifact was produced.
 - Active-tree residue scan excluding this forensic plan: no active Vercel code, package, environment detection, header, deployment instruction, or documentation remains.
 - `git diff --check`: passed.
+- Docker build-context review: `scripts/run-scheduled-sync.mjs` is explicitly included after the `scripts/*` exclusion. Docker client 29.2.1 is installed locally, but the Docker Desktop Linux daemon is not running, so an actual container build remains an exact-head CI/release prerequisite.
 - Local CodeRabbit CLI: unavailable; exact-head CodeRabbit GitHub App review remains required before merge.
