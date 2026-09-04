@@ -89,13 +89,20 @@ The job calls `POST /api/cron/sync` with a bearer credential in the
 - compares credentials using fixed-length SHA-256 digests and a timing-safe
   comparison;
 - accepts only a bounded set of synchronization types;
-- rejects an overlapping run within the serving process; and
+- acquires an atomic, expiring Supabase lease before mutation so overlapping
+  runs are rejected across all serving replicas; and
 - never returns internal exception details.
 
 The Container Apps Job has parallelism and completion count fixed at one,
 bounded retries, and a ten-minute timeout. It runs the same application image by
 immutable digest and uses a dedicated identity with ACR pull plus access only to
 the scheduler secret.
+
+Migration `14_create_scheduled_sync_lease.sql` must be applied before activating
+the application. The lease RPCs are executable only by Supabase's `service_role`;
+the backing table is not accessible to anonymous or authenticated browser roles.
+The 30-minute expiry recovers from a terminated server while remaining longer
+than the job's retry and request timeout window.
 
 The approved cadence is hourly in UTC. The schedule remains inactive until an
 explicit production approval sets `sync_job_enabled = true`.
@@ -110,16 +117,18 @@ explicit production approval sets `sync_job_enabled = true`.
 3. Obtain production approval for the first apply, which creates the vault and
    runtime shell without secret references or a sync job.
 4. Provision secrets separately, with expiry and rotation metadata.
-5. Build and publish the application image, record its commit tag and digest,
+5. Apply the scheduled-sync lease migration through the approved database
+   migration process.
+6. Build and publish the application image, record its commit tag and digest,
    and supply them as `image_tag` and `sync_image_digest`.
-6. Review a second plan with `application_enabled = true` and
+7. Review a second plan with `application_enabled = true` and
    `runtime_secret_references_enabled = true`; obtain a separate approval before
    creating the app, secret references, and manual job.
-7. Verify the direct origin: health, logs, secret resolution, scheduler
+8. Verify the direct origin: health, logs, secret resolution, scheduler
    authentication, and representative application routes.
-8. Obtain a separate DNS/Cloudflare approval and restrict direct-origin access.
-9. Verify public health after routing changes.
-10. Verify Mystira Identity through an authentic signed-in user journey only
+9. Obtain a separate DNS/Cloudflare approval and restrict direct-origin access.
+10. Verify public health after routing changes.
+11. Verify Mystira Identity through an authentic signed-in user journey only
    after its separate relying-party gate is complete.
 
 ## Rollback

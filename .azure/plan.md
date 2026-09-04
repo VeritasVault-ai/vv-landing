@@ -122,7 +122,7 @@ No quota increase is required for source preparation. Any changed current usage,
 - Accept the scheduler credential only through an authorization header, never a URL/query value.
 - Use timing-safe credential comparison and fail closed when configuration is absent.
 - Validate the synchronization type from a bounded request body.
-- Add an idempotency/concurrency guard so retries cannot overlap a still-running full synchronization.
+- Add an atomic, expiring Supabase lease so retries cannot overlap a still-running synchronization across Container App replicas.
 - Configure bounded job timeout, retry count, and parallelism.
 - Give the job a dedicated managed identity and access only to its scheduler credential.
 - Pin the job image to an approved immutable digest with recorded provenance.
@@ -154,6 +154,8 @@ The exact diff remains review-driven, but preparation is expected to touch:
 - `lib/analytics/provider.ts`
 - `lib/analytics/auth-analytics.ts`
 - `lib/api-client.ts`
+- `lib/services/scheduled-sync-lease.ts`
+- `migrations/14_create_scheduled_sync_lease.sql`
 - `middleware.ts`
 - `next.config.mjs`
 - `package.json` and `pnpm-lock.yaml`
@@ -224,7 +226,7 @@ Approval of this document authorizes implementation and validation of repository
 
 ## Local validation evidence
 
-- `pnpm test`: 7 tests passed across the scheduler route and Application Insights provider.
+- `pnpm test`: 11 focused scheduler, distributed lease, and Application Insights provider tests passed.
 - `pnpm build`: passed with representative, non-secret public Supabase build values; existing theme-provider and metadata warnings remain non-fatal.
 - `node scripts/audit-config.js`: passed with no violations.
 - `terraform fmt -check -recursive infra/terraform`: passed.

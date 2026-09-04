@@ -1,10 +1,26 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-const { syncAll, syncLiquidityPools, syncMarketData, syncProtocolMetrics } = vi.hoisted(() => ({
+const {
+  acquireLease,
+  releaseLease,
+  syncAll,
+  syncLiquidityPools,
+  syncMarketData,
+  syncProtocolMetrics,
+} = vi.hoisted(() => ({
+  acquireLease: vi.fn(),
+  releaseLease: vi.fn(),
   syncAll: vi.fn(),
   syncLiquidityPools: vi.fn(),
   syncMarketData: vi.fn(),
   syncProtocolMetrics: vi.fn(),
+}))
+
+vi.mock("@/lib/services/scheduled-sync-lease", () => ({
+  scheduledSyncLease: {
+    acquire: acquireLease,
+    release: releaseLease,
+  },
 }))
 
 vi.mock("@/lib/services/sync-service", () => ({
@@ -33,6 +49,8 @@ describe("POST /api/cron/sync", () => {
   beforeEach(() => {
     process.env.CRON_SECRET = "test-scheduler-secret"
     vi.clearAllMocks()
+    acquireLease.mockResolvedValue("lease-holder")
+    releaseLease.mockResolvedValue(undefined)
   })
 
   it("fails closed when the scheduler secret is unavailable", async () => {
@@ -60,21 +78,15 @@ describe("POST /api/cron/sync", () => {
 
     expect(response.status).toBe(200)
     expect(syncMarketData).toHaveBeenCalledOnce()
+    expect(releaseLease).toHaveBeenCalledWith("lease-holder")
   })
 
-  it("rejects overlapping runs", async () => {
-    let finishFirstRun: (() => void) | undefined
-    syncAll.mockImplementationOnce(() => new Promise<void>((resolve) => {
-      finishFirstRun = resolve
-    }))
+  it("rejects a run when the distributed lease is held", async () => {
+    acquireLease.mockResolvedValueOnce(null)
+    const response = await POST(request({ token: "test-scheduler-secret" }))
 
-    const firstRun = POST(request({ token: "test-scheduler-secret" }))
-    await vi.waitFor(() => expect(syncAll).toHaveBeenCalledOnce())
-
-    const overlap = await POST(request({ token: "test-scheduler-secret" }))
-    expect(overlap.status).toBe(409)
-
-    finishFirstRun?.()
-    expect((await firstRun).status).toBe(200)
+    expect(response.status).toBe(409)
+    expect(syncAll).not.toHaveBeenCalled()
+    expect(releaseLease).not.toHaveBeenCalled()
   })
 })

@@ -1,11 +1,10 @@
 import { createHash, timingSafeEqual } from "node:crypto"
 import { NextResponse } from "next/server"
+import { scheduledSyncLease } from "@/lib/services/scheduled-sync-lease"
 import { syncService } from "@/lib/services/sync-service"
 
 const ALLOWED_SYNC_TYPES = ["liquidity-pools", "market-data", "protocol-metrics", "all"] as const
 type SyncType = (typeof ALLOWED_SYNC_TYPES)[number]
-
-let syncInProgress = false
 
 function credentialsMatch(provided: string, expected: string): boolean {
   const providedDigest = createHash("sha256").update(provided).digest()
@@ -26,17 +25,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  if (syncInProgress) {
-    return NextResponse.json({ error: "A scheduled sync is already running" }, { status: 409 })
-  }
-
-  syncInProgress = true
+  let leaseHolder: string | null = null
   try {
     const body = await req.json().catch(() => ({}))
     const syncType = body.type ?? "all"
 
     if (!ALLOWED_SYNC_TYPES.includes(syncType as SyncType)) {
       return NextResponse.json({ error: "Invalid sync type" }, { status: 400 })
+    }
+
+    leaseHolder = await scheduledSyncLease.acquire()
+    if (!leaseHolder) {
+      return NextResponse.json({ error: "A scheduled sync is already running" }, { status: 409 })
     }
 
     switch (syncType) {
@@ -59,6 +59,10 @@ export async function POST(req: Request) {
     console.error("Error in cron sync API:", error)
     return NextResponse.json({ error: "Scheduled sync operation failed" }, { status: 500 })
   } finally {
-    syncInProgress = false
+    if (leaseHolder) {
+      await scheduledSyncLease.release(leaseHolder).catch((error) => {
+        console.error("Could not release scheduled sync lease:", error)
+      })
+    }
   }
 }
