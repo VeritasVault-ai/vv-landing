@@ -53,7 +53,35 @@ AS $$
   WHERE lease_name = p_lease_name AND holder_id = p_holder_id;
 $$;
 
+CREATE OR REPLACE FUNCTION renew_scheduled_sync_lease(
+  p_lease_name TEXT,
+  p_holder_id UUID,
+  p_ttl_seconds INTEGER
+)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF p_ttl_seconds < 1 OR p_ttl_seconds > 3600 THEN
+    RAISE EXCEPTION 'Lease TTL must be between 1 and 3600 seconds';
+  END IF;
+
+  UPDATE scheduled_sync_leases
+  SET expires_at = NOW() + make_interval(secs => p_ttl_seconds),
+      updated_at = NOW()
+  WHERE lease_name = p_lease_name
+    AND holder_id = p_holder_id
+    AND expires_at > NOW();
+
+  RETURN FOUND;
+END;
+$$;
+
 REVOKE ALL ON FUNCTION acquire_scheduled_sync_lease(TEXT, UUID, INTEGER) FROM PUBLIC;
 REVOKE ALL ON FUNCTION release_scheduled_sync_lease(TEXT, UUID) FROM PUBLIC;
+REVOKE ALL ON FUNCTION renew_scheduled_sync_lease(TEXT, UUID, INTEGER) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION acquire_scheduled_sync_lease(TEXT, UUID, INTEGER) TO service_role;
 GRANT EXECUTE ON FUNCTION release_scheduled_sync_lease(TEXT, UUID) TO service_role;
+GRANT EXECUTE ON FUNCTION renew_scheduled_sync_lease(TEXT, UUID, INTEGER) TO service_role;

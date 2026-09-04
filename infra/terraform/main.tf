@@ -230,6 +230,11 @@ resource "azurerm_container_app" "web" {
       }
 
       env {
+        name  = "NEXTAUTH_URL"
+        value = var.public_app_url
+      }
+
+      env {
         name  = "APPLICATIONINSIGHTS_CONNECTION_STRING"
         value = azurerm_application_insights.main.connection_string
       }

@@ -5,6 +5,7 @@ import { syncService } from "@/lib/services/sync-service"
 
 const ALLOWED_SYNC_TYPES = ["liquidity-pools", "market-data", "protocol-metrics", "all"] as const
 type SyncType = (typeof ALLOWED_SYNC_TYPES)[number]
+const LEASE_HEARTBEAT_MS = 60_000
 
 function credentialsMatch(provided: string, expected: string): boolean {
   const providedDigest = createHash("sha256").update(provided).digest()
@@ -26,12 +27,20 @@ export async function POST(req: Request) {
   }
 
   let leaseHolder: string | null = null
+  let leaseHeartbeat: ReturnType<typeof setInterval> | null = null
   try {
-    const body: unknown = await req.json().catch(() => ({}))
-    const requestedType =
-      typeof body === "object" && body !== null && "type" in body
-        ? (body as { type?: unknown }).type
-        : undefined
+    let body: unknown
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 })
+    }
+
+    if (typeof body !== "object" || body === null || Array.isArray(body)) {
+      return NextResponse.json({ error: "JSON body must be an object" }, { status: 400 })
+    }
+
+    const requestedType = (body as { type?: unknown }).type
     const syncType = requestedType ?? "all"
 
     if (typeof syncType !== "string" || !ALLOWED_SYNC_TYPES.includes(syncType as SyncType)) {
@@ -42,6 +51,13 @@ export async function POST(req: Request) {
     if (!leaseHolder) {
       return NextResponse.json({ error: "A scheduled sync is already running" }, { status: 409 })
     }
+
+    const holderId = leaseHolder
+    leaseHeartbeat = setInterval(() => {
+      void scheduledSyncLease.renew(holderId).catch((error) => {
+        console.error("Could not renew scheduled sync lease:", error)
+      })
+    }, LEASE_HEARTBEAT_MS)
 
     switch (syncType) {
       case "liquidity-pools":
@@ -63,6 +79,7 @@ export async function POST(req: Request) {
     console.error("Error in cron sync API:", error)
     return NextResponse.json({ error: "Scheduled sync operation failed" }, { status: 500 })
   } finally {
+    if (leaseHeartbeat) clearInterval(leaseHeartbeat)
     if (leaseHolder) {
       await scheduledSyncLease.release(leaseHolder).catch((error) => {
         console.error("Could not release scheduled sync lease:", error)

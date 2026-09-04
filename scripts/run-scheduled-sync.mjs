@@ -10,7 +10,12 @@ const controller = new AbortController()
 const timeout = setTimeout(() => controller.abort(), 9 * 60 * 1000)
 
 try {
-  const response = await fetch(new URL("/api/cron/sync", baseUrl), {
+  const syncUrl = new URL("/api/cron/sync", baseUrl)
+  if (syncUrl.protocol !== "https:") {
+    throw new Error("SYNC_BASE_URL must use HTTPS")
+  }
+
+  const response = await fetch(syncUrl, {
     method: "POST",
     headers: {
       authorization: `Bearer ${secret}`,

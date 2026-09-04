@@ -26,7 +26,7 @@ describe("scheduled sync lease", () => {
     expect(rpc).toHaveBeenCalledWith("acquire_scheduled_sync_lease", {
       p_holder_id: holderId,
       p_lease_name: "scheduled-sync",
-      p_ttl_seconds: 1800,
+      p_ttl_seconds: 720,
     })
   })
 
@@ -50,5 +50,23 @@ describe("scheduled sync lease", () => {
       p_holder_id: "holder-id",
       p_lease_name: "scheduled-sync",
     })
+  })
+
+  it("renews only the caller's active lease", async () => {
+    rpc.mockResolvedValue({ data: true, error: null })
+    await scheduledSyncLease.renew("holder-id")
+
+    expect(rpc).toHaveBeenCalledWith("renew_scheduled_sync_lease", {
+      p_holder_id: "holder-id",
+      p_lease_name: "scheduled-sync",
+      p_ttl_seconds: 720,
+    })
+  })
+
+  it("fails closed when the lease can no longer be renewed", async () => {
+    rpc.mockResolvedValue({ data: false, error: null })
+    await expect(scheduledSyncLease.renew("holder-id")).rejects.toThrow(
+      "lease is no longer held",
+    )
   })
 })

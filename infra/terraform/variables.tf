@@ -79,6 +79,17 @@ variable "application_enabled" {
   default     = false
 }
 
+variable "public_app_url" {
+  type        = string
+  description = "Canonical public HTTPS URL used by NextAuth when constructing OAuth callbacks."
+  default     = "https://www.veritasvault.net"
+
+  validation {
+    condition     = can(regex("^https://[^/]+/?$", var.public_app_url))
+    error_message = "public_app_url must be an HTTPS origin without a path."
+  }
+}
+
 variable "sync_image_digest" {
   type        = string
   description = "Immutable sha256 digest of the application image used by the scheduled sync job."

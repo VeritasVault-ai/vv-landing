@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto"
 import { createClient } from "@supabase/supabase-js"
 
 const LEASE_NAME = "scheduled-sync"
-const LEASE_TTL_SECONDS = 30 * 60
+const LEASE_TTL_SECONDS = 12 * 60
 
 function adminClient() {
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -37,5 +37,16 @@ export const scheduledSyncLease = {
     })
 
     if (error) throw new Error(`Could not release scheduled sync lease: ${error.message}`)
+  },
+
+  async renew(holderId: string): Promise<void> {
+    const { data, error } = await adminClient().rpc("renew_scheduled_sync_lease", {
+      p_holder_id: holderId,
+      p_lease_name: LEASE_NAME,
+      p_ttl_seconds: LEASE_TTL_SECONDS,
+    })
+
+    if (error) throw new Error(`Could not renew scheduled sync lease: ${error.message}`)
+    if (data !== true) throw new Error("Could not renew scheduled sync lease: lease is no longer held")
   },
 }

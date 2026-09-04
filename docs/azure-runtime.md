@@ -83,8 +83,9 @@ Every secret must be provisioned through an approved process, have an owner and
 expiry/rotation policy, and exist before a Container App revision references it.
 Secret values must not be passed as Terraform variables.
 
-The platform supplies `NODE_ENV`, `PORT`, and
-`APPLICATIONINSIGHTS_CONNECTION_STRING`.
+The platform supplies `NODE_ENV`, `PORT`, `NEXTAUTH_URL`, and
+`APPLICATIONINSIGHTS_CONNECTION_STRING`. `NEXTAUTH_URL` is the canonical public
+HTTPS origin and must continue to match the separately approved public route.
 
 Application Insights starts in both runtime halves: a root client initializer
 captures browser page views and route transitions, while Next's instrumentation
@@ -101,8 +102,9 @@ The job calls `POST /api/cron/sync` with a bearer credential in the
 - compares credentials using fixed-length SHA-256 digests and a timing-safe
   comparison;
 - accepts only a bounded set of synchronization types;
-- acquires an atomic, expiring Supabase lease before mutation so overlapping
-  runs are rejected across all serving replicas; and
+- acquires an atomic, expiring Supabase lease before mutation and renews it
+  while work is active so overlapping runs are rejected across all serving
+  replicas; and
 - never returns internal exception details.
 
 The Container Apps Job has parallelism and completion count fixed at one,
@@ -113,8 +115,10 @@ the scheduler secret.
 Migration `14_create_scheduled_sync_lease.sql` must be applied before activating
 the application. The lease RPCs are executable only by Supabase's `service_role`;
 the backing table is not accessible to anonymous or authenticated browser roles.
-The 30-minute expiry recovers from a terminated server while remaining longer
-than the job's retry and request timeout window.
+The lease starts with a 12-minute expiry and is renewed every minute while the
+server is working. A terminated server therefore leaves at most a short orphan
+window beyond the job's ten-minute replica timeout, while a legitimate long run
+continues to exclude retries.
 
 The approved cadence is hourly in UTC. The schedule remains inactive until an
 explicit production approval sets `sync_job_enabled = true`.

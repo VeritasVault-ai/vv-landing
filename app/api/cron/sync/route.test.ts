@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 const {
   acquireLease,
+  renewLease,
   releaseLease,
   syncAll,
   syncLiquidityPools,
@@ -9,6 +10,7 @@ const {
   syncProtocolMetrics,
 } = vi.hoisted(() => ({
   acquireLease: vi.fn(),
+  renewLease: vi.fn(),
   releaseLease: vi.fn(),
   syncAll: vi.fn(),
   syncLiquidityPools: vi.fn(),
@@ -19,6 +21,7 @@ const {
 vi.mock("@/lib/services/scheduled-sync-lease", () => ({
   scheduledSyncLease: {
     acquire: acquireLease,
+    renew: renewLease,
     release: releaseLease,
   },
 }))
@@ -45,11 +48,23 @@ function request(options: { token?: string; body?: unknown } = {}) {
   })
 }
 
+function rawRequest(body: string) {
+  return new Request("https://www.veritasvault.net/api/cron/sync", {
+    method: "POST",
+    headers: {
+      authorization: "Bearer test-scheduler-secret",
+      "content-type": "application/json",
+    },
+    body,
+  })
+}
+
 describe("POST /api/cron/sync", () => {
   beforeEach(() => {
     process.env.CRON_SECRET = "test-scheduler-secret"
     vi.clearAllMocks()
     acquireLease.mockResolvedValue("lease-holder")
+    renewLease.mockResolvedValue(undefined)
     releaseLease.mockResolvedValue(undefined)
   })
 
@@ -70,11 +85,16 @@ describe("POST /api/cron/sync", () => {
     expect(response.status).toBe(400)
   })
 
-  it("does not throw when the JSON body is null", async () => {
-    const response = await POST(request({ token: "test-scheduler-secret", body: null }))
+  it.each([
+    ["malformed JSON", rawRequest("{")],
+    ["a null body", request({ token: "test-scheduler-secret", body: null })],
+    ["an array body", request({ token: "test-scheduler-secret", body: [] })],
+  ])("rejects %s", async (_label, invalidRequest) => {
+    const response = await POST(invalidRequest)
 
-    expect(response.status).toBe(200)
-    expect(syncAll).toHaveBeenCalledOnce()
+    expect(response.status).toBe(400)
+    expect(acquireLease).not.toHaveBeenCalled()
+    expect(syncAll).not.toHaveBeenCalled()
   })
 
   it("runs the requested sync with an authorized POST", async () => {
