@@ -14,7 +14,12 @@ const appInsightsConnectionString =
  * Application Insights is loaded lazily and only when configured, so the bundle
  * Resolves to null when unconfigured or unavailable.
  */
-let appInsightsPromise: Promise<{ trackEvent: (e: { name: string }, p?: Properties) => void } | null> | null = null
+type AppInsightsClient = {
+  trackEvent: (event: { name: string }, properties?: Properties) => void
+  trackPageView: () => void
+}
+
+let appInsightsPromise: Promise<AppInsightsClient | null> | null = null
 
 function getAppInsights() {
   if (!appInsightsConnectionString) return Promise.resolve(null)
@@ -36,6 +41,17 @@ function getAppInsights() {
   }
 
   return appInsightsPromise
+}
+
+/** Starts browser telemetry at application mount, including the initial page view. */
+export function initializeAnalytics(): void {
+  if (!appInsightsConnectionString) return
+
+  void getAppInsights()
+    .then((ai) => ai?.trackPageView())
+    .catch(() => {
+      // Ignore: telemetry must not block rendering.
+    })
 }
 
 /**

@@ -20,7 +20,7 @@ interface LoginEventProperties {
   returnUrl?: string
   error?: string
   email_domain?: string
-  [key: string]: any
+  [key: string]: string | number | boolean | null | undefined
 }
 
 /**

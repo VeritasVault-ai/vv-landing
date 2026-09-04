@@ -19,6 +19,9 @@ liveness/readiness endpoint.
   Application Insights, Log Analytics, managed identities, and related runtime
   Terraform.
 - The organization control-plane repository owns public DNS records.
+- Public hostname binding and certificate issuance are intentionally absent from
+  this source-preparation module and remain part of the separately approved
+  routing work.
 - Mystira Identity relying-party registration, callback approval, and production
   activation are cross-repository gated work and are not performed here.
 
@@ -39,6 +42,9 @@ The production-alpha footprint is intentionally small:
 
 The Key Vault public endpoint is enabled only so the service endpoint can be
 used. Its firewall remains deny-by-default and admits the delegated subnet.
+Secret provisioning must therefore run from that allowed network path, or from
+a separately reviewed temporary IP/private-endpoint path; this plan does not
+open one automatically.
 
 ## Configuration inventory
 
@@ -79,6 +85,12 @@ Secret values must not be passed as Terraform variables.
 
 The platform supplies `NODE_ENV`, `PORT`, and
 `APPLICATIONINSIGHTS_CONNECTION_STRING`.
+
+Application Insights starts in both runtime halves: a root client initializer
+captures browser page views and route transitions, while Next's instrumentation
+hook configures Azure Monitor OpenTelemetry for Node SSR and API traffic. The
+browser CSP admits only the HTTPS ingestion origin in the configured public
+connection string.
 
 ## Scheduled synchronization
 

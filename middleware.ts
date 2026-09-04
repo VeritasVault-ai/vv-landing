@@ -1,5 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+function applicationInsightsIngestionOrigin(): string | null {
+  const connectionString = process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING
+  const endpoint = connectionString
+    ?.split(';')
+    .find((part) => part.startsWith('IngestionEndpoint='))
+    ?.slice('IngestionEndpoint='.length)
+
+  if (!endpoint) return null
+
+  try {
+    const url = new URL(endpoint)
+    return url.protocol === 'https:' ? url.origin : null
+  } catch {
+    return null
+  }
+}
+
 export async function middleware(request) {
   const url = request.nextUrl.clone()
   const path = url.pathname
@@ -38,10 +55,12 @@ export async function middleware(request) {
   }
 
   const response = NextResponse.next()
+  const ingestionOrigin = applicationInsightsIngestionOrigin()
+  const connectSources = ["'self'", ingestionOrigin].filter(Boolean).join(' ')
 
   // Hardened security headers
   response.headers.set('Content-Security-Policy',
-    "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; connect-src 'self'; frame-ancestors 'none';"
+    `default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; connect-src ${connectSources}; frame-ancestors 'none';`
   )
   response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
   response.headers.set('X-Frame-Options', 'DENY')

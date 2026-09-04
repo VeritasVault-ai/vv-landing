@@ -140,6 +140,11 @@ No quota increase is required for source preparation. Any changed current usage,
 - Pass GitHub variables through environment variables rather than interpolating them directly into shell commands.
 - Ignore all Terraform variable-file variants while preserving a committed example file if one is required.
 - Correct the configuration audit and environment inventory, including `NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING`.
+- Initialize Application Insights for both browser navigation and Node SSR/API
+  traffic, and admit only the configured HTTPS ingestion origin in browser CSP.
+- Keep public hostname binding and certificate issuance out of this
+  source-preparation module until the separate routing gate owns a complete,
+  validated binding flow.
 
 ## Expected files
 

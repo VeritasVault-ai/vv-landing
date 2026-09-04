@@ -5,9 +5,8 @@
 # middleware properly. Full reasoning in docs/azure-runtime.md.
 #
 # Ownership boundary (neuralliquid-org ADR 0001): this product repo owns its
-# runtime resources, hostname bindings and certificates. The veritasvault.net DNS
-# RECORDS are owned by neuralliquid-org/infra/terraform/dns. This module publishes
-# the expected target as an output for that module to consume.
+# runtime resources. Public DNS, hostname binding, and certificate activation are
+# separate gated work. This module publishes the values that work needs to consume.
 
 resource "azurerm_resource_group" "main" {
   name     = var.resource_group_name
@@ -267,24 +266,6 @@ resource "azurerm_container_app" "web" {
   }
 
   depends_on = [azurerm_role_assignment.app_kv_read]
-}
-
-# ---- custom hostnames -------------------------------------------------------
-# Empty until the origin, domain-ownership record, and production routing gate
-# have all been independently verified.
-
-resource "azurerm_container_app_custom_domain" "main" {
-  for_each = var.application_enabled ? toset(var.custom_domains) : toset([])
-
-  name                     = each.key
-  container_app_id         = azurerm_container_app.web[0].id
-  certificate_binding_type = "SniEnabled"
-
-  lifecycle {
-    # The managed certificate is issued out of band after the binding exists;
-    # letting Terraform manage its id would force replacement on every renewal.
-    ignore_changes = [certificate_binding_type, container_app_environment_certificate_id]
-  }
 }
 
 # ---- scheduled sync ---------------------------------------------------------

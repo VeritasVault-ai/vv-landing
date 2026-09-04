@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  serverExternalPackages: ["@azure/monitor-opentelemetry"],
+  webpack(config, { isServer }) {
+    if (isServer) {
+      config.externals.push({
+        "@azure/monitor-opentelemetry": "commonjs @azure/monitor-opentelemetry",
+      })
+    }
+    return config
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

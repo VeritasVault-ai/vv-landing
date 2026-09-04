@@ -41,7 +41,7 @@ function request(options: { token?: string; body?: unknown } = {}) {
   return new Request("https://www.veritasvault.net/api/cron/sync", {
     method: "POST",
     headers,
-    body: JSON.stringify(options.body ?? {}),
+    body: JSON.stringify("body" in options ? options.body : {}),
   })
 }
 
@@ -68,6 +68,13 @@ describe("POST /api/cron/sync", () => {
   it("rejects an unknown sync type", async () => {
     const response = await POST(request({ token: "test-scheduler-secret", body: { type: "unknown" } }))
     expect(response.status).toBe(400)
+  })
+
+  it("does not throw when the JSON body is null", async () => {
+    const response = await POST(request({ token: "test-scheduler-secret", body: null }))
+
+    expect(response.status).toBe(200)
+    expect(syncAll).toHaveBeenCalledOnce()
   })
 
   it("runs the requested sync with an authorized POST", async () => {

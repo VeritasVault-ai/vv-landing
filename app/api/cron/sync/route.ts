@@ -27,10 +27,14 @@ export async function POST(req: Request) {
 
   let leaseHolder: string | null = null
   try {
-    const body = await req.json().catch(() => ({}))
-    const syncType = body.type ?? "all"
+    const body: unknown = await req.json().catch(() => ({}))
+    const requestedType =
+      typeof body === "object" && body !== null && "type" in body
+        ? (body as { type?: unknown }).type
+        : undefined
+    const syncType = requestedType ?? "all"
 
-    if (!ALLOWED_SYNC_TYPES.includes(syncType as SyncType)) {
+    if (typeof syncType !== "string" || !ALLOWED_SYNC_TYPES.includes(syncType as SyncType)) {
       return NextResponse.json({ error: "Invalid sync type" }, { status: 400 })
     }
 

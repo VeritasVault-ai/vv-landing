@@ -33,16 +33,6 @@ variable "container_registry_name" {
   }
 }
 
-variable "custom_domains" {
-  type        = list(string)
-  description = <<-EOT
-    Hostnames to bind only after the Container App origin and domain-ownership
-    records have been independently verified. Left empty by default so source
-    preparation cannot mutate production routing. See docs/azure-runtime.md.
-  EOT
-  default     = []
-}
-
 variable "min_replicas" {
   type        = number
   description = "Minimum replicas. 1 avoids cold starts on a public marketing site."
