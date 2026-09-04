@@ -1,3 +1,5 @@
+import { abortableDelay } from "./abortable-delay"
+
 /**
  * DeFiLlama API Client for fetching DeFi protocol data
  */
@@ -11,20 +13,14 @@ export class DeFiLlamaClient {
   }
 
   /**
-   * Add delay to respect rate limits
-   */
-  private async delay(): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, this.rateLimitDelay))
-  }
-
-  /**
    * Make a request to DeFiLlama API
    */
-  private async request<T>(endpoint: string): Promise<T> {
-    await this.delay() // Respect rate limits
+  private async request<T>(endpoint: string, signal?: AbortSignal): Promise<T> {
+    await abortableDelay(this.rateLimitDelay, signal) // Respect rate limits
+    signal?.throwIfAborted()
 
     try {
-      const response = await fetch(`${this.baseUrl}${endpoint}`)
+      const response = await fetch(`${this.baseUrl}${endpoint}`, { signal })
 
       if (!response.ok) {
         const errorText = await response.text()
@@ -41,15 +37,16 @@ export class DeFiLlamaClient {
   /**
    * Get all protocols
    */
-  async getAllProtocols(): Promise<any> {
-    return this.request("/protocols")
+  async getAllProtocols(signal?: AbortSignal): Promise<any> {
+    return this.request("/protocols", signal)
   }
 
   /**
    * Get Tezos protocols
    */
-  async getTezosProtocols(): Promise<any> {
-    const allProtocols = await this.getAllProtocols()
+  async getTezosProtocols(signal?: AbortSignal): Promise<any> {
+    const allProtocols = await this.getAllProtocols(signal)
+    signal?.throwIfAborted()
     return allProtocols.filter(
       (protocol: any) => protocol.chains.includes("Tezos") || protocol.chains.includes("tezos"),
     )
@@ -58,22 +55,22 @@ export class DeFiLlamaClient {
   /**
    * Get protocol TVL history
    */
-  async getProtocolTvlHistory(protocol: string): Promise<any> {
-    return this.request(`/protocol/${protocol}`)
+  async getProtocolTvlHistory(protocol: string, signal?: AbortSignal): Promise<any> {
+    return this.request(`/protocol/${protocol}`, signal)
   }
 
   /**
    * Get Tezos TVL
    */
-  async getTezosTvl(): Promise<any> {
-    return this.request("/chain/tezos")
+  async getTezosTvl(signal?: AbortSignal): Promise<any> {
+    return this.request("/chain/tezos", signal)
   }
 
   /**
    * Get Tezos TVL history
    */
-  async getTezosTvlHistory(): Promise<any> {
-    return this.request("/charts/tezos")
+  async getTezosTvlHistory(signal?: AbortSignal): Promise<any> {
+    return this.request("/charts/tezos", signal)
   }
 }
 

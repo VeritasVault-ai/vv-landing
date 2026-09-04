@@ -1,0 +1,19 @@
+{
+  "pattern": "{app,components,config,contexts,hooks,lib,scripts,src,types,utils}/**/*.{js,jsx,ts,tsx}",
+  "reporters": ["console"],
+  "threshold": 5.4,
+  "minTokens": 50,
+  "ignore": [
+    "**/.next/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/public/**",
+    "**/*.generated.*",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/__tests__/**",
+    "**/*.d.ts"
+  ]
+}

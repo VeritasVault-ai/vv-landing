@@ -34,6 +34,7 @@ env:
   NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
   NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
   NEXT_PUBLIC_WS_BASE_URL: ${{ vars.NEXT_PUBLIC_WS_BASE_URL }}
+  NEXT_PUBLIC_MODEL_WS: ${{ vars.NEXT_PUBLIC_MODEL_WS }}
   NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
   NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ vars.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
 
@@ -72,6 +73,7 @@ jobs:
             --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
             --build-arg NEXT_PUBLIC_API_BASE_URL="$NEXT_PUBLIC_API_BASE_URL" \
             --build-arg NEXT_PUBLIC_WS_BASE_URL="$NEXT_PUBLIC_WS_BASE_URL" \
+            --build-arg NEXT_PUBLIC_MODEL_WS="$NEXT_PUBLIC_MODEL_WS" \
             --build-arg NEXT_PUBLIC_ENV="production" \
             --build-arg NEXT_PUBLIC_GA_MEASUREMENT_ID="$NEXT_PUBLIC_GA_MEASUREMENT_ID" \
             --build-arg NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING="$NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING" \
@@ -85,24 +87,47 @@ jobs:
           docker push "$REGISTRY.azurecr.io/$IMAGE:latest"
 
       - name: Update Container App
+        id: update
         if: inputs.deploy == 'build-and-deploy'
         run: |
-          az containerapp update \
+          NEW_REVISION=$(az containerapp update \
             --name "$CONTAINER_APP" \
             --resource-group "$RESOURCE_GROUP" \
-            --image "$REGISTRY.azurecr.io/$IMAGE:$IMAGE_TAG"
+            --image "$REGISTRY.azurecr.io/$IMAGE:$IMAGE_TAG" \
+            --query 'properties.latestRevisionName' \
+            --output tsv)
+          if [ -z "$NEW_REVISION" ]; then
+            echo "Container App update did not return a revision name." >&2
+            exit 1
+          fi
+          echo "revision=$NEW_REVISION" >> "$GITHUB_OUTPUT"
 
       - name: Smoke check the new revision
         if: inputs.deploy == 'build-and-deploy'
+        env:
+          NEW_REVISION: ${{ steps.update.outputs.revision }}
         run: |
-          FQDN=$(az containerapp show --name "$CONTAINER_APP" \
-            --resource-group "$RESOURCE_GROUP" --query 'properties.configuration.ingress.fqdn' -o tsv)
-          echo "Probing https://$FQDN/"
+          echo "Waiting for revision $NEW_REVISION"
           for i in $(seq 1 12); do
-            CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "https://$FQDN/" || true)
-            echo "attempt $i: HTTP $CODE"
-            [ "$CODE" = "200" ] && exit 0
+            REVISION=$(az containerapp revision show \
+              --name "$CONTAINER_APP" \
+              --resource-group "$RESOURCE_GROUP" \
+              --revision "$NEW_REVISION" \
+              --query '{active:properties.active,fqdn:properties.fqdn,health:properties.healthState,provisioning:properties.provisioningState}' \
+              --output json)
+            ACTIVE=$(echo "$REVISION" | jq -r '.active // false')
+            FQDN=$(echo "$REVISION" | jq -r '.fqdn // empty')
+            HEALTH=$(echo "$REVISION" | jq -r '.health // "Unknown"')
+            PROVISIONING=$(echo "$REVISION" | jq -r '.provisioning // "Unknown"')
+            CODE=000
+            if [ -n "$FQDN" ]; then
+              CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "https://$FQDN/" || true)
+            fi
+            echo "attempt $i: active=$ACTIVE health=$HEALTH provisioning=$PROVISIONING HTTP=$CODE"
+            if [ "$ACTIVE" = "true" ] && [ "$HEALTH" = "Healthy" ] && [ "$CODE" = "200" ]; then
+              exit 0
+            fi
             sleep 10
           done
-          echo "New revision never returned 200 — check revision logs before flipping DNS." >&2
+          echo "Revision $NEW_REVISION never became active and healthy with HTTP 200 — check revision logs before flipping DNS." >&2
           exit 1

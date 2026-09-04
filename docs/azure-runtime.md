@@ -75,9 +75,9 @@ their values. References and the sync job remain absent while
 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `JWT_SECRET`, `TOKEN_SECRET`,
 `CRON_SECRET`, `GITHUB_ID`, `GITHUB_SECRET`, `GITHUB_CLIENT_ID`,
 `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `OPENAI_API_KEY`,
-`SENDGRID_API_KEY`, `COINGECKO_API_KEY`, `FAL_KEY`, `GOLDSKY_API_URL`,
-`NEURALLIQUID_GOLDSKY_API_KEY`, `ANALYTICS_API_ENDPOINT`, `ANALYTICS_API_KEY`,
-and `EMAIL_FROM`.
+`GROQ_API_KEY`, `DEEPINFRA_API_KEY`, `SENDGRID_API_KEY`, `COINGECKO_API_KEY`,
+`FAL_KEY`, `GOLDSKY_API_URL`, `NEURALLIQUID_GOLDSKY_API_KEY`,
+`ANALYTICS_API_ENDPOINT`, `ANALYTICS_API_KEY`, and `EMAIL_FROM`.
 
 Every secret must be provisioned through an approved process, have an owner and
 expiry/rotation policy, and exist before a Container App revision references it.
@@ -132,7 +132,10 @@ explicit production approval sets `sync_job_enabled = true`.
    credential issued by the subscription tenant.
 3. Obtain production approval for the first apply, which creates the vault and
    runtime shell without secret references or a sync job.
-4. Provision secrets separately, with expiry and rotation metadata.
+4. Provision the complete server-side inventory separately, including the
+   `groq-api-key` and `deepinfra-api-key` Key Vault entries, with owner, expiry,
+   and rotation metadata. Do not enable runtime references until every named
+   secret exists.
 5. Apply the scheduled-sync lease migration through the approved database
    migration process.
 6. Build and publish the application image, record its commit tag and digest,

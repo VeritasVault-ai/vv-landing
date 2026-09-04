@@ -37,10 +37,12 @@ export function trackLoginEvent(eventType: LoginEventType, properties: LoginEven
     const eventName = `auth_${eventType}`;
     
     // Add timestamp to properties
-    const enrichedProperties = {
-      ...properties,
+    const enrichedProperties: Record<string, string | number | boolean | null> = {
       timestamp: new Date().toISOString(),
-    };
+    }
+    for (const [key, value] of Object.entries(properties)) {
+      if (value !== undefined) enrichedProperties[key] = value
+    }
     
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {

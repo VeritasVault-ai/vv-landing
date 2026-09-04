@@ -13,7 +13,11 @@ export class GoldskyClient {
   /**
    * Execute a GraphQL query against Goldsky
    */
-  async executeQuery<T>(query: string, variables: Record<string, any> = {}): Promise<T> {
+  async executeQuery<T>(
+    query: string,
+    variables: Record<string, any> = {},
+    signal?: AbortSignal,
+  ): Promise<T> {
     try {
       const response = await fetch(`${this.baseUrl}/graphql`, {
         method: "POST",
@@ -25,6 +29,7 @@ export class GoldskyClient {
           query,
           variables,
         }),
+        signal,
       })
 
       if (!response.ok) {
@@ -48,7 +53,12 @@ export class GoldskyClient {
   /**
    * Get historical liquidity data
    */
-  async getHistoricalData(startTime: string, endTime: string, limit = 100): Promise<any> {
+  async getHistoricalData(
+    startTime: string,
+    endTime: string,
+    limit = 100,
+    signal?: AbortSignal,
+  ): Promise<any> {
     const query = `
       query GetHistoricalData($startTime: DateTime!, $endTime: DateTime!, $limit: Int!) {
         liquidityData(
@@ -70,13 +80,13 @@ export class GoldskyClient {
       }
     `
 
-    return this.executeQuery(query, { startTime, endTime, limit })
+    return this.executeQuery(query, { startTime, endTime, limit }, signal)
   }
 
   /**
    * Get protocol metrics
    */
-  async getProtocolMetrics(): Promise<any> {
+  async getProtocolMetrics(signal?: AbortSignal): Promise<any> {
     const query = `
       query GetProtocolMetrics {
         protocols {
@@ -90,7 +100,7 @@ export class GoldskyClient {
       }
     `
 
-    return this.executeQuery(query, {})
+    return this.executeQuery(query, {}, signal)
   }
 }
 

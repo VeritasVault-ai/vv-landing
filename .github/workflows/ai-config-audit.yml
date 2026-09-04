@@ -25,14 +25,14 @@ jobs:
       - name: 📦  Install dependencies
         run: |
           corepack enable
-          pnpm install --frozen-lockfile   # NOT --prod: ts-node and jscpd below are devDependencies
+          pnpm install --frozen-lockfile   # NOT --prod: jscpd below is a devDependency
 
       - name: Audit AI config
         run: |
           node scripts/audit-config.js
 
       - name: 🔎  Detect code duplication (jscpd)
-        run: pnpm exec jscpd --config .jscpd.json
+        run: pnpm exec jscpd . --config .jscpd.json
 
       - name: 🛑  Fail if audit produced errors
         if: failure() # workflow will automatically fail on non-zero exit

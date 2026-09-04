@@ -1,3 +1,5 @@
+import { abortableDelay } from "./abortable-delay"
+
 /**
  * CoinGecko API Client for fetching cryptocurrency market data
  */
@@ -13,17 +15,15 @@ export class CoinGeckoClient {
   }
 
   /**
-   * Add delay to respect rate limits
-   */
-  private async delay(): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, this.rateLimitDelay))
-  }
-
-  /**
    * Make a request to CoinGecko API
    */
-  private async request<T>(endpoint: string, params: Record<string, any> = {}): Promise<T> {
-    await this.delay() // Respect rate limits
+  private async request<T>(
+    endpoint: string,
+    params: Record<string, any> = {},
+    signal?: AbortSignal,
+  ): Promise<T> {
+    await abortableDelay(this.rateLimitDelay, signal) // Respect rate limits
+    signal?.throwIfAborted()
 
     const url = new URL(`${this.baseUrl}${endpoint}`)
 
@@ -38,7 +38,7 @@ export class CoinGeckoClient {
     })
 
     try {
-      const response = await fetch(url.toString())
+      const response = await fetch(url.toString(), { signal })
 
       if (!response.ok) {
         const errorText = await response.text()
@@ -55,7 +55,7 @@ export class CoinGeckoClient {
   /**
    * Get coin market data
    */
-  async getCoinMarketData(coinIds: string[], currency = "usd"): Promise<any> {
+  async getCoinMarketData(coinIds: string[], currency = "usd", signal?: AbortSignal): Promise<any> {
     return this.request("/coins/markets", {
       vs_currency: currency,
       ids: coinIds.join(","),
@@ -64,23 +64,28 @@ export class CoinGeckoClient {
       page: 1,
       sparkline: false,
       price_change_percentage: "24h,7d,30d",
-    })
+    }, signal)
   }
 
   /**
    * Get historical market data for a coin
    */
-  async getCoinHistoricalData(coinId: string, days = 30, currency = "usd"): Promise<any> {
+  async getCoinHistoricalData(
+    coinId: string,
+    days = 30,
+    currency = "usd",
+    signal?: AbortSignal,
+  ): Promise<any> {
     return this.request(`/coins/${coinId}/market_chart`, {
       vs_currency: currency,
       days,
-    })
+    }, signal)
   }
 
   /**
    * Get Tezos token data
    */
-  async getTezosTokenData(currency = "usd"): Promise<any> {
+  async getTezosTokenData(currency = "usd", signal?: AbortSignal): Promise<any> {
     return this.request("/coins/tezos", {
       localization: false,
       tickers: true,
@@ -88,7 +93,7 @@ export class CoinGeckoClient {
       community_data: false,
       developer_data: false,
       sparkline: false,
-    })
+    }, signal)
   }
 }
 

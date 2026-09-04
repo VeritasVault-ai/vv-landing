@@ -85,7 +85,7 @@ variable "public_app_url" {
   default     = "https://www.veritasvault.net"
 
   validation {
-    condition     = can(regex("^https://[^/]+/?$", var.public_app_url))
+    condition     = can(regex("^https://(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?::(?:[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$", var.public_app_url))
     error_message = "public_app_url must be an HTTPS origin without a path."
   }
 }
@@ -147,6 +147,8 @@ variable "runtime_secret_names" {
     "google-client-id",
     "google-client-secret",
     "openai-api-key",
+    "groq-api-key",
+    "deepinfra-api-key",
     "sendgrid-api-key",
     "coingecko-api-key",
     "fal-key",

@@ -28,6 +28,7 @@ export async function POST(req: Request) {
 
   let leaseHolder: string | null = null
   let leaseHeartbeat: ReturnType<typeof setInterval> | null = null
+  let syncAbortController: AbortController | null = null
   try {
     let body: unknown
     try {
@@ -53,26 +54,34 @@ export async function POST(req: Request) {
     }
 
     const holderId = leaseHolder
+    syncAbortController = new AbortController()
+    const syncSignal = syncAbortController.signal
     leaseHeartbeat = setInterval(() => {
       void scheduledSyncLease.renew(holderId).catch((error) => {
         console.error("Could not renew scheduled sync lease:", error)
+        if (leaseHeartbeat) {
+          clearInterval(leaseHeartbeat)
+          leaseHeartbeat = null
+        }
+        syncAbortController?.abort(new Error("Scheduled sync lease was lost"))
       })
     }, LEASE_HEARTBEAT_MS)
 
     switch (syncType) {
       case "liquidity-pools":
-        await syncService.syncLiquidityPools()
+        await syncService.syncLiquidityPools(syncSignal)
         break
       case "market-data":
-        await syncService.syncMarketData()
+        await syncService.syncMarketData(syncSignal)
         break
       case "protocol-metrics":
-        await syncService.syncProtocolMetrics()
+        await syncService.syncProtocolMetrics(syncSignal)
         break
       case "all":
-        await syncService.syncAll()
+        await syncService.syncAll(syncSignal)
         break
     }
+    syncSignal.throwIfAborted()
 
     return NextResponse.json({ success: true, message: `Scheduled sync ${syncType} completed successfully` })
   } catch (error) {

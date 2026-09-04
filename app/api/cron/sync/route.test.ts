@@ -116,4 +116,30 @@ describe("POST /api/cron/sync", () => {
     expect(syncAll).not.toHaveBeenCalled()
     expect(releaseLease).not.toHaveBeenCalled()
   })
+
+  it("cancels the active synchronization when lease renewal fails", async () => {
+    vi.useFakeTimers()
+
+    try {
+      renewLease.mockRejectedValueOnce(new Error("lease is no longer held"))
+      syncAll.mockImplementationOnce((signal: AbortSignal) =>
+        new Promise<void>((_resolve, reject) => {
+          signal.addEventListener("abort", () => reject(signal.reason), { once: true })
+        }),
+      )
+
+      const responsePromise = POST(request({ token: "test-scheduler-secret" }))
+      await vi.waitFor(() => expect(syncAll).toHaveBeenCalledOnce())
+      await vi.advanceTimersByTimeAsync(60_000)
+
+      const response = await responsePromise
+      const signal = syncAll.mock.calls[0][0] as AbortSignal
+
+      expect(response.status).toBe(500)
+      expect(signal.aborted).toBe(true)
+      expect(releaseLease).toHaveBeenCalledWith("lease-holder")
+    } finally {
+      vi.useRealTimers()
+    }
+  })
 })
