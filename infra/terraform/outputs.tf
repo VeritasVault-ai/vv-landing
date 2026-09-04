@@ -4,12 +4,12 @@
 
 output "container_app_fqdn" {
   description = "Container App ingress FQDN. This is the CNAME target for www.veritasvault.net at cutover."
-  value       = azurerm_container_app.web.ingress[0].fqdn
+  value       = try(azurerm_container_app.web[0].ingress[0].fqdn, null)
 }
 
 output "custom_domain_verification_id" {
   description = "Value for the asuid.<host> TXT record that proves domain ownership before hostname binding."
-  value       = azurerm_container_app.web.custom_domain_verification_id
+  value       = try(azurerm_container_app.web[0].custom_domain_verification_id, null)
 }
 
 output "container_registry_login_server" {

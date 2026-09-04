@@ -1,6 +1,6 @@
 # VeritasVault Azure replacement preparation plan
 
-**Status:** Planning  
+**Status:** Validated
 **Prepared:** 2026-09-04  
 **Mode:** MODIFY an existing Azure-prepared branch  
 **Implementation vehicle:** `neuralliquid/veritasvault-web` PR #163 (`feat/azure-container-apps`)  
@@ -68,6 +68,7 @@ Cloudflare origin restriction and public-host cutover are deployment concerns, n
 | Container Apps Job | Hourly trigger; disabled by default; bounded retries/timeouts/concurrency | Scheduled synchronization |
 | Azure Container Registry | Basic SKU | Private application image storage |
 | Key Vault | RBAC authorization; soft delete and purge protection; no secret values in Terraform | Runtime secret boundary |
+| Virtual network and delegated subnet | Container Apps infrastructure subnet with Key Vault service endpoint | Deny-by-default Key Vault network path |
 | Log Analytics workspace | Cost-conscious retention | Platform logs |
 | Application Insights | Workspace based | Browser/server telemetry |
 | User-assigned managed identities | Separate web and sync identities | Least privilege |
@@ -80,6 +81,8 @@ All counts below are for `neuralliquid-sub`; regional counts are scoped to West 
 | Resource/quota | Current | Add | Projected | Limit/bound | Result |
 |---|---:|---:|---:|---:|---|
 | Resource groups per subscription | 6 | 1 | 7 | 980 | Within limit |
+| Virtual networks, target resource group | 0 | 1 | 1 | 1,000 per region per subscription | Within limit |
+| Subnets in virtual network | 0 | 1 | 1 | 3,000 per virtual network | Within limit |
 | Container Apps managed environments, West Europe | 0 | 1 | 1 | 20 | Within limit; usage recheck required before apply |
 | Container Apps, target resource group | 0 | 1 | 1 | 800 resources/type/resource group | Within ARM bound |
 | Container Apps Jobs, target resource group | 0 | 1 | 1 | 800 resources/type/resource group | Within ARM bound |
@@ -88,10 +91,19 @@ All counts below are for `neuralliquid-sub`; regional counts are scoped to West 
 | Log Analytics workspaces, target resource group | 0 | 1 | 1 | No non-legacy service count cap; ARM bound 800/type/resource group | Within limit |
 | Application Insights components, target resource group | 0 | 1 | 1 | 800 resources/type/resource group | Within ARM bound |
 | User-assigned managed identities, West Europe | 0 | 2 | 2 | Creation rate 80/subscription/region/20 seconds; ARM bound 800/type/resource group | Within limit |
-| Role assignments per subscription | 14 | 4 | 18 | 4,000 | Within limit |
+| Role assignments per subscription | 14 | 5 | 19 | 4,000 | Within limit |
 | Key Vault secret creates | 0 by this plan | 0 | 0 | 300 create operations/10 seconds; no object-count restriction | No secret mutation authorized |
 
 No quota increase is required for source preparation. Any changed current usage, SKU constraint, or tenant-context mismatch is a deployment preflight failure, not permission to proceed optimistically.
+
+## Research summary
+
+- Microsoft Container Apps guidance requires health probes for production workloads and recommends one minimum replica for a public web application. The web app therefore uses `/api/health`, one warm replica by default, and bounded HTTP scaling.
+- Microsoft Container Apps secret guidance supports versionless Key Vault references with managed identity and automatic rotation pickup. Terraform constructs those references without reading secret values into state.
+- Microsoft Key Vault network guidance says services not on the trusted-services list require a virtual-network rule, IP rule, or private endpoint. Container Apps is not a general trusted-service bypass for application secret reads, so the environment is VNet-integrated and its delegated subnet is admitted through a Key Vault service endpoint.
+- Microsoft Application Insights guidance requires connection strings rather than instrumentation keys for new applications. Browser telemetry uses `NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING`; server runtime receives `APPLICATIONINSIGHTS_CONNECTION_STRING`.
+- Azure Terraform best-practice guidance requires AzureRM 4.2 or later, formatting, initialization, and validation before plan. The repository's `~> 4.0` constraint admits current 4.x releases, and the committed lock file controls the selected version.
+- The subscription-level policy inventory contains only the enforced `SecurityCenterBuiltIn` assignment. The Azure MCP policy call had a cross-tenant token mismatch; a read-only Azure CLI query against the confirmed subscription supplied this result without changing the caller's default subscription.
 
 ## Planned source changes
 
@@ -121,6 +133,8 @@ No quota increase is required for source preparation. Any changed current usage,
 - Replace the stale Mystira subscription/backend defaults with the confirmed NeuralLiquid subscription context without changing the caller's active Azure CLI subscription.
 - Validate `max_replicas >= min_replicas` and reject invalid input early.
 - Do not create placeholder secret values or real secret values in Terraform. Model only the vault, access boundary, and references to separately provisioned secrets.
+- Gate runtime secret references and sync-job creation behind `runtime_secret_references_enabled`, permitting a first apply to create the vault before separately approved secret provisioning and a second reviewed apply.
+- Gate web application creation behind `application_enabled`, so the first apply cannot fail against an empty newly created registry and cannot expose an unreviewed application origin.
 - Narrow Key Vault grants from whole-vault access where Azure supports a secret-scoped assignment suitable for the runtime reference design.
 - Set `persist-credentials: false` on workflow checkout steps.
 - Pass GitHub variables through environment variables rather than interpolating them directly into shell commands.
@@ -174,9 +188,10 @@ Successful source checks prove only that the repository is prepared. They do not
 - [x] Confirm workload classification, subscription, and region.
 - [x] Check relevant quota/capacity bounds; record the tenant-context caveat.
 - [x] Produce this source-preparation plan.
-- [ ] Obtain explicit approval of this plan.
-- [ ] Implement the source-only changes on the isolated branch.
-- [ ] Run local validation and self-review.
+- [x] Obtain explicit approval of this plan.
+- [x] Research Container Apps, Key Vault, Application Insights, Node.js container, Terraform, and subscription-policy constraints.
+- [x] Implement the source-only changes on the isolated branch.
+- [x] Run local validation and self-review.
 - [ ] Update PR #163 or land an explicitly linked stacked PR without losing existing work.
 - [ ] Complete exact-head bot review and required checks.
 - [ ] Merge only when green and free of unresolved actionable threads.
@@ -206,3 +221,18 @@ Successful source checks prove only that the repository is prepared. They do not
 ## Approval checkpoint
 
 Approval of this document authorizes implementation and validation of repository source changes only. It does not authorize any Azure, Cloudflare, DNS, Key Vault, GitHub environment approval, Mystira Identity, or production mutation.
+
+## Local validation evidence
+
+- `pnpm test`: 7 tests passed across the scheduler route and Application Insights provider.
+- `pnpm build`: passed with representative, non-secret public Supabase build values; existing theme-provider and metadata warnings remain non-fatal.
+- `node scripts/audit-config.js`: passed with no violations.
+- `terraform fmt -check -recursive infra/terraform`: passed.
+- `terraform -chdir=infra/terraform init -backend=false`: passed with AzureRM 4.81.0 and AzAPI 2.12.0.
+- `terraform -chdir=infra/terraform validate`: passed.
+- `terraform -chdir=infra/terraform init -reconfigure`: passed against the configured NeuralLiquid Azure Storage backend.
+- `terraform -chdir=infra/terraform state list`: passed and returned an empty state.
+- `terraform plan -lock=false` from `infra/terraform`: passed with the safe defaults (`application_enabled = false`, `runtime_secret_references_enabled = false`, `sync_job_enabled = false`); preview is 14 additions, 0 changes, and 0 destroys. No saved plan artifact was produced.
+- Active-tree residue scan excluding this forensic plan: no active Vercel code, package, environment detection, header, deployment instruction, or documentation remains.
+- `git diff --check`: passed.
+- Local CodeRabbit CLI: unavailable; exact-head CodeRabbit GitHub App review remains required before merge.

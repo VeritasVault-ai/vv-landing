@@ -22,7 +22,7 @@ jobs:
           corepack enable
           pnpm install --frozen-lockfile   # NOT --prod: ts-node and jscpd below are devDependencies
 
-      - name: 🕵️‍♂️  Audit AI config
+      - name: Audit AI config
         run: |
           node scripts/audit-config.js
 

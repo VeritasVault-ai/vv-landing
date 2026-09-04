@@ -1,7 +1,7 @@
 variable "subscription_id" {
   type        = string
   description = "Azure subscription hosting NeuralLiquid production workloads."
-  default     = "bb4e3882-2079-4bab-8974-611bc0b8bb58"
+  default     = "5a95ddee-dd63-441a-8306-c8b0803dcdd4"
 }
 
 variable "location" {
@@ -36,10 +36,9 @@ variable "container_registry_name" {
 variable "custom_domains" {
   type        = list(string)
   description = <<-EOT
-    Hostnames to bind once DNS points at this Container App. Left EMPTY on the
-    first apply on purpose: binding a hostname requires the DNS record to already
-    resolve here, and during migration these still point at Vercel. Populate only
-    at cutover. See docs/azure-migration.md.
+    Hostnames to bind only after the Container App origin and domain-ownership
+    records have been independently verified. Left empty by default so source
+    preparation cannot mutate production routing. See docs/azure-runtime.md.
   EOT
   default     = []
 }
@@ -59,12 +58,64 @@ variable "max_replicas" {
   type        = number
   description = "Maximum replicas under HTTP scale-out."
   default     = 3
+
+  validation {
+    condition     = var.max_replicas >= var.min_replicas
+    error_message = "max_replicas must be greater than or equal to min_replicas."
+  }
+}
+
+variable "virtual_network_address_space" {
+  type        = list(string)
+  description = "Address space for the Container Apps virtual network."
+  default     = ["10.42.0.0/16"]
+}
+
+variable "infrastructure_subnet_address_prefixes" {
+  type        = list(string)
+  description = "Dedicated Container Apps infrastructure subnet prefixes."
+  default     = ["10.42.0.0/23"]
 }
 
 variable "image_tag" {
   type        = string
   description = "Container image tag to run. CI sets this to the commit SHA."
   default     = "latest"
+}
+
+variable "application_enabled" {
+  type        = bool
+  description = "Creates the web Container App only after its image has been published and reviewed."
+  default     = false
+}
+
+variable "sync_image_digest" {
+  type        = string
+  description = "Immutable sha256 digest of the application image used by the scheduled sync job."
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.sync_image_digest == null || can(regex("^sha256:[0-9a-f]{64}$", var.sync_image_digest))
+    error_message = "sync_image_digest must be an immutable sha256 digest."
+  }
+}
+
+variable "sync_job_enabled" {
+  type        = bool
+  description = "Enables the hourly schedule. False keeps the job manual-only until the production gate is approved."
+  default     = false
+}
+
+variable "sync_schedule_cron" {
+  type        = string
+  description = "Five-field UTC cron expression used only when sync_job_enabled is true."
+  default     = "0 * * * *"
+
+  validation {
+    condition     = length(split(" ", trimspace(var.sync_schedule_cron))) == 5
+    error_message = "sync_schedule_cron must contain exactly five space-separated fields."
+  }
 }
 
 variable "github_oidc_principal_object_id" {
@@ -76,10 +127,9 @@ variable "github_oidc_principal_object_id" {
 variable "runtime_secret_names" {
   type        = list(string)
   description = <<-EOT
-    Server-side secrets the app reads at runtime. Terraform creates each as an
-    EMPTY Key Vault secret and wires the Container App to reference it; the VALUES
-    are set out of band (never in state, never in git). Recovered from Vercel with
-    `vercel env pull` — see docs/azure-migration.md for the full 36-var inventory.
+    Names of pre-provisioned server-side Key Vault secrets referenced by the app.
+    Terraform never creates or reads their values. Secret provisioning and
+    rotation are separate approved operations; see docs/azure-runtime.md.
 
     NEXT_PUBLIC_* vars are deliberately absent: Next inlines those at build time,
     so they are Docker build args, not runtime secrets.
@@ -105,6 +155,12 @@ variable "runtime_secret_names" {
     "analytics-api-key",
     "email-from",
   ]
+}
+
+variable "runtime_secret_references_enabled" {
+  type        = bool
+  description = "Adds runtime Key Vault references and the manual sync job only after all named secrets are provisioned."
+  default     = false
 }
 
 variable "tags" {

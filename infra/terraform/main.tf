@@ -2,7 +2,7 @@
 #
 # Why Container Apps and not Static Web Apps: this app ships middleware.ts and 45
 # API routes, both of which need a long-running Node server. SWA cannot run Next
-# middleware properly. Full reasoning in docs/azure-migration.md.
+# middleware properly. Full reasoning in docs/azure-runtime.md.
 #
 # Ownership boundary (neuralliquid-org ADR 0001): this product repo owns its
 # runtime resources, hostname bindings and certificates. The veritasvault.net DNS
@@ -13,6 +13,33 @@ resource "azurerm_resource_group" "main" {
   name     = var.resource_group_name
   location = var.location
   tags     = var.tags
+}
+
+# ---- network ---------------------------------------------------------------
+
+resource "azurerm_virtual_network" "main" {
+  name                = "${var.name_prefix}-vnet"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  address_space       = var.virtual_network_address_space
+  tags                = var.tags
+}
+
+resource "azurerm_subnet" "container_apps" {
+  name                 = "container-apps-infrastructure"
+  resource_group_name  = azurerm_resource_group.main.name
+  virtual_network_name = azurerm_virtual_network.main.name
+  address_prefixes     = var.infrastructure_subnet_address_prefixes
+  service_endpoints    = ["Microsoft.KeyVault"]
+
+  delegation {
+    name = "Microsoft.App.environments"
+
+    service_delegation {
+      name    = "Microsoft.App/environments"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+    }
+  }
 }
 
 # ---- observability ----------------------------------------------------------
@@ -69,6 +96,19 @@ resource "azurerm_user_assigned_identity" "app" {
   tags                = var.tags
 }
 
+resource "azurerm_user_assigned_identity" "sync" {
+  name                = "${var.name_prefix}-sync-id"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  tags                = var.tags
+}
+
+resource "azurerm_role_assignment" "sync_acr_pull" {
+  scope                = azurerm_container_registry.main.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_user_assigned_identity.sync.principal_id
+}
+
 # ---- secrets ----------------------------------------------------------------
 
 resource "azurerm_key_vault" "main" {
@@ -80,14 +120,14 @@ resource "azurerm_key_vault" "main" {
 
   rbac_authorization_enabled = true
   purge_protection_enabled   = true
-  # Not 'Enabled'. The absorbed vv-iac Bicep left Key Vault publicly reachable;
-  # this estate does not repeat that. CI reaches the vault through the firewall
-  # bypass below rather than by opening it to the internet.
-  public_network_access_enabled = false
+  # The public endpoint remains enabled for the service-endpoint path, but the
+  # firewall denies traffic that does not originate from the delegated subnet.
+  public_network_access_enabled = true
 
   network_acls {
-    default_action = "Deny"
-    bypass         = "AzureServices"
+    default_action             = "Deny"
+    bypass                     = "AzureServices"
+    virtual_network_subnet_ids = [azurerm_subnet.container_apps.id]
   }
 
   tags = var.tags
@@ -95,24 +135,26 @@ resource "azurerm_key_vault" "main" {
 
 data "azurerm_client_config" "current" {}
 
-# Empty shells only. Values are set out of band so no secret ever enters state
-# or git. `ignore_changes = [value]` is what makes that safe across applies.
-resource "azurerm_key_vault_secret" "runtime" {
-  for_each = toset(var.runtime_secret_names)
-
-  name         = each.key
-  value        = "PLACEHOLDER-SET-OUT-OF-BAND"
-  key_vault_id = azurerm_key_vault.main.id
-
-  lifecycle {
-    ignore_changes = [value]
+locals {
+  runtime_secret_urls = {
+    for name in var.runtime_secret_names :
+    name => "${azurerm_key_vault.main.vault_uri}secrets/${name}"
   }
+  active_runtime_secret_urls = var.runtime_secret_references_enabled ? local.runtime_secret_urls : {}
 }
 
 resource "azurerm_role_assignment" "app_kv_read" {
   scope                = azurerm_key_vault.main.id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_user_assigned_identity.app.principal_id
+}
+
+resource "azurerm_role_assignment" "sync_kv_read" {
+  count = var.runtime_secret_references_enabled ? 1 : 0
+
+  scope                = "${azurerm_key_vault.main.id}/secrets/cron-secret"
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_user_assigned_identity.sync.principal_id
 }
 
 # ---- container app ----------------------------------------------------------
@@ -122,10 +164,13 @@ resource "azurerm_container_app_environment" "main" {
   resource_group_name        = azurerm_resource_group.main.name
   location                   = azurerm_resource_group.main.location
   log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
+  infrastructure_subnet_id   = azurerm_subnet.container_apps.id
   tags                       = var.tags
 }
 
 resource "azurerm_container_app" "web" {
+  count = var.application_enabled ? 1 : 0
+
   name                         = "${var.name_prefix}-web"
   resource_group_name          = azurerm_resource_group.main.name
   container_app_environment_id = azurerm_container_app_environment.main.id
@@ -145,11 +190,11 @@ resource "azurerm_container_app" "web" {
   # Each Key Vault secret surfaces as a Container App secret resolved by the
   # managed identity at revision start. Values are never read by Terraform.
   dynamic "secret" {
-    for_each = azurerm_key_vault_secret.runtime
+    for_each = local.active_runtime_secret_urls
 
     content {
       name                = secret.key
-      key_vault_secret_id = secret.value.versionless_id
+      key_vault_secret_id = secret.value
       identity            = azurerm_user_assigned_identity.app.id
     }
   }
@@ -194,7 +239,7 @@ resource "azurerm_container_app" "web" {
       # SCREAMING_SNAKE_CASE; Key Vault secret names must be kebab-case, hence the
       # translation.
       dynamic "env" {
-        for_each = azurerm_key_vault_secret.runtime
+        for_each = local.active_runtime_secret_urls
 
         content {
           name        = upper(replace(env.key, "-", "_"))
@@ -205,13 +250,13 @@ resource "azurerm_container_app" "web" {
       liveness_probe {
         transport = "HTTP"
         port      = 3000
-        path      = "/"
+        path      = "/api/health"
       }
 
       readiness_probe {
         transport = "HTTP"
         port      = 3000
-        path      = "/"
+        path      = "/api/health"
       }
     }
   }
@@ -220,17 +265,19 @@ resource "azurerm_container_app" "web" {
     # CI updates the running image; Terraform must not revert it on the next plan.
     ignore_changes = [template[0].container[0].image]
   }
+
+  depends_on = [azurerm_role_assignment.app_kv_read]
 }
 
 # ---- custom hostnames -------------------------------------------------------
-# Empty until cutover. Binding requires DNS to already resolve here, and during
-# migration veritasvault.net still points at Vercel.
+# Empty until the origin, domain-ownership record, and production routing gate
+# have all been independently verified.
 
 resource "azurerm_container_app_custom_domain" "main" {
-  for_each = toset(var.custom_domains)
+  for_each = var.application_enabled ? toset(var.custom_domains) : toset([])
 
   name                     = each.key
-  container_app_id         = azurerm_container_app.web.id
+  container_app_id         = azurerm_container_app.web[0].id
   certificate_binding_type = "SniEnabled"
 
   lifecycle {
@@ -241,49 +288,90 @@ resource "azurerm_container_app_custom_domain" "main" {
 }
 
 # ---- scheduled sync ---------------------------------------------------------
-# Replaces Vercel Cron, which drove app/api/cron/sync. The schedule below is a
-# PLACEHOLDER — the real one exists only in the Vercel dashboard and must be read
-# off it before cutover, or this silently runs at the wrong cadence.
+# Calls the app-owned synchronization route. It is manual-only by default; the
+# approved hourly schedule is enabled only by an explicit production input.
 
 resource "azurerm_container_app_job" "sync" {
+  count = var.application_enabled && var.runtime_secret_references_enabled ? 1 : 0
+
   name                         = "${var.name_prefix}-sync"
   resource_group_name          = azurerm_resource_group.main.name
   location                     = azurerm_resource_group.main.location
   container_app_environment_id = azurerm_container_app_environment.main.id
   replica_timeout_in_seconds   = 600
+  replica_retry_limit          = 2
   tags                         = var.tags
 
   identity {
     type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.app.id]
+    identity_ids = [azurerm_user_assigned_identity.sync.id]
+  }
+
+  registry {
+    server   = azurerm_container_registry.main.login_server
+    identity = azurerm_user_assigned_identity.sync.id
   }
 
   secret {
     name                = "cron-secret"
-    key_vault_secret_id = azurerm_key_vault_secret.runtime["cron-secret"].versionless_id
-    identity            = azurerm_user_assigned_identity.app.id
+    key_vault_secret_id = local.runtime_secret_urls["cron-secret"]
+    identity            = azurerm_user_assigned_identity.sync.id
   }
 
-  schedule_trigger_config {
-    cron_expression = "0 * * * *" # PLACEHOLDER - confirm against Vercel Cron
+  dynamic "schedule_trigger_config" {
+    for_each = var.sync_job_enabled ? [1] : []
+
+    content {
+      cron_expression          = var.sync_schedule_cron
+      parallelism              = 1
+      replica_completion_count = 1
+    }
+  }
+
+  dynamic "manual_trigger_config" {
+    for_each = var.sync_job_enabled ? [] : [1]
+
+    content {
+      parallelism              = 1
+      replica_completion_count = 1
+    }
   }
 
   template {
     container {
-      name   = "sync"
-      image  = "mcr.microsoft.com/azure-cli:latest"
+      name = "sync"
+      image = format(
+        "%s/veritasvault-web@%s",
+        azurerm_container_registry.main.login_server,
+        coalesce(var.sync_image_digest, "sha256:0000000000000000000000000000000000000000000000000000000000000000"),
+      )
       cpu    = 0.25
       memory = "0.5Gi"
 
-      command = ["/bin/sh", "-c"]
-      args = [
-        "curl -fsS -X GET \"https://${azurerm_container_app.web.ingress[0].fqdn}/api/cron/sync?token=$CRON_SECRET\""
-      ]
+      command = ["node"]
+      args    = ["scripts/run-scheduled-sync.mjs"]
+
+      env {
+        name  = "SYNC_BASE_URL"
+        value = "https://${azurerm_container_app.web[0].ingress[0].fqdn}"
+      }
 
       env {
         name        = "CRON_SECRET"
         secret_name = "cron-secret"
       }
+    }
+  }
+
+  depends_on = [
+    azurerm_role_assignment.sync_acr_pull,
+    azurerm_role_assignment.sync_kv_read[0],
+  ]
+
+  lifecycle {
+    precondition {
+      condition     = var.sync_image_digest != null
+      error_message = "sync_image_digest is required when runtime_secret_references_enabled is true."
     }
   }
 }

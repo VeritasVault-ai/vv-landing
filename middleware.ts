@@ -53,7 +53,6 @@ export async function middleware(request) {
   response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp')
   response.headers.set('Cross-Origin-Resource-Policy', 'same-origin')
   response.headers.set('X-Permitted-Cross-Domain-Policies', 'none')
-  response.headers.set('x-vercel-skip-auth', 'true')
   return response
 }
 
