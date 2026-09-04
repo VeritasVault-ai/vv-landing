@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: 📦  Install deps (prod only)
+      - name: 📦  Install dependencies
         run: |
           corepack enable
           pnpm install --frozen-lockfile   # NOT --prod: ts-node and jscpd below are devDependencies
