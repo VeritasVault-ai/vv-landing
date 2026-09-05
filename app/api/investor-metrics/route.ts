@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server"
 
+interface ProtocolMetrics {
+  tvl?: number
+  chains?: string[]
+}
+
 // Helper function to retry failed API requests
 async function fetchWithRetry(url: string, options: RequestInit = {}, retries = 3, delay = 1000) {
   let lastError
@@ -65,7 +70,7 @@ export async function GET() {
       console.log("Fetching TVL data from DefiLlama...")
       const tvlData = await fetchWithRetry("https://api.llama.fi/protocols", {
         next: { revalidate: 300 }, // Cache for 5 minutes
-      })
+      }) as ProtocolMetrics[]
 
       // Calculate total DeFi TVL
       totalTvl = tvlData.reduce((sum, protocol) => sum + (protocol.tvl || 0), 0)

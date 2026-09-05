@@ -9,11 +9,11 @@ export const createClient = () => {
     throw new Error("Missing Supabase environment variables")
   }
 
-  return createSupabaseClient(supabaseUrl, supabaseAnonKey)
+  return createSupabaseClient<any>(supabaseUrl, supabaseAnonKey)
 }
 
 // Create a singleton instance for client-side usage
-let supabaseInstance: ReturnType<typeof createSupabaseClient> | null = null
+let supabaseInstance: ReturnType<typeof createSupabaseClient<any>> | null = null
 
 export const getClientSideSupabase = () => {
   if (!supabaseInstance) {
@@ -24,7 +24,7 @@ export const getClientSideSupabase = () => {
       throw new Error("Missing Supabase environment variables")
     }
 
-    supabaseInstance = createSupabaseClient(supabaseUrl, supabaseAnonKey)
+    supabaseInstance = createSupabaseClient<any>(supabaseUrl, supabaseAnonKey)
   }
 
   return supabaseInstance

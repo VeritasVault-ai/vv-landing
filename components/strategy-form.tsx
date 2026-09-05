@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import type { Resolver } from "react-hook-form"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -63,7 +64,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
   }
 
   const form = useForm<StrategyFormValues>({
-    resolver: zodResolver(strategySchema),
+    resolver: zodResolver(strategySchema) as Resolver<StrategyFormValues>,
     defaultValues,
   })
 
@@ -77,7 +78,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
 
   // Track form initialization
   useEffect(() => {
-    trackFeatureUse("strategy_form", initialData ? "edit" : "create")
+    trackFeatureUse("strategy_form", { action: initialData ? "edit" : "create" })
   }, [initialData])
 
   const handleStablePairsChange = (value: number[]) => {
@@ -90,7 +91,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
     setValue("high_volatility_percentage", Math.round(remaining * (1 - mediumRatio)))
 
     // Track allocation adjustment
-    trackFeatureUse("adjust_allocation", "strategy_form")
+    trackFeatureUse("adjust_allocation", { action: "strategy_form" })
   }
 
   const handleMediumVolatilityChange = (value: number[]) => {
@@ -101,7 +102,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
     setValue("high_volatility_percentage", Math.max(0, newHighVolatility))
 
     // Track allocation adjustment
-    trackFeatureUse("adjust_allocation", "strategy_form")
+    trackFeatureUse("adjust_allocation", { action: "strategy_form" })
   }
 
   const handleRiskLevelChange = (value: string) => {
@@ -109,7 +110,11 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
     setValue("risk_level", value as "Low" | "Medium" | "High")
 
     // Track risk level change
-    trackRiskAdjustment(initialData?.name || "new_strategy", previousRiskLevel, value as "Low" | "Medium" | "High")
+    trackRiskAdjustment({
+      strategy_id: initialData?.name || "new_strategy",
+      previous_level: previousRiskLevel,
+      new_level: value,
+    })
 
     // Adjust allocation based on risk level
     if (value === "Low") {
@@ -141,12 +146,12 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
       setIsSubmitting(true)
 
       // Track strategy creation start
-      trackStrategyCreation(
-        initialData ? "custom_edit" : "custom_new",
-        data.risk_level,
-        3, // Assuming 3 asset types: stable, medium, high
-        data.target_apy,
-      )
+      trackStrategyCreation({
+        strategy_type: initialData ? "custom_edit" : "custom_new",
+        risk_level: data.risk_level,
+        asset_count: 3,
+        target_apy: data.target_apy,
+      })
 
       // Ensure percentages sum to 100
       const totalPercentage =
@@ -182,11 +187,10 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
 
       // Track successful strategy save
       if (strategyData && strategyData[0]) {
-        trackStrategySave(
-          strategyData[0].id,
-          data.name,
-          !initialData, // isNew flag
-        )
+        trackStrategySave(strategyData[0].id, {
+          strategy_name: data.name,
+          is_new: !initialData,
+        })
       }
 
       toast({
@@ -284,7 +288,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
                       {...field}
                       onChange={(e) => {
                         field.onChange(Number(e.target.value))
-                        trackFeatureUse("adjust_target_apy", "strategy_form")
+                        trackFeatureUse("adjust_target_apy", { action: "strategy_form" })
                       }}
                     />
                   </FormControl>
@@ -416,7 +420,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
                       checked={field.value}
                       onCheckedChange={(checked) => {
                         field.onChange(checked)
-                        trackFeatureUse("toggle_auto_rebalance", checked ? "enabled" : "disabled")
+                        trackFeatureUse("toggle_auto_rebalance", { action: checked ? "enabled" : "disabled" })
                       }}
                     />
                   </FormControl>
@@ -437,7 +441,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
                     <Select
                       onValueChange={(value) => {
                         field.onChange(value)
-                        trackFeatureUse("set_rebalance_frequency", value)
+                        trackFeatureUse("set_rebalance_frequency", { value })
                       }}
                       defaultValue={field.value}
                     >
@@ -471,7 +475,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
                       checked={field.value}
                       onCheckedChange={(checked) => {
                         field.onChange(checked)
-                        trackFeatureUse("toggle_impermanent_loss", checked ? "enabled" : "disabled")
+                        trackFeatureUse("toggle_impermanent_loss", { action: checked ? "enabled" : "disabled" })
                       }}
                     />
                   </FormControl>
@@ -493,7 +497,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
                       checked={field.value}
                       onCheckedChange={(checked) => {
                         field.onChange(checked)
-                        trackFeatureUse("toggle_protocol_diversification", checked ? "enabled" : "disabled")
+                        trackFeatureUse("toggle_protocol_diversification", { action: checked ? "enabled" : "disabled" })
                       }}
                     />
                   </FormControl>
@@ -508,7 +512,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
             type="button"
             variant="outline"
             onClick={() => {
-              trackFeatureUse("cancel_strategy", initialData ? "edit" : "create")
+              trackFeatureUse("cancel_strategy", { action: initialData ? "edit" : "create" })
             }}
           >
             Cancel
@@ -518,7 +522,7 @@ export function StrategyForm({ initialData }: { initialData?: StrategyFormValues
             disabled={isSubmitting}
             onClick={() => {
               if (!isSubmitting) {
-                trackFeatureUse("submit_strategy", initialData ? "edit" : "create")
+                trackFeatureUse("submit_strategy", { action: initialData ? "edit" : "create" })
               }
             }}
           >

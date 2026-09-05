@@ -124,7 +124,6 @@ export default function Home() {
         <InitialThemeModal 
           isOpen={showThemeModal}
           onClose={() => setShowThemeModal(false)}
-          experienceType={selectedExperience}
         />
       )}
     </div>

@@ -50,7 +50,7 @@ export async function middleware(request: NextRequest) {
   const path = url.pathname
 
   // The approved alpha is Standard-only. Keep the Corporate prototype out of
-  // the runtime surface while preserving its source for later product work.
+  // the runtime surface after the retired implementation was removed.
   if (isRetiredCorporateRoute(path)) {
     return NextResponse.redirect(new URL('/standard', request.url))
   }

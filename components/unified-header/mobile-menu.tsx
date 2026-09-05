@@ -234,6 +234,16 @@ function MobileUserProfile({
     });
   };
 
+  const handleSettingsClick = () => handleUserAction(onSettingsClick, {
+    action: "settings_click", category: "navigation", label: "mobile_menu"
+  });
+  const handleHelpClick = () => handleUserAction(onHelpClick, {
+    action: "help_click", category: "navigation", label: "mobile_menu"
+  });
+  const handleLogoutClick = () => handleUserAction(onLogout, {
+    action: "logout_click", category: "authentication", label: "mobile_menu"
+  });
+
   return (
     <div className={styles.userProfileSection}>
       <div className={styles.userProfileHeader}>

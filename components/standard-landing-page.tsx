@@ -39,6 +39,7 @@ export function StandardLandingPage() {
               <div key={index} className="card p-6 flex flex-col">
                 <div className="mb-6 rounded-lg overflow-hidden">
                   <ThemeAwareImage
+                    src={feature.image}
                     lightSrc={feature.image.replace(".png", "-light.png")}
                     darkSrc={feature.image}
                     alt={feature.title}

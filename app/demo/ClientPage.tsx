@@ -4,14 +4,36 @@ import { useEffect, useState } from "react"
 import { BarChart3, DollarSign, RefreshCw, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-function EthereumComparison({ tezosTvl, ethTvl, isLiveData }) {
+interface InvestorMetricsData {
+  totalAddressableMarket: number
+  defiTvl: number
+  tezosTvl: number
+  ethTvl: number
+  defiGrowthRate: number
+  projectedRevenue: number
+  targetRaise: number
+  timestamp: string
+  isLive: boolean
+  dataStatus?: {
+    marketData?: boolean
+    tvlData?: boolean
+    tezosData?: boolean
+    ethData?: boolean
+  }
+}
+
+function EthereumComparison({ tezosTvl, ethTvl, isLiveData }: {
+  tezosTvl: number
+  ethTvl: number
+  isLiveData?: boolean
+}) {
   // Calculate the ratio for the visual bar
   const total = tezosTvl + ethTvl
   const tezosPercentage = (tezosTvl / total) * 100
   const ethPercentage = (ethTvl / total) * 100
 
   // Format numbers for display
-  const formatTVL = (value) => {
+  const formatTVL = (value: number) => {
     if (value >= 1000000000) {
       return `$${(value / 1000000000).toFixed(1)}B`
     }
@@ -56,10 +78,10 @@ function EthereumComparison({ tezosTvl, ethTvl, isLiveData }) {
 }
 
 function InvestorMetrics() {
-  const [data, setData] = useState(null)
+  const [data, setData] = useState<InvestorMetricsData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchData = async () => {
     try {
@@ -72,12 +94,12 @@ function InvestorMetrics() {
         throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`)
       }
 
-      const newData = await response.json()
+      const newData = await response.json() as InvestorMetricsData
       setData(newData)
       setError(null)
     } catch (err) {
       console.error("Error fetching investor metrics:", err)
-      setError(err.message)
+      setError(err instanceof Error ? err.message : "Unknown error")
     } finally {
       setIsLoading(false)
       setIsRefreshing(false)
@@ -180,6 +202,8 @@ function InvestorMetrics() {
       </div>
     )
   }
+
+  if (!data) return null
 
   return (
     <div className="space-y-8">

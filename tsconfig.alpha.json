@@ -13,9 +13,7 @@
     "app/auth/callback/route.ts",
     "app/auth/login/page.tsx",
     "app/(standard)/standard/login/page.tsx",
-    "app/(corporate)/corporate/login/page.tsx",
-    "app/login/page.tsx",
-    "app/corporate-version/login/page.tsx"
+    "app/login/page.tsx"
   ],
   "exclude": ["node_modules"]
 }

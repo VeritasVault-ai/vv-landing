@@ -4,8 +4,6 @@
 /* Import theme styles */
 @import "../styles/themes/standard.css";
 @import "../styles/themes/neuralliquid.css";
-@import "../styles/themes/corporate.css";
-@import "../styles/themes/veritasvault.css";
 @import "../styles/themes/cosmic.css";
 
 /* Import experience styles */

@@ -45,7 +45,8 @@ const strategyData = {
   ],
 }
 
-export default function StrategyDetailsPage({ params }: { params: { id: string } }) {
+export default async function StrategyDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const strategy = strategyData // Replace with actual data fetching
 
   return (
@@ -252,7 +253,7 @@ export default function StrategyDetailsPage({ params }: { params: { id: string }
         <TabsContent value="risk" className="space-y-4">
           <Suspense fallback={<Skeleton className="h-[600px] w-full" />}>
             <RiskAssessment
-              strategyId={params.id}
+              strategyId={id}
               title={`${strategy.name} Risk Assessment`}
               description={`Comprehensive risk analysis for your ${strategy.name} strategy`}
             />

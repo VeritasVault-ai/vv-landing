@@ -69,18 +69,7 @@ export function RobustThemeProvider({
   const [colorMode, setColorMode] = useState<ColorMode>(defaultColorMode)
   const [mounted, setMounted] = useState(false)
   
-  // Safely use next-themes with error handling
-  const safelyUseNextTheme = () => {
-    try {
-      return useNextTheme()
-    } catch (error) {
-      console.warn("custom theme provider not available:", error)
-      return { theme: defaultColorMode, setTheme: () => {}, resolvedTheme: defaultColorMode }
-    }
-  }
-  
-  // Use the safe wrapper for next-themes
-  const nextTheme = safelyUseNextTheme()
+  const nextTheme = useNextTheme()
   
   // Initialize theme from stored preferences or URL parameters
   useEffect(() => {

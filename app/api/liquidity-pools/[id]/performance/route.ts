@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { withSupabaseAdminAuth, withSupabaseAuth } from "@/lib/auth/supabase-auth"
 import { createServiceRoleClient } from "@/lib/supabase/server"
 
-type RouteContext = { params: { id: string } }
+type RouteContext = { params: Promise<{ id: string }> }
 
 export async function GET(request: NextRequest, context: RouteContext) {
   return withSupabaseAuth(request, (authenticatedRequest, { supabase }) =>
@@ -16,12 +16,13 @@ async function readPerformanceHistory(
   { params }: RouteContext,
   supabase: SupabaseClient,
 ) {
+  const { id } = await params
   const { searchParams } = new URL(request.url)
   const startDate = searchParams.get("start_date")
   const endDate = searchParams.get("end_date")
 
   try {
-    let query = supabase.from("performance_history").select("*").eq("pool_id", params.id)
+    let query = supabase.from("performance_history").select("*").eq("pool_id", id)
 
     if (startDate) {
       query = query.gte("date", startDate)
@@ -52,6 +53,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
 }
 
 async function createPerformanceEntry(request: NextRequest, { params }: RouteContext) {
+  const { id } = await params
   try {
     const supabase = createServiceRoleClient()
     const body = await request.json()
@@ -60,7 +62,7 @@ async function createPerformanceEntry(request: NextRequest, { params }: RouteCon
       .from("performance_history")
       .insert({
         ...body,
-        pool_id: params.id,
+        pool_id: id,
       })
       .select()
 

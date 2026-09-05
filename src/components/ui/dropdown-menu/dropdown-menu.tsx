@@ -91,7 +91,7 @@ export const DropdownMenuContent: React.FC<DropdownMenuContentProps> = ({
   sideOffset = 5,
   ...props
 }) => {
-  const { isOpen } = useDropdownMenu()
+  const { isOpen, setOpen } = useDropdownMenu()
   const contentRef = useRef<HTMLDivElement>(null)
   const [isMounted, setIsMounted] = useState(false)
   
@@ -105,7 +105,6 @@ export const DropdownMenuContent: React.FC<DropdownMenuContentProps> = ({
     
     const handleOutsideClick = (event: MouseEvent) => {
       if (contentRef.current && !contentRef.current.contains(event.target as Node)) {
-        const { setOpen } = useDropdownMenu()
         setOpen(false)
       }
     }
@@ -114,7 +113,7 @@ export const DropdownMenuContent: React.FC<DropdownMenuContentProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick)
     }
-  }, [isOpen])
+  }, [isOpen, setOpen])
   
   if (!isOpen) return null
   

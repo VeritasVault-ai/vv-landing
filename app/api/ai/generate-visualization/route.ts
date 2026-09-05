@@ -28,16 +28,19 @@ export async function POST(request: Request) {
     `
 
     // Generate the image using FAL
-    const result = await fal.run({
-      provider: "stability",
-      model: "stable-diffusion-xl-1024-v1-0",
+    const result = await fal.run<{
+      prompt: string
+      negative_prompt: string
+      num_inference_steps: number
+      guidance_scale: number
+      image_size: { width: number; height: number }
+    }, { images: Array<{ url: string }> }>("fal-ai/fast-sdxl", {
       input: {
         prompt,
         negative_prompt: "text, words, labels, watermark, low quality, blurry",
         num_inference_steps: 30,
         guidance_scale: 7.5,
-        width: 1024,
-        height: 768,
+        image_size: { width: 1024, height: 768 },
       },
     })
 

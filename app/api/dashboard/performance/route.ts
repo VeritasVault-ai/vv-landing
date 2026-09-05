@@ -3,7 +3,7 @@ import { dashboardRepository } from '@/lib/repositories/dashboard-repository';
 
 export async function GET() {
   try {
-    const data = await dashboardRepository.getDashboardPerformance();
+    const data = await dashboardRepository.getPerformanceData();
     return NextResponse.json(data);
   } catch (error) {
     console.error('API Error:', error);

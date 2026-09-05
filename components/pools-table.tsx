@@ -15,7 +15,7 @@ import Link from "next/link"
 import { useAnalytics } from "@/hooks/use-analytics"
 import { trackSearch, trackViewPool } from "@/lib/analytics/track-events"
 
-export default function PoolsTable() {
+export default function PoolsTable({ showAll = false }: { showAll?: boolean }) {
   const { pools, isLoading, error } = useLiquidityPools()
   const [searchTerm, setSearchTerm] = useState("")
   const [sortField, setSortField] = useState<keyof LiquidityPool>("tvl")
@@ -45,22 +45,25 @@ export default function PoolsTable() {
 
     // Only track search when user has typed at least 3 characters
     if (value.length >= 3) {
-      trackSearch(
-        value,
-        "pools",
-        pools.filter(
+      trackSearch(value, {
+        category: "pools",
+        results_count: pools.filter(
           (pool) =>
             pool.name.toLowerCase().includes(value.toLowerCase()) ||
             pool.pair.toLowerCase().includes(value.toLowerCase()) ||
             pool.protocol.toLowerCase().includes(value.toLowerCase()),
         ).length,
-      )
+      })
     }
   }
 
   const handleViewPoolDetails = (pool: LiquidityPool) => {
     // Track pool details view
-    trackViewPool(pool.id, pool.name, pool.protocol, pool.risk_level)
+    trackViewPool(pool.id, {
+      pool_name: pool.name,
+      protocol: pool.protocol,
+      risk_level: pool.risk_level,
+    })
   }
 
   const filteredPools = pools
@@ -84,6 +87,7 @@ export default function PoolsTable() {
 
       return 0
     })
+    .slice(0, showAll ? undefined : 5)
 
   const getRiskBadgeColor = (riskLevel: string) => {
     switch (riskLevel.toLowerCase()) {

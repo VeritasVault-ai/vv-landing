@@ -14,7 +14,7 @@ vi.mock("@/lib/supabase/server", () => ({
 import { GET, PUT } from "./route"
 
 describe("/api/settings/:key", () => {
-  const context = { params: { key: "feature_flag" } }
+  const context = { params: Promise.resolve({ key: "feature_flag" }) }
 
   beforeEach(() => {
     vi.clearAllMocks()

@@ -9,13 +9,14 @@ import { ArrowRight, ChevronRight, HelpCircle } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function DemoLandingPage() {
   const [activeTab, setActiveTab] = useState("overview")
+  const router = useRouter()
 
   const handleExitDemo = () => {
     // Navigate to main site or handle demo exit
-    const router = useRouter();
     router.push('/');
   };
 

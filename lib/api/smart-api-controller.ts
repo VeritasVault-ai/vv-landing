@@ -72,11 +72,12 @@ export class SmartApiController {
         "Data is being refreshed in the background",
       )
     } catch (error) {
+      const normalizedError = error instanceof Error ? error : new Error(String(error))
       // Log the error
-      await ErrorLoggingService.logError(`SmartApiController.handleDataRequest(${dataType})`, error, { url: req.url })
+      await ErrorLoggingService.logError(`SmartApiController.handleDataRequest(${dataType})`, normalizedError, { url: req.url })
 
       // Return error response
-      return ApiResponseUtil.error(`Failed to retrieve ${dataType} data: ${error.message}`, 500)
+      return ApiResponseUtil.error(`Failed to retrieve ${dataType} data: ${normalizedError.message}`, 500)
     }
   }
 
@@ -91,8 +92,9 @@ export class SmartApiController {
       const status = await BackgroundProcessService.checkProcessStatus(processId)
       return ApiResponseUtil.success(status, "Process status retrieved")
     } catch (error) {
-      await ErrorLoggingService.logError("SmartApiController.checkProcessStatus", error, { processId })
-      return ApiResponseUtil.error(`Failed to check process status: ${error.message}`, 500)
+      const normalizedError = error instanceof Error ? error : new Error(String(error))
+      await ErrorLoggingService.logError("SmartApiController.checkProcessStatus", normalizedError, { processId })
+      return ApiResponseUtil.error(`Failed to check process status: ${normalizedError.message}`, 500)
     }
   }
 }
@@ -102,19 +104,46 @@ export class SmartApiController {
  * @param options Configuration options for the controller
  * @returns A configured SmartApiController instance
  */
-export function createSmartApiController(options: {
-  defaultRefreshIntervals?: Partial<typeof DataFreshnessService.DEFAULT_REFRESH_INTERVALS>
-  errorHandler?: (error: Error, context: any) => Promise<void>
-}) {
-  // Configure custom refresh intervals if provided
-  if (options.defaultRefreshIntervals) {
-    DataFreshnessService.configureRefreshIntervals(options.defaultRefreshIntervals)
-  }
+export function createSmartApiController<T, P = Record<string, never>>(
+  dataType: string,
+  options: {
+    fetchFreshData: (params?: P) => Promise<T>
+    refreshInterval?: number
+  },
+) {
+  const maxCacheEntries = 100
+  const cache = new Map<string, { data: T; expiresAt: number }>()
 
-  // Configure custom error handler if provided
-  if (options.errorHandler) {
-    ErrorLoggingService.setCustomErrorHandler(options.errorHandler)
-  }
+  return {
+    async handleRequest(request: Request, params?: P): Promise<NextResponse> {
+      try {
+        const now = Date.now()
+        for (const [key, entry] of cache) {
+          if (entry.expiresAt <= now) cache.delete(key)
+        }
 
-  return SmartApiController
+        const cacheKey = JSON.stringify(params ?? {})
+        const cached = cache.get(cacheKey)
+        if (cached) {
+          return ApiResponseUtil.success(cached.data, `${dataType} data retrieved from cache`)
+        }
+
+        const data = await options.fetchFreshData(params)
+        if (options.refreshInterval && options.refreshInterval > 0) {
+          if (cache.size >= maxCacheEntries) {
+            const oldestKey = cache.keys().next().value
+            if (oldestKey !== undefined) cache.delete(oldestKey)
+          }
+          cache.set(cacheKey, { data, expiresAt: now + options.refreshInterval })
+        }
+        return ApiResponseUtil.success(data, `${dataType} data retrieved successfully`)
+      } catch (error) {
+        const normalizedError = error instanceof Error ? error : new Error(String(error))
+        await ErrorLoggingService.logError(`SmartApiController.${dataType}`, normalizedError, {
+          url: request.url,
+        })
+        return ApiResponseUtil.error(`Failed to retrieve ${dataType} data: ${normalizedError.message}`, 500)
+      }
+    },
+  }
 }

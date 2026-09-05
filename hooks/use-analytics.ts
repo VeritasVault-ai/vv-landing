@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { createBrowserClient } from "@/lib/supabase"
 
-type EventParams = {
+export type AnalyticsEvent = {
   action: string
   category?: string
   label?: string
@@ -45,7 +45,7 @@ export function useAnalytics() {
   }, [])
 
   const trackEvent = useCallback(
-    (params: EventParams) => {
+    (params: AnalyticsEvent) => {
       if (!measurementId || !window.gtag) return
 
       const { action, category, label, value, ...rest } = params

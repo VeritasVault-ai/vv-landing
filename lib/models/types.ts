@@ -41,8 +41,12 @@ export interface LiquidityPool {
   risk_level: string
   chain: string
   address: string
+  description?: string
+  url?: string
+  logo?: string
   createdAt: string
   updatedAt: string
+  updated_at?: string
 }
 
 // Performance metrics
@@ -125,6 +129,8 @@ export interface ProtocolAssetAllocation {
   color: string
   protocol: string
 }
+
+export type AssetAllocation = ProtocolAssetAllocation
 
 export interface RiskFactor {
   factor: string

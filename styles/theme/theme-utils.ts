@@ -20,6 +20,7 @@ export interface Theme {
       700: string;
       800: string;
       900: string;
+      950?: string;
     };
     secondary: {
       DEFAULT: string;
@@ -34,6 +35,7 @@ export interface Theme {
       700: string;
       800: string;
       900: string;
+      950?: string;
     };
     accent: {
       DEFAULT: string;
@@ -48,6 +50,7 @@ export interface Theme {
       700: string;
       800: string;
       900: string;
+      950?: string;
     };
     destructive: {
       DEFAULT: string;
@@ -62,6 +65,7 @@ export interface Theme {
       700: string;
       800: string;
       900: string;
+      950?: string;
     };
     success: {
       DEFAULT: string;
@@ -76,6 +80,7 @@ export interface Theme {
       700: string;
       800: string;
       900: string;
+      950?: string;
     };
     warning: {
       DEFAULT: string;
@@ -90,6 +95,7 @@ export interface Theme {
       700: string;
       800: string;
       900: string;
+      950?: string;
     };
     info: {
       DEFAULT: string;
@@ -104,6 +110,7 @@ export interface Theme {
       700: string;
       800: string;
       900: string;
+      950?: string;
     };
     
     // UI element colors
@@ -271,24 +278,25 @@ export function createTheme(options: Partial<Theme>): Theme {
 /**
  * Helper function to deep merge objects
  */
-function deepMerge<T>(target: T, source: Partial<T>): T {
-  const result = { ...target };
+function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>): T {
+  const result: Record<string, any> = { ...target };
   
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach(key => {
-      if (isObject(source[key])) {
+      const sourceValue = source[key as keyof T];
+      if (isObject(sourceValue)) {
         if (!(key in target)) {
-          Object.assign(result, { [key]: source[key] });
+          result[key] = sourceValue;
         } else {
-          result[key] = deepMerge(target[key], source[key]);
+          result[key] = deepMerge(target[key], sourceValue);
         }
       } else {
-        Object.assign(result, { [key]: source[key] });
+        result[key] = sourceValue;
       }
     });
   }
   
-  return result;
+  return result as T;
 }
 
 /**

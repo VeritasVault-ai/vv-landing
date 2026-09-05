@@ -17,7 +17,7 @@ export default function HowItWorks() {
         </div>
 
         <div className="flex items-center gap-4 mb-8">
-          <Logo width={48} height={48} />
+          <Logo size={48} />
           <h1 className="text-3xl md:text-4xl font-semibold">How NeuralLiquid Works</h1>
         </div>
 

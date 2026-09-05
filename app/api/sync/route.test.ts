@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { NextRequest } from "next/server"
 
 const { runLeasedSync } = vi.hoisted(() => ({
   runLeasedSync: vi.fn(),
@@ -25,7 +26,7 @@ import { SyncAlreadyRunningError } from "../../../lib/services/leased-sync-servi
 import { POST } from "./route"
 
 function request(type: string) {
-  return new Request("https://www.veritasvault.net/api/sync", {
+  return new NextRequest("https://www.veritasvault.net/api/sync", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ type }),

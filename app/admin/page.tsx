@@ -274,7 +274,7 @@ export default function AdminDashboard() {
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
-                  {systemMetrics.resourceUsage.map((entry, index) => (
+                  {systemMetrics.resourceUsage.map((entry: { name: string; value: number }, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>

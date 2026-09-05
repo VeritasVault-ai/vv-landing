@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 
 interface RiskAssessmentProps {
+  poolId?: string
+  strategyId?: string
   overallRisk?: number
   marketVolatility?: string
   impermanentLoss?: string

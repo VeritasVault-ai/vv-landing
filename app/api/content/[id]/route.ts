@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   try {
-    const id = params.id
     // This is a placeholder implementation - in a real app, you would fetch from a content table
     // For now, we'll return a hardcoded content block if the ID matches
     const allContentBlocks = [
@@ -40,7 +40,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
     return NextResponse.json(contentBlock)
   } catch (error) {
-    console.error(`Error fetching content with ID ${params.id}:`, error)
+    console.error(`Error fetching content with ID ${id}:`, error)
     return NextResponse.json({ error: "Failed to fetch content" }, { status: 500 })
   }
 }
