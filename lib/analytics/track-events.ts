@@ -1,6 +1,8 @@
-import { ExperienceType } from "@/src/components/VersionControl"
+import type { ExperienceType } from "@/styles/theme"
 import { CUSTOM_DIMENSIONS } from "./custom-dimensions"
 import { EventCategory, type EventName } from "./event-taxonomy"
+
+type EventCategoryValue = (typeof EventCategory)[keyof typeof EventCategory]
 
 /**
  * Tracks an authentication-related event and sends it to Google Analytics.
@@ -350,13 +352,14 @@ export function trackTabChange(
     [key: string]: any
   } = {},
 ) {
-  trackNavigationEvent("tab_change", {
+  trackNavigationEvent({
+    eventName: "tab_change",
     ...params,
   })
 }
 
 // Generic function to track any event
-export function trackEvent(eventName: string, eventCategory: EventCategory, params: Record<string, any> = {}) {
+export function trackEvent(eventName: string, eventCategory: EventCategoryValue, params: Record<string, any> = {}) {
   const enhancedParams = {
     event_category: eventCategory,
     ...params,

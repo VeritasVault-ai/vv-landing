@@ -178,7 +178,7 @@ export function AIStrategyRecommendation() {
       action: "update_ai_preference",
       category: "ai_features",
       label: key,
-      value: value,
+      preference_value: value,
     })
   }
 

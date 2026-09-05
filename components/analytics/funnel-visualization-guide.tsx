@@ -318,7 +318,7 @@ export function FunnelVisualizationGuide() {
                   </p>
                   <div className="bg-muted p-4 rounded-md">
                     <p className="font-mono text-sm">
-                      // Example of tracking a custom event
+                      {"// Example of tracking a custom event"}
                       <br />
                       window.gtag(&apos;event&apos;, &apos;custom_action_name&apos;, {"{"}
                       <br />

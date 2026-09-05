@@ -20,7 +20,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(filteredEvents)
     } catch (error) {
       console.error("Error in events API:", error)
-      return NextResponse.json({ error: error.message || "Failed to fetch events" }, { status: 500 })
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : "Failed to fetch events" },
+        { status: 500 },
+      )
     }
   })
 }

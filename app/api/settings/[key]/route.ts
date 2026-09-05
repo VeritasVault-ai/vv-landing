@@ -1,12 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { withSupabaseAdminAuth } from "@/lib/auth/supabase-auth"
 
-type RouteContext = { params: { key: string } }
+type RouteContext = { params: Promise<{ key: string }> }
 
 export async function GET(request: NextRequest, { params }: RouteContext) {
+  const { key } = await params
   return withSupabaseAdminAuth(request, async (_, { supabase }) => {
     try {
-      const { data, error } = await supabase.from("settings").select("*").eq("key", params.key).single()
+      const { data, error } = await supabase.from("settings").select("*").eq("key", key).single()
 
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 })
@@ -20,6 +21,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteContext) {
+  const { key } = await params
   return withSupabaseAdminAuth(request, async (authenticatedRequest, { supabase }) => {
     try {
       const { value } = await authenticatedRequest.json()
@@ -30,7 +32,7 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
           value,
           updated_at: new Date().toISOString(),
         })
-        .eq("key", params.key)
+        .eq("key", key)
         .select()
 
       if (error) {

@@ -24,21 +24,7 @@ import { ThemeVariant } from '../types'
  * @remark If an error occurs while accessing theme data, the component logs the error and falls back to default theme values.
  */
 export function ThemeToggle() {
-  // Add try-catch to handle potential errors from useUnifiedTheme
-  let themeData = {
-    theme: 'light' as ColorMode,
-    setTheme: (theme: ColorMode) => {},
-    themeVariant: 'standard' as ThemeVariant,
-    setThemeVariant: (variant: ThemeVariant) => {},
-    availableThemeVariants: [] as ThemeVariant[]
-  };
-  
-  try {
-    themeData = useUnifiedTheme();
-  } catch (error) {
-    console.error("Error using unified theme:", error);
-    // Continue with default values
-  }
+  const themeData = useUnifiedTheme()
   
   const {
     theme: colorMode,

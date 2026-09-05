@@ -3,7 +3,7 @@
  */
 export class DataFreshnessService {
   // Default refresh intervals in milliseconds
-  private static readonly DEFAULT_REFRESH_INTERVALS = {
+  static readonly DEFAULT_REFRESH_INTERVALS = {
     LIQUIDITY_POOLS: 3600000, // 1 hour
     MARKET_DATA: 300000, // 5 minutes
     PROTOCOL_METRICS: 1800000, // 30 minutes

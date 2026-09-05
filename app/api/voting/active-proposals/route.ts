@@ -49,7 +49,8 @@ export async function GET(request: NextRequest) {
 
   try {
     // Fetch paginated active proposals
-    const rawProposals = await votingRepository.getActiveProposals({ page, limit });
+    const allProposals = await votingRepository.getActiveProposals();
+    const rawProposals = allProposals.slice((page - 1) * limit, page * limit);
 
     // Validate shape
     const result = ProposalsArraySchema.safeParse(rawProposals);

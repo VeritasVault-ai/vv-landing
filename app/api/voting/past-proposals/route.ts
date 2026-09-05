@@ -55,7 +55,8 @@ export async function GET(request: NextRequest) {
 
   try {
     // Fetch only the needed slice; adjust your repository method accordingly
-    const pastProposals = await votingRepository.getPastProposals({ page, limit });
+    const allProposals = await votingRepository.getPastProposals();
+    const pastProposals = allProposals.slice((page - 1) * limit, page * limit);
 
     // Validate the shape of the data coming back
     const parsed = ProposalsArraySchema.safeParse(pastProposals);

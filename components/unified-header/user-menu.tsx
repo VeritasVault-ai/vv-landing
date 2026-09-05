@@ -32,7 +32,7 @@ export function UserMenu({
   trackEvent
 }: UserMenuProps) {
 
-  const createClickHandler = (onClick?: () => void, action: string, category: string) => () => {
+  const createClickHandler = (action: string, category: string, onClick?: () => void) => () => {
     if (onClick) {
       onClick();
     }
@@ -46,10 +46,10 @@ export function UserMenu({
     }
   };
 
-  const handleProfileClick = createClickHandler(onProfileClick, "profile_click", "navigation");
-  const handleSettingsClick = createClickHandler(onSettingsClick, "settings_click", "navigation");
-  const handleHelpClick = createClickHandler(onHelpClick, "help_click", "navigation");
-  const handleLogoutClick = createClickHandler(onLogout, "logout_click", "authentication");
+  const handleProfileClick = createClickHandler("profile_click", "navigation", onProfileClick);
+  const handleSettingsClick = createClickHandler("settings_click", "navigation", onSettingsClick);
+  const handleHelpClick = createClickHandler("help_click", "navigation", onHelpClick);
+  const handleLogoutClick = createClickHandler("logout_click", "authentication", onLogout);
   
   return (
     <DropdownMenu>

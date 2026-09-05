@@ -80,6 +80,8 @@ export function ProtocolMetrics() {
       bValue = Number.parseFloat(bValue as string)
     }
 
+    if (aValue == null || bValue == null) return 0
+
     if (aValue < bValue) return sortDirection === "asc" ? -1 : 1
     if (aValue > bValue) return sortDirection === "asc" ? 1 : -1
     return 0

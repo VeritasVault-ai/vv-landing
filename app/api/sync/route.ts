@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { withAuth } from "@/lib/auth/auth-utils"
 import {
   runLeasedSync,
@@ -8,7 +8,7 @@ import {
 } from "../../../lib/services/leased-sync-service"
 
 export async function POST(req: Request) {
-  return withAuth(req, async (req, user) => {
+  return withAuth(req as NextRequest, async (req, user) => {
     try {
       // Check if user has admin privileges
       if (!user.isAdmin) {

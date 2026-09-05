@@ -16,7 +16,7 @@ export function ThemeInitializerClient() {
       const storedTheme = localStorage.getItem('theme-preference');
       
       // Determine which theme to use (URL param takes precedence)
-      const theme = themeParam || storedTheme || 'corporate-light';
+      const theme = themeParam || storedTheme || 'standard-light';
       
       // Extract color mode with validation
       let colorMode = 'light'; // Default fallback

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
 
-export async function GET(request: Request, { params }: { params: { group: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ group: string }> }) {
+  const { group } = await params
   try {
-    const group = params.group
     // This is a placeholder implementation - in a real app, you would fetch from a navigation table
     // For now, we'll return hardcoded navigation items filtered by group
     const allNavigationItems = [
@@ -68,7 +68,7 @@ export async function GET(request: Request, { params }: { params: { group: strin
 
     return NextResponse.json(filteredItems)
   } catch (error) {
-    console.error(`Error fetching navigation for group ${params.group}:`, error)
+    console.error(`Error fetching navigation for group ${group}:`, error)
     return NextResponse.json({ error: "Failed to fetch navigation" }, { status: 500 })
   }
 }

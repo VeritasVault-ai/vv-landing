@@ -90,17 +90,18 @@ export class BackgroundProcessService {
         { onConflict: "data_type" },
       )
     } catch (error) {
+      const normalizedError = error instanceof Error ? error : new Error(String(error))
       // Update process status to failed
       await supabase
         .from("background_processes")
         .update({
           status: "failed",
-          error_message: error.message,
+          error_message: normalizedError.message,
           completed_at: new Date().toISOString(),
         })
         .eq("id", processId)
 
-      throw error
+      throw normalizedError
     }
   }
 

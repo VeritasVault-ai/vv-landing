@@ -1,7 +1,7 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 
 // Create a singleton instance of the Supabase client
-let supabaseClient: ReturnType<typeof createSupabaseClient> | null = null
+let supabaseClient: ReturnType<typeof createSupabaseClient<any>> | null = null
 
 export function createClient() {
   if (!supabaseClient) {
@@ -12,7 +12,7 @@ export function createClient() {
       throw new Error("Supabase URL and anon key must be provided")
     }
 
-    supabaseClient = createSupabaseClient(supabaseUrl, supabaseAnonKey)
+    supabaseClient = createSupabaseClient<any>(supabaseUrl, supabaseAnonKey)
   }
 
   return supabaseClient

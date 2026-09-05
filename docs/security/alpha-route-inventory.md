@@ -42,6 +42,6 @@ Phase 2 owns confidential-client Mystira OIDC with S256 PKCE, cohort authorizati
 
 ## Type-check boundary
 
-`pnpm typecheck` and the Web Quality workflow strictly compile the Phase 1 security surface through `tsconfig.alpha.json`. The repository-wide Next.js build suppression remains explicit because the inherited legacy and duplicate-source trees currently produce about 495 diagnostics outside this slice. Removing that broader debt is separate work; it is not silently treated as an alpha-auth success.
+`pnpm typecheck` and the Web Quality workflow compile the retained application route graph with strict TypeScript settings. The retired Corporate implementation and isolated duplicate `src` feature/config trees have been removed, and the Next.js build no longer bypasses TypeScript failures.
 
-The repository also has no ESLint dependency or configuration. Next.js lint-on-build remains explicitly disabled until a separate baseline can be introduced without disguising legacy lint debt.
+ESLint is installed with the Next.js Core Web Vitals configuration and runs in the Web Quality workflow. Lint errors fail the workflow; existing hook and image optimization advisories remain visible as warnings for targeted follow-up rather than being hidden by a build-wide suppression.

@@ -83,7 +83,7 @@ export class BaseRepository<T> {
   async create(data: Partial<T>): Promise<T> {
     const supabase = createClient()
 
-    const { data: createdData, error } = await supabase.from(this.tableName).insert(data).select().single()
+    const { data: createdData, error } = await supabase.from(this.tableName).insert(data as any).select().single()
 
     if (error) {
       console.error(`Error creating ${this.tableName}:`, error)
@@ -99,7 +99,7 @@ export class BaseRepository<T> {
   async update(id: string, data: Partial<T>): Promise<T> {
     const supabase = createClient()
 
-    const { data: updatedData, error } = await supabase.from(this.tableName).update(data).eq("id", id).select().single()
+    const { data: updatedData, error } = await supabase.from(this.tableName).update(data as any).eq("id", id).select().single()
 
     if (error) {
       console.error(`Error updating ${this.tableName}:`, error)
@@ -129,7 +129,7 @@ export class BaseRepository<T> {
   async upsert(data: Partial<T>): Promise<T> {
     const supabase = createClient()
 
-    const { data: upsertedData, error } = await supabase.from(this.tableName).upsert(data).select().single()
+    const { data: upsertedData, error } = await supabase.from(this.tableName).upsert(data as any).select().single()
 
     if (error) {
       console.error(`Error upserting ${this.tableName}:`, error)

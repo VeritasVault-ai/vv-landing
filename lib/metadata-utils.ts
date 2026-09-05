@@ -46,7 +46,7 @@ export const baseMetadata: Metadata = {
 }
 
 // Standard version-specific metadata
-export const standardMetadata = {
+export const standardMetadata: Metadata = {
   title: STANDARD_PRODUCT_TITLE,
   description: STANDARD_PRODUCT_DESCRIPTION,
   keywords: STANDARD_PRODUCT_KEYWORDS,

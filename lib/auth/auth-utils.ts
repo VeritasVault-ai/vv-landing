@@ -6,6 +6,7 @@ import { type NextRequest, NextResponse } from "next/server"
 const JWT_EXPIRES_IN = "24h"
 
 type AuthenticatedUser = JWTPayload & {
+  id: string
   isAdmin?: boolean
 }
 
@@ -86,8 +87,9 @@ export async function withAuth(
 /**
  * Set authentication cookies
  */
-export function setAuthCookies(token: string): void {
-  cookies().set({
+export async function setAuthCookies(token: string): Promise<void> {
+  const cookieStore = await cookies()
+  cookieStore.set({
     name: "token",
     value: token,
     httpOnly: true,
@@ -101,6 +103,7 @@ export function setAuthCookies(token: string): void {
 /**
  * Clear authentication cookies
  */
-export function clearAuthCookies(): void {
-  cookies().delete("token")
+export async function clearAuthCookies(): Promise<void> {
+  const cookieStore = await cookies()
+  cookieStore.delete("token")
 }

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
 
-export async function GET(request: Request, { params }: { params: { page: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ page: string }> }) {
+  const { page } = await params
   try {
-    const page = params.page
     // This is a placeholder implementation - in a real app, you would fetch from a content table
     // For now, we'll return hardcoded content blocks filtered by page
     const allContentBlocks = [
@@ -36,7 +36,7 @@ export async function GET(request: Request, { params }: { params: { page: string
 
     return NextResponse.json(filteredBlocks)
   } catch (error) {
-    console.error(`Error fetching content for page ${params.page}:`, error)
+    console.error(`Error fetching content for page ${page}:`, error)
     return NextResponse.json({ error: "Failed to fetch content" }, { status: 500 })
   }
 }

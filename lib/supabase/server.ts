@@ -68,7 +68,7 @@ export function createRequestServerClient(
   return createSupabaseSsrClient(supabaseUrl(), anonKey, {
     cookies: {
       getAll: () => request.cookies.getAll(),
-      setAll: (cookies) => setCookies?.(cookies),
+      setAll: (cookies: CookieToSet[]) => setCookies?.(cookies),
     },
   })
 }

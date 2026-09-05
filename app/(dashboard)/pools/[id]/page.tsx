@@ -7,16 +7,17 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { RiskAssessment } from "@/components/risk-assessment"
 
 interface PoolDetailsPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function PoolDetailsPage({ params }: PoolDetailsPageProps) {
+  const { id } = await params
   const supabase = createPublicServerClient()
 
   // Fetch pool data
-  const { data: pool, error } = await supabase.from("liquidity_pools").select("*").eq("id", params.id).single()
+  const { data: pool, error } = await supabase.from("liquidity_pools").select("*").eq("id", id).single()
 
   if (error || !pool) {
     notFound()
@@ -119,7 +120,7 @@ export default async function PoolDetailsPage({ params }: PoolDetailsPageProps) 
         <TabsContent value="risk" className="space-y-4">
           <Suspense fallback={<Skeleton className="h-[600px] w-full" />}>
             <RiskAssessment
-              poolId={params.id}
+              poolId={id}
               title={`${pool.name} Risk Assessment`}
               description={`Comprehensive risk analysis for the ${pool.pair} liquidity pool on ${pool.protocol}`}
             />
