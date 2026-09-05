@@ -9,6 +9,18 @@ function throwIfSyncCancelled(signal?: AbortSignal): void {
   throw new Error("Synchronization was cancelled")
 }
 
+function isCancellationError(error: unknown, signal?: AbortSignal): boolean {
+  return signal?.aborted === true && error === signal.reason
+}
+
+function rethrowSyncFailure(operation: string, error: unknown, signal?: AbortSignal): never {
+  if (isCancellationError(error, signal)) throwIfSyncCancelled(signal)
+
+  console.error(`Error syncing ${operation}:`, error)
+  const message = error instanceof Error ? error.message : String(error)
+  throw new Error(`Failed to sync ${operation}: ${message}`)
+}
+
 /**
  * Service for synchronizing data from external APIs
  */
@@ -104,9 +116,7 @@ export class SyncService {
 
       console.log(`Synced ${poolsMap.size} liquidity pools`)
     } catch (error) {
-      throwIfSyncCancelled(signal)
-      console.error("Error syncing liquidity pools:", error)
-      throw new Error(`Failed to sync liquidity pools: ${error.message}`)
+      rethrowSyncFailure("liquidity pools", error, signal)
     }
   }
 
@@ -146,9 +156,7 @@ export class SyncService {
       //   updated_at: new Date().toISOString(),
       // })
     } catch (error) {
-      throwIfSyncCancelled(signal)
-      console.error("Error syncing market data:", error)
-      throw new Error(`Failed to sync market data: ${error.message}`)
+      rethrowSyncFailure("market data", error, signal)
     }
   }
 
@@ -186,9 +194,7 @@ export class SyncService {
       //   updated_at: new Date().toISOString(),
       // })
     } catch (error) {
-      throwIfSyncCancelled(signal)
-      console.error("Error syncing protocol metrics:", error)
-      throw new Error(`Failed to sync protocol metrics: ${error.message}`)
+      rethrowSyncFailure("protocol metrics", error, signal)
     }
   }
 

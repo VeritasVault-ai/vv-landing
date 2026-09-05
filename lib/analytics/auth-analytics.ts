@@ -41,7 +41,7 @@ export function trackLoginEvent(eventType: LoginEventType, properties: LoginEven
       timestamp: new Date().toISOString(),
     }
     for (const [key, value] of Object.entries(properties)) {
-      if (value !== undefined) enrichedProperties[key] = value
+      if (key !== 'timestamp' && value !== undefined) enrichedProperties[key] = value
     }
     
     // Log to console in development
