@@ -1,9 +1,8 @@
-import { createServiceRoleClient } from "@/lib/supabase/server"
+import { createRequestServerClient } from "@/lib/supabase/server"
 import { syncUserProfile } from "@/lib/auth-helpers"
-import { NextResponse } from "next/server"
-import { cookies } from "next/headers"
+import { type NextRequest, NextResponse } from "next/server"
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get("code")
   const redirectTo = requestUrl.searchParams.get("redirectTo") || "/dashboard"
@@ -11,8 +10,10 @@ export async function GET(request: Request) {
   const version = redirectTo.includes("corporate") ? "corporate" : "standard"
 
   if (code) {
-    const cookieStore = cookies()
-    const supabase = createServiceRoleClient()
+    const response = NextResponse.redirect(new URL(redirectTo, requestUrl.origin))
+    const supabase = createRequestServerClient(request, (cookies) => {
+      cookies.forEach(({ name, value, options }) => response.cookies.set(name, value, options))
+    })
 
     // Exchange the code for a session
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
@@ -29,20 +30,17 @@ export async function GET(request: Request) {
       await syncUserProfile(data.user.id)
 
       // Add analytics tracking script to the response
-      const response = NextResponse.redirect(new URL(redirectTo, requestUrl.origin))
-
       // Add analytics data to be picked up by client-side script
-      response.headers.set(
-        "Set-Cookie",
-        `auth_analytics=${encodeURIComponent(
-          JSON.stringify({
-            event: "social_login_success",
-            provider,
-            version,
-            timestamp: new Date().toISOString(),
-            user_id_hash: Buffer.from(data.user.id).toString("base64").slice(-10),
-          }),
-        )}; Path=/; Max-Age=60; SameSite=Lax`,
+      response.cookies.set(
+        "auth_analytics",
+        JSON.stringify({
+          event: "social_login_success",
+          provider,
+          version,
+          timestamp: new Date().toISOString(),
+          user_id_hash: Buffer.from(data.user.id).toString("base64").slice(-10),
+        }),
+        { path: "/", maxAge: 60, sameSite: "lax" },
       )
 
       return response

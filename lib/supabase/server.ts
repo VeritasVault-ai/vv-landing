@@ -1,6 +1,11 @@
 import "server-only"
 
+import {
+  createServerClient as createSupabaseSsrClient,
+  type CookieOptions,
+} from "@supabase/ssr"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
+import type { NextRequest } from "next/server"
 
 function supabaseUrl() {
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -28,6 +33,26 @@ export function createPublicServerClient() {
   }
 
   return createSupabaseClient(supabaseUrl(), anonKey, serverAuthOptions)
+}
+
+type CookieToSet = { name: string; value: string; options: CookieOptions }
+
+export function createRequestServerClient(
+  request: NextRequest,
+  setCookies?: (cookies: CookieToSet[]) => void,
+) {
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!anonKey) {
+    throw new Error("Supabase anonymous key is not configured")
+  }
+
+  return createSupabaseSsrClient(supabaseUrl(), anonKey, {
+    cookies: {
+      getAll: () => request.cookies.getAll(),
+      setAll: (cookies) => setCookies?.(cookies),
+    },
+  })
 }
 
 export function createServiceRoleClient() {

@@ -1,13 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { withAdminAuth } from "@/lib/auth/auth-utils"
-import { createServiceRoleClient } from "@/lib/supabase/server"
+import { withSupabaseAdminAuth } from "@/lib/auth/supabase-auth"
 
 type RouteContext = { params: { key: string } }
 
 export async function GET(request: NextRequest, { params }: RouteContext) {
-  return withAdminAuth(request, async () => {
+  return withSupabaseAdminAuth(request, async (_, { supabase }) => {
     try {
-      const supabase = createServiceRoleClient()
       const { data, error } = await supabase.from("settings").select("*").eq("key", params.key).single()
 
       if (error) {
@@ -22,9 +20,8 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteContext) {
-  return withAdminAuth(request, async (authenticatedRequest) => {
+  return withSupabaseAdminAuth(request, async (authenticatedRequest, { supabase }) => {
     try {
-      const supabase = createServiceRoleClient()
       const { value } = await authenticatedRequest.json()
 
       const { data, error } = await supabase

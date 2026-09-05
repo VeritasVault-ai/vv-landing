@@ -1,13 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { groq } from "@ai-sdk/groq"
-import { withAdminAuth } from "@/lib/auth/auth-utils"
+import { withSupabaseAdminAuth } from "@/lib/auth/supabase-auth"
 import { createServiceRoleClient } from "@/lib/supabase/server"
 
 export const runtime = "nodejs"
 
 export async function POST(request: NextRequest) {
-  return withAdminAuth(request, handlePost)
+  return withSupabaseAdminAuth(request, handlePost)
 }
 
 async function handlePost(request: NextRequest) {

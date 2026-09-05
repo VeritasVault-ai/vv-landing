@@ -1,12 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { withAdminAuth } from "@/lib/auth/auth-utils"
-import { createServiceRoleClient } from "@/lib/supabase/server"
+import { withSupabaseAdminAuth } from "@/lib/auth/supabase-auth"
 
 export async function GET(request: NextRequest) {
-  return withAdminAuth(request, async () => {
+  return withSupabaseAdminAuth(request, async (_, { supabase }) => {
     try {
-      const supabase = createServiceRoleClient()
-
       const { data, error } = await supabase.from("settings").select("*")
 
       if (error) {

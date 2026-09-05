@@ -83,19 +83,6 @@ export async function withAuth(
   return handler(req, user)
 }
 
-export async function withAdminAuth(
-  req: NextRequest,
-  handler: (req: NextRequest, user: AuthenticatedUser) => Promise<NextResponse>,
-): Promise<NextResponse> {
-  return withAuth(req, async (authenticatedRequest, user) => {
-    if (user.isAdmin !== true) {
-      return NextResponse.json({ error: "Admin authorization required" }, { status: 403 })
-    }
-
-    return handler(authenticatedRequest, user)
-  })
-}
-
 /**
  * Set authentication cookies
  */
