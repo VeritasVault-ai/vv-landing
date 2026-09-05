@@ -7,8 +7,8 @@ import {
   type SyncType,
 } from "../../../lib/services/leased-sync-service"
 
-export async function POST(req: Request) {
-  return withAuth(req as NextRequest, async (req, user) => {
+export async function POST(req: NextRequest) {
+  return withAuth(req, async (req, user) => {
     try {
       // Check if user has admin privileges
       if (!user.isAdmin) {

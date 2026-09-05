@@ -1,4 +1,3 @@
-import { createTheme } from './theme-utils';
 import { standardLightTheme, standardDarkTheme } from './standard-theme';
 import { neuralliquidLightTheme, neuralliquidDarkTheme } from './neuralliquid-theme';
 import { ExperienceType, ThemeVariant, ColorMode } from '@/src/types';
@@ -18,15 +17,15 @@ export const themeRegistry = {
 };
 
 // Helper function to get theme based on experience, variant and mode
-export function getTheme(experience: ExperienceType, variant: ThemeVariant, colorMode: ColorMode) {
+export function getTheme(_experience: ExperienceType, variant: ThemeVariant, colorMode: ColorMode) {
   const mode = colorMode === 'dark' ? 'dark' : 'light';
   const standardVariant = variant === 'neuralliquid' ? 'neuralliquid' : 'standard';
   return themeRegistry.standard[standardVariant][mode];
 }
 
 // Get default variant for an experience
-export function getDefaultVariant(experience: ExperienceType): ThemeVariant {
-  return experience === 'standard' ? 'standard' : 'corporate';
+export function getDefaultVariant(_experience: ExperienceType): ThemeVariant {
+  return 'standard';
 }
 
 // Default theme
