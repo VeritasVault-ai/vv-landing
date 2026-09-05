@@ -1,6 +1,6 @@
 # VeritasVault Azure replacement preparation plan
 
-**Status:** Validated
+**Status:** Blocked — pre-deployment policy validation denies West Europe
 **Prepared:** 2026-09-04  
 **Mode:** MODIFY an existing Azure-prepared branch  
 **Implementation vehicle:** `neuralliquid/veritasvault-web` PR #163 (`feat/azure-container-apps`)  
@@ -244,3 +244,38 @@ Approval of this document authorizes implementation and validation of repository
 - `git diff --check`: passed.
 - Docker build-context review: `scripts/run-scheduled-sync.mjs` is explicitly included after the `scripts/*` exclusion. Docker client 29.2.1 is installed locally, but the Docker Desktop Linux daemon is not running, so an actual container build remains an exact-head CI/release prerequisite.
 - Local CodeRabbit CLI: unavailable; exact-head CodeRabbit GitHub App review remains required before merge.
+
+## Section 7: Pre-deployment validation proof (2026-09-06)
+
+Validated from exact `origin/main` commit
+`f0c19a06d9dbba25d582170b78c0d8f8eaccaf78` plus the backend account-name
+correction in this branch. No apply or other Azure mutation was performed.
+
+- `terraform version`: Terraform 1.14.7.
+- `az version`: Azure CLI 2.81.0.
+- `az account show --subscription 5a95ddee-dd63-441a-8306-c8b0803dcdd4`:
+  authenticated to enabled `neuralliquid-sub` in tenant
+  `5384ef74-e517-4b22-9472-df990f61e8b5`.
+- `terraform -chdir=infra/terraform fmt -check -recursive`: passed.
+- `terraform -chdir=infra/terraform init -reconfigure`: passed against
+  `nl-org-tfstate-rg/nlorgtfstatesa/tfstate`.
+- `terraform -chdir=infra/terraform validate`: passed.
+- `terraform -chdir=infra/terraform state list`: passed and returned an empty
+  state.
+- `terraform -chdir=infra/terraform plan -lock=false -out=tfplan`: passed with
+  `14 to add, 0 to change, 0 to destroy`; the plan remains local and must not be
+  applied.
+- `pnpm test`: 17 files and 64 tests passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed with 19 pre-existing warnings and no errors.
+- `pnpm audit --audit-level=high`: passed; two low-severity advisories remain.
+- `pnpm build`: passed with representative non-secret CI values and existing
+  non-fatal warnings.
+
+Deployment readiness is blocked. Inherited assignment `sys.blockwesteurope`
+uses policy `Resources should not be created in West Europe`, whose indexed
+rule has an unconditional `deny` when `location == westeurope`. No exemption is
+visible at subscription scope; the current identity cannot enumerate
+management-group exemptions. Every resource in the saved plan targets West
+Europe. Resolve the region/policy decision and produce a new exact plan before
+requesting any Terraform apply authorization.
