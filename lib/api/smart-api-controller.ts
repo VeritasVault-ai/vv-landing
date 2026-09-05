@@ -111,20 +111,30 @@ export function createSmartApiController<T, P = Record<string, never>>(
     refreshInterval?: number
   },
 ) {
+  const maxCacheEntries = 100
   const cache = new Map<string, { data: T; expiresAt: number }>()
 
   return {
     async handleRequest(request: Request, params?: P): Promise<NextResponse> {
       try {
+        const now = Date.now()
+        for (const [key, entry] of cache) {
+          if (entry.expiresAt <= now) cache.delete(key)
+        }
+
         const cacheKey = JSON.stringify(params ?? {})
         const cached = cache.get(cacheKey)
-        if (cached && cached.expiresAt > Date.now()) {
+        if (cached) {
           return ApiResponseUtil.success(cached.data, `${dataType} data retrieved from cache`)
         }
 
         const data = await options.fetchFreshData(params)
         if (options.refreshInterval && options.refreshInterval > 0) {
-          cache.set(cacheKey, { data, expiresAt: Date.now() + options.refreshInterval })
+          if (cache.size >= maxCacheEntries) {
+            const oldestKey = cache.keys().next().value
+            if (oldestKey !== undefined) cache.delete(oldestKey)
+          }
+          cache.set(cacheKey, { data, expiresAt: now + options.refreshInterval })
         }
         return ApiResponseUtil.success(data, `${dataType} data retrieved successfully`)
       } catch (error) {
