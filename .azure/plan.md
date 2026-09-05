@@ -245,7 +245,7 @@ Approval of this document authorizes implementation and validation of repository
 - Docker build-context review: `scripts/run-scheduled-sync.mjs` is explicitly included after the `scripts/*` exclusion. Docker client 29.2.1 is installed locally, but the Docker Desktop Linux daemon is not running, so an actual container build remains an exact-head CI/release prerequisite.
 - Local CodeRabbit CLI: unavailable; exact-head CodeRabbit GitHub App review remains required before merge.
 
-## Section 7: Pre-deployment validation proof (2026-09-06)
+## Section 7: Pre-deployment validation proof (2026-09-06 SAST / 2026-09-05 UTC)
 
 Validated from exact `origin/main` commit
 `f0c19a06d9dbba25d582170b78c0d8f8eaccaf78` plus the backend account-name
@@ -262,6 +262,14 @@ correction in this branch. No apply or other Azure mutation was performed.
 - `terraform -chdir=infra/terraform validate`: passed.
 - `terraform -chdir=infra/terraform state list`: passed and returned an empty
   state.
+- ARM returned `ResourceNotFound` for the former configured backend
+  `nl-org-tfstate-rg/nlorgtfstate`; there is therefore no authoritative state
+  at that backend address to migrate.
+- The corrected `nlorgtfstatesa/tfstate` container has no
+  `veritasvault-web/` blob, and subscription inventory contains neither
+  `nl-prod-veritasvault-rg` nor any VeritasVault runtime resource. Starting
+  with empty state is intentional and the plan does not represent recreation
+  of an existing VeritasVault Azure estate.
 - `terraform -chdir=infra/terraform plan -lock=false -out=tfplan`: passed with
   `14 to add, 0 to change, 0 to destroy`; the plan remains local and must not be
   applied.
