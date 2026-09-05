@@ -45,5 +45,8 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      - name: Reject high-severity dependency advisories
+        run: pnpm audit --audit-level=high
+
       - name: Build application
         run: pnpm build
