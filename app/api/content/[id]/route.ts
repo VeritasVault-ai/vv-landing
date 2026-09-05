@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase"
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const id = params.id
-    const supabase = createClient()
-
     // This is a placeholder implementation - in a real app, you would fetch from a content table
     // For now, we'll return a hardcoded content block if the ID matches
     const allContentBlocks = [

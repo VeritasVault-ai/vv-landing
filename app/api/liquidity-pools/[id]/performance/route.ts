@@ -1,13 +1,16 @@
-import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase"
+import { type NextRequest, NextResponse } from "next/server"
+import { withAdminAuth } from "@/lib/auth/auth-utils"
+import { createPublicServerClient, createServiceRoleClient } from "@/lib/supabase/server"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+type RouteContext = { params: { id: string } }
+
+export async function GET(request: Request, { params }: RouteContext) {
   const { searchParams } = new URL(request.url)
   const startDate = searchParams.get("start_date")
   const endDate = searchParams.get("end_date")
 
   try {
-    const supabase = createClient()
+    const supabase = createPublicServerClient()
 
     let query = supabase.from("performance_history").select("*").eq("pool_id", params.id)
 
@@ -33,9 +36,13 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, context: RouteContext) {
+  return withAdminAuth(request, (authenticatedRequest) => createPerformanceEntry(authenticatedRequest, context))
+}
+
+async function createPerformanceEntry(request: NextRequest, { params }: RouteContext) {
   try {
-    const supabase = createClient()
+    const supabase = createServiceRoleClient()
     const body = await request.json()
 
     const { data, error } = await supabase

@@ -1,31 +1,54 @@
-import { jwtVerify, SignJWT } from "jose"
+import { jwtVerify, type JWTPayload, SignJWT } from "jose"
 import { cookies } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
-
-// Secret key for JWT signing/verification
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "your-secret-key-at-least-32-chars-long")
 
 // JWT token expiration (24 hours)
 const JWT_EXPIRES_IN = "24h"
 
+type AuthenticatedUser = JWTPayload & {
+  isAdmin?: boolean
+}
+
+function getJwtSecret(): Uint8Array | null {
+  const secret = process.env.JWT_SECRET
+
+  if (!secret || secret.length < 32) {
+    return null
+  }
+
+  return new TextEncoder().encode(secret)
+}
+
 /**
  * Generate a JWT token for a user
  */
-export async function generateToken(payload: any): Promise<string> {
+export async function generateToken(payload: JWTPayload): Promise<string> {
+  const secret = getJwtSecret()
+
+  if (!secret) {
+    throw new Error("JWT_SECRET must be configured with at least 32 characters")
+  }
+
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(JWT_EXPIRES_IN)
-    .sign(JWT_SECRET)
+    .sign(secret)
 }
 
 /**
  * Verify a JWT token
  */
-export async function verifyToken(token: string): Promise<any> {
+export async function verifyToken(token: string): Promise<AuthenticatedUser | null> {
+  const secret = getJwtSecret()
+
+  if (!secret) {
+    return null
+  }
+
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET)
-    return payload
+    const { payload } = await jwtVerify(token, secret)
+    return payload as AuthenticatedUser
   } catch (error) {
     return null
   }
@@ -49,7 +72,7 @@ export async function getCurrentUser(req: NextRequest) {
  */
 export async function withAuth(
   req: NextRequest,
-  handler: (req: NextRequest, user: any) => Promise<NextResponse>,
+  handler: (req: NextRequest, user: AuthenticatedUser) => Promise<NextResponse>,
 ): Promise<NextResponse> {
   const user = await getCurrentUser(req)
 
@@ -58,6 +81,19 @@ export async function withAuth(
   }
 
   return handler(req, user)
+}
+
+export async function withAdminAuth(
+  req: NextRequest,
+  handler: (req: NextRequest, user: AuthenticatedUser) => Promise<NextResponse>,
+): Promise<NextResponse> {
+  return withAuth(req, async (authenticatedRequest, user) => {
+    if (user.isAdmin !== true) {
+      return NextResponse.json({ error: "Admin authorization required" }, { status: 403 })
+    }
+
+    return handler(authenticatedRequest, user)
+  })
 }
 
 /**

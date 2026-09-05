@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase"
 
 export async function GET(request: Request, { params }: { params: { page: string } }) {
   try {
     const page = params.page
-    const supabase = createClient()
-
     // This is a placeholder implementation - in a real app, you would fetch from a content table
     // For now, we'll return hardcoded content blocks filtered by page
     const allContentBlocks = [

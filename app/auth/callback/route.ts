@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase"
+import { createServiceRoleClient } from "@/lib/supabase/server"
 import { syncUserProfile } from "@/lib/auth-helpers"
 import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
   if (code) {
     const cookieStore = cookies()
-    const supabase = createServerClient()
+    const supabase = createServiceRoleClient()
 
     // Exchange the code for a session
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)

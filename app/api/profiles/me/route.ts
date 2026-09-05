@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase"
+import { createServiceRoleClient } from "@/lib/supabase/server"
 
 export async function GET() {
   try {
-    const supabase = createClient()
+    const supabase = createServiceRoleClient()
 
     // Get the current user's session
     const {
@@ -30,7 +30,7 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    const supabase = createClient()
+    const supabase = createServiceRoleClient()
 
     // Get the current user's session
     const {
