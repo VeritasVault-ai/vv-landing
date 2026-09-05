@@ -213,8 +213,7 @@ export class AIHistoryTracker {
    */
   private sanitizeInteraction(interaction: AIInteraction): AIInteraction {
     // Create a shallow clone to avoid JSON-stringify pitfalls
--    const sanitized = JSON.parse(JSON.stringify(interaction)) as AIInteraction;
-+    const sanitized = { ...interaction, metadata: { ...(interaction.metadata ?? {}) } };
+    const sanitized = { ...interaction, metadata: { ...(interaction.metadata ?? {}) } };
 
     // Truncate long inputs/outputs
     if (sanitized.input && sanitized.input.length > 500) {

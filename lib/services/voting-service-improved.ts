@@ -1,5 +1,4 @@
--import { BaseService, ApiResponse } from './base-service';
-+import { BaseService, ApiResponse } from './base-service-secure';
+import { BaseService, ApiResponse } from './base-service-secure';
 import { 
   VotingOverview,
   ActiveProposal,

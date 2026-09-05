@@ -1,5 +1,3 @@
-import { getSession } from "next-auth/react"
-
 // Error types for better error handling
 export class ApiError extends Error {
   status: number
@@ -52,27 +50,10 @@ export class ApiClient {
   }
 
   /**
-   * Get authentication headers for requests
-   */
-  private async getAuthHeaders(): Promise<Record<string, string>> {
-    const session = await getSession()
-
-    if (!session?.accessToken) {
-      return {}
-    }
-
-    return {
-      Authorization: `Bearer ${session.accessToken}`,
-    }
-  }
-
-  /**
    * Make an API request with authentication
    */
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.config.baseUrl}${endpoint}`
-    const authHeaders = await this.getAuthHeaders()
-
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), this.config.timeout)
 
@@ -81,7 +62,6 @@ export class ApiClient {
         ...options,
         headers: {
           ...this.config.headers,
-          ...authHeaders,
           ...options.headers,
         },
         signal: controller.signal,
@@ -117,11 +97,12 @@ export class ApiClient {
         throw error
       }
 
-      if (error.name === "AbortError") {
+      if (error instanceof Error && error.name === "AbortError") {
         throw new ApiError("Request timeout", 408)
       }
 
-      throw new ApiError(`Network error: ${error.message}`, 0)
+      const message = error instanceof Error ? error.message : "Unknown failure"
+      throw new ApiError(`Network error: ${message}`, 0)
     }
   }
 

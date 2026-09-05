@@ -71,23 +71,6 @@ export function CorporateVersionClient() {
         console.error('Failed to store theme preference:', error)
       }
     }
-    
-    // Log any authentication errors
-    const checkAuth = async () => {
-      try {
-        // Check if we have a session or token
-        const hasSession = localStorage.getItem('auth_session') || sessionStorage.getItem('auth_session')
-        
-        if (!hasSession) {
-          console.log('No authentication session found - this is normal for public pages')
-        }
-      } catch (error) {
-        // Track any errors related to authentication
-        trackError('auth_check_error', error instanceof Error ? error.message : 'Unknown error', 'CorporateVersionClient')
-      }
-    }
-    
-    checkAuth()
   }, [themeParam, setTheme, robustTheme])
   
   return (

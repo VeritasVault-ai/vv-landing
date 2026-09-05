@@ -56,7 +56,7 @@ export function StandardLandingPageEnhanced() {
 
             <div className="flex items-center space-x-3">
               <StandaloneThemeToggle />
-              <Link href="/standard/login" className="text-standard-text hover:text-standard-primary transition-colors">
+              <Link href="/auth/login" className="text-standard-text hover:text-standard-primary transition-colors">
                 Login
               </Link>
               <Link href="/standard/demo" className="btn-primary inline-flex items-center">
@@ -309,7 +309,7 @@ export function StandardLandingPageEnhanced() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
                 <Link
-                  href="/standard/register"
+                  href="/auth/login"
                   className="bg-white/20 text-white font-medium py-3 px-6 rounded-md hover:bg-white/30 transition-colors inline-flex items-center justify-center"
                 >
                   Create Free Account

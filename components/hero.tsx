@@ -69,8 +69,8 @@ export function Hero() {
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-[#8A63FF] dark:to-[#A78BFA] dark:hover:from-[#9370FF] dark:hover:to-[#B59BFF] text-white border-0 shadow-lg shadow-blue-500/20 dark:shadow-[#8A63FF]/20 transition-all duration-300 hover:scale-105 py-6 px-8 text-lg rounded-md"
               asChild
             >
-              <Link href="/auth/register">
-                <span>Get Early Access</span>
+              <Link href="/auth/login">
+                <span>Alpha sign-in status</span>
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
