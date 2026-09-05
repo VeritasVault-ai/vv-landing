@@ -22,7 +22,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Invalid sync type" }, { status: 400 })
       }
 
-      await runLeasedSync(type as SyncType)
+      await runLeasedSync(type as SyncType, req.signal)
 
       return NextResponse.json({ success: true, message: `Sync ${type} completed successfully` })
     } catch (error) {

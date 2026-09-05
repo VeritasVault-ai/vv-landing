@@ -42,7 +42,7 @@ describe("POST /api/sync", () => {
     const response = await POST(request("market-data"))
 
     expect(response.status).toBe(200)
-    expect(runLeasedSync).toHaveBeenCalledWith("market-data")
+    expect(runLeasedSync).toHaveBeenCalledWith("market-data", expect.any(AbortSignal))
   })
 
   it("returns conflict when another synchronization holds the lease", async () => {

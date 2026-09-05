@@ -13,12 +13,16 @@ export class SyncAlreadyRunningError extends Error {
   }
 }
 
-export async function runLeasedSync(syncType: SyncType): Promise<void> {
+export async function runLeasedSync(syncType: SyncType, callerSignal?: AbortSignal): Promise<void> {
+  callerSignal?.throwIfAborted()
   const leaseHolder = await scheduledSyncLease.acquire()
   if (!leaseHolder) throw new SyncAlreadyRunningError()
 
   const syncAbortController = new AbortController()
   const syncSignal = syncAbortController.signal
+  const abortFromCaller = () => syncAbortController.abort(callerSignal?.reason)
+  if (callerSignal?.aborted) abortFromCaller()
+  else callerSignal?.addEventListener("abort", abortFromCaller, { once: true })
   let leaseHeartbeat: ReturnType<typeof setInterval> | null = setInterval(() => {
     void scheduledSyncLease.renew(leaseHolder).catch((error) => {
       console.error("Could not renew synchronization lease:", error)
@@ -47,6 +51,7 @@ export async function runLeasedSync(syncType: SyncType): Promise<void> {
     }
     syncSignal.throwIfAborted()
   } finally {
+    callerSignal?.removeEventListener("abort", abortFromCaller)
     if (leaseHeartbeat) clearInterval(leaseHeartbeat)
     await scheduledSyncLease.release(leaseHolder).catch((error) => {
       console.error("Could not release synchronization lease:", error)

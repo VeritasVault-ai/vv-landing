@@ -37,7 +37,7 @@ vi.mock("@/lib/services/sync-service", () => ({
 
 import { POST } from "./route"
 
-function request(options: { token?: string; body?: unknown } = {}) {
+function request(options: { token?: string; body?: unknown; signal?: AbortSignal } = {}) {
   const headers = new Headers({ "content-type": "application/json" })
   if (options.token) headers.set("authorization", `Bearer ${options.token}`)
 
@@ -45,6 +45,7 @@ function request(options: { token?: string; body?: unknown } = {}) {
     method: "POST",
     headers,
     body: JSON.stringify("body" in options ? options.body : {}),
+    signal: options.signal,
   })
 }
 
@@ -141,5 +142,28 @@ describe("POST /api/cron/sync", () => {
     } finally {
       vi.useRealTimers()
     }
+  })
+
+  it("cancels the active synchronization when the request is aborted", async () => {
+    const requestAbortController = new AbortController()
+    syncAll.mockImplementationOnce((signal: AbortSignal) =>
+      new Promise<void>((_resolve, reject) => {
+        signal.addEventListener("abort", () => reject(signal.reason), { once: true })
+      }),
+    )
+
+    const responsePromise = POST(request({
+      token: "test-scheduler-secret",
+      signal: requestAbortController.signal,
+    }))
+    await vi.waitFor(() => expect(syncAll).toHaveBeenCalledOnce())
+    requestAbortController.abort(new Error("job execution was cancelled"))
+
+    const response = await responsePromise
+    const signal = syncAll.mock.calls[0][0] as AbortSignal
+
+    expect(response.status).toBe(500)
+    expect(signal.aborted).toBe(true)
+    expect(releaseLease).toHaveBeenCalledWith("lease-holder")
   })
 })
