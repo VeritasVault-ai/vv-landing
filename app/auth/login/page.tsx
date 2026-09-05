@@ -1,25 +1,22 @@
-import { redirect } from "next/navigation"
-import { cookies } from "next/headers"
-import { SITE_VERSION_COOKIE, DEFAULT_VERSION } from "@/lib/version-utils"
 import type { Metadata } from "next"
+import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Login | Tezos Liquidity Management",
-  description: "Sign in to your account",
+  title: "Sign-in unavailable | VeritasVault",
+  description: "Authentication is unavailable in this alpha build.",
 }
 
-export default function LoginPage() {
-  // This is a server component that will redirect to the appropriate version's login page
-  const cookieStore = cookies()
-  const version = cookieStore.get(SITE_VERSION_COOKIE)?.value || DEFAULT_VERSION
-
-  // Redirect to the appropriate version's login page
-  if (version === "corporate") {
-    redirect("/corporate/login")
-  } else {
-    redirect("/standard/login")
-  }
-
-  // This return is never reached but needed for TypeScript
-  return null
+export default function LoginUnavailablePage() {
+  return (
+    <main className="container flex min-h-screen max-w-xl flex-col items-center justify-center gap-5 text-center">
+      <h1 className="text-3xl font-semibold tracking-tight">Sign-in is not available yet</h1>
+      <p className="text-muted-foreground">
+        Legacy and demo sign-in methods have been retired. Mystira identity will be enabled in a later,
+        separately approved alpha phase.
+      </p>
+      <Link className="font-medium text-primary underline-offset-4 hover:underline" href="/standard">
+        Return to VeritasVault
+      </Link>
+    </main>
+  )
 }

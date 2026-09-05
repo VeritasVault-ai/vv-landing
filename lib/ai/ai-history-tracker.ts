@@ -212,9 +212,10 @@ export class AIHistoryTracker {
    * Sanitize an interaction to remove sensitive information
    */
   private sanitizeInteraction(interaction: AIInteraction): AIInteraction {
-    // Create a shallow clone to avoid JSON-stringify pitfalls
--    const sanitized = JSON.parse(JSON.stringify(interaction)) as AIInteraction;
-+    const sanitized = { ...interaction, metadata: { ...(interaction.metadata ?? {}) } };
+    // History is persisted as JSON, so normalize into an isolated JSON-safe
+    // value before redaction. This prevents later caller mutations from
+    // changing an interaction that has already been recorded.
+    const sanitized = JSON.parse(JSON.stringify(interaction)) as AIInteraction;
 
     // Truncate long inputs/outputs
     if (sanitized.input && sanitized.input.length > 500) {

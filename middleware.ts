@@ -1,5 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const protectedAlphaRoutePrefixes = [
+  '/admin',
+  '/analytics',
+  '/dashboard',
+  '/flash-loans',
+  '/pools',
+  '/profile',
+  '/risk-assessment',
+  '/settings',
+  '/strategies',
+  '/standard-version/dashboard',
+]
+
+export function isProtectedAlphaRoute(pathname: string): boolean {
+  return protectedAlphaRoutePrefixes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  )
+}
+
+export function isRetiredCorporateRoute(pathname: string): boolean {
+  return (
+    pathname === '/corporate' ||
+    pathname.startsWith('/corporate/') ||
+    pathname === '/corporate-version' ||
+    pathname.startsWith('/corporate-version/')
+  )
+}
+
 function applicationInsightsIngestionOrigin(): string | null {
   const connectionString = process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING
   const endpoint = connectionString
@@ -17,9 +45,21 @@ function applicationInsightsIngestionOrigin(): string | null {
   }
 }
 
-export async function middleware(request) {
+export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone()
   const path = url.pathname
+
+  // The approved alpha is Standard-only. Keep the Corporate prototype out of
+  // the runtime surface while preserving its source for later product work.
+  if (isRetiredCorporateRoute(path)) {
+    return NextResponse.redirect(new URL('/standard', request.url))
+  }
+
+  // Mystira OIDC is a separately approved follow-up. Until it exists, routes
+  // that require an end-user identity are deliberately unavailable.
+  if (isProtectedAlphaRoute(path)) {
+    return NextResponse.redirect(new URL('/auth/login', request.url))
+  }
 
   // Block WordPress exploit probes with custom error page
   if (

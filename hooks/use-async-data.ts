@@ -37,8 +37,6 @@ export function useAsyncData<T>(
     error: null,
     isRefreshing: false,
   })
-  // …
-}
 
   const fetchData = useCallback(async (showRefreshState = false) => {
     try {

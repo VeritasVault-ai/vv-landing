@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "middleware.ts",
+    "lib/auth.ts",
+    "lib/auth/retired-auth-response.ts",
+    "lib/api/api-client.ts",
+    "app/api/auth/**/*.ts",
+    "app/auth/callback/route.ts",
+    "app/auth/login/page.tsx",
+    "app/(standard)/standard/login/page.tsx",
+    "app/(corporate)/corporate/login/page.tsx",
+    "app/login/page.tsx",
+    "app/corporate-version/login/page.tsx"
+  ],
+  "exclude": ["node_modules"]
+}

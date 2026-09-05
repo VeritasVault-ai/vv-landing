@@ -2,7 +2,6 @@
 
 import { ReactNode } from 'react'
 import { MockInitializer } from './layout-with-mocks'
-import { SessionProvider } from '@/components/providers/SessionProvider'
 
 interface ProvidersProps {
   children: ReactNode
@@ -18,9 +17,7 @@ export function Providers({ children }: { children: ReactNode }) {
       {/* Initialize MSW in development */}
       <MockInitializer />
 
-      <SessionProvider>
-        {children}
-      </SessionProvider>
+      {children}
     </>
   )
 }

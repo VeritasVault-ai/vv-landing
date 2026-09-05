@@ -15,7 +15,7 @@ export default function Home() {
   const { setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [showThemeModal, setShowThemeModal] = useState(false)
-  const [selectedExperience, setSelectedExperience] = useState<'standard' | 'corporate' | null>(null)
+  const [selectedExperience, setSelectedExperience] = useState<'standard' | null>(null)
   
   // Set cosmic theme for the landing page and mark as mounted
   useEffect(() => {
@@ -24,15 +24,14 @@ export default function Home() {
   }, [setTheme])
 
   // Handle version selection
-  const handleVersionSelect = (version: 'standard' | 'corporate') => {
-    setSelectedExperience(version)
+  const handleVersionSelect = () => {
+    setSelectedExperience('standard')
     setShowThemeModal(true)
-    
-    // Track the selection
-    trackNavigationEvent({ 
-      feature_name: "version_selection", 
-      button_text: `Enter ${version.charAt(0).toUpperCase() + version.slice(1)} Experience`,
-      destination: `/${version}-version`
+
+    trackNavigationEvent({
+      feature_name: "version_selection",
+      button_text: "Enter Standard Experience",
+      destination: "/standard-version"
     })
   }
 
@@ -74,10 +73,10 @@ export default function Home() {
       <main className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">Welcome to VeritasVault.net</h1>
-          <p className="text-xl max-w-2xl mx-auto">Choose the experience that best suits your needs for managing digital assets with our AI-powered platform</p>
+          <p className="text-xl max-w-2xl mx-auto">Explore the Standard alpha for managing digital assets with our AI-powered platform.</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="mx-auto max-w-2xl">
           {/* Standard Version Card */}
           <div className="bg-blue-800/30 backdrop-blur-sm border border-blue-700/50 rounded-xl p-8 hover:bg-blue-800/40 transition-all">
             <h2 className="text-2xl font-bold mb-4">Standard Version</h2>
@@ -98,35 +97,9 @@ export default function Home() {
             </ul>
             <Button 
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
-              onClick={() => handleVersionSelect('standard')}
+              onClick={handleVersionSelect}
             >
               Enter Standard Experience
-            </Button>
-          </div>
-          
-          {/* Corporate Version Card */}
-          <div className="bg-indigo-800/30 backdrop-blur-sm border border-indigo-700/50 rounded-xl p-8 hover:bg-indigo-800/40 transition-all">
-            <h2 className="text-2xl font-bold mb-4">Corporate Version</h2>
-            <p className="mb-6 text-indigo-100">For institutional investors and enterprise users. Advanced security, compliance features, and institutional-grade tools.</p>
-            <ul className="space-y-2 mb-8">
-              <li className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>Multi-signature governance</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>Compliance reporting</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>Enterprise-grade security</span>
-              </li>
-            </ul>
-            <Button 
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium"
-              onClick={() => handleVersionSelect('corporate')}
-            >
-              Enter Corporate Experience
             </Button>
           </div>
         </div>

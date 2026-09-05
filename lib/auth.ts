@@ -1,16 +1,12 @@
 /**
- * TEMPORARY FILE - PART OF CODEBASE MIGRATION
- * 
- * This is a temporary bridge file created during the src/ directory migration.
- * It redirects imports from the old location to the new location.
- * 
- * TODO: Once all imports have been updated to use the new path directly,
- * this file should be deleted and imports should point to the new location.
+ * Authentication is deliberately unavailable until the approved Mystira OIDC
+ * integration lands. Callers that still depend on this migration bridge must
+ * fail closed instead of accepting a legacy NextAuth or Supabase session.
  */
+export interface LegacySession {
+  user: {
+    id: string
+  }
+}
 
-import { getServerSession } from "next-auth/next";
-
-// Create a getSession function for backward compatibility
-export const getSession = async () => {
-  return await getServerSession();
-};
+export const getSession = async (_request?: Request): Promise<LegacySession | null> => null

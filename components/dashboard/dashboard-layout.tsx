@@ -140,10 +140,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               variant="outline" 
               className="w-full justify-start gap-3 text-red-600 dark:text-red-400 border-slate-200 dark:border-slate-800"
               onClick={() => {  
-                  // Clear auth cookies and redirect to login page  
-                  document.cookie = 'auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';  
-                  document.cookie = 'login_flag=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';  
-                  window.location.href = '/login';  
+                  window.location.href = '/auth/login';
                 }}
               >
               <LogOut size={18} />

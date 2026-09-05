@@ -45,6 +45,9 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      - name: Type-check alpha security surface
+        run: pnpm typecheck
+
       - name: Reject high-severity dependency advisories
         run: pnpm audit --audit-level=high
 
