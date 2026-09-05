@@ -1,7 +1,9 @@
 import { ImageResponse } from "next/og"
 import type { NextRequest } from "next/server"
 
-export const runtime = "edge"
+// Azure Container Apps and App Service have no edge runtime. next/og runs fine
+// under Node on Next 15, so this route moves to nodejs to stay portable.
+export const runtime = "nodejs"
 
 export async function GET(req: NextRequest) {
   try {

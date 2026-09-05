@@ -1,6 +1,6 @@
 "use client"
 
-import { track } from '@vercel/analytics'
+import { trackEvent as track } from './provider'
 
 type LoginEventType = 
   | 'page_view'
@@ -20,39 +20,42 @@ interface LoginEventProperties {
   returnUrl?: string
   error?: string
   email_domain?: string
-  [key: string]: any
+  [key: string]: string | number | boolean | null | undefined
 }
 
 /**
- * Tracks authentication-related events using Vercel Web Analytics
+ * Tracks authentication-related events through the provider-agnostic sink in
+ * ./provider (Application Insights).
  * Includes support for login flags to track different login sources
- * 
+ *
  * @param eventType The type of login event
  * @param properties Additional properties to include with the event
  */
 export function trackLoginEvent(eventType: LoginEventType, properties: LoginEventProperties = {}) {
   try {
-    // Create the event name with proper formatting for Vercel Analytics
+    // Keep a stable event name across telemetry backends.
     const eventName = `auth_${eventType}`;
     
     // Add timestamp to properties
-    const enrichedProperties = {
-      ...properties,
+    const enrichedProperties: Record<string, string | number | boolean | null> = {
       timestamp: new Date().toISOString(),
-    };
+    }
+    for (const [key, value] of Object.entries(properties)) {
+      if (key !== 'timestamp' && value !== undefined) enrichedProperties[key] = value
+    }
     
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
       console.log(`[Auth Analytics] ${eventName}:`, enrichedProperties);
     }
     
-    // Send to Vercel Web Analytics
+    // Send to whichever analytics sinks are configured
     track(eventName, enrichedProperties);
-    
+
     // If this is a login_success event, set user properties
     if (eventType === 'login_success' && properties.email_domain) {
-      // Note: Vercel Analytics doesn't have built-in user properties like some other
-      // analytics platforms, but we can track this as a separate event if needed
+      // Neither sink has first-class user properties, so identity is recorded as
+      // its own event.
       track('auth_user_identified', {
         email_domain: properties.email_domain,
         login_method: properties.method || 'unknown'

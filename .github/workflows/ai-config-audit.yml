@@ -4,30 +4,35 @@ on:
   pull_request:
     branches: [main, dev, develop]
 
+permissions:
+  contents: read
+
 jobs:
   audit:
     runs-on: ubuntu-latest
 
     steps:
       - name: ⬇️  Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: 🔧  Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 20
+          node-version: 22
 
-      - name: 📦  Install deps (prod only)
+      - name: 📦  Install dependencies
         run: |
           corepack enable
-          pnpm install --frozen-lockfile --prod
+          pnpm install --frozen-lockfile   # NOT --prod: jscpd below is a devDependency
 
-      - name: 🕵️‍♂️  Audit AI config
+      - name: Audit AI config
         run: |
-          pnpm exec ts-node scripts/audit-config.ts
+          node scripts/audit-config.js
 
       - name: 🔎  Detect code duplication (jscpd)
-        run: pnpm exec jscpd --config .jscpd.json
+        run: pnpm exec jscpd . --config .jscpd.json
 
       - name: 🛑  Fail if audit produced errors
         if: failure() # workflow will automatically fail on non-zero exit

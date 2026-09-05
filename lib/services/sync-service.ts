@@ -3,6 +3,24 @@ import { goldskyClient } from "@/lib/api/goldsky-client"
 import { coinGeckoClient } from "@/lib/api/coingecko-client"
 import { defiLlamaClient } from "@/lib/api/defillama-client"
 
+function throwIfSyncCancelled(signal?: AbortSignal): void {
+  if (!signal?.aborted) return
+  if (signal.reason instanceof Error) throw signal.reason
+  throw new Error("Synchronization was cancelled")
+}
+
+function isCancellationError(error: unknown, signal?: AbortSignal): boolean {
+  return signal?.aborted === true && error === signal.reason
+}
+
+function rethrowSyncFailure(operation: string, error: unknown, signal?: AbortSignal): never {
+  if (isCancellationError(error, signal)) throwIfSyncCancelled(signal)
+
+  console.error(`Error syncing ${operation}:`, error)
+  const message = error instanceof Error ? error.message : String(error)
+  throw new Error(`Failed to sync ${operation}: ${message}`)
+}
+
 /**
  * Service for synchronizing data from external APIs
  */
@@ -10,25 +28,35 @@ export class SyncService {
   /**
    * Sync liquidity pools data from Goldsky and DeFiLlama
    */
-  async syncLiquidityPools(): Promise<void> {
+  async syncLiquidityPools(signal?: AbortSignal): Promise<void> {
     try {
+      throwIfSyncCancelled(signal)
       console.log("Syncing liquidity pools data...")
 
       // Get protocol data from DeFiLlama
-      const tezosProtocols = await defiLlamaClient.getTezosProtocols()
+      const tezosProtocols = await defiLlamaClient.getTezosProtocols(signal)
+      throwIfSyncCancelled(signal)
 
       // Get liquidity data from Goldsky
       const now = new Date()
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
 
-      const historicalData = await goldskyClient.getHistoricalData(thirtyDaysAgo.toISOString(), now.toISOString(), 1000)
+      const historicalData = await goldskyClient.getHistoricalData(
+        thirtyDaysAgo.toISOString(),
+        now.toISOString(),
+        1000,
+        signal,
+      )
+      throwIfSyncCancelled(signal)
 
       // Process and transform the data
       const poolsMap = new Map<string, any>()
 
       // Process DeFiLlama data
       for (const protocol of tezosProtocols) {
-        const protocolDetail = await defiLlamaClient.getProtocolTvlHistory(protocol.slug)
+        throwIfSyncCancelled(signal)
+        const protocolDetail = await defiLlamaClient.getProtocolTvlHistory(protocol.slug, signal)
+        throwIfSyncCancelled(signal)
 
         // Create a pool entry for each protocol
         poolsMap.set(protocol.slug, {
@@ -61,7 +89,9 @@ export class SyncService {
 
       // Store the pools in the database
       for (const pool of poolsMap.values()) {
+        throwIfSyncCancelled(signal)
         const existingPool = await liquidityPoolRepository.getById(pool.id)
+        throwIfSyncCancelled(signal)
 
         if (existingPool) {
           // Update existing pool
@@ -81,27 +111,30 @@ export class SyncService {
           // Create new pool
           await liquidityPoolRepository.create(pool)
         }
+        throwIfSyncCancelled(signal)
       }
 
       console.log(`Synced ${poolsMap.size} liquidity pools`)
     } catch (error) {
-      console.error("Error syncing liquidity pools:", error)
-      throw new Error(`Failed to sync liquidity pools: ${error.message}`)
+      rethrowSyncFailure("liquidity pools", error, signal)
     }
   }
 
   /**
    * Sync market data from CoinGecko
    */
-  async syncMarketData(): Promise<void> {
+  async syncMarketData(signal?: AbortSignal): Promise<void> {
     try {
+      throwIfSyncCancelled(signal)
       console.log("Syncing market data...")
 
       // Get Tezos token data
-      const tezosData = await coinGeckoClient.getTezosTokenData()
+      const tezosData = await coinGeckoClient.getTezosTokenData("usd", signal)
+      throwIfSyncCancelled(signal)
 
       // Get historical data
-      const historicalData = await coinGeckoClient.getCoinHistoricalData("tezos", 30)
+      const historicalData = await coinGeckoClient.getCoinHistoricalData("tezos", 30, "usd", signal)
+      throwIfSyncCancelled(signal)
 
       // Store the data in the database
       // This would typically go into a market_data table
@@ -123,24 +156,27 @@ export class SyncService {
       //   updated_at: new Date().toISOString(),
       // })
     } catch (error) {
-      console.error("Error syncing market data:", error)
-      throw new Error(`Failed to sync market data: ${error.message}`)
+      rethrowSyncFailure("market data", error, signal)
     }
   }
 
   /**
    * Sync protocol metrics from DeFiLlama and Goldsky
    */
-  async syncProtocolMetrics(): Promise<void> {
+  async syncProtocolMetrics(signal?: AbortSignal): Promise<void> {
     try {
+      throwIfSyncCancelled(signal)
       console.log("Syncing protocol metrics...")
 
       // Get Tezos TVL data from DeFiLlama
-      const tezosTvl = await defiLlamaClient.getTezosTvl()
-      const tezosTvlHistory = await defiLlamaClient.getTezosTvlHistory()
+      const tezosTvl = await defiLlamaClient.getTezosTvl(signal)
+      throwIfSyncCancelled(signal)
+      const tezosTvlHistory = await defiLlamaClient.getTezosTvlHistory(signal)
+      throwIfSyncCancelled(signal)
 
       // Get protocol metrics from Goldsky
-      const protocolMetrics = await goldskyClient.getProtocolMetrics()
+      const protocolMetrics = await goldskyClient.getProtocolMetrics(signal)
+      throwIfSyncCancelled(signal)
 
       // Store the data in the database
       // This would typically go into a protocol_metrics table
@@ -158,18 +194,19 @@ export class SyncService {
       //   updated_at: new Date().toISOString(),
       // })
     } catch (error) {
-      console.error("Error syncing protocol metrics:", error)
-      throw new Error(`Failed to sync protocol metrics: ${error.message}`)
+      rethrowSyncFailure("protocol metrics", error, signal)
     }
   }
 
   /**
    * Run all sync operations
    */
-  async syncAll(): Promise<void> {
-    await this.syncLiquidityPools()
-    await this.syncMarketData()
-    await this.syncProtocolMetrics()
+  async syncAll(signal?: AbortSignal): Promise<void> {
+    await this.syncLiquidityPools(signal)
+    throwIfSyncCancelled(signal)
+    await this.syncMarketData(signal)
+    throwIfSyncCancelled(signal)
+    await this.syncProtocolMetrics(signal)
   }
 }
 

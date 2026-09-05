@@ -1,0 +1,133 @@
+name: Deploy to Azure Container Apps
+
+# Manual by design. Source merge is not permission to publish an image or mutate
+# the production Container App; both remain behind the production environment.
+on:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Build and push only, or also update the Container App"
+        required: true
+        type: choice
+        default: build-only
+        options:
+          - build-only
+          - build-and-deploy
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-azure
+  cancel-in-progress: false
+
+env:
+  RESOURCE_GROUP: nl-prod-veritasvault-rg
+  CONTAINER_APP: nl-prod-veritasvault-web
+  REGISTRY: nlprodveritasvaultacr
+  IMAGE: veritasvault-web
+  IMAGE_TAG: ${{ github.sha }}
+  NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+  NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
+  NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+  NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
+  NEXT_PUBLIC_WS_BASE_URL: ${{ vars.NEXT_PUBLIC_WS_BASE_URL }}
+  NEXT_PUBLIC_MODEL_WS: ${{ vars.NEXT_PUBLIC_MODEL_WS }}
+  NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+  NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ vars.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING }}
+
+jobs:
+  deploy:
+    name: ${{ inputs.deploy }}
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Azure login
+        uses: azure/login@a457da9ea143d694d1b924b566507a8fad2b2b96 # v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: ACR login
+        run: az acr login --name "$REGISTRY"
+
+      # NEXT_PUBLIC_* values are inlined by Next at build time, so they are build
+      # args here rather than Container App env vars. Anything in this list is
+      # baked into the client bundle and is therefore public by definition — do
+      # not add real secrets.
+      - name: Build image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_SUPABASE_URL="$NEXT_PUBLIC_SUPABASE_URL" \
+            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$NEXT_PUBLIC_SUPABASE_ANON_KEY" \
+            --build-arg NEXT_PUBLIC_APP_URL="$NEXT_PUBLIC_APP_URL" \
+            --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
+            --build-arg NEXT_PUBLIC_API_BASE_URL="$NEXT_PUBLIC_API_BASE_URL" \
+            --build-arg NEXT_PUBLIC_WS_BASE_URL="$NEXT_PUBLIC_WS_BASE_URL" \
+            --build-arg NEXT_PUBLIC_MODEL_WS="$NEXT_PUBLIC_MODEL_WS" \
+            --build-arg NEXT_PUBLIC_ENV="production" \
+            --build-arg NEXT_PUBLIC_GA_MEASUREMENT_ID="$NEXT_PUBLIC_GA_MEASUREMENT_ID" \
+            --build-arg NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING="$NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING" \
+            -t "$REGISTRY.azurecr.io/$IMAGE:$IMAGE_TAG" \
+            -t "$REGISTRY.azurecr.io/$IMAGE:latest" \
+            .
+
+      - name: Push image
+        run: |
+          docker push "$REGISTRY.azurecr.io/$IMAGE:$IMAGE_TAG"
+          docker push "$REGISTRY.azurecr.io/$IMAGE:latest"
+
+      - name: Update Container App
+        id: update
+        if: inputs.deploy == 'build-and-deploy'
+        run: |
+          NEW_REVISION=$(az containerapp update \
+            --name "$CONTAINER_APP" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image "$REGISTRY.azurecr.io/$IMAGE:$IMAGE_TAG" \
+            --query 'properties.latestRevisionName' \
+            --output tsv)
+          if [ -z "$NEW_REVISION" ]; then
+            echo "Container App update did not return a revision name." >&2
+            exit 1
+          fi
+          echo "revision=$NEW_REVISION" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke check the new revision
+        if: inputs.deploy == 'build-and-deploy'
+        env:
+          NEW_REVISION: ${{ steps.update.outputs.revision }}
+        run: |
+          echo "Waiting for revision $NEW_REVISION"
+          for i in $(seq 1 12); do
+            REVISION=$(az containerapp revision show \
+              --name "$CONTAINER_APP" \
+              --resource-group "$RESOURCE_GROUP" \
+              --revision "$NEW_REVISION" \
+              --query '{active:properties.active,fqdn:properties.fqdn,health:properties.healthState,provisioning:properties.provisioningState}' \
+              --output json)
+            ACTIVE=$(echo "$REVISION" | jq -r '.active // false')
+            FQDN=$(echo "$REVISION" | jq -r '.fqdn // empty')
+            HEALTH=$(echo "$REVISION" | jq -r '.health // "Unknown"')
+            PROVISIONING=$(echo "$REVISION" | jq -r '.provisioning // "Unknown"')
+            CODE=000
+            if [ -n "$FQDN" ]; then
+              CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "https://$FQDN/" || true)
+            fi
+            echo "attempt $i: active=$ACTIVE health=$HEALTH provisioning=$PROVISIONING HTTP=$CODE"
+            if [ "$ACTIVE" = "true" ] && [ "$HEALTH" = "Healthy" ] && [ "$CODE" = "200" ]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Revision $NEW_REVISION never became active and healthy with HTTP 200 — check revision logs before flipping DNS." >&2
+          exit 1

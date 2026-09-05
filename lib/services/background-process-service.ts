@@ -1,4 +1,4 @@
-import { syncService } from "./sync-service"
+import { runLeasedSync, type SyncType } from "./leased-sync-service"
 import { createClient } from "@/lib/supabase/supabase-client"
 
 /**
@@ -60,23 +60,16 @@ export class BackgroundProcessService {
     const supabase = createClient()
 
     try {
-      // Execute the appropriate sync operation based on data type
-      switch (dataType) {
-        case "LIQUIDITY_POOLS":
-          await syncService.syncLiquidityPools()
-          break
-        case "MARKET_DATA":
-          await syncService.syncMarketData()
-          break
-        case "PROTOCOL_METRICS":
-          await syncService.syncProtocolMetrics()
-          break
-        case "ALL":
-          await syncService.syncAll()
-          break
-        default:
-          throw new Error(`Unknown data type: ${dataType}`)
+      const syncTypes: Record<string, SyncType> = {
+        LIQUIDITY_POOLS: "liquidity-pools",
+        MARKET_DATA: "market-data",
+        PROTOCOL_METRICS: "protocol-metrics",
+        ALL: "all",
       }
+      const syncType = syncTypes[dataType]
+      if (!syncType) throw new Error(`Unknown data type: ${dataType}`)
+
+      await runLeasedSync(syncType)
 
       // Update process status to completed
       await supabase
