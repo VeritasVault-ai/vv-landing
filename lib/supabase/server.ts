@@ -17,6 +17,24 @@ function supabaseUrl() {
   return url
 }
 
+function serviceRoleUrl() {
+  const value = supabaseUrl()
+  let url: URL
+
+  try {
+    url = new URL(value)
+  } catch {
+    throw new Error("Supabase URL is invalid")
+  }
+
+  const isLoopback = url.hostname === "localhost" || url.hostname === "127.0.0.1" || url.hostname === "[::1]"
+  if (url.protocol !== "https:" && (process.env.NODE_ENV === "production" || !isLoopback)) {
+    throw new Error("Supabase service-role connections require HTTPS")
+  }
+
+  return value
+}
+
 const serverAuthOptions = {
   auth: {
     autoRefreshToken: false,
@@ -62,5 +80,5 @@ export function createServiceRoleClient() {
     throw new Error("Supabase service-role key is not configured")
   }
 
-  return createSupabaseClient(supabaseUrl(), serviceRoleKey, serverAuthOptions)
+  return createSupabaseClient(serviceRoleUrl(), serviceRoleKey, serverAuthOptions)
 }
