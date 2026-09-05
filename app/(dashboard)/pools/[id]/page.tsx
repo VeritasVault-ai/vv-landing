@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import { notFound } from "next/navigation"
-import { createClient } from "@/lib/supabase"
+import { createPublicServerClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -13,7 +13,7 @@ interface PoolDetailsPageProps {
 }
 
 export default async function PoolDetailsPage({ params }: PoolDetailsPageProps) {
-  const supabase = createClient()
+  const supabase = createPublicServerClient()
 
   // Fetch pool data
   const { data: pool, error } = await supabase.from("liquidity_pools").select("*").eq("id", params.id).single()

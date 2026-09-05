@@ -1,7 +1,7 @@
-import { createServerClient } from "@/lib/supabase"
+import { createServiceRoleClient } from "@/lib/supabase/server"
 
 export async function syncUserProfile(userId: string) {
-  const supabase = createServerClient()
+  const supabase = createServiceRoleClient()
 
   // Get user data from auth.users
   const { data: userData, error: userError } = await supabase.auth.admin.getUserById(userId)

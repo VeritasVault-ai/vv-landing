@@ -1,14 +1,26 @@
-import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase"
+import type { SupabaseClient } from "@supabase/supabase-js"
+import { type NextRequest, NextResponse } from "next/server"
+import { withSupabaseAdminAuth, withSupabaseAuth } from "@/lib/auth/supabase-auth"
+import { createServiceRoleClient } from "@/lib/supabase/server"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+type RouteContext = { params: { id: string } }
+
+export async function GET(request: NextRequest, context: RouteContext) {
+  return withSupabaseAuth(request, (authenticatedRequest, { supabase }) =>
+    readPerformanceHistory(authenticatedRequest, context, supabase),
+  )
+}
+
+async function readPerformanceHistory(
+  request: NextRequest,
+  { params }: RouteContext,
+  supabase: SupabaseClient,
+) {
   const { searchParams } = new URL(request.url)
   const startDate = searchParams.get("start_date")
   const endDate = searchParams.get("end_date")
 
   try {
-    const supabase = createClient()
-
     let query = supabase.from("performance_history").select("*").eq("pool_id", params.id)
 
     if (startDate) {
@@ -33,9 +45,15 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, context: RouteContext) {
+  return withSupabaseAdminAuth(request, (authenticatedRequest) =>
+    createPerformanceEntry(authenticatedRequest, context),
+  )
+}
+
+async function createPerformanceEntry(request: NextRequest, { params }: RouteContext) {
   try {
-    const supabase = createClient()
+    const supabase = createServiceRoleClient()
     const body = await request.json()
 
     const { data, error } = await supabase

@@ -1,8 +1,8 @@
-import { createServerClient } from "@/lib/supabase"
+import { createServiceRoleClient } from "@/lib/supabase/server"
 
 export async function getGoogleApiKey(userId: string): Promise<string | null> {
   try {
-    const supabase = createServerClient()
+    const supabase = createServiceRoleClient()
 
     const { data, error } = await supabase.from("user_settings").select("google_api_key").eq("user_id", userId).single()
 

@@ -1,20 +1,13 @@
-import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase"
+import { type NextRequest, NextResponse } from "next/server"
+import { type SupabaseAuthContext, withSupabaseAuth } from "@/lib/auth/supabase-auth"
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  return withSupabaseAuth(request, readProfile)
+}
+
+async function readProfile(_: NextRequest, { supabase, user }: SupabaseAuthContext) {
   try {
-    const supabase = createClient()
-
-    // Get the current user's session
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
-
-    if (!session) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
-    }
-
-    const { data, error } = await supabase.from("profiles").select("*").eq("id", session.user.id).single()
+    const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).single()
 
     if (error) {
       console.error("Database error:", error)
@@ -28,19 +21,12 @@ export async function GET() {
   }
 }
 
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
+  return withSupabaseAuth(request, updateProfile)
+}
+
+async function updateProfile(request: NextRequest, { supabase, user }: SupabaseAuthContext) {
   try {
-    const supabase = createClient()
-
-    // Get the current user's session
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
-
-    if (!session) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
-    }
-
     const body = await request.json()
 
     const { data, error } = await supabase
@@ -49,7 +35,7 @@ export async function PUT(request: Request) {
         ...body,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", session.user.id)
+      .eq("id", user.id)
       .select()
 
     if (error) {

@@ -1,11 +1,16 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { groq } from "@ai-sdk/groq"
-import { createClient } from "@/lib/supabase"
+import { withSupabaseAdminAuth } from "@/lib/auth/supabase-auth"
+import { createServiceRoleClient } from "@/lib/supabase/server"
 
 export const runtime = "nodejs"
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  return withSupabaseAdminAuth(request, handlePost)
+}
+
+async function handlePost(request: NextRequest) {
   try {
     const { poolId, strategyId } = await request.json()
 
@@ -13,7 +18,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Either poolId or strategyId is required" }, { status: 400 })
     }
 
-    const supabase = createClient()
+    const supabase = createServiceRoleClient()
     let poolData
     let strategyData
 
