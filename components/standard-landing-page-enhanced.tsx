@@ -57,7 +57,7 @@ export function StandardLandingPageEnhanced() {
             <div className="flex items-center space-x-3">
               <StandaloneThemeToggle />
               <Link href="/auth/login" className="text-standard-text hover:text-standard-primary transition-colors">
-                Login
+                Sign-in status
               </Link>
               <Link href="/standard/demo" className="btn-primary inline-flex items-center">
                 Try Demo
@@ -312,7 +312,7 @@ export function StandardLandingPageEnhanced() {
                   href="/auth/login"
                   className="bg-white/20 text-white font-medium py-3 px-6 rounded-md hover:bg-white/30 transition-colors inline-flex items-center justify-center"
                 >
-                  Create Free Account
+                  Authentication unavailable
                 </Link>
               </div>
             </div>
