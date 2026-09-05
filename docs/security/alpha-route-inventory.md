@@ -8,7 +8,7 @@ This inventory records the source-level route policy for the approved Standard-o
 
 | Route family | Purpose | Phase 1 behavior |
 | --- | --- | --- |
-| `/`, `/standard` | Standard landing and version selection | Public |
+| `/`, `/standard` | Standard landing and alpha entry | Public; no Corporate selection |
 | `/auth/login` | Stable authentication status | Public; contains no credential form |
 | `/brand`, `/whitepaper`, `/how-it-works`, `/contact`, `/compare`, `/ai-features` | Marketing and documentation | Public |
 | `/demo*`, `/standard-demo*`, `/hero-showcase` | Non-authenticated product demonstrations | Public prototype surface |
