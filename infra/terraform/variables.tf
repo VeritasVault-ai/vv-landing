@@ -122,7 +122,7 @@ variable "sync_schedule_cron" {
 variable "github_oidc_principal_object_id" {
   type        = string
   description = "Object ID of the existing nl-org-github-actions service principal, granted AcrPush."
-  default     = "369def47-8d91-4710-8c37-e521bc4a360a"
+  default     = "c3f72eeb-8deb-4082-a8e9-7b1d766033bb"
 }
 
 variable "runtime_secret_names" {

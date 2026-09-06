@@ -79,6 +79,7 @@ resource "azurerm_role_assignment" "ci_acr_push" {
   scope                = azurerm_container_registry.main.id
   role_definition_name = "AcrPush"
   principal_id         = var.github_oidc_principal_object_id
+  principal_type       = "ServicePrincipal"
 }
 
 # Lets the Container App pull them.
@@ -165,6 +166,13 @@ resource "azurerm_container_app_environment" "main" {
   log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
   infrastructure_subnet_id   = azurerm_subnet.container_apps.id
   tags                       = var.tags
+
+  workload_profile {
+    name                  = "Consumption"
+    workload_profile_type = "Consumption"
+    minimum_count         = 0
+    maximum_count         = 0
+  }
 }
 
 resource "azurerm_container_app" "web" {
