@@ -6,8 +6,8 @@ variable "subscription_id" {
 
 variable "location" {
   type        = string
-  description = "Azure region. Matches the existing NeuralLiquid production estate."
-  default     = "West Europe"
+  description = "Azure region. Matches the policy-permitted NeuralLiquid production estate."
+  default     = "South Africa North"
 }
 
 variable "resource_group_name" {

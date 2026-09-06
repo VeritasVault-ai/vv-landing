@@ -128,8 +128,8 @@ explicit production approval sets `sync_job_enabled = true`.
 1. Validate source and Terraform without a backend.
 2. Review the first Terraform plan with `application_enabled = false` and
    `runtime_secret_references_enabled = false` using the confirmed
-   `neuralliquid-sub` and West Europe context; recheck policy and quota using a
-   credential issued by the subscription tenant.
+   `neuralliquid-sub` and South Africa North context; recheck policy and quota
+   using a credential issued by the subscription tenant.
 3. Obtain production approval for the first apply, which creates the vault and
    runtime shell without secret references or a sync job.
 4. Provision the complete server-side inventory separately, including the

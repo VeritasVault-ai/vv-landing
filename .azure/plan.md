@@ -1,6 +1,6 @@
 # VeritasVault Azure replacement preparation plan
 
-**Status:** Blocked — pre-deployment policy validation denies West Europe
+**Status:** Validated — South Africa North plan passes; deployment not authorized
 **Prepared:** 2026-09-04  
 **Mode:** MODIFY an existing Azure-prepared branch  
 **Implementation vehicle:** `neuralliquid/veritasvault-web` PR #163 (`feat/azure-container-apps`)  
@@ -17,7 +17,7 @@ This work is warranted because the owner has confirmed that VeritasVault no long
 | Decision | Selection |
 |---|---|
 | Azure subscription | `neuralliquid-sub` (`5a95ddee-dd63-441a-8306-c8b0803dcdd4`) |
-| Azure region | West Europe |
+| Azure region | South Africa North; selected after West Europe was denied by inherited policy |
 | Workload class | Small, cost-optimized, customer-facing production alpha; fewer than 1,000 initial users |
 | Data classification | Representative/non-regulated alpha data only; secrets remain in Key Vault |
 | Infrastructure workflow | Existing repository-native Terraform and GitHub Actions workflow |
@@ -42,7 +42,7 @@ This work is warranted because the owner has confirmed that VeritasVault no long
 Cloudflare DNS/proxy
         |
         v
-Azure Container Apps environment (West Europe)
+Azure Container Apps environment (South Africa North)
   |-- VeritasVault web Container App (external HTTPS ingress)
   |     |-- image from Basic Azure Container Registry
   |     |-- web managed identity
@@ -62,7 +62,7 @@ Cloudflare origin restriction and public-host cutover are deployment concerns, n
 
 | Resource | Proposed configuration | Purpose |
 |---|---|---|
-| Resource group | One dedicated West Europe resource group | Isolation and lifecycle boundary |
+| Resource group | One dedicated South Africa North resource group | Isolation and lifecycle boundary |
 | Container Apps managed environment | Consumption profile | Shared web/job runtime |
 | Container App | External HTTPS ingress; min/max replicas validated; health probes | Next.js SSR/BFF |
 | Container Apps Job | Hourly trigger; disabled by default; bounded retries/timeouts/concurrency | Scheduled synchronization |
@@ -76,21 +76,21 @@ Cloudflare origin restriction and public-host cutover are deployment concerns, n
 
 ## Quota and capacity check
 
-All counts below are for `neuralliquid-sub`; regional counts are scoped to West Europe. The standard Azure resource inventory returned zero current West Europe resources. The Microsoft.App quota API returned the environment limit but its usage endpoint encountered a cross-tenant token issuer mismatch, so the zero-use value must be rechecked using the deployment credential context before any apply.
+All counts below are for `neuralliquid-sub`; regional counts are scoped to South Africa North. Azure provider metadata advertises the planned Container Apps, Container Apps Jobs, ACR, Log Analytics, Application Insights, and Key Vault resource types in the region. The Microsoft.App quota API reports one managed environment in use against a limit of 20. The dedicated VeritasVault resource group does not yet exist.
 
 | Resource/quota | Current | Add | Projected | Limit/bound | Result |
 |---|---:|---:|---:|---:|---|
 | Resource groups per subscription | 6 | 1 | 7 | 980 | Within limit |
 | Virtual networks, target resource group | 0 | 1 | 1 | 1,000 per region per subscription | Within limit |
 | Subnets in virtual network | 0 | 1 | 1 | 3,000 per virtual network | Within limit |
-| Container Apps managed environments, West Europe | 0 | 1 | 1 | 20 | Within limit; usage recheck required before apply |
+| Container Apps managed environments, South Africa North | 1 | 1 | 2 | 20 | Within limit; 18 environments of arithmetic headroom after this plan |
 | Container Apps, target resource group | 0 | 1 | 1 | 800 resources/type/resource group | Within ARM bound |
 | Container Apps Jobs, target resource group | 0 | 1 | 1 | 800 resources/type/resource group | Within ARM bound |
 | Container registries, target resource group | 0 | 1 | 1 | 800 resources/type/resource group | Within ARM bound; proposed global name is available |
 | Key Vaults, target resource group | 0 | 1 | 1 | 800 resources/type/resource group | Within ARM bound; proposed global name is available |
 | Log Analytics workspaces, target resource group | 0 | 1 | 1 | No non-legacy service count cap; ARM bound 800/type/resource group | Within limit |
 | Application Insights components, target resource group | 0 | 1 | 1 | 800 resources/type/resource group | Within ARM bound |
-| User-assigned managed identities, West Europe | 0 | 2 | 2 | Creation rate 80/subscription/region/20 seconds; ARM bound 800/type/resource group | Within limit |
+| User-assigned managed identities, South Africa North | 0 | 2 | 2 | Creation rate 80/subscription/region/20 seconds; ARM bound 800/type/resource group | Within limit |
 | Role assignments per subscription | 14 | 5 | 19 | 4,000 | Within limit |
 | Key Vault secret creates | 0 by this plan | 0 | 0 | 300 create operations/10 seconds; no object-count restriction | No secret mutation authorized |
 
@@ -280,10 +280,39 @@ correction in this branch. No apply or other Azure mutation was performed.
 - `pnpm build`: passed with representative non-secret CI values and existing
   non-fatal warnings.
 
-Deployment readiness is blocked. Inherited assignment `sys.blockwesteurope`
-uses policy `Resources should not be created in West Europe`, whose indexed
-rule has an unconditional `deny` when `location == westeurope`. No exemption is
-visible at subscription scope; the current identity cannot enumerate
-management-group exemptions. Every resource in the saved plan targets West
-Europe. Resolve the region/policy decision and produce a new exact plan before
-requesting any Terraform apply authorization.
+### South Africa North revalidation (2026-09-06 SAST / UTC)
+
+The earlier West Europe plan is superseded. Inherited assignment
+`sys.blockwesteurope` denies resources in that region, and no subscription-scope
+exemption is visible. South Africa North is policy-permitted by that rule,
+advertises every regional resource type in this module, and has current
+managed-environment quota headroom.
+
+- Validation is based on `origin/main` commit
+  `a13a16b60f19bed284a099cdd7a8f2602d06aa1f` plus only the documented region
+  correction. The exact proposed head is recorded with the Baton/PR evidence.
+- `az account show` confirmed enabled `neuralliquid-sub` in tenant
+  `5384ef74-e517-4b22-9472-df990f61e8b5`.
+- Azure provider metadata advertises Container Apps environments, apps, jobs,
+  Basic ACR, Log Analytics, Application Insights, and Key Vault in South Africa
+  North.
+- The Microsoft.App quota API reports managed-environment usage 1 of 20. The
+  target `nl-prod-veritasvault-rg` resource group does not exist.
+- `terraform fmt -check -recursive` and `terraform validate`: passed.
+- Backend initialization against
+  `nl-org-tfstate-rg/nlorgtfstatesa/tfstate`: passed; the VeritasVault state is
+  empty as previously verified.
+- `terraform plan -lock=false -input=false -no-color`: passed with
+  `14 to add, 0 to change, 0 to destroy`. Every regional resource targets
+  `southafricanorth`; no plan file was saved.
+- Safe defaults remain active: `application_enabled = false`,
+  `runtime_secret_references_enabled = false`, and `sync_job_enabled = false`.
+- `pnpm test`: 17 files and 64 tests passed.
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed with 19 pre-existing warnings and no errors.
+- `pnpm audit --audit-level=high`: passed; two low-severity advisories remain.
+- `pnpm build`: passed with representative non-secret CI values and existing
+  non-fatal warnings.
+
+This validation authorizes no apply, resource creation, secret operation, image
+publication, job enablement, DNS/Cloudflare change, or production cutover.
