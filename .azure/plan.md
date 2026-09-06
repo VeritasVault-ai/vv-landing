@@ -1,6 +1,6 @@
 # VeritasVault Azure replacement preparation plan
 
-**Status:** Validated — South Africa North plan passes; deployment not authorized
+**Status:** Validated — infrastructure partially applied; CI RBAC correction pending
 **Prepared:** 2026-09-04  
 **Mode:** MODIFY an existing Azure-prepared branch  
 **Implementation vehicle:** `neuralliquid/veritasvault-web` PR #163 (`feat/azure-container-apps`)  
@@ -316,3 +316,36 @@ managed-environment quota headroom.
 
 This validation authorizes no apply, resource creation, secret operation, image
 publication, job enablement, DNS/Cloudflare change, or production cutover.
+
+### First infrastructure apply (2026-09-06 SAST / UTC)
+
+The owner explicitly authorized the infrastructure-only apply to
+`neuralliquid-sub` in South Africa North. The saved plan was bound to exact
+`main` commit `b86e4b05225506fbf363bef1aff9ac27177bcda9`, contained 14 creates and
+no updates or deletes, and explicitly kept the application, runtime secret
+references, and sync job disabled.
+
+- Terraform created and recorded 13 resources, including the resource group,
+  VNet/subnet, Log Analytics workspace, Application Insights component, Basic
+  ACR, Key Vault, Container Apps environment, two managed identities, and the
+  app/sync workload role assignments.
+- No Container App, Container Apps Job, image, runtime secret reference, DNS
+  record, or Cloudflare change was created.
+- `azurerm_role_assignment.ci_acr_push` did not converge. Azure Activity Log
+  returned `PrincipalNotFound` because the committed object ID
+  `369def47-8d91-4710-8c37-e521bc4a360a` is not present in subscription tenant
+  `5384ef74-e517-4b22-9472-df990f61e8b5`.
+- Direct Microsoft Graph inventory identifies the live
+  `nl-org-github-actions` service principal as object ID
+  `c3f72eeb-8deb-4082-a8e9-7b1d766033bb` with application ID
+  `18fa6c34-b421-4316-9404-2294e863733b`.
+- The application registration currently has federated credentials for
+  `neuralliquid-org`, not `veritasvault-web`, and the VeritasVault production
+  GitHub environment does not yet define the three non-secret Azure login
+  variables. Those identity/GitHub changes remain separately gated.
+- The stale saved plan was removed after the partial apply and must not be
+  reused. A corrected exact plan is required before retrying the final RBAC
+  resource.
+- Azure returns an implicit zero-count `Consumption` workload profile for the
+  Container Apps environment. Terraform now declares that profile explicitly
+  so a post-create refresh does not propose removing it in place.

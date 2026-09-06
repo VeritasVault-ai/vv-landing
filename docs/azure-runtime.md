@@ -138,8 +138,12 @@ explicit production approval sets `sync_job_enabled = true`.
    secret exists.
 5. Apply the scheduled-sync lease migration through the approved database
    migration process.
-6. Build and publish the application image, record its commit tag and digest,
-   and supply them as `image_tag` and `sync_image_digest`.
+6. Before image publication, configure the repository's production
+   `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, and `AZURE_SUBSCRIPTION_ID` variables
+   and add a separately approved federated credential for this repository to
+   `nl-org-github-actions`. Then build and publish the application image,
+   record its commit tag and digest, and supply them as `image_tag` and
+   `sync_image_digest`.
 7. Review a second plan with `application_enabled = true` and
    `runtime_secret_references_enabled = true`; obtain a separate approval before
    creating the app, secret references, and manual job.
